@@ -8,8 +8,17 @@ namespace RlViewer
 {
     public enum FileType
     {
+        /// <summary>
+        /// Формат файла РЛИ Банк-РЛ
+        /// </summary>
         brl4,
+        /// <summary>
+        /// Формат файла РЛИ
+        /// </summary>
         rl4,
+        /// <summary>
+        /// Формат файла РГГ МРК2
+        /// </summary>
         k
     }
 

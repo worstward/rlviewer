@@ -14,6 +14,36 @@ namespace RlViewer.Hierarchy.Rhg.Concrete
 
         }
 
+        private readonly int FILE_HEADER_LENGTH = 800;
 
+        private FileHeader _header;
+
+
+        public override byte[] ReadFileHeader()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override FileHeader Header
+        {
+            get { return _header; }
+        }
+
+        
+        //private async Task ReadFileHeaderAsync()
+        //{
+
+        //    using (var fs = System.IO.File.OpenRead(Properties.FilePath))
+        //    {
+        //        await fs.ReadAsync(_header, 0, array.Length);
+        //    }
+        //}
+
+
+        public override bool CheckFile()
+        {
+            return false; 
+         //   bool sigValid = unchecked((uint)0xff00ff00) == ;
+        }
     }
 }

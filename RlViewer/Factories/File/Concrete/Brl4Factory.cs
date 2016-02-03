@@ -8,7 +8,7 @@ using RlViewer.Hierarchy.Rli.Concrete;
 
 namespace RlViewer.Factories
 {
-    public class Brl4Factory : FileFactory
+    class Brl4Factory : FileFactory
     {
         public override  LoadedFile Create(FileProperties properties)
         {

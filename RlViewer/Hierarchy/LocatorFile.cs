@@ -12,5 +12,7 @@ namespace RlViewer.Hierarchy
         {
         }
 
+        public override abstract bool CheckFile();
+
     }
 }

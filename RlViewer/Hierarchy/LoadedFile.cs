@@ -13,6 +13,9 @@ namespace RlViewer.Hierarchy
             Properties = properties;
         }
 
-        public FileProperties Properties { get; set; }
+        public FileProperties Properties { get; private set; }
+
+        public abstract bool CheckFile();
+
     }
 }

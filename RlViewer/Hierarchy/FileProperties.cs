@@ -20,7 +20,7 @@ namespace RlViewer.Hierarchy
 
         private FileType GetType(string path)
         {
-            return System.IO.Path.GetExtension(path).ToEnum<FileType>();
+            return System.IO.Path.GetExtension(path).Substring(1).ToEnum<FileType>();
         }
 
     }

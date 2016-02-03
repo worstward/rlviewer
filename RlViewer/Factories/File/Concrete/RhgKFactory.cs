@@ -4,17 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Hierarchy;
-using RlViewer.Hierarchy.Rli.Concrete;
-
-
+using RlViewer.Hierarchy.Rhg.Concrete;
 
 namespace RlViewer.Factories
 {
-    public class Rl4Factory : FileFactory
+    class RhgKFactory : FileFactory
     {
         public override LoadedFile Create(FileProperties properties)
         {
-            return new Rl4(properties);
+            return new RhgK(properties);
         }
     }
 }
