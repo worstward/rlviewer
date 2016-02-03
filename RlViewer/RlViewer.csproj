@@ -47,15 +47,21 @@
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />
     <Compile Include="Behaviors\IFilterImage.cs" />
-    <Compile Include="Behaviors\IHeader.cs" />
+    <Compile Include="Factories\File\Concrete\RawFactory.cs" />
+    <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Behaviors\IZoommable.cs" />
     <Compile Include="Factories\File\Concrete\Brl4Factory.cs" />
     <Compile Include="Factories\File\Abstract\FileFactory.cs" />
     <Compile Include="Factories\File\Concrete\RhgKFactory.cs" />
     <Compile Include="Factories\File\Concrete\Rl4Factory.cs" />
+    <Compile Include="Headers\Concrete\Brl4Header.cs" />
+    <Compile Include="Headers\Concrete\RawHeader.cs" />
+    <Compile Include="Headers\Concrete\RhgKHeader.cs" />
+    <Compile Include="Headers\Concrete\Rl4Header.cs" />
     <Compile Include="Hierarchy\FileProperties.cs" />
     <Compile Include="Hierarchy\FileType.cs" />
-    <Compile Include="Hierarchy\FileHeader.cs" />
+    <Compile Include="Headers\Abstract\FileHeader.cs" />
+    <Compile Include="Hierarchy\Rli\Concrete\Raw.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

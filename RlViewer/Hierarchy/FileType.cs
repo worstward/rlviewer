@@ -17,6 +17,10 @@ namespace RlViewer
         /// </summary>
         rl4,
         /// <summary>
+        /// Формат файла РЛИ без служебной информации
+        /// </summary>
+        raw,
+        /// <summary>
         /// Формат файла РГГ МРК2
         /// </summary>
         k

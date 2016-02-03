@@ -7,14 +7,17 @@ using RlViewer.Hierarchy.Rli.Abstract;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete;
 
+
+
 namespace RlViewer.Hierarchy.Rli.Concrete
 {
-    public class Brl4 : RliFile
+    public class Raw : RliFile
     {
-        public Brl4(FileProperties properties) : base(properties)
+        public Raw(FileProperties properties) : base(properties)
         {
-            _header = new Brl4Header();
+            _header = new RawHeader();
         }
+
         private FileHeader _header;
 
         public override FileHeader Header
@@ -40,3 +43,4 @@ namespace RlViewer.Hierarchy.Rli.Concrete
         }
     }
 }
+

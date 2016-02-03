@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RlViewer.Behaviors;
-
+using RlViewer.Headers.Abstract;
 
 namespace RlViewer.Hierarchy.Rli.Abstract
 {
@@ -15,7 +14,6 @@ namespace RlViewer.Hierarchy.Rli.Abstract
           // ReadFileHeaderAsync().Wait();
         }
 
-        public abstract byte[] ReadFileHeader();
         public abstract FileHeader Header { get; }
 
         public override abstract bool CheckFile();

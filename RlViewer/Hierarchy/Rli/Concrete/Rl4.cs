@@ -4,21 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Hierarchy.Rli.Abstract;
+using RlViewer.Headers.Abstract;
+using RlViewer.Headers.Concrete;
+
 
 namespace RlViewer.Hierarchy.Rli.Concrete
 {
     public class Rl4 : RliFile
     {
         public Rl4(FileProperties properties) : base(properties)
-        { }
-
-        private readonly int FILE_HEADER_LENGTH = 16384;
-        private FileHeader _header;
-
-        public override byte[] ReadFileHeader()
         {
-            throw new NotImplementedException();
+            _header = new Rl4Header();
         }
+
+        private FileHeader _header;
 
         public override FileHeader Header
         {

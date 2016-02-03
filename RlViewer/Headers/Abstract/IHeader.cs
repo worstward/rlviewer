@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RlViewer.Hierarchy;
 
 
-namespace RlViewer.Behaviors
+namespace RlViewer.Headers.Abstract
 {
     interface IHeader
     {
-        byte[] ReadFileHeader();
         FileHeader Header { get; }
-
     }
 }

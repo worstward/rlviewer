@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Hierarchy.Rhg.Abstract;
+using RlViewer.Headers.Abstract;
+using RlViewer.Headers.Concrete;
 
 namespace RlViewer.Hierarchy.Rhg.Concrete
 {
@@ -11,18 +13,10 @@ namespace RlViewer.Hierarchy.Rhg.Concrete
     {
         public RhgK(FileProperties properties) : base(properties)
         {
-
+            _header = new RhgKHeader();
         }
-
-        private readonly int FILE_HEADER_LENGTH = 800;
 
         private FileHeader _header;
-
-
-        public override byte[] ReadFileHeader()
-        {
-            throw new NotImplementedException();
-        }
 
         public override FileHeader Header
         {

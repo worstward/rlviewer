@@ -14,10 +14,12 @@ namespace RlViewer
     {
         public MainForm()
         {
-            using (var openFileDlg = new OpenFileDialog() { Filter = Resourses.Filter })
+            using (var openFileDlg = new OpenFileDialog())// { Filter = Resourses.Filter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {
+
+
                     Hierarchy.FileProperties properties = new Hierarchy.FileProperties(openFileDlg.FileName);
 
                     var file = Factories.FileFactory.GetFactory(properties).Create(properties);
