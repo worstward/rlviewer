@@ -47,6 +47,7 @@
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />
     <Compile Include="Behaviors\IFilterImage.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
     <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Behaviors\IZoommable.cs" />
@@ -58,23 +59,29 @@
     <Compile Include="Headers\Concrete\RawHeader.cs" />
     <Compile Include="Headers\Concrete\RhgKHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4Header.cs" />
-    <Compile Include="Hierarchy\FileProperties.cs" />
-    <Compile Include="Hierarchy\FileType.cs" />
+    <Compile Include="Files\FileProperties.cs" />
+    <Compile Include="Files\FileType.cs" />
     <Compile Include="Headers\Abstract\FileHeader.cs" />
-    <Compile Include="Hierarchy\Rli\Concrete\Raw.cs" />
+    <Compile Include="Files\Rli\Concrete\Raw.cs" />
+    <Compile Include="InfoFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InfoFrm.Designer.cs">
+      <DependentUpon>InfoFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Hierarchy\LoadedFile.cs" />
-    <Compile Include="Hierarchy\LocatorFile.cs" />
-    <Compile Include="Hierarchy\Rhg\Abstract\RhgFile.cs" />
-    <Compile Include="Hierarchy\Rhg\Concrete\RhgK.cs" />
-    <Compile Include="Hierarchy\Rli\Abstract\RliFile.cs" />
-    <Compile Include="Hierarchy\Rli\Concrete\Brl4.cs" />
-    <Compile Include="Hierarchy\Rli\Concrete\Rl4.cs" />
+    <Compile Include="Files\LoadedFile.cs" />
+    <Compile Include="Files\LocatorFile.cs" />
+    <Compile Include="Files\Rhg\Abstract\RhgFile.cs" />
+    <Compile Include="Files\Rhg\Concrete\RhgK.cs" />
+    <Compile Include="Files\Rli\Abstract\RliFile.cs" />
+    <Compile Include="Files\Rli\Concrete\Brl4.cs" />
+    <Compile Include="Files\Rli\Concrete\Rl4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resourses.Designer.cs">
@@ -82,6 +89,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resourses.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="InfoFrm.resx">
+      <DependentUpon>InfoFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

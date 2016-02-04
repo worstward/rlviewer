@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RlViewer.Hierarchy;
-using RlViewer.Hierarchy.Rli.Concrete;
+using RlViewer.Files;
+using RlViewer.Files.Rli.Concrete;
 
 namespace RlViewer.Factories
 {

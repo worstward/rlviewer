@@ -10,7 +10,9 @@ namespace RlViewer.Headers.Abstract
     {
         public abstract byte[] Signature { get; }
         public abstract int HeaderLength { get; }
+        public abstract Task<List<Tuple<string, string>>> GetHeaderInfo();
 
-        public abstract byte[] FillHeader(string path);
+
+
     }
 }
