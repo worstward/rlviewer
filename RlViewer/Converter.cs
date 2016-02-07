@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer
 {
-    static class Converter
+    static class Converters
     {
 
         /// <summary>
@@ -51,5 +51,63 @@ namespace RlViewer
 
             return timeArray;
         }
+
+
+        public static string ToRliFileType(this byte type)
+        {
+            string sType;
+
+            switch (type)
+            {
+                case 2:
+                    sType = "4 байта на отсчет";
+                    break;
+                case 3:
+                    sType = "8 байт на отсчет";
+                    break;
+                default:
+                    sType = "Не определено";
+                    break;
+            }
+            return sType;
+        }
+
+        public static string ToReadableFileSize(this long value)
+        {
+            if (value < 0) throw new ArgumentException("File size can not be less than 0");
+            // Determine the suffix and readable value
+            string sizeSuffix;
+            double readable;
+
+            if (value >= 0x10000000000)
+            {
+                sizeSuffix = "Tb";
+                readable = (value >> 30);
+            }
+            else if (value >= 0x40000000)
+            {
+                sizeSuffix = "Gb";
+                readable = (value >> 20);
+            }
+            else if (value >= 0x100000)
+            {
+                sizeSuffix = "Mb";
+                readable = (value >> 10);
+            }
+            else if (value >= 0x400)
+            {
+                sizeSuffix = "Kb";
+                readable = value;
+            }
+            else
+            {
+                return value.ToString("0 b");
+            }
+
+            readable = (readable / 1024);
+            return readable.ToString("0.## ") + sizeSuffix;
+        }
+
+
     }
 }

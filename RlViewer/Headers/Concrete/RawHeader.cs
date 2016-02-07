@@ -24,11 +24,18 @@ namespace RlViewer.Headers.Concrete
             }
         }
 
+        public override int HeaderLength
+        {
+            get { return _headerLength; }
+        }
+
+        private int _headerLength = 0;
         private byte[] _signature = new byte[1];
         private byte[] _header;
         private string _path;
+        private HeaderInfoOutput[] _headerInfo;
 
-        public async Task<byte[]> FillHeaderAsync(string path)
+        private async Task<byte[]> FillHeaderAsync(string path)
         {
             byte[] header = new byte[HeaderLength];
             
@@ -37,6 +44,17 @@ namespace RlViewer.Headers.Concrete
                 await fs.ReadAsync(header, 0, header.Length);
             }
             return header;
+        }
+
+        public override async Task<HeaderInfoOutput[]> GetHeaderInfo()
+        {
+            if (_headerInfo == null)
+            {
+                _header = await FillHeaderAsync(_path);
+                CheckInfo(_header);
+                _headerInfo = ParseHeader(_header);
+            }
+            return _headerInfo;
         }
 
         private void CheckInfo(byte[] header)
@@ -49,29 +67,12 @@ namespace RlViewer.Headers.Concrete
                 }
             }
         }
-        public override async Task<List<Tuple<string, string>>> GetHeaderInfo()
-        {
-            if (_headerInfo == null)
-            {
-                _header = await FillHeaderAsync(_path);
-                CheckInfo(_header);
-                return ParseHeader(_header);
-            }
-            return _headerInfo;
-        }
+        
 
-        List<Tuple<string, string>> _headerInfo;
-        private List<Tuple<string, string>> ParseHeader(byte[] header)
+        private HeaderInfoOutput[] ParseHeader(byte[] header)
         {
             throw new NotImplementedException();
         }
 
-
-
-        private int _headerLength = 0;
-        public override int HeaderLength
-        {
-            get { return _headerLength; }
-        }
     }
 }

@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Files;
 using RlViewer.Files.Rli.Concrete;
+using RlViewer.Factories.File.Abstract;
 
-namespace RlViewer.Factories
+
+namespace RlViewer.Factories.File.Concrete
 {
     class Brl4Factory : FileFactory
     {
@@ -14,8 +16,5 @@ namespace RlViewer.Factories
         {
             return new Brl4(properties);
         }
-
-       
-
     }
 }

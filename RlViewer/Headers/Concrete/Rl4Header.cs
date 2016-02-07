@@ -17,20 +17,27 @@ namespace RlViewer.Headers.Concrete
 
         public override byte[] Signature
         {
-            get
+            get 
             {
                 return _signature;
             }
         }
+  
+        public override int HeaderLength
+        {
+            get
+            {
+                return _headerLength;
+            }
+        }
 
+        private int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
         private byte[] _header;
         private string _path;
+        private HeaderInfoOutput[] _headerInfo;
 
-
-
-
-        public async Task<byte[]> FillHeaderAsync(string path)
+        private async Task<byte[]> FillHeaderAsync(string path)
         {
             byte[] header = new byte[HeaderLength];
 
@@ -38,29 +45,11 @@ namespace RlViewer.Headers.Concrete
             {
                 await fs.ReadAsync(header, 0, header.Length);
             }
-
-            var a = new byte[] { header[78], header[77], header[79], header[80] };
-            var b = BitConverter.ToInt32(a, 0);
-            var c = BitConverter.ToUInt32(a, 0);
-
-            var e = BitConverter.ToInt16(a, 0);
-            var f = BitConverter.ToUInt16(a, 0);
-            var g = BitConverter.ToSingle(a.Reverse().ToArray(), 0);
-            var h = BitConverter.ToString(a, 0);
-            var i = BitConverter.ToChar(a, 0);
-
-
+       
             return header;
         }
 
-
-        private int _headerLength = 16384;
-        public override int HeaderLength
-        {
-            get { return _headerLength; }
-        }
-
-        public override async Task<List<Tuple<string, string>>> GetHeaderInfo()
+        public override async Task<HeaderInfoOutput[]> GetHeaderInfo()
         {
             if (_headerInfo == null)
             {
@@ -83,33 +72,36 @@ namespace RlViewer.Headers.Concrete
             }
         }
 
-        List<Tuple<string, string>> _headerInfo;
-        private List<Tuple<string, string>> ParseHeader(byte[] header)
-        {
-            var parsedList = new List<Tuple<string, string>>();
+        
+        private HeaderInfoOutput[] ParseHeader(byte[] header)
+        {      
+            var rhgHeader = new List<Tuple<string, string>>();
 
+
+            var pathToRhg = Encoding.UTF8.GetString(header.Skip(3839).Take(256).ToArray()).TrimEnd('\0');
+            rhgHeader.Add(new Tuple<string, string>("Отсчетов в кадре по долготе", System.IO.Path.GetFileName(pathToRhg)));
+            rhgHeader.Add(new Tuple<string, string>("Размер файла",                BitConverter.ToInt64(header, 24).ToReadableFileSize()));
+            rhgHeader.Add(new Tuple<string, string>("Дата и время создания",       header.Skip(8).Take(16).ToArray().ToDateTime().ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Отсчетов в кадре по долготе", BitConverter.ToInt32(header, 65).ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Отсчетов в кадре по азимуту", BitConverter.ToInt32(header, 69).ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Число отсчетов в строке",     BitConverter.ToInt32(header, 73).ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Количество строк",            BitConverter.ToInt32(header, 77).ToString()));
+
+
+            var rliHeader = new List<Tuple<string, string>>();
+            rliHeader.Add(new Tuple<string, string>("Дата и время создания", header.Skip(4104).Take(16).ToArray().ToDateTime().ToString()));
+            rliHeader.Add(new Tuple<string, string>("Размер файла",                BitConverter.ToInt64(header, 4120).ToReadableFileSize()));
+            rliHeader.Add(new Tuple<string, string>("Тип файла", header[4137].ToRliFileType()));
             
+            rliHeader.Add(new Tuple<string, string>("Ширина кадра", BitConverter.ToInt32(header, 4161).ToString()));
+            rliHeader.Add(new Tuple<string, string>("Высота кадра", BitConverter.ToInt32(header, 4165).ToString()));
 
-
-            parsedList.Add(new Tuple<string, string>("Размер файла"                  , (BitConverter.ToInt64(header, 24) / 1024).ToString() + " kb"));                   //4
-            parsedList.Add(new Tuple<string, string>("Дата и время создания"         , header.Skip(8).Take(16).ToArray().ToDateTime().ToString()));
-            parsedList.Add(new Tuple<string, string>("Отсчетов в кадре по долготе"   , BitConverter.ToInt32(header, 65).ToString()));
-            parsedList.Add(new Tuple<string, string>("Отсчетов в кадре по азимуту"   , BitConverter.ToInt32(header, 69).ToString())); 
-            parsedList.Add(new Tuple<string, string>("Число отсчетов в строке"       , BitConverter.ToInt32(header, 73).ToString()));
-
-            
-
-            parsedList.Add(new Tuple<string, string>("Количество строк"              , BitConverter.ToInt64(header, 77).ToString())); 
-
-            parsedList.Add(new Tuple<string, string>("Время создания РГГ" ,header.Skip(8).Take(16).ToArray().ToDateTime().ToString())); 
-            parsedList.Add(new Tuple<string, string>("Время создания РГГ" ,header.Skip(8).Take(16).ToArray().ToDateTime().ToString())); 
-            parsedList.Add(new Tuple<string, string>("Время создания РГГ" ,header.Skip(8).Take(16).ToArray().ToDateTime().ToString())); 
-            parsedList.Add(new Tuple<string, string>("Время создания РГГ" ,header.Skip(8).Take(16).ToArray().ToDateTime().ToString())); 
-            
-
-            return parsedList;
+            return new HeaderInfoOutput[]
+            {
+                new HeaderInfoOutput("РГГ", rhgHeader),
+                new HeaderInfoOutput("РЛИ", rliHeader)
+            };
         }
-
 
 
     }

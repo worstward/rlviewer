@@ -12,22 +12,27 @@ namespace RlViewer
 {
     public partial class MainForm : Form
     {
+
         Files.LoadedFile file;
         public MainForm()
         {
+            
+            InitializeComponent();
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+
             using (var openFileDlg = new OpenFileDialog() { Filter = Resourses.Filter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {
                     Files.FileProperties properties = new Files.FileProperties(openFileDlg.FileName);
-                    file = Factories.FileFactory.GetFactory(properties).Create(properties);                  
+                    file = RlViewer.Factories.File.Abstract.FileFactory.GetFactory(properties).Create(properties);
                 }
+                else return;
             }
-            InitializeComponent();
-        }
 
-        private async void button1_Click(object sender, EventArgs e)
-        {            
             using (var iFrm = new InfoFrm(await ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo()))
             {
                 iFrm.ShowDialog();

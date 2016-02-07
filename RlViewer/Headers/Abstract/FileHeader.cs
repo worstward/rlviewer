@@ -8,9 +8,21 @@ namespace RlViewer.Headers.Abstract
 {
     public abstract class FileHeader
     {
+        /// <summary>
+        /// Gets a byte sequence that identifies class of the input file
+        /// </summary>
         public abstract byte[] Signature { get; }
+
+        /// <summary>
+        /// Gets length of this file header
+        /// </summary>
         public abstract int HeaderLength { get; }
-        public abstract Task<List<Tuple<string, string>>> GetHeaderInfo();
+
+        /// <summary>
+        /// Returns parsed info from file header
+        /// </summary>
+        /// <returns>Parsed header info instance</returns>
+        public abstract Task<HeaderInfoOutput[]> GetHeaderInfo();
 
 
 

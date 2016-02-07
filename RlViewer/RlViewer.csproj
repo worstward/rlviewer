@@ -69,6 +69,7 @@
     <Compile Include="InfoFrm.Designer.cs">
       <DependentUpon>InfoFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="InfoOutputHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -12,28 +12,50 @@ namespace RlViewer
 {
     public partial class InfoFrm : Form
     {
-        public InfoFrm(params List<Tuple<string, string>>[] headerInfo)
+        public InfoFrm(params HeaderInfoOutput[] headers)
         {
-            _headerInfo = headerInfo[0];
-            
-
             InitializeComponent();
-            ShowInfo();
+            InitializeTabs(headers);             
         }
 
-        List<Tuple<string, string>> _headerInfo;
 
-        private void ShowInfo()
+        /// <summary>
+        /// Adds tabs to TabControl according to number of input headers
+        /// </summary>
+        private void InitializeTabs(HeaderInfoOutput[] headers)
         {
-            for(int i = 0; i < _headerInfo.Count; i++)
+            for(int i = 0; i < headers.Length; i++)
             {
-                dataGridView1.Rows.Add(_headerInfo[i].Item1, _headerInfo[i].Item2);  
-            }
+                var dgv = new DataGridView() { Size = infoTabsControl.Size, Location = this.Location };
 
-            
+                dgv.Columns.AddRange(new DataGridViewColumn[]
+                {
+                    new DataGridViewTextBoxColumn() { HeaderText = "Параметр", Name = "paramColumn", ReadOnly = true },
+                    new DataGridViewTextBoxColumn() { HeaderText = "Значение", Name = "valueColumn", ReadOnly = true }
+                });
+
+                for (int j = 0; j < dgv.Columns.Count; j++)
+                {
+                    dgv.Columns[j].Width = dgv.Width / dgv.Columns.Count;
+                }
+
+                //((System.Collections.Generic.IEnumerable<DataGridViewColumn>)dgv.Columns).Select(x => x.Width = dgv.Width / dgv.Columns.Count);
+
+
+                infoTabsControl.TabPages.Add(headers[i].HeaderName);
+                infoTabsControl.TabPages[i].Controls.Add(dgv);
+                ShowInfo(headers[i].Params, dgv);
+            }
         }
 
 
+        private void ShowInfo(List<Tuple<string, string>> hInfo, DataGridView dgv)
+        {
+            for (int i = 0; i < hInfo.Count; i++)
+            {
+                dgv.Rows.Add(hInfo[i].Item1, hInfo[i].Item2);  
+            }      
+        }
 
     }
 }

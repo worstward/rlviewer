@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Files;
 using RlViewer.Files.Rhg.Concrete;
+using RlViewer.Factories.File.Abstract;
 
-namespace RlViewer.Factories
+namespace RlViewer.Factories.File.Concrete
 {
     class RhgKFactory : FileFactory
     {
