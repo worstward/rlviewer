@@ -60,10 +60,10 @@ namespace RlViewer
             switch (type)
             {
                 case 2:
-                    sType = "4 байта на отсчет";
+                    sType = "В число с плавающей точкой";
                     break;
                 case 3:
-                    sType = "8 байт на отсчет";
+                    sType = "В комплексное число";
                     break;
                 default:
                     sType = "Не определено";

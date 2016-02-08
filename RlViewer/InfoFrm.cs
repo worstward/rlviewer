@@ -15,6 +15,10 @@ namespace RlViewer
         public InfoFrm(params HeaderInfoOutput[] headers)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeTabs(headers);             
         }
 
@@ -26,21 +30,7 @@ namespace RlViewer
         {
             for(int i = 0; i < headers.Length; i++)
             {
-                var dgv = new DataGridView() { Size = infoTabsControl.Size, Location = this.Location };
-
-                dgv.Columns.AddRange(new DataGridViewColumn[]
-                {
-                    new DataGridViewTextBoxColumn() { HeaderText = "Параметр", Name = "paramColumn", ReadOnly = true },
-                    new DataGridViewTextBoxColumn() { HeaderText = "Значение", Name = "valueColumn", ReadOnly = true }
-                });
-
-                for (int j = 0; j < dgv.Columns.Count; j++)
-                {
-                    dgv.Columns[j].Width = dgv.Width / dgv.Columns.Count;
-                }
-
-                //((System.Collections.Generic.IEnumerable<DataGridViewColumn>)dgv.Columns).Select(x => x.Width = dgv.Width / dgv.Columns.Count);
-
+                var dgv = GetDataGrid();
 
                 infoTabsControl.TabPages.Add(headers[i].HeaderName);
                 infoTabsControl.TabPages[i].Controls.Add(dgv);
@@ -48,6 +38,36 @@ namespace RlViewer
             }
         }
 
+        private DataGridView GetDataGrid()
+        {
+            var dgv = new DataGridView()
+            {
+                Size = infoTabsControl.Size,
+                Location = this.Location,
+                BackgroundColor = Color.White,
+                RowHeadersVisible = false,
+                AllowUserToResizeColumns = false,
+                AllowUserToAddRows = false,
+                AllowUserToResizeRows = false,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+                
+            };
+
+            dgv.Columns.AddRange(new DataGridViewColumn[]
+                {
+                    new DataGridViewTextBoxColumn() { HeaderText = "Параметр", Name = "paramColumn", ReadOnly = true },
+                    new DataGridViewTextBoxColumn() { HeaderText = "Значение", Name = "valueColumn", ReadOnly = true }
+                });
+
+            dgv.SelectionChanged += (s, e) => dgv.ClearSelection();
+
+            for (int i = 0; i < dgv.Columns.Count; i++)
+            {
+                dgv.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgv.Columns[i].Width = dgv.Width / dgv.Columns.Count;
+            }
+            return dgv;
+        }
 
         private void ShowInfo(List<Tuple<string, string>> hInfo, DataGridView dgv)
         {

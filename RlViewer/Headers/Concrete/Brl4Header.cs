@@ -85,8 +85,14 @@ namespace RlViewer.Headers.Concrete
             };
         }
 
-
-        
-       
     }
+
+
+    struct Brl4HeaderStruct
+    {
+ 
+    }
+
+
+
 }
