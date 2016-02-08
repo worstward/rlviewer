@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Headers.Abstract;
-using System.Runtime.InteropServices;
+using RlViewer.Headers.Concrete.Rl4;
 
-namespace RlViewer.Headers.Concrete
+
+namespace RlViewer.Headers.Concrete.Rl4
 {
     class Rl4Header : FileHeader
     {
@@ -58,7 +59,7 @@ namespace RlViewer.Headers.Concrete
 
                 using (var ms = new System.IO.MemoryStream(_header))
                 {
-                    _headerStruct = await ReadStruct<RliFileHeader>(ms);                  
+                    _headerStruct = await ReadStruct<RliFileHeader>(ms);
                 }
                 CheckInfo(_headerStruct);
                 _headerInfo = ParseHeader(_headerStruct);
@@ -127,236 +128,6 @@ namespace RlViewer.Headers.Concrete
 
 
     }
-
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct RliFileHeader
-    {
-	    // сигнатура
-	    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] fileSign;
-
-	    // версия
-	    public int fileVersion;
-
-	    // подзаголовок РГГ
-        [MarshalAs(UnmanagedType.Struct)]
-        public RhgSubHeaderStruct rhgParams;
-
-	    // подзаголовок РЛИ
-        [MarshalAs(UnmanagedType.Struct)]
-        public Rl4SubHeaderStruct rlParams;
-
-	    // подзаголовок параметров синтеза
-        [MarshalAs(UnmanagedType.Struct)]
-        public SynthesisSubHeaderStruct synthParams;
-
-	    //
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]
-	    public byte[] reserved;
-    }
-
-
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct RhgSubHeaderStruct
-    {
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] fileTime;
-
-        // формат файла
-        public long fileLength;
-        public long fileHeaderLength;
-        public long fileTailLength;
-
-        // тип файла
-        byte type; // 255
-
-        // формат строки
-        public int strHeaderLength;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        public byte[] dummy1;
-        public int strSignalCount;
-
-        // размер кадра
-        public int cadrWidth;
-        public int cadrHeight;
-
-        // размер изображения
-        public int width;
-        public int height;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] dummy4;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3754)]
-        public byte[] reserved2;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        public byte[] fileName;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public byte[] reserved3;
-    }
-
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Rl4SubHeaderStruct
-    {
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] fileTime;
-
-	    // формат файла
-        public long fileLength;
-        public long fileHeaderLength;
-        public long fileTailLength;
-
-	    // тип файла
-        public byte type; // 2 - float, 3 - {float, float}
-
-	    // формат строки
-        public int strHeaderLength;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        public byte[] dummy1;
-
-        public int strSignalCount;
-
-	    // размер кадра
-        public int cadrWidth;
-        public int cadrHeight;
-
-	    // размер изображения
-        public int width;
-        public int height;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] dummy4;
-
-	    // время синтеза
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] processTime;
-
-	    // размер соответствующего фрагмента РГГ
-        public int processi;
-        public int processj;
-
-	    // параметры упаковки
-        public float u0;
-        public float u1;
-
-        public int v0;
-        public int v1;
-        
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-	    byte[] reserved2;
-
-	    // проекция
-        public byte rangeType;
-
-	    // шаг разложения
-        public float dx;
-        public float dy;
-
-	    // флип
-	    byte flipType;
-
-	    // смещение фрагмента изображения
-        public int sx;
-        public int sy;
-
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3688)]
-        public byte[] reserved3;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        public byte[] fileName;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public byte[] reserved4;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct SynthesisSubHeaderStruct
-    {
-	    // алгоритм синтеза
-        public byte processAlgorithm; // 255
-
-	    // параметры привязки/носителя
-        [MarshalAs(UnmanagedType.I1)]
-        public bool isHeaders1;
-        [MarshalAs(UnmanagedType.I1)]
-        public bool isHeaders2;
-
-	    // дальность
-        public float D0;
-        public float dD;
-        public byte board;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]
-        public byte[] reserved1;
-
-	    // параметры сигнала
-        public float VH;
-        public float lambda;
-        public float Fn;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 842)]
-        public byte[] reserved2;
-
-	    // диапазон синтеза по азимуту
-        [MarshalAs(UnmanagedType.I1)]
-        public bool isProcessAlli;
-        public int i1;
-        public int i2;
-
-	    // диапазон синтеза по дальности
-        [MarshalAs(UnmanagedType.I1)]
-        public bool isProcessAllj;
-        public int j1;
-        public int j2;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public byte[] reserved3;
-
-	    // параметры упаковки
-        public byte type; // 2 - float, 3 - {float, float}
-
-        public float u0;
-        public float u1;
-
-        public int v0;
-        public int v1;
-
-	    // комментарий
-	    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
-        public byte[] comments;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-        public byte[] reserved4;
-
-	    // размер кадра
-        public int cadrWidth;
-        public int cadrHeight;
-
-	    // дальность
-        public byte rangeType;
-
-	    // ближний край полосы
-        public byte flipType;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2596)]
-        public byte[] reserved5;
-    }
-
-
-
-    
-
-
 
 
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Files.Rli.Abstract;
 using RlViewer.Headers.Abstract;
-using RlViewer.Headers.Concrete;
+using RlViewer.Headers.Concrete.Brl4;
 
 
 namespace RlViewer.Files.Rli.Concrete

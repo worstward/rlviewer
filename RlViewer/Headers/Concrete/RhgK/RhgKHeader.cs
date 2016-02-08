@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Headers.Abstract;
-using System.Runtime.InteropServices;
+using RlViewer.Headers.Concrete.Rl4;
 
 namespace RlViewer.Headers.Concrete
 {

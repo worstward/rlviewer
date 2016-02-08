@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RlViewer.Headers.Abstract;
 using System.IO;
 
-namespace RlViewer.Headers.Concrete
+namespace RlViewer.Headers.Concrete.Brl4
 {
     class Brl4Header : FileHeader
     {
