@@ -24,12 +24,12 @@ namespace RlViewer.Headers.Abstract
         /// Returns parsed info from file header
         /// </summary>
         /// <returns>Parsed header info instance</returns>
-        public abstract Task<HeaderInfoOutput[]> GetHeaderInfo();
+        public abstract HeaderInfoOutput[] GetHeaderInfo();
 
-        public async Task<T> ReadStruct<T>(Stream s)
+        public T ReadStruct<T>(Stream s)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(T))];
-            await s.ReadAsync(buffer, 0, Marshal.SizeOf(typeof(T)));
+            s.Read(buffer, 0, Marshal.SizeOf(typeof(T)));
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
             T temp = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
             handle.Free();

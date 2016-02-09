@@ -34,23 +34,23 @@ namespace RlViewer.Headers.Concrete.Brl4
         private string _path;
         private HeaderInfoOutput[] _headerInfo;
 
-        private async Task<byte[]> FillHeaderAsync(string path)
+        private byte[] FillHeader(string path)
         {
             byte[] header = new byte[HeaderLength];
             using (var fs = System.IO.File.OpenRead(path))
             {
-                await fs.ReadAsync(header, 0, header.Length);
+                fs.Read(header, 0, header.Length);
             }
 
             return header;
         }
 
 
-        public override async Task<HeaderInfoOutput[]> GetHeaderInfo()
+        public override HeaderInfoOutput[] GetHeaderInfo()
         {
             if (_headerInfo == null)
             {
-                _header = await FillHeaderAsync(_path);
+                _header = FillHeader(_path);
                 CheckInfo(_header);
                 _headerInfo = ParseHeader(_header);
             }

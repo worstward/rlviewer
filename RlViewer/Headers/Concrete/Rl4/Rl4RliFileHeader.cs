@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Rl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct RliFileHeader
+    struct Rl4RliFileHeader
     {
         // сигнатура
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]

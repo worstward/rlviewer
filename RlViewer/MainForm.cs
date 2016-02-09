@@ -33,7 +33,7 @@ namespace RlViewer
                 else return;
             }
 
-            using (var iFrm = new InfoFrm(await ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo()))
+            using (var iFrm = new InfoFrm(await Task.Run(() => ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo())))
             {
                 iFrm.ShowDialog();
             }

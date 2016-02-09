@@ -46,6 +46,7 @@ namespace RlViewer
                 Location = this.Location,
                 BackgroundColor = Color.White,
                 RowHeadersVisible = false,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 AllowUserToResizeColumns = false,
                 AllowUserToAddRows = false,
                 AllowUserToResizeRows = false,
@@ -63,18 +64,19 @@ namespace RlViewer
 
             for (int i = 0; i < dgv.Columns.Count; i++)
             {
+                dgv.Columns[i].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dgv.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgv.Columns[i].Width = dgv.Width / dgv.Columns.Count;
             }
             return dgv;
         }
 
-        private void ShowInfo(List<Tuple<string, string>> hInfo, DataGridView dgv)
+        private void ShowInfo(IEnumerable<Tuple<string, string>> hInfo, DataGridView dgv)
         {
-            for (int i = 0; i < hInfo.Count; i++)
+            foreach (var pair in hInfo)
             {
-                dgv.Rows.Add(hInfo[i].Item1, hInfo[i].Item2);  
-            }      
+                dgv.Rows.Add(pair.Item1, pair.Item2);  
+            }  
         }
 
     }
