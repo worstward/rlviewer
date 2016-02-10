@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RlViewer.Files;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Rl4;
 
@@ -55,7 +56,7 @@ namespace RlViewer.Headers.Concrete
 
                 using (var ms = new System.IO.MemoryStream(_header))
                 {
-                    _headerStruct = ReadStruct<Rl4RliFileHeader>(ms);
+                    _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
                 }
                 CheckInfo(_headerStruct);
                 //_headerInfo = ParseHeader(_headerStruct);

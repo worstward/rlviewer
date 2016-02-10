@@ -23,5 +23,15 @@ namespace RlViewer.Files.Rli.Concrete
             get { return _header; }
         }
 
+
+        public override int Height
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override int Width
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+
+using RlViewer.Files;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Rl4;
-using System.IO;
+
 
 namespace RlViewer.Headers.Concrete.Rl4
 {
@@ -32,12 +35,21 @@ namespace RlViewer.Headers.Concrete.Rl4
             }
         }
 
+
+
+
         private int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
-        
-        private string _path;
         private Rl4RliFileHeader _headerStruct;
 
+        public Rl4RliFileHeader HeaderStruct
+        {
+            get { return _headerStruct; }
+        }
+
+
+        private string _path;
+ 
         private byte[] ReadHeader(string path)
         {
             byte[] header = new byte[HeaderLength];
@@ -50,18 +62,31 @@ namespace RlViewer.Headers.Concrete.Rl4
             return header;
         }
 
-
         public override HeaderInfoOutput[] GetHeaderInfo()
         {
             byte[] _header = ReadHeader(_path);
-
+            
             using (var ms = new MemoryStream(_header))
             {
-                _headerStruct = ReadStruct<Rl4RliFileHeader>(ms);
+                _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
             }
 
             return ParseHeader(_headerStruct);
         }
+
+        private byte[] ReadData(string path)
+        {
+            byte[] header = new byte[HeaderLength];
+
+            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fs.Read(header, 0, header.Length);
+            }
+
+            return header;
+        }
+
+
 
 
         private bool CheckInfo(Rl4RliFileHeader headerStruct)

@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\Draw\Abstract\Drawing.cs" />
+    <Compile Include="Behaviors\Draw\Concrete\DrawRl4.cs" />
+    <Compile Include="Behaviors\Draw\Tile.cs" />
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />
     <Compile Include="Behaviors\IFilterImage.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Headers\Concrete\Brl4\Brl4RhgSubHeader.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4RliFileHeader.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4RliSubHeader.cs" />
+    <Compile Include="Headers\Concrete\Brl4\Brl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4SynthesisSubHeader.cs" />
     <Compile Include="Headers\Concrete\RawHeader.cs" />
     <Compile Include="Headers\Concrete\RhgK\RhgKHeader.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="Files\Rli\Concrete\Raw.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RliSubHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RliFileHeader.cs" />
+    <Compile Include="Headers\Concrete\Rl4\Rl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4SynthesisSubHeader.cs" />
     <Compile Include="InfoFrm.cs">
       <SubType>Form</SubType>

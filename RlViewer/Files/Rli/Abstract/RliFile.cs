@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using RlViewer.Headers.Abstract;
+using RlViewer.Behaviors.Draw;
 
 namespace RlViewer.Files.Rli.Abstract
 {
@@ -11,10 +13,14 @@ namespace RlViewer.Files.Rli.Abstract
     {
         protected RliFile(FileProperties properties) : base(properties)
         {
-          // ReadFileHeaderAsync().Wait();
+
         }
 
         public override abstract FileHeader Header { get; }
+
+        public abstract int Width { get; }
+        public abstract int Height { get; }
+
 
     }
 }
