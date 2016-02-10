@@ -72,6 +72,7 @@ namespace RlViewer
             return sType;
         }
 
+
         public static string ToReadableFileSize(this long value)
         {
             if (value < 0) throw new ArgumentException("File size can not be less than 0");

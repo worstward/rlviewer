@@ -23,10 +23,12 @@ namespace RlViewer.Files
             FileType type;
             try
             {
+                //get file extension without dot
                 type = System.IO.Path.GetExtension(path).Substring(1).ToEnum<FileType>();
             }
             catch (ArgumentException aex)
             {
+                //TODO: logging
                 throw aex;
             }
 

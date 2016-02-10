@@ -38,5 +38,10 @@ namespace RlViewer
                 iFrm.ShowDialog();
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            RlViewer.Behaviors.Draw.Concrete.DrawRl4 drawer = new Behaviors.Draw.Concrete.DrawRl4(file as RlViewer.Files.Rli.Concrete.Rl4);
+        }
     }
 }
