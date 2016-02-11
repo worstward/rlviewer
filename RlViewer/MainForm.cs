@@ -41,7 +41,18 @@ namespace RlViewer
 
         private void button2_Click(object sender, EventArgs e)
         {
-            RlViewer.Behaviors.Draw.Concrete.DrawRl4 drawer = new Behaviors.Draw.Concrete.DrawRl4(file as RlViewer.Files.Rli.Concrete.Rl4);
+            Task.Run(() =>
+            {
+                RlViewer.Behaviors.Draw.ImageDataReader.Abstract.DataReader dr =
+                    new RlViewer.Behaviors.Draw.ImageDataReader.Concrete.Rl4DataReader
+                        (file as RlViewer.Files.Rli.Abstract.RliFile);
+                return dr.Tiles;
+            }).ContinueWith((t) =>
+            {
+                var s = t.Result;
+                this.Text = "Tiles Loaded!";
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+            
         }
     }
 }

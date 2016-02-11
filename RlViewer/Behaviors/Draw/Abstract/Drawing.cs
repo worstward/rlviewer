@@ -17,6 +17,5 @@ namespace RlViewer.Behaviors.Draw.Abstract
 
         public abstract Tile[] Tiles { get; }
 
-
     }
 }
