@@ -44,11 +44,10 @@ namespace RlViewer.Behaviors.Draw
         {
             _isVisible = CheckIntersection(leftTopPointOfView, screenWidth, screenHeight);
         }
-
-        
+     
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
-            //(X2' >= X1 && X1' <= X2) && (Y2' >= Y1 && Y1' <= Y2)
+            //(b.x2 >= a.x1 && b.x1 <= a.x2) && (b.y2 >= a.y1 && b.y1 <= a.y2)
             if ((leftTopPointOfView.X + screenWidth >= _leftTopCoord.X) && (leftTopPointOfView.X <= _leftTopCoord.X + _size.Width) &&
                 (leftTopPointOfView.Y + screenHeight >= _leftTopCoord.Y) && (leftTopPointOfView.Y <= _leftTopCoord.Y + _size.Height))
             {

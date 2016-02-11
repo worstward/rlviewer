@@ -18,18 +18,22 @@ namespace RlViewer.Behaviors.Draw.Concrete
             : base(rli)
         {
             _rli = rli as Rl4;
-            _normalCoef = ComputeNormalizationCoef();
+            prop = new ParallelProperties(0, (int)(new System.IO.FileInfo(rli.Properties.FilePath).Length));
+            _normalCoef = ComputeNormalizationCoef(rli.Width * bytesPerSample, 256);
+
             path = Path.Combine("tiles", "x1");
             Directory.CreateDirectory(path);
-            GetTiles();
+
+            _tiles = GetTiles();
         }
 
-        Rl4 _rli;
+        private Rl4 _rli;
         private float _normalCoef;
         private int bytesPerSample = 4;//float - 4 байта на отсчет
         private string path;
+        private RlViewer.ParallelProperties prop;
 
-
+        private Tile[] _tiles;
         public override Tile[] Tiles
         {
             get
@@ -47,20 +51,18 @@ namespace RlViewer.Behaviors.Draw.Concrete
             using (var fs = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Seek(_rli.Header.HeaderLength, SeekOrigin.Begin);
+                int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
 
-                int strHeaderLength = 256;//System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
-                byte[] imgData = new byte[_rli.Width * 4 * tileSize.Height];
+                int signalDataLength = _rli.Width * bytesPerSample;
 
-                int signalDataLength = _rli.Width * 4;
-
-                for (int i = 0; i < Math.Ceiling((double)(_rli.Height / tileSize.Height)) * tileSize.Height; i += tileSize.Height)
+                for (int i = 0; i < Math.Ceiling((double)(_rli.Height / tileSize.Height)); i++)
                 {
-                    tiles.AddRange(SaveTiles(GetTileLine(fs, strHeaderLength, signalDataLength, tileSize.Height),
-                        signalDataLength, i, tileSize.Width, tileSize.Height));                   
+                    tiles.AddRange(SaveTiles(GetTileLine(fs, strHeaderLength, signalDataLength , tileSize.Height),
+                        _rli.Width, i, tileSize.Width, tileSize.Height));                   
                 }
 
             }
-            return null;
+            return tiles.ToArray();
         }
 
         private byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight)
@@ -76,28 +78,42 @@ namespace RlViewer.Behaviors.Draw.Concrete
                 index += s.Read(line, index, signalDataLength);
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
-             normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x  * _normalCoef)).ToArray<byte>();
 
-             GetGrayscaleBmp(normalizedLine, signalDataLength / 4, tileHeight).Save("a.bmp");
+            //Parallel.ForEach(prop.Chunks, prop.Options, range =>
+            //{
+            //    for (int i = range.Item1; i < range.Item2; i++)
+            //    {
+            //        normalizedLine[i] = (byte)(fLine[i] * _normalCoef);
+            //    }
+            //});
 
-                return normalizedLine;    
+
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x / 200f)).ToArray<byte>();
+
+            #if DEBUG
+             GetGrayscaleBmp(normalizedLine, signalDataLength / 4, tileHeight).Save(DateTime.Now.Ticks + ".bmp");
+            #endif
+
+            return normalizedLine;    
         }
 
-        private float ComputeNormalizationCoef()
+        private float ComputeNormalizationCoef(int strDataLen, int strHeadLen)
         {
 
-            byte[] arr = new byte[4096];
-            float[] floatArr = new float[1024];
+            byte[] arr = new byte[strDataLen + strHeadLen];
+            float[] floatArr = new float[arr.Length / 4];
             float max = 0;
 
             float normal;
             using (var s = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
+                s.Seek(_rli.Header.HeaderLength, SeekOrigin.Begin);
+
                 while (s.Position < s.Length)
                 {
                     s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, 0, floatArr, 0, arr.Length);
-                    max = floatArr.Max();
+                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
+                    max = max < floatArr.Max() ? floatArr.Max() : max;                   
                 }
             }
             normal = 255f / max;
@@ -106,21 +122,21 @@ namespace RlViewer.Behaviors.Draw.Concrete
         }
 
 
-        private IEnumerable<Tile> SaveTiles(byte[] line, int signalDataLength, int lineNumber, int tileWidth, int tileHeight)
+        private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, int tileWidth, int tileHeight)
         {
             byte[] tileData = new byte[tileWidth * tileHeight];
             List<Tile> tiles = new List<Tile>();
 
             using (var ms = new MemoryStream(line))
             {
-                for (int i = 0; i < Math.Ceiling((double)(line.Length / (tileWidth * tileHeight))); i++)
+                for (int i = 0; i < Math.Ceiling((double)line.Length / (double)(tileWidth * tileHeight)); i++)
                 {
                     ms.Seek(i * tileWidth, SeekOrigin.Begin);
                     
                     for (int j = 0; j < tileHeight; j++)
                     {
                         ms.Read(tileData, j * tileWidth, tileWidth);
-                        ms.Seek(signalDataLength / bytesPerSample, SeekOrigin.Current);
+                        ms.Seek(linePixelWidth - tileWidth, SeekOrigin.Current);
                     }
                     tiles.Add(new Tile(SaveTileImage(Path.Combine(path, i + "-" + lineNumber), 
                                            GetGrayscaleBmp(tileData, tileWidth, tileHeight)),
@@ -156,7 +172,6 @@ namespace RlViewer.Behaviors.Draw.Concrete
             return path;
         }
 
-        Tile[] _tiles;
-        
+
     }
 }

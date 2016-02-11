@@ -12,6 +12,7 @@ namespace RlViewer.Headers.Concrete.Rl4
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct Rl4StrHeaderStruct
     {
+        [MarshalAs(UnmanagedType.I1)]
 	    bool isNavigation;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
@@ -41,7 +42,7 @@ namespace RlViewer.Headers.Concrete.Rl4
 	    double WH;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 119)]
-        byte reserved;
+        byte[] reserved;
     }
 
 }
