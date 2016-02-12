@@ -16,7 +16,6 @@ namespace RlViewer
         Files.LoadedFile file;
         public MainForm()
         {
-            
             InitializeComponent();
         }
 

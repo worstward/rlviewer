@@ -49,6 +49,7 @@
     <Compile Include="Behaviors\Draw\Concrete\DrawRl4.cs" />
     <Compile Include="Behaviors\Draw\ImageDataReader\Abstract\DataReader.cs" />
     <Compile Include="Behaviors\Draw\ImageDataReader\Concrete\Rl4DataReader.cs" />
+    <Compile Include="Behaviors\Draw\Resizer.cs" />
     <Compile Include="Behaviors\Draw\Tile.cs" />
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />

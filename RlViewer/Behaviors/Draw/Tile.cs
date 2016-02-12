@@ -9,17 +9,17 @@ namespace RlViewer.Behaviors.Draw
 {
     public class Tile
     {
-        public Tile(string pathToFile, PointF leftTopCoord, Size size)
+        public Tile(string filePath, PointF leftTopCoord, Size size)
         {
-            _pathToFile = pathToFile;
+            _filePath = filePath;
             _leftTopCoord = leftTopCoord;
             _size = size;
         }
 
-        private string _pathToFile;
-        public string PathToFile
+        private string _filePath;
+        public string FilePath
         {
-            get { return _pathToFile; }
+            get { return _filePath; }
         }
 
         private Size _size;
