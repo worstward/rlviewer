@@ -11,7 +11,7 @@ namespace RlViewer.Headers.Abstract
         /// <summary>
         /// Gets a byte sequence that identifies class of the input file
         /// </summary>
-        public abstract byte[] Signature { get; }
+        protected abstract byte[] Signature { get; }
 
         /// <summary>
         /// Gets length of this file header
@@ -23,5 +23,6 @@ namespace RlViewer.Headers.Abstract
         /// </summary>
         /// <returns>Array of parsed subheaders info</returns>
         public abstract HeaderInfoOutput[] GetHeaderInfo();
+
     }
 }

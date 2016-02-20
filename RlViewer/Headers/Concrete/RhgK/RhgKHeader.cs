@@ -17,7 +17,7 @@ namespace RlViewer.Headers.Concrete
         }
 
 
-        public override byte[] Signature
+        protected override byte[] Signature
         {
             get
             {

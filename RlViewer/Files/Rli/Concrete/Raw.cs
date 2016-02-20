@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Files.Rli.Abstract;
 using RlViewer.Headers.Abstract;
-using RlViewer.Headers.Concrete;
+using RlViewer.Headers.Concrete.Raw;
 
 
 namespace RlViewer.Files.Rli.Concrete
@@ -26,11 +26,11 @@ namespace RlViewer.Files.Rli.Concrete
 
         public override int Height
         {
-            get { throw new NotImplementedException(); }
+            get { return 12000; }
         }
         public override int Width
         {
-            get { throw new NotImplementedException(); }
+            get { return 12000; }
         }
 
     }

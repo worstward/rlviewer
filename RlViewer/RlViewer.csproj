@@ -45,16 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\Draw\Abstract\Drawing.cs" />
-    <Compile Include="Behaviors\Draw\Concrete\DrawRl4.cs" />
-    <Compile Include="Behaviors\Draw\ImageDataReader\Abstract\DataReader.cs" />
-    <Compile Include="Behaviors\Draw\ImageDataReader\Concrete\Rl4DataReader.cs" />
+    <Compile Include="Behaviors\Draw\Drawing.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\Draw\Resizer.cs" />
-    <Compile Include="Behaviors\Draw\Tile.cs" />
+    <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />
     <Compile Include="Behaviors\IFilterImage.cs" />
     <Compile Include="Converters.cs" />
+    <Compile Include="Factories\TileCreator\Abstract\TileCreatorFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\RawTileCreatorFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\Rl4TileCreatorFactory.cs" />
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
     <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Behaviors\IZoommable.cs" />
@@ -68,7 +71,7 @@
     <Compile Include="Headers\Concrete\Brl4\Brl4RliSubHeader.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4SynthesisSubHeader.cs" />
-    <Compile Include="Headers\Concrete\RawHeader.cs" />
+    <Compile Include="Headers\Concrete\Raw\RawHeader.cs" />
     <Compile Include="Headers\Concrete\RhgK\RhgKHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RhgSubHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4Header.cs" />
@@ -103,10 +106,10 @@
     <Compile Include="ParallelProp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resourses.Designer.cs">
+    <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resourses.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="InfoFrm.resx">
       <DependentUpon>InfoFrm.cs</DependentUpon>
@@ -123,9 +126,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Resourses.resx">
+    <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resourses.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

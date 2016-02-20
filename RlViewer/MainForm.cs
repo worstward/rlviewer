@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using RlViewer.Behaviors.TileCreator.Abstract;
+using RlViewer.Factories.TileCreator.Abstract;
+using RlViewer.Factories.File.Abstract;
+
 namespace RlViewer
 {
     public partial class MainForm : Form
@@ -22,12 +26,12 @@ namespace RlViewer
         private async void button1_Click(object sender, EventArgs e)
         {
 
-            using (var openFileDlg = new OpenFileDialog() { Filter = Resourses.Filter })
+            using (var openFileDlg = new OpenFileDialog() { Filter = Resources.Filter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {
                     Files.FileProperties properties = new Files.FileProperties(openFileDlg.FileName);
-                    file = RlViewer.Factories.File.Abstract.FileFactory.GetFactory(properties).Create(properties);
+                    file = FileFactory.GetFactory(properties).Create(properties);
                 }
                 else return;
             }
@@ -39,19 +43,29 @@ namespace RlViewer
         }
 
         private void button2_Click(object sender, EventArgs e)
-        {
+        {           
             Task.Run(() =>
             {
-                RlViewer.Behaviors.Draw.ImageDataReader.Abstract.DataReader dr =
-                    new RlViewer.Behaviors.Draw.ImageDataReader.Concrete.Rl4DataReader
-                        (file as RlViewer.Files.Rli.Abstract.RliFile);
-                return dr.Tiles;
+                ITileCreator tc = TileCreatorFactory.GetFactory(file.Properties).Create(file as RlViewer.Files.LocatorFile);
+                return tc.Tiles;
             }).ContinueWith((t) =>
             {
-                var s = t.Result;
-                this.Text = "Tiles Loaded!";
+                tiles = t.Result;
+                drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
+                this.Text = file.Properties.FilePath;
             }, TaskScheduler.FromCurrentSynchronizationContext());
             
         }
+
+        private RlViewer.Behaviors.TileCreator.Tile[] tiles;
+
+        private RlViewer.Behaviors.Draw.Drawing drawer;
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
+                new Point(3500 + hScrollBar1.Value * 50, 7000));
+        }
+       
     }
 }

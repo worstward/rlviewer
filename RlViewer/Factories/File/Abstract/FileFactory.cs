@@ -8,7 +8,6 @@ using RlViewer.Factories.File.Concrete;
 
 namespace RlViewer.Factories.File.Abstract
 {
-
     public abstract class FileFactory
     {
         public abstract LoadedFile Create(FileProperties properties);
@@ -26,10 +25,9 @@ namespace RlViewer.Factories.File.Abstract
                 case FileType.k:
                     return new RhgKFactory();
                 default:
-                    throw new NotSupportedException();
+                    throw new NotSupportedException("Unsupported file format");
             }
         }
-
 
     }
 }

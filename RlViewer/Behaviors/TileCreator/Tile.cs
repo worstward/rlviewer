@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace RlViewer.Behaviors.Draw
+namespace RlViewer.Behaviors.TileCreator
 {
     public class Tile
     {
-        public Tile(string filePath, PointF leftTopCoord, Size size)
+        public Tile(string filePath, Point leftTopCoord, Size size)
         {
             _filePath = filePath;
             _leftTopCoord = leftTopCoord;
@@ -28,8 +28,8 @@ namespace RlViewer.Behaviors.Draw
             get { return _size; }
         }
 
-        private PointF _leftTopCoord;
-        public PointF LeftTopCoord
+        private Point _leftTopCoord;
+        public Point LeftTopCoord
         {
             get { return _leftTopCoord; }
         }
@@ -40,9 +40,10 @@ namespace RlViewer.Behaviors.Draw
             get { return _isVisible; }
         }
 
-        public void CheckVisibility(PointF leftTopPointOfView, int screenWidth, int screenHeight)
+        public bool CheckVisibility(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
             _isVisible = CheckIntersection(leftTopPointOfView, screenWidth, screenHeight);
+            return _isVisible;
         }
      
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
@@ -57,6 +58,22 @@ namespace RlViewer.Behaviors.Draw
             return false;
             
         }
+
+        /// <summary>
+        /// Reads tile data from disk based on given path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static byte[] ReadData(string path)
+        {
+            if (System.IO.File.Exists(path))
+                return System.IO.File.ReadAllBytes(path);
+
+            //log here?
+            return Resources.EmptyTile;
+        }
+
+
 
 
 

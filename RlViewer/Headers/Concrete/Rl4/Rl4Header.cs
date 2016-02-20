@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-
 using RlViewer.Files;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Rl4;
@@ -19,7 +18,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             _path = path;
         }
 
-        public override byte[] Signature
+        protected override byte[] Signature
         {
             get 
             {
@@ -34,9 +33,6 @@ namespace RlViewer.Headers.Concrete.Rl4
                 return _headerLength;
             }
         }
-
-
-
 
         private int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
@@ -85,9 +81,6 @@ namespace RlViewer.Headers.Concrete.Rl4
 
             return header;
         }
-
-
-
 
         private bool CheckInfo(Rl4RliFileHeader headerStruct)
         {
@@ -154,9 +147,5 @@ namespace RlViewer.Headers.Concrete.Rl4
                 new HeaderInfoOutput("Комментарии", comments)
             };
         }
-
-
     }
-
-
 }

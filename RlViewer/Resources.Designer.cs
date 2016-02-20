@@ -22,14 +22,14 @@ namespace RlViewer {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resourses {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resourses() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RlViewer {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RlViewer.Resourses", typeof(Resourses).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RlViewer.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,17 @@ namespace RlViewer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Локационные файлы |*.k;*.rl4;*.brl4|Файлы голограмм (*.k)|*.k|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4.
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] EmptyTile {
+            get {
+                object obj = ResourceManager.GetObject("EmptyTile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Локационные файлы |*.k;*.rl4;*.brl4;*.raw|Файлы голограмм (*.k)|*.k|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw.
         /// </summary>
         internal static string Filter {
             get {

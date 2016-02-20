@@ -15,7 +15,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             _path = path;
         }
 
-        public override byte[] Signature
+        protected override byte[] Signature
         {
             get
             {
