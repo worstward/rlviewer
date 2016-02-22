@@ -15,112 +15,66 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
-    class RawTileCreator: ITileCreator
+    class RawTileCreator : RlViewer.Behaviors.TileCreator.Abstract.TileCreator
     {
         public RawTileCreator(LocatorFile rli)
         {
-            _rli = rli as Raw;
+            _rli = rli;
             //prop = new ParallelProperties(0, (int)(new System.IO.FileInfo(rli.Properties.FilePath).Length));
             //_normalCoef = ComputeNormalizationCoef(rli.Width * bytesPerSample, 256);
-            tileSize = new System.Drawing.Size(128, 128);
-#if DEBUG
-           // if (Directory.Exists(path)) Directory.Delete(path);
-#endif
 
-            _tiles = GetTiles();
+            //_tiles = GetTiles(_rli.Properties.FilePath);
         }
 
         private Dictionary<float, string> pathCollection;
 
-        private Raw _rli;
+        private LocatorFile _rli;
         private float _normalCoef;
         private int bytesPerSample = 4;//float - 4 байта на отсчет
 
         //private RlViewer.ParallelProperties prop;
-        private Size tileSize;
 
         private Tile[] _tiles;
         private Dictionary<float, Tile[]> tileSets = new Dictionary<float, Tile[]>();
 
-        public Tile[] Tiles
+        public override Tile[] Tiles
         {
             get
             {
-                return _tiles ?? GetTiles();
+                return _tiles ?? GetTiles(_rli.Properties.FilePath);
             }
         }
-
-        private Dictionary<float, string> InitTilePath()
-        {
-
-#if DEBUG
-         //  if (Directory.Exists("tiles")) Directory.Delete("tiles", true);
-#endif
-
-            Dictionary<float, string> paths = new Dictionary<float, string>();
-
-            paths = new Dictionary<float, string>();
-            paths.Add(0.25f, Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath), "x0.0625"));
-            paths.Add(0.5f,  Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath), "x0.25"));
-            paths.Add(1,     Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath), "x1"));
-            paths.Add(2,     Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath), "x4"));
-            paths.Add(4,     Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath), "x16"));
-
-            foreach (var path in paths)
-            {      
-                Directory.CreateDirectory(path.Value);
-            }
-            return paths;
-        }
-
        
-        private Tile[] GetTiles()
-        {
-            var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_rli.Properties.FilePath));
-            if (Directory.Exists(path))
-            {
-                return GetTilesFromTl(Path.Combine(path, "x1"));
-            }
-            return GetTilesFromRaw();
-        }
 
-        private Tile[] GetTilesFromTl(string directoryPath)
+        protected override Tile[] GetTilesFromTl(string directoryPath)
         {
             List<Tile> tiles = new List<Tile>();
 
-            for (int i = 0; i < _rli.Width; i += tileSize.Width)
+            for (int i = 0; i < _rli.Width; i += TileSize.Width)
             {
-                for (int j = 0; j < _rli.Height; j += tileSize.Height)
+                for (int j = 0; j < _rli.Height; j += TileSize.Height)
                 {
                     tiles.Add(new Tile(
                                 Path.Combine(
-                                directoryPath, (Math.Ceiling(i / (double)tileSize.Width)).ToString() +
-                                "-" + Math.Ceiling(j / (double)tileSize.Height).ToString() + ".tl"),
-                            new Point(i, j),
-                            tileSize));   
+                                directoryPath, (Math.Ceiling(i / (double)TileSize.Width)).ToString() +
+                                "-" + Math.Ceiling(j / (double)TileSize.Height).ToString() + TileFileExtension),
+                            new Point(i, j), TileSize));   
                 }
             }
 
-
-                //foreach (var file in Directory.GetFiles(directoryPath))
-                //{
-                //    var coords = Path.GetFileNameWithoutExtension(file).Split('-');
-                //    tiles.Add(new Tile(file, new Point(Convert.ToInt32(coords[0]) * tileSize.Width,
-                //        Convert.ToInt32(coords[1]) * tileSize.Height), tileSize));
-                //}
             return tiles.ToArray();
         }
 
-        private bool CheckTilesConsistency()
-        {
-            return Math.Ceiling((double)(_rli.Width * _rli.Height) / (double)(tileSize.Width * tileSize.Height)) == Tiles.Length;
-        }
+        //private bool CheckTilesConsistency()
+        //{
+        //    return Math.Ceiling((double)(_rli.Width * _rli.Height) / (double)(TileSize.Width * TileSize.Height)) == Tiles.Length;
+        //}
 
-   
 
-        private Tile[] GetTilesFromRaw()
+
+        protected override Tile[] GetTilesFromFile(string filePath)
         {
-            pathCollection = InitTilePath();
+            pathCollection = InitTilePath(filePath);
 
             List<Tile> tiles = new List<Tile>();
             byte[] tileLine;
@@ -131,11 +85,11 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
                 int signalDataLength = _rli.Width * bytesPerSample;
 
-                //var lineHeight = (int)(tileSize.Height * paths.Keys.Max());
-                for (int i = 0; i < Math.Ceiling((double)_rli.Height / (double)tileSize.Height); i++)
+                //var lineHeight = (int)(TileSize.Height * paths.Keys.Max());
+                for (int i = 0; i < Math.Ceiling((double)_rli.Height / (double)TileSize.Height); i++)
                 {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, tileSize.Height);
-                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, tileSize));
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
+                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
                 }
             }
             //GetResizedTiles(tiles.ToArray());
@@ -187,26 +141,25 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         }
 
 
-        private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size tileSize)
+        private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size TileSize)
         {
-            byte[] tileData = new byte[tileSize.Width * tileSize.Height];
+            byte[] tileData = new byte[TileSize.Width * TileSize.Height];
             List<Tile> tiles = new List<Tile>();
 
             using (var ms = new MemoryStream(line))
             {
                 for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
                 {
-                    ms.Seek(i * tileSize.Width, SeekOrigin.Begin);
+                    ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
 
-                    for (int j = 0; j < tileSize.Height; j++)
+                    for (int j = 0; j < TileSize.Height; j++)
                     {
-                        ms.Read(tileData, j * tileSize.Width, tileSize.Width);
-                        ms.Seek(linePixelWidth - tileSize.Width, SeekOrigin.Current);
+                        ms.Read(tileData, j * TileSize.Width, TileSize.Width);
+                        ms.Seek(linePixelWidth - TileSize.Width, SeekOrigin.Current);
                     }
 
                     tiles.Add(new Tile(SaveTile(Path.Combine(pathCollection[1], i + "-" + lineNumber), tileData),
-                                       new Point(i * tileSize.Width, lineNumber * tileSize.Height),
-                                       new Size(tileSize.Width, tileSize.Height)));
+                                       new Point(i * TileSize.Width, lineNumber * TileSize.Height), TileSize));
                 }
             }
             return tiles;
@@ -244,7 +197,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         //{
         //    var tiles = new List<Tile>();
 
-        //        Bitmap littleTile = new Bitmap(tileSize.Width, tileSize.Height);
+        //        Bitmap littleTile = new Bitmap(TileSize.Width, TileSize.Height);
         //        var img = Image.FromFile(tile.FilePath);
         //        var resized = Resizer.ResizeImage(img, (int)(tile.Size.Width / zoomValue), (int)(tile.Size.Width / zoomValue));
 
@@ -252,8 +205,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         //        {
         //            for (int j = 0; j < resized.Height; j += littleTile.Height)
         //            {
-        //                var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / tileSize.Width + "-" +
-        //                     (tile.LeftTopCoord.Y * zoomValue + j) / tileSize.Height);
+        //                var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / TileSize.Width + "-" +
+        //                     (tile.LeftTopCoord.Y * zoomValue + j) / TileSize.Height);
 
         //                var newBmp = resized.Clone(new Rectangle(new Point(i, j), littleTile.Size), PixelFormat.Format8bppIndexed);
 
@@ -270,15 +223,15 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         //{
         //    var tiles = new List<Tile>();
 
-        //    Bitmap largeTile = new Bitmap(tileSize.Width * (int)zoomValue, tileSize.Height * (int)zoomValue);
+        //    Bitmap largeTile = new Bitmap(TileSize.Width * (int)zoomValue, TileSize.Height * (int)zoomValue);
 
 
         //    //for (int i = 0; i < resized.Width; i += littleTile.Width)
         //    //{
         //    //    for (int j = 0; j < resized.Height; j += littleTile.Height)
         //    //    {
-        //    //        var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / tileSize.Width + "-" +
-        //    //             (tile.LeftTopCoord.Y * zoomValue + j) / tileSize.Height);
+        //    //        var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / TileSize.Width + "-" +
+        //    //             (tile.LeftTopCoord.Y * zoomValue + j) / TileSize.Height);
 
         //    //        var newBmp = resized.Clone(new Rectangle(new Point(i, j), littleTile.Size), PixelFormat.Format8bppIndexed);
 

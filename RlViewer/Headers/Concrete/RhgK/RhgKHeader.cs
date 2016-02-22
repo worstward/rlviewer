@@ -58,23 +58,12 @@ namespace RlViewer.Headers.Concrete
                 {
                     _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
                 }
-                CheckInfo(_headerStruct);
+                CheckInfo(_headerStruct.fileSign);
                 //_headerInfo = ParseHeader(_headerStruct);
             }
             return _headerInfo;
         }
 
-
-        private void CheckInfo(Rl4RliFileHeader headerStruct)
-        {
-            for (int i = 0; i < headerStruct.fileSign.Length; i++)
-            {
-                if (headerStruct.fileSign[i] != _signature[i])
-                {
-                    throw new ArgumentException("Header signature");
-                }
-            }
-        }
 
         private HeaderInfoOutput[] ParseHeader(byte[] header)
         {

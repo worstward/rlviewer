@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace RlViewer
 {
-    public partial class InfoFrm : Form
+    public partial class InfoForm : Form
     {
-        public InfoFrm(params HeaderInfoOutput[] headers)
+        public InfoForm(params HeaderInfoOutput[] headers)
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedDialog;

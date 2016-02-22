@@ -1,6 +1,6 @@
 ﻿namespace RlViewer
 {
-    partial class InfoFrm
+    partial class InfoForm
     {
         /// <summary>
         /// Required designer variable.

@@ -16,8 +16,8 @@ namespace RlViewer.Behaviors.Draw
         /// Resize the image to the specified width and height.
         /// </summary>
         /// <param name="image">The image to resize.</param>
-        /// <param name="width">The width to resize to.</param>
-        /// <param name="height">The height to resize to.</param>
+        /// <param name="width">Desired width</param>
+        /// <param name="height">Desired height</param>
         /// <returns>The resized image.</returns>
         public static Bitmap ResizeImage(Image image, int width, int height)
         {

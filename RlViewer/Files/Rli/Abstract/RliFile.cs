@@ -18,8 +18,8 @@ namespace RlViewer.Files.Rli.Abstract
 
         public override abstract FileHeader Header { get; }
 
-        public abstract int Width { get; }
-        public abstract int Height { get; }
+        public abstract override int Width { get; }
+        public abstract override int Height { get; }
 
 
     }

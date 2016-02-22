@@ -23,5 +23,21 @@ namespace RlViewer.Files.Rhg.Concrete
             get { return _header; }
         }
 
+        public override int Width
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public override int Height
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
     }
 }

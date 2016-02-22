@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using RlViewer.Files;
 using RlViewer.Factories.File.Concrete;
 using RlViewer.Factories.TileCreator.Concrete;
-using RlViewer.Behaviors.TileCreator.Abstract;
 
 
 namespace RlViewer.Factories.TileCreator.Abstract
 {
     public abstract class TileCreatorFactory
     {
-        public abstract ITileCreator Create(RlViewer.Files.LocatorFile rli);
+        public abstract RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile rli);
 
         public static TileCreatorFactory GetFactory(FileProperties properties)
         {

@@ -36,6 +36,20 @@ namespace RlViewer.Behaviors.Draw
             }
         }
 
+
+        /// <summary>
+        /// Initializes look-up palette for 8bpp grayscale image
+        /// </summary>
+        /// <returns>Color palette</returns>
+        private ColorPalette InitGrayPalette()
+        {
+            //TODO: REWRITE PALETTE INIT
+            gcp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+            for (int i = 0; i < 256; i++)
+                gcp.Entries[i] = Color.FromArgb(255, i, i, i);
+            return gcp;
+        }
+
         
         /// <summary>
         /// Creates image from visible parts of tiles
@@ -52,7 +66,7 @@ namespace RlViewer.Behaviors.Draw
             {
                 foreach (var tile in visibleTiles)
                 {
-                    g.DrawImage(GetGrayscaleBmp(Tile.ReadData(tile.FilePath), tile.Size.Width, tile.Size.Height),
+                    g.DrawImage(GetBmp(Tile.ReadData(tile.FilePath), tile.Size.Width, tile.Size.Height),
                         new Point(tile.LeftTopCoord.X - leftTopPointOfView.X, tile.LeftTopCoord.Y - leftTopPointOfView.Y));
                 }
                 
@@ -64,19 +78,6 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
-        /// <summary>
-        /// Initializes look-up palette for 8bpp grayscale image
-        /// </summary>
-        /// <returns>Color palette</returns>
-        private ColorPalette InitGrayPalette()
-        {
-            //TODO: REWRITE PALETTE INIT
-            gcp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
-            for (int i = 0; i < 256; i++)
-                gcp.Entries[i] = Color.FromArgb(255, i, i, i);
-            return gcp;
-        }
-
 
         /// <summary>
         /// Creates 8bpp grayscale image from raw byte array
@@ -85,7 +86,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="tileWidth">Image width</param>
         /// <param name="tileHeight">Image height</param>
         /// <returns>Grayscale image</returns>
-        private Bitmap GetGrayscaleBmp(byte[] imgData, int tileWidth, int tileHeight)
+        private Bitmap GetBmp(byte[] imgData, int tileWidth, int tileHeight)
         {
             Bitmap bmp = new Bitmap(tileWidth, tileHeight, PixelFormat.Format8bppIndexed);
             bmp.Palette = GrayPalette;
@@ -100,10 +101,8 @@ namespace RlViewer.Behaviors.Draw
             return bmp;
         }
 
-        //RlViewer.Behaviors.TileCreator.Abstract.ITileCreator _tileCreator;
+        //RlViewer.Behaviors.TileCreator.Abstract.TileCreator _tileCreator;
 
-       
        // public abstract Tile[] Tiles { get; }
-
     }
 }

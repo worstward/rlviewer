@@ -25,8 +25,19 @@ namespace RlViewer.Headers.Concrete.Brl4
         public float dD;
         public byte board;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]
-        public byte[] reserved1;
+        public float V;
+        public float H;
+
+        public float g;
+        public float f;
+        public float w;
+
+        public float a;
+        public float latitude;
+        public float longtitude;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] time;
 
         // параметры сигнала
         public float VH;
@@ -84,8 +95,18 @@ namespace RlViewer.Headers.Concrete.Brl4
         public float angle_zond; // +/- 90 градусов
 
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2591)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 887)]
+        public byte[] reserved6;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
+        public byte[] rhgName;
+
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1453)]
         public byte[] reserved5;
     }
+
+
+
 
 }

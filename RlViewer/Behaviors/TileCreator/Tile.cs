@@ -9,11 +9,11 @@ namespace RlViewer.Behaviors.TileCreator
 {
     public class Tile
     {
-        public Tile(string filePath, Point leftTopCoord, Size size)
+        public Tile(string filePath, Point leftTopCoord, Size tileSize)
         {
             _filePath = filePath;
             _leftTopCoord = leftTopCoord;
-            _size = size;
+            _size = tileSize;
         }
 
         private string _filePath;

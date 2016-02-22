@@ -19,6 +19,10 @@ namespace RlViewer.Files
         }
 
         public abstract FileHeader Header { get; }
+
+        public abstract int Width { get; }
+        public abstract int Height { get; }
+
         public static T ReadStruct<T>(Stream s)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(T))];

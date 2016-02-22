@@ -36,7 +36,7 @@ namespace RlViewer
                 else return;
             }
 
-            using (var iFrm = new InfoFrm(await Task.Run(() => ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo())))
+            using (var iFrm = new InfoForm(await Task.Run(() => ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo())))
             {
                 iFrm.ShowDialog();
             }
@@ -46,13 +46,14 @@ namespace RlViewer
         {           
             Task.Run(() =>
             {
-                ITileCreator tc = TileCreatorFactory.GetFactory(file.Properties).Create(file as RlViewer.Files.LocatorFile);
+                TileCreator tc = TileCreatorFactory.GetFactory(file.Properties).Create(file as RlViewer.Files.LocatorFile);
                 return tc.Tiles;
             }).ContinueWith((t) =>
             {
                 tiles = t.Result;
                 drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
                 this.Text = file.Properties.FilePath;
+                InitScrollBars();
             }, TaskScheduler.FromCurrentSynchronizationContext());
             
         }
@@ -64,8 +65,27 @@ namespace RlViewer
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
-                new Point(3500 + hScrollBar1.Value * 50, 7000));
+                new Point(hScrollBar1.Value, vScrollBar1.Value));
         }
-       
+
+        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
+                new Point(hScrollBar1.Value, vScrollBar1.Value));
+        }
+
+        private void InitScrollBars()
+        {
+            var f = file as RlViewer.Files.LocatorFile;
+            hScrollBar1.Maximum = f.Width - pictureBox1.Width;
+            vScrollBar1.Maximum = f.Height - pictureBox1.Height;
+        }
+
+        private void pictureBox1_Resize(object sender, EventArgs e)
+        {
+            drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
+        }
+
+
     }
 }

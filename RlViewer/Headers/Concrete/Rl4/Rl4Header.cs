@@ -70,33 +70,10 @@ namespace RlViewer.Headers.Concrete.Rl4
             return ParseHeader(_headerStruct);
         }
 
-        private byte[] ReadData(string path)
-        {
-            byte[] header = new byte[HeaderLength];
-
-            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                fs.Read(header, 0, header.Length);
-            }
-
-            return header;
-        }
-
-        private bool CheckInfo(Rl4RliFileHeader headerStruct)
-        {
-            for (int i = 0; i < headerStruct.fileSign.Length; i++)
-            {
-                if (headerStruct.fileSign[i] != _signature[i])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
 
         private HeaderInfoOutput[] ParseHeader(Rl4RliFileHeader headerStruct)
         {
-            if (!CheckInfo(headerStruct)) throw new ArgumentException("Header signature");
+            CheckInfo(headerStruct.fileSign);
 
             var rhgHeader = new List<Tuple<string, string>>();
 

@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\Draw\Drawing.cs" />
-    <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\Draw\Resizer.cs" />
@@ -83,11 +83,11 @@
     <Compile Include="Headers\Concrete\Rl4\Rl4RliFileHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4SynthesisSubHeader.cs" />
-    <Compile Include="InfoFrm.cs">
+    <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InfoFrm.Designer.cs">
-      <DependentUpon>InfoFrm.cs</DependentUpon>
+    <Compile Include="InfoForm.Designer.cs">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="InfoOutputHelper.cs" />
     <Compile Include="MainForm.cs">
@@ -111,8 +111,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="InfoFrm.resx">
-      <DependentUpon>InfoFrm.cs</DependentUpon>
+    <Compile Include="SizeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SizeForm.Designer.cs">
+      <DependentUpon>SizeForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="InfoForm.resx">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -129,6 +135,9 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SizeForm.resx">
+      <DependentUpon>SizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

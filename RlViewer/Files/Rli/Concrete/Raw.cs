@@ -17,7 +17,7 @@ namespace RlViewer.Files.Rli.Concrete
             _header = new RawHeader(properties.FilePath);
         }
 
-        private FileHeader _header;
+        private RawHeader _header;
 
         public override FileHeader Header
         {
@@ -26,11 +26,17 @@ namespace RlViewer.Files.Rli.Concrete
 
         public override int Height
         {
-            get { return 12000; }
+            get
+            { 
+                return _header.ImgSize.Height;
+            }
         }
         public override int Width
         {
-            get { return 12000; }
+            get 
+            {
+                return _header.ImgSize.Width;
+            }
         }
 
     }

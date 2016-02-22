@@ -24,5 +24,17 @@ namespace RlViewer.Headers.Abstract
         /// <returns>Array of parsed subheaders info</returns>
         public abstract HeaderInfoOutput[] GetHeaderInfo();
 
+
+
+        protected virtual void CheckInfo(byte[] header)
+        {
+            for (int i = 0; i < Signature.Length; i++)
+            {
+                if (header[i] != Signature[i])
+                {
+                    throw new ArgumentException("Header signature");
+                }
+            }
+        }
     }
 }
