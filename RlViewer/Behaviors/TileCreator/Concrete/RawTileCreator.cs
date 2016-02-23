@@ -15,15 +15,11 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
-    class RawTileCreator : RlViewer.Behaviors.TileCreator.Abstract.TileCreator
+    class RawTileCreator : RlViewer.Behaviors.TileCreator.Abstract.TileCreator, INormalizable
     {
         public RawTileCreator(LocatorFile rli)
         {
             _rli = rli;
-            //prop = new ParallelProperties(0, (int)(new System.IO.FileInfo(rli.Properties.FilePath).Length));
-            //_normalCoef = ComputeNormalizationCoef(rli.Width * bytesPerSample, 256);
-
-            //_tiles = GetTiles(_rli.Properties.FilePath);
         }
 
         private Dictionary<float, string> pathCollection;
@@ -44,7 +40,30 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 return _tiles ?? GetTiles(_rli.Properties.FilePath);
             }
         }
-       
+
+        private object _locker = new object();
+        public float NormalizationCoef
+        {
+            get
+            {
+                if (_normalCoef == 0)
+                {
+
+                    lock (_locker)
+                    {
+                        if (_normalCoef == 0)
+                        {
+
+                            _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * bytesPerSample, 0, Math.Min(_rli.Height, 32768));
+                        }
+                    }
+                }
+                return _normalCoef;
+            }
+        }
+
+
+
 
         protected override Tile[] GetTilesFromTl(string directoryPath)
         {
@@ -110,35 +129,12 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 index += s.Read(line, index, signalDataLength);
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
-            //rework normalization coef
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x / 255f)).ToArray<byte>();
+
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * NormalizationCoef)).ToArray<byte>();
 
             return normalizedLine;    
         }
 
-        private float ComputeNormalizationCoef(int strDataLen, int strHeadLen)
-        {
-            byte[] arr = new byte[strDataLen + strHeadLen];
-            float[] floatArr = new float[arr.Length / 4];
-            float max = 0;
-            float localMax = 0;
-            float normal;
-            using (var s = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(_rli.Header.HeaderLength, SeekOrigin.Begin);
-
-                while (s.Read(arr, 0, arr.Length) != 0)
-                {
-                   // s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
-                    localMax = floatArr.Max();
-                    max = max > localMax ? max : localMax;          
-                }
-            }   
-
-            normal = 255f / max;
-            return normal;
-        }
 
 
         private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size TileSize)
@@ -151,7 +147,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
                 {
                     ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
-
                     for (int j = 0; j < TileSize.Height; j++)
                     {
                         ms.Read(tileData, j * TileSize.Width, TileSize.Width);

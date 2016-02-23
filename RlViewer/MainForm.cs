@@ -84,6 +84,8 @@ namespace RlViewer
         private void pictureBox1_Resize(object sender, EventArgs e)
         {
             drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
+            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
+                new Point(hScrollBar1.Value, vScrollBar1.Value));
         }
 
 

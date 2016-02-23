@@ -14,17 +14,12 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {   
     
-    class Rl4TileCreator : TileCreator.Abstract.TileCreator
+    class Rl4TileCreator : TileCreator.Abstract.TileCreator, INormalizable
     {
         public Rl4TileCreator(LocatorFile rli)
         {
             _rli = rli;
             //prop = new ParallelProperties(0, (int)(new System.IO.FileInfo(rli.Properties.FilePath).Length));
-            var header = (rli.Header as RlViewer.Headers.Concrete.Rl4.Rl4Header);
-            _normalCoef = ComputeNormalizationCoef(rli.Width * bytesPerSample,
-                System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct()),
-                Math.Min(rli.Height, header.HeaderStruct.rlParams.cadrHeight));
-            //_tiles = GetTiles();
         }
 
         private Dictionary<float, string> pathCollection;
@@ -45,7 +40,29 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
+        private object _locker = new object();
+        public float NormalizationCoef
+        {
+            get             
+            {
+                //double lock checking
+                if (_normalCoef == 0)
+                {
+                    
+                    lock (_locker)
+                    {
+                        if (_normalCoef == 0)
+                        {
+                            _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * bytesPerSample,
+                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct()),
+                            Math.Min(_rli.Height, (_rli.Header as RlViewer.Headers.Concrete.Rl4.Rl4Header).HeaderStruct.rlParams.cadrHeight));
+                        }
+                    }
+                }
+                return _normalCoef;
 
+            }
+        }
 
 
         /// <summary>
@@ -124,51 +141,12 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
             //rework normalization coef
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * _normalCoef)).ToArray<byte>();
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * NormalizationCoef)).ToArray<byte>();
 
             return normalizedLine;    
         }
 
-        private float ComputeNormalizationCoef(int strDataLen, int strHeadLen, int frameWidth)
-        {
-            byte[] arr = new byte[strDataLen + strHeadLen];
-            float[] floatArr = new float[arr.Length / 4];
-
-            int histogramStep = 1000;
-
-            var histogram = new Dictionary<int, int>();
-            for (int i = 0; i < 1000; i++)
-            {
-                histogram.Add(i, 0);
-            }
-
-            float normal;
-
-            int frameLength = (strDataLen + strHeadLen) * frameWidth;
-
-            using (var s = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(_rli.Header.HeaderLength, SeekOrigin.Begin);
-
-                while (s.Position < frameLength)
-                {
-                    s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
-
-                    for (int i = 0; i < floatArr.Length; i++)
-                    {
-                        int index = (int)(floatArr[i] / histogramStep);
-                        if (index >= histogram.Count)
-                            histogram[histogram.Count - 1]++;
-                        else histogram[index]++;
-                    }
-                }
-
-                normal = (float)histogram.Where(x => x.Value == 0).Select(x => x.Key).FirstOrDefault() / 2;
-                if (normal == 0) normal = 1;
-                return 255f / (normal * histogramStep);
-            }
-        }
+        
 
 
         private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size TileSize)

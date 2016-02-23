@@ -91,6 +91,7 @@
             this.Controls.Add(this.maskedTextBox2);
             this.Controls.Add(this.maskedTextBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SizeForm";
             this.Text = "Размер изображения";
             this.ResumeLayout(false);

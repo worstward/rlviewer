@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\Draw\Drawing.cs" />
+    <Compile Include="Behaviors\INormalizable.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />

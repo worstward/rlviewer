@@ -64,16 +64,10 @@ namespace RlViewer.Headers.Concrete
             return _headerInfo;
         }
 
-
         private HeaderInfoOutput[] ParseHeader(byte[] header)
         {
             throw new NotImplementedException();
-        }
-
-
-       
+        }       
     }
-
-
 
 }
