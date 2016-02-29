@@ -8,85 +8,142 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using RlViewer.Behaviors.TileCreator.Abstract;
-using RlViewer.Factories.TileCreator.Abstract;
-using RlViewer.Factories.File.Abstract;
 
 namespace RlViewer
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, RlViewer.GuiFacade.ISuitableForm
     {
 
-        Files.LoadedFile file;
         public MainForm()
         {
             InitializeComponent();
+            guiFacade = new GuiFacade.GuiFacade(this);
+            brightnessRb.Checked = true;
         }
 
-        private async void button1_Click(object sender, EventArgs e)
-        {
+        GuiFacade.GuiFacade guiFacade;
 
+        public PictureBox PictureBox
+        {
+            get
+            {
+                return pictureBox1;
+            }
+        }
+
+        public HScrollBar Horizontal
+        {
+            get
+            {
+                return hScrollBar1;
+            }
+        }
+        public VScrollBar Vertical
+        {
+            get
+            {
+                return vScrollBar1;
+            }
+        }
+        public TrackBar TrackBar
+        {
+            get
+            {
+                return trackBar1;
+            }
+        }
+        public ProgressBar ProgressBar
+        {
+            get
+            {
+                return progressBar1;
+            }
+        }
+
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             using (var openFileDlg = new OpenFileDialog() { Filter = Resources.Filter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {
-                    Files.FileProperties properties = new Files.FileProperties(openFileDlg.FileName);
-                    file = FileFactory.GetFactory(properties).Create(properties);
+                    this.Text = guiFacade.OpenFile(openFileDlg.FileName);
                 }
                 else return;
             }
 
-            using (var iFrm = new InfoForm(await Task.Run(() => ((RlViewer.Files.LocatorFile)file).Header.GetHeaderInfo())))
-            {
-                iFrm.ShowDialog();
-            }
+            guiFacade.LoadFile();
+
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {           
-            Task.Run(() =>
-            {
-                TileCreator tc = TileCreatorFactory.GetFactory(file.Properties).Create(file as RlViewer.Files.LocatorFile);
-                return tc.Tiles;
-            }).ContinueWith((t) =>
-            {
-                tiles = t.Result;
-                drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
-                this.Text = file.Properties.FilePath;
-                InitScrollBars();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-            
-        }
 
-        private RlViewer.Behaviors.TileCreator.Tile[] tiles;
-
-        private RlViewer.Behaviors.Draw.Drawing drawer;
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
-                new Point(hScrollBar1.Value, vScrollBar1.Value));
+            guiFacade.DrawImage();
         }
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
-                new Point(hScrollBar1.Value, vScrollBar1.Value));
+            guiFacade.DrawImage();
         }
 
-        private void InitScrollBars()
+
+        private void MainForm_Resize(object sender, EventArgs e)
         {
-            var f = file as RlViewer.Files.LocatorFile;
-            hScrollBar1.Maximum = f.Width - pictureBox1.Width;
-            vScrollBar1.Maximum = f.Height - pictureBox1.Height;
+            guiFacade.InitDrawImage();
         }
 
-        private void pictureBox1_Resize(object sender, EventArgs e)
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            drawer = new Behaviors.Draw.Drawing(tiles, pictureBox1.Size);
-            pictureBox1.Image = drawer.Draw(pictureBox1.Size, tiles,
-                new Point(hScrollBar1.Value, vScrollBar1.Value));
+            guiFacade.TraceMouseMovement(e, hScrollBar1, vScrollBar1);
         }
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            guiFacade.ClickStarted(e, markRb.Checked);
+            guiFacade.DrawImage();
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            guiFacade.ClickFinished();
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            guiFacade.ChangeFilterValue();
+            guiFacade.DrawImage();
+            filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+        }
+
+        private void contrastRb_CheckedChanged(object sender, EventArgs e)
+         {
+            if (contrastRb.Checked)
+            {
+                guiFacade.GetFilter("Contrast", 4);
+                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+            }
+        }
+
+        private void gammaCorrRb_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gammaCorrRb.Checked)
+            {
+                guiFacade.GetFilter("Gamma Correction", 0);
+                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+            }
+        }
+
+        private void brightnessRb_CheckedChanged(object sender, EventArgs e)
+        {
+            if (brightnessRb.Checked)
+            {
+                guiFacade.GetFilter("Brightness", 4);
+                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+            }
+        }
+
 
 
     }

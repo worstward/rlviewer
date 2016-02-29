@@ -11,26 +11,25 @@ namespace RlViewer.Headers.Concrete.Rl4
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct Rl4RliFileHeader
     {
-        // сигнатура
+        // signature
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] fileSign;
 
-        // версия
+        // version
         public int fileVersion;
 
-        // подзаголовок РГГ
+        // rhg subheader
         [MarshalAs(UnmanagedType.Struct)]
         public RhgSubHeaderStruct rhgParams;
 
-        // подзаголовок РЛИ
+        // rli subheader
         [MarshalAs(UnmanagedType.Struct)]
         public Rl4SubHeaderStruct rlParams;
 
-        // подзаголовок параметров синтеза
+        // synthesis subheader
         [MarshalAs(UnmanagedType.Struct)]
         public SynthesisSubHeaderStruct synthParams;
 
-        //
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]
         public byte[] reserved;
     }

@@ -49,14 +49,12 @@ namespace RlViewer.Behaviors.TileCreator
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
             //(b.x2 >= a.x1 && b.x1 <= a.x2) && (b.y2 >= a.y1 && b.y1 <= a.y2)
-            if ((leftTopPointOfView.X + screenWidth >= _leftTopCoord.X) && (leftTopPointOfView.X <= _leftTopCoord.X + _size.Width) &&
+            if ((leftTopPointOfView.X + screenWidth >= _leftTopCoord.X)  && (leftTopPointOfView.X <= _leftTopCoord.X + _size.Width) &&
                 (leftTopPointOfView.Y + screenHeight >= _leftTopCoord.Y) && (leftTopPointOfView.Y <= _leftTopCoord.Y + _size.Height))
             {
-
                 return true;
             }
-            return false;
-            
+            return false;   
         }
 
         /// <summary>
@@ -68,14 +66,9 @@ namespace RlViewer.Behaviors.TileCreator
         {
             if (System.IO.File.Exists(path))
                 return System.IO.File.ReadAllBytes(path);
-
-            //log here?
+            //if tile doesn't exist, return empty tile
+            Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Tile not found: {0}", path));
             return Resources.EmptyTile;
         }
-
-
-
-
-
     }
 }

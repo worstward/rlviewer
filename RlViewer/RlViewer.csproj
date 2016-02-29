@@ -45,8 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\Drawing.cs" />
+    <Compile Include="Behaviors\Filters\Concrete\BrightnessFilter.cs" />
+    <Compile Include="Behaviors\Filters\Concrete\ContrastFilter.cs" />
+    <Compile Include="Behaviors\Filters\Concrete\GammaCorrectionFilter.cs" />
+    <Compile Include="Behaviors\Filters\ILuTable.cs" />
+    <Compile Include="Behaviors\Filters\Abstract\ImageFiltering.cs" />
     <Compile Include="Behaviors\INormalizable.cs" />
+    <Compile Include="Behaviors\Navigation\INavigatable.cs" />
+    <Compile Include="Behaviors\PointSelector\PointSelector.cs" />
+    <Compile Include="Behaviors\PointSelector\SelectedPoint.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
@@ -54,12 +63,17 @@
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="Behaviors\IDraggable.cs" />
     <Compile Include="Behaviors\IFileIO.cs" />
-    <Compile Include="Behaviors\IFilterImage.cs" />
     <Compile Include="Converters.cs" />
+    <Compile Include="Factories\Filter\Abstract\FilterFactory.cs" />
+    <Compile Include="Factories\Filter\Concrete\BrightnessFilterFactory.cs" />
+    <Compile Include="Factories\Filter\Concrete\ContrastFilterFactory.cs" />
+    <Compile Include="Factories\Filter\Concrete\GammaCorrectionFilterFactory.cs" />
     <Compile Include="Factories\TileCreator\Abstract\TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\RawTileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl4TileCreatorFactory.cs" />
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
+    <Compile Include="GuiFacade\GuiFacade.cs" />
+    <Compile Include="GuiFacade\ISuitableForm.cs" />
     <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Behaviors\IZoommable.cs" />
     <Compile Include="Factories\File\Concrete\Brl4Factory.cs" />
@@ -91,6 +105,9 @@
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="InfoOutputHelper.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\SeverityGrades.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

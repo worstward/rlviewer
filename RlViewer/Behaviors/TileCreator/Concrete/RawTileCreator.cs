@@ -11,8 +11,6 @@ using RlViewer.Files;
 using RlViewer.Behaviors.Draw;
 using RlViewer.Behaviors.TileCreator.Abstract;
 
-
-
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class RawTileCreator : RlViewer.Behaviors.TileCreator.Abstract.TileCreator, INormalizable
@@ -26,20 +24,26 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
         private LocatorFile _rli;
         private float _normalCoef;
-        private int bytesPerSample = 4;//float - 4 байта на отсчет
-
-        //private RlViewer.ParallelProperties prop;
 
         private Tile[] _tiles;
         private Dictionary<float, Tile[]> tileSets = new Dictionary<float, Tile[]>();
 
+        private object _tileLocker = new object();
         public override Tile[] Tiles
         {
             get
             {
-                return _tiles ?? GetTiles(_rli.Properties.FilePath);
+                if (_tiles == null)
+                {
+                    lock (_tileLocker)
+                    {
+                        _tiles = _tiles ?? GetTiles(_rli.Properties.FilePath);
+                    }
+                }
+                return _tiles;
             }
         }
+
 
         private object _locker = new object();
         public float NormalizationCoef
@@ -48,21 +52,18 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             {
                 if (_normalCoef == 0)
                 {
-
                     lock (_locker)
                     {
                         if (_normalCoef == 0)
                         {
-
-                            _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * bytesPerSample, 0, Math.Min(_rli.Height, 32768));
+                            _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * _rli.Header.BytesPerSample,
+                                0, Math.Min(_rli.Height, 32768));
                         }
                     }
                 }
                 return _normalCoef;
             }
         }
-
-
 
 
         protected override Tile[] GetTilesFromTl(string directoryPath)
@@ -84,12 +85,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             return tiles.ToArray();
         }
 
-        //private bool CheckTilesConsistency()
-        //{
-        //    return Math.Ceiling((double)(_rli.Width * _rli.Height) / (double)(TileSize.Width * TileSize.Height)) == Tiles.Length;
-        //}
-
-
 
         protected override Tile[] GetTilesFromFile(string filePath)
         {
@@ -99,13 +94,14 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             byte[] tileLine;
             using (var fs = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                fs.Seek(_rli.Header.HeaderLength, SeekOrigin.Begin);
+                fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
                 int strHeaderLength = 0;
 
-                int signalDataLength = _rli.Width * bytesPerSample;
+                int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
 
                 //var lineHeight = (int)(TileSize.Height * paths.Keys.Max());
-                for (int i = 0; i < Math.Ceiling((double)_rli.Height / (double)TileSize.Height); i++)
+                var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
+                for (int i = 0; i < totalLines; i++)
                 {
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
                     tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
@@ -114,6 +110,34 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             //GetResizedTiles(tiles.ToArray());
             return tiles.ToArray();
         }
+
+
+        protected override Tile[] GetTilesFromFile(string filePath, System.ComponentModel.BackgroundWorker worker)
+        {
+            pathCollection = InitTilePath(filePath);
+
+            List<Tile> tiles = new List<Tile>();
+            byte[] tileLine;
+            using (var fs = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
+                int strHeaderLength = 0;
+
+                int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
+
+                //var lineHeight = (int)(TileSize.Height * paths.Keys.Max());
+                var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
+                for (int i = 0; i < totalLines; i++)
+                {
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
+                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
+                    worker.ReportProgress((int)(i / totalLines * 100));
+                }
+            }
+            //GetResizedTiles(tiles.ToArray());
+            return tiles.ToArray();
+        }
+
 
         private byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight)
         {

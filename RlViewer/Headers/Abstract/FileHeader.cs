@@ -16,15 +16,16 @@ namespace RlViewer.Headers.Abstract
         /// <summary>
         /// Gets length of this file header
         /// </summary>
-        public abstract int HeaderLength { get; }
+        public abstract int FileHeaderLength { get; }
 
+        public abstract int BytesPerSample { get; }
+
+        public abstract int StrHeaderLength { get; }
         /// <summary>
         /// Returns parsed info from file header
         /// </summary>
         /// <returns>Array of parsed subheaders info</returns>
         public abstract HeaderInfoOutput[] GetHeaderInfo();
-
-
 
         protected virtual void CheckInfo(byte[] header)
         {
@@ -32,7 +33,8 @@ namespace RlViewer.Headers.Abstract
             {
                 if (header[i] != Signature[i])
                 {
-                    throw new ArgumentException("Header signature");
+                    Logging.Logger.Log(Logging.SeverityGrades.Blocking, "Unexpected symbols in file header signature");
+                    throw new ArgumentException("Wrong file header signature");
                 }
             }
         }

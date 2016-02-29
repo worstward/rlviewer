@@ -28,7 +28,8 @@ namespace RlViewer.Files
             }
             catch (ArgumentException aex)
             {
-                //TODO: logging
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Attempt to open unsupported file type {0}  {1}", Environment.NewLine, aex.Message));
                 throw aex;
             }
 

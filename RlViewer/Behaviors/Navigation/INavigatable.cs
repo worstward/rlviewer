@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors
+namespace RlViewer.Behaviors.Navigation
 {
-    interface IFilterImage
+    interface INavigatable
     {
     }
 }

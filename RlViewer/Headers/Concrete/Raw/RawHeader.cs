@@ -24,11 +24,30 @@ namespace RlViewer.Headers.Concrete.Raw
             }
         }
 
-        public override int HeaderLength
+        public override int FileHeaderLength
         {
             get { return _headerLength; }
         }
 
+        public override int StrHeaderLength
+        {
+            get 
+            {
+                return _strHeaderLength;
+            }
+        }
+
+        public override int BytesPerSample
+        {
+            get
+            {
+                return _bytesPerSample;
+            }
+        }
+
+
+        private int _bytesPerSample = 4;
+        private const int _strHeaderLength = 0;
         private const int _headerLength = 0;
         private byte[] _signature = new byte[_headerLength];
         private byte[] _header    = new byte[_headerLength];
@@ -41,7 +60,7 @@ namespace RlViewer.Headers.Concrete.Raw
         {
             get
             {
-                if (_imgSize.Width == 0 && _imgSize.Height == 0)
+                if (_imgSize.Width == 0 || _imgSize.Height == 0)
                 {
                     using(var sizeFrm = new SizeForm())
                     {
@@ -49,16 +68,10 @@ namespace RlViewer.Headers.Concrete.Raw
                         {
                             _imgSize = sizeFrm.ImgSize;
                         }
-                       
                     }
                 }
                 return _imgSize;
             }
-        }
-
-        protected override void CheckInfo(byte[] header)
-        {
-            base.CheckInfo(header);
         }
 
 

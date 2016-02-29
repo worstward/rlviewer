@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RlViewer.Headers.Abstract;
 using System.IO;
 
 namespace RlViewer.Headers.Concrete.Brl4
 {
-    class Brl4Header : FileHeader
+    class Brl4Header : RlViewer.Headers.Abstract.FileHeader
     {
         public Brl4Header(string path)
         {
@@ -23,12 +22,34 @@ namespace RlViewer.Headers.Concrete.Brl4
             }
         }
 
-        public override int HeaderLength
+        public override int FileHeaderLength
         {
-            get { return _headerLength; }
+            get 
+            {
+                return _headerLength;
+            }
         }
 
-        private int _headerLength = 16384;
+        public override int StrHeaderLength
+        {
+            get 
+            {
+                return _strHeaderLength;
+            }
+        }
+
+        public override int BytesPerSample
+        {
+            get 
+            {
+                return _bytesPerSample;
+            }
+        }
+
+
+        private int _bytesPerSample = 4;
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
+        private const int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
         
         private string _path;
@@ -44,7 +65,7 @@ namespace RlViewer.Headers.Concrete.Brl4
 
         private byte[] ReadHeader(string path)
         {
-            byte[] header = new byte[HeaderLength];
+            byte[] header = new byte[FileHeaderLength];
             using (var fs = System.IO.File.OpenRead(path))
             {
                 fs.Read(header, 0, header.Length);
@@ -63,13 +84,33 @@ namespace RlViewer.Headers.Concrete.Brl4
                 _headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
 
-            return ParseHeader(_headerStruct);
+            HeaderInfoOutput[] parsedHeader;
+
+            try
+            {
+                parsedHeader = ParseHeader(_headerStruct);
+            }
+            catch (ArgumentException aex)
+            {
+                return null;
+            }
+
+            return parsedHeader;
         }
 
 
-         private HeaderInfoOutput[] ParseHeader(Brl4RliFileHeader headerStruct)
+        private HeaderInfoOutput[] ParseHeader(Brl4RliFileHeader headerStruct)
         {
-            CheckInfo(headerStruct.fileSign);
+
+            try
+            {
+                CheckInfo(headerStruct.fileSign);
+            }
+            catch (ArgumentException aex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, aex.Message);
+                throw aex;
+            }
 
             var rhgHeader = new List<Tuple<string, string>>();
 

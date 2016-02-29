@@ -10,6 +10,7 @@ namespace RlViewer.Factories.File.Abstract
 {
     public abstract class FileFactory
     {
+
         public abstract LoadedFile Create(FileProperties properties);
 
         public static FileFactory GetFactory(FileProperties properties)

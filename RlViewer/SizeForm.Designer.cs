@@ -94,6 +94,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SizeForm";
             this.Text = "Размер изображения";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SizeForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

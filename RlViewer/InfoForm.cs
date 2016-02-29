@@ -28,13 +28,16 @@ namespace RlViewer
         /// </summary>
         private void InitializeTabs(HeaderInfoOutput[] headers)
         {
-            for(int i = 0; i < headers.Length; i++)
+            if (headers != null)
             {
-                var dgv = GetDataGrid();
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var dgv = GetDataGrid();
 
-                infoTabsControl.TabPages.Add(headers[i].HeaderName);
-                infoTabsControl.TabPages[i].Controls.Add(dgv);
-                ShowInfo(headers[i].Params, dgv);
+                    infoTabsControl.TabPages.Add(headers[i].HeaderName);
+                    infoTabsControl.TabPages[i].Controls.Add(dgv);
+                    ShowInfo(headers[i].Params, dgv);
+                }
             }
         }
 

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -17,22 +19,25 @@ namespace RlViewer.Behaviors.Draw
     /// </summary>
     public class Drawing
     {
-        public Drawing(Tile[] tiles, Size screenSize)
+        public Drawing(Size screenSize, RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, PointSelector.PointSelector selector)
         {
-            _tiles = tiles;
+            _filter = filter;
+            _screenSize = screenSize;
+            _selector = selector;
             _canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
         }
 
+        private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
         private Bitmap _canvas;
-        private Tile[] _tiles;
-
-        private ColorPalette gcp;
-
+        private Size _screenSize;
+        private PointSelector.PointSelector _selector;
+        private ColorPalette _gcp;
+        
         private ColorPalette GrayPalette
         {
             get
             {
-                return gcp == null ? InitGrayPalette() : gcp;
+                return _gcp ?? InitGrayPalette();
             }
         }
 
@@ -44,39 +49,51 @@ namespace RlViewer.Behaviors.Draw
         private ColorPalette InitGrayPalette()
         {
             //TODO: REWRITE PALETTE INIT
-            gcp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+            _gcp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
             for (int i = 0; i < 256; i++)
-                gcp.Entries[i] = Color.FromArgb(255, i, i, i);
-            return gcp;
+                _gcp.Entries[i] = Color.FromArgb(255, i, i, i);
+            return _gcp;
         }
 
-        
+        private object _canvasLocker = new object();
+
         /// <summary>
         /// Creates image from visible parts of tiles
         /// </summary>
         /// <param name="screenSize">Size of output window (picturebox)</param>
         /// <param name="tiles">Array of Tile objects</param>
         /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
-        /// <returns></returns>
-        public Bitmap Draw(Size screenSize, Tile[] tiles, Point leftTopPointOfView)
+        /// <returns></returns>       
+        public Bitmap DrawImage(Tile[] tiles, Point leftTopPointOfView)
         {
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, screenSize.Width, screenSize.Height) == true);
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, _screenSize.Width, _screenSize.Height));
 
             using (var g = Graphics.FromImage(_canvas))
             {
                 foreach (var tile in visibleTiles)
                 {
-                    g.DrawImage(GetBmp(Tile.ReadData(tile.FilePath), tile.Size.Width, tile.Size.Height),
+                    g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height),
                         new Point(tile.LeftTopCoord.X - leftTopPointOfView.X, tile.LeftTopCoord.Y - leftTopPointOfView.Y));
                 }
-                
-#if DEBUG
-                //bmp.Save("a.bmp");
-#endif
+                DrawPoints(g, new RectangleF(leftTopPointOfView, _screenSize));
             }
             return _canvas;
         }
 
+        private void DrawPoints(Graphics g, RectangleF screen)
+        {
+            foreach (var point in _selector)
+            {
+                if (screen.Contains(point.Location))
+                {
+                    using(var pen = new Pen(Color.Red, 10f))
+                    {
+                        g.DrawRectangle(pen, new Rectangle((int)(point.Location.X - screen.Location.X), 
+                            (int)(point.Location.Y - screen.Location.Y), 1, 1));
+                    }           
+                }
+            }
+        }
 
 
         /// <summary>
@@ -100,9 +117,5 @@ namespace RlViewer.Behaviors.Draw
             bmp.UnlockBits(bmpData);
             return bmp;
         }
-
-        //RlViewer.Behaviors.TileCreator.Abstract.TileCreator _tileCreator;
-
-       // public abstract Tile[] Tiles { get; }
     }
 }

@@ -17,6 +17,8 @@ namespace RlViewer.Files.Rli.Concrete
         public Rl4(FileProperties properties) : base(properties)
         {
             _header = new Rl4Header(properties.FilePath);
+
+            Logging.Logger.Log(Logging.SeverityGrades.Info, "Rl4 file opened");
         }
 
         private Rl4Header _header;
