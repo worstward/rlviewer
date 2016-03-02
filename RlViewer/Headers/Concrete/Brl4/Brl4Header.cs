@@ -11,7 +11,7 @@ namespace RlViewer.Headers.Concrete.Brl4
     {
         public Brl4Header(string path)
         {
-            _path = path;
+            ReadHeader(path);
         }
 
         protected override byte[] Signature
@@ -52,7 +52,6 @@ namespace RlViewer.Headers.Concrete.Brl4
         private const int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
         
-        private string _path;
         private HeaderInfoOutput[] _headerInfo;
 
         private Brl4RliFileHeader _headerStruct;
@@ -63,28 +62,24 @@ namespace RlViewer.Headers.Concrete.Brl4
         }
 
 
-        private byte[] ReadHeader(string path)
+        private void ReadHeader(string path)
         {
             byte[] header = new byte[FileHeaderLength];
-            using (var fs = System.IO.File.OpenRead(path))
+
+            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Read(header, 0, header.Length);
             }
 
-            return header;
-        }
-
-
-        public override HeaderInfoOutput[] GetHeaderInfo()
-        {
-            byte[] _header = ReadHeader(_path);
-
-            using (var ms = new MemoryStream(_header))
+            using (var ms = new MemoryStream(header))
             {
                 _headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
+        }
 
-            HeaderInfoOutput[] parsedHeader;
+        public override HeaderInfoOutput[] GetHeaderInfo()
+        {
+            HeaderInfoOutput[] parsedHeader = null;
 
             try
             {
@@ -97,7 +92,6 @@ namespace RlViewer.Headers.Concrete.Brl4
 
             return parsedHeader;
         }
-
 
         private HeaderInfoOutput[] ParseHeader(Brl4RliFileHeader headerStruct)
         {
@@ -127,7 +121,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по азимуту",         headerStruct.rhgParams.height.ToString()));
         
             var rliHeader = new List<Tuple<string, string>>();
-            rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(_path).Length.ToReadableFileSize()));
+            //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(_path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 

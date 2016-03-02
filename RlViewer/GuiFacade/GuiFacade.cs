@@ -15,20 +15,23 @@ namespace RlViewer.GuiFacade
     {
         public GuiFacade(ISuitableForm form)
         {
-            _pictureBox = form.PictureBox;
+            _pictureBox = form.Canvas;
             _horizontal = form.Horizontal;
             _vertical   = form.Vertical;
             _filterTrackbar = form.TrackBar;
             _progressBar = form.ProgressBar;
+            _reverseCheckBox = form.ReverseCheckBox;
+            _paletteComboBox = form.PaletteComboBox;
 
             _drag = new Behaviors.DragController();
             InitControls();
             InitWorker();
         }
         
-        private System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
+        private System.ComponentModel.BackgroundWorker _worker = new System.ComponentModel.BackgroundWorker();
                 
         private Files.LoadedFile _file;
+        private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
         private RlViewer.Behaviors.Draw.Drawing _drawer;
         private RlViewer.Behaviors.PointSelector.PointSelector _selector;
@@ -42,6 +45,9 @@ namespace RlViewer.GuiFacade
         private VScrollBar _vertical;
         private TrackBar _filterTrackbar;
         private ProgressBar _progressBar;
+        private CheckBox _reverseCheckBox;
+        private ComboBox _paletteComboBox;
+
 
         public string OpenFile(string fileName)
         {
@@ -56,7 +62,7 @@ namespace RlViewer.GuiFacade
             catch (ArgumentException aex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", aex.Message));
-                MessageBox.Show("Невозможно открыть файл", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorGuiMessage("Невозможно открыть файл");
                 return string.Empty;
             }
             _file = FileFactory.GetFactory(properties).Create(properties);
@@ -68,20 +74,36 @@ namespace RlViewer.GuiFacade
         {
             if (_file != null)
             {
-                HeaderInfoOutput[] info = ((RlViewer.Files.LocatorFile)_file).Header.GetHeaderInfo();
-
-                if (info == null)
+                try
                 {
-                    MessageBox.Show("Файл поврежден", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _info = ((RlViewer.Files.LocatorFile)_file).Header.GetHeaderInfo();
+                }
+                catch(InvalidCastException icex)
+                {
+                    _info = null;
+                    ErrorGuiMessage(icex.Message);
+                }
+
+                if (_info == null)
+                {
+                    ErrorGuiMessage("Файл поврежден");
                     _file = null;
                 }
                 else
                 {
-                    using (var iFrm = new InfoForm(info))
-                    {
-                        GetImage();
-                        iFrm.ShowDialog();
-                    }
+                    GetImage();
+                }
+            }
+        }
+
+
+        public void ShowFileInfo()
+        {
+            if(_file != null)
+            {
+                using (var iFrm = new InfoForm(_info))
+                {                   
+                    iFrm.ShowDialog();
                 }
             }
         }
@@ -93,7 +115,7 @@ namespace RlViewer.GuiFacade
             {
                 _progressBar.Value = 0;
                 _progressBar.Visible = true;
-                worker.RunWorkerAsync();
+                _worker.RunWorkerAsync();
                 //Task.Run(() =>
                 //{
                 //    return TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile).Tiles;
@@ -108,19 +130,19 @@ namespace RlViewer.GuiFacade
 
 
 
-        private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void _worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
            
             _tiles = TileCreatorFactory.GetFactory(_file.Properties)
-                .Create(_file as RlViewer.Files.LocatorFile).GetTilesReportProgress(_file.Properties.FilePath, worker);
+                .Create(_file as RlViewer.Files.LocatorFile).GetTilesReportProgress(_file.Properties.FilePath, _worker);
         }
 
-        private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        private void _worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             _progressBar.Value = e.ProgressPercentage;
         }
 
-        private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void _worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _selector = new Behaviors.PointSelector.PointSelector();
             _progressBar.Visible = false;
@@ -130,9 +152,9 @@ namespace RlViewer.GuiFacade
         public void InitDrawImage()
         {
             if (_pictureBox.Size.Width != 0 && _pictureBox.Size.Height != 0 && _tiles != null)
-            {
-                InitScrollBars();
+            {               
                 _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filter, _selector);
+                InitScrollBars();
                 DrawImage();
             }
         }
@@ -149,7 +171,7 @@ namespace RlViewer.GuiFacade
             _filter.FilterValue = _filterTrackbar.Value << _filterDelta;
         }
 
-
+       
         public void DrawImage()
         {
             //System.Threading.ThreadPool.QueueUserWorkItem((e) =>
@@ -168,11 +190,31 @@ namespace RlViewer.GuiFacade
             //            _pictureBox.Image = t.Result;
             //        }, TaskScheduler.FromCurrentSynchronizationContext());
             //}
+
             if (_file != null && _drawer != null)
             {
                 _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
         }
+
+        public void ChangePalette()
+        {
+            if (_file != null && _drawer != null)
+            {
+                int[] rgb;
+                try
+                {
+                    rgb = _paletteComboBox.GetItemText(_paletteComboBox.SelectedItem).Split(' ').Select(x => Convert.ToInt32(x)).ToArray();
+                }
+                catch (Exception ex)
+                {
+                    rgb = new int[] { 1, 1, 1 };
+                }
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], _reverseCheckBox.Checked);
+                _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+            }
+        }
+        
 
         private void InitControls()
         {
@@ -188,25 +230,33 @@ namespace RlViewer.GuiFacade
             _progressBar.Minimum = 0;
             _progressBar.Maximum = 100;
             _progressBar.Visible = false;
+
         }
 
-
+        private void ErrorGuiMessage(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
         private void InitScrollBars()
         {
+            //Task.Run(() =>
+            //{
+            //    return _file as RlViewer.Files.LocatorFile;
+            //})
+            //.ContinueWith((t) =>
+            //{
+            //    _horizontal.Maximum = t.Result.Width - _pictureBox.Size.Width;
+            //    _vertical.Maximum = t.Result.Height - _pictureBox.Size.Height;
+            //    _horizontal.Visible = true;
+            //    _vertical.Visible = true;
+            //}, TaskScheduler.FromCurrentSynchronizationContext());
 
-            Task.Run(() =>
-            {
-                return _file as RlViewer.Files.LocatorFile;
-            })
-            .ContinueWith((t) =>
-            {
-                _horizontal.Maximum = t.Result.Width - _pictureBox.Size.Width;
-                _vertical.Maximum = t.Result.Height - _pictureBox.Size.Height;
-                _horizontal.Visible = true;
-                _vertical.Visible = true;
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-           
+            var f = _file as RlViewer.Files.LocatorFile;
+            _horizontal.Maximum = f.Width - _pictureBox.Size.Width;
+            _vertical.Maximum = f.Height - _pictureBox.Size.Height;
+            _horizontal.Visible = true;
+            _vertical.Visible = true;
         }
 
         public void MarkPoint(System.Drawing.Point location)
@@ -241,19 +291,19 @@ namespace RlViewer.GuiFacade
         }
 
 
-        public void TraceMouseMovement(MouseEventArgs e, HScrollBar horizontal, VScrollBar vertical)
+        public void TraceMouseMovement(MouseEventArgs e)
         {
             if (_file != null)
             {
                 if (_drag.Trace(e.Location))
                 {
-                    if ((vertical.Value - _drag.Delta.Y) >= 0 && (vertical.Value - _drag.Delta.Y) < vertical.Maximum)
+                    if ((_vertical.Value - _drag.Delta.Y) >= 0 && (_vertical.Value - _drag.Delta.Y) < _vertical.Maximum)
                     {
-                        vertical.Value -= _drag.Delta.Y;
+                        _vertical.Value -= _drag.Delta.Y;
                     }
-                    if ((horizontal.Value - _drag.Delta.X) >= 0 && (horizontal.Value - _drag.Delta.X) < horizontal.Maximum)
+                    if ((_horizontal.Value - _drag.Delta.X) >= 0 && (_horizontal.Value - _drag.Delta.X) < _horizontal.Maximum)
                     {
-                        horizontal.Value -= _drag.Delta.X;
+                        _horizontal.Value -= _drag.Delta.X;
                     }
                     DrawImage();
                 }
@@ -274,10 +324,10 @@ namespace RlViewer.GuiFacade
 
         private void InitWorker()
         {
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
-            worker.ProgressChanged += worker_ProgressChanged;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            _worker.WorkerReportsProgress = true;
+            _worker.DoWork += _worker_DoWork;
+            _worker.ProgressChanged += _worker_ProgressChanged;
+            _worker.RunWorkerCompleted += _worker_RunWorkerCompleted;
         }
 
     }

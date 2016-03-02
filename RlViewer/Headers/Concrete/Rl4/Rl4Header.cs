@@ -14,7 +14,7 @@ namespace RlViewer.Headers.Concrete.Rl4
     {
         public Rl4Header(string path)
         {
-            _path = path;
+            ReadHeader(path);
         }
 
         protected override byte[] Signature
@@ -60,10 +60,8 @@ namespace RlViewer.Headers.Concrete.Rl4
             get { return _headerStruct; }
         }
 
-
-        private string _path;
  
-        private byte[] ReadHeader(string path)
+        private void ReadHeader(string path)
         {
             byte[] header = new byte[FileHeaderLength];
 
@@ -71,19 +69,15 @@ namespace RlViewer.Headers.Concrete.Rl4
             {
                 fs.Read(header, 0, header.Length);
             }
-       
-            return header;
+
+            using (var ms = new MemoryStream(header))
+            {
+                _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
+            }
         }
 
         public override HeaderInfoOutput[] GetHeaderInfo()
         {
-            byte[] _header = ReadHeader(_path);
-            
-            using (var ms = new MemoryStream(_header))
-            {
-                _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
-            }
-
             HeaderInfoOutput[] parsedHeader = null;
 
             try
@@ -126,7 +120,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по азимуту",         headerStruct.rhgParams.height.ToString()));
         
             var rliHeader = new List<Tuple<string, string>>();
-            rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(_path).Length.ToReadableFileSize()));
+            //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(_path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using RlViewer.Files;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Rl4;
@@ -13,7 +14,7 @@ namespace RlViewer.Headers.Concrete
     {
         public RhgKHeader(string path)
         {
-            _path = path;
+            ReadHeader(path);
         }
 
 
@@ -51,33 +52,40 @@ namespace RlViewer.Headers.Concrete
         private HeaderInfoOutput[] _headerInfo;
         private Rl4RliFileHeader _headerStruct;
 
-        private byte[] ReadHeader(string path)
+        private void ReadHeader(string path)
         {
             byte[] header = new byte[FileHeaderLength];
 
-            using (var fs = System.IO.File.Open(path, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Read(header, 0, header.Length);
             }
 
-            return header;
+            using (var ms = new MemoryStream(header))
+            {
+                _headerStruct = default(Rl4RliFileHeader);//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
+            }
         }
 
         public override HeaderInfoOutput[] GetHeaderInfo()
         {
-            if (_headerInfo == null)
-            {
-                byte[] _header = ReadHeader(_path);
+            HeaderInfoOutput[] parsedHeader = null;
 
-                using (var ms = new System.IO.MemoryStream(_header))
-                {
-                    _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
-                }
-                CheckInfo(_headerStruct.fileSign);
-                //_headerInfo = ParseHeader(_headerStruct);
+            try
+            {
+                parsedHeader = null;//ParseHeader(_headerStruct);
             }
-            return _headerInfo;
+            catch (ArgumentException aex)
+            {
+                return null;
+            }
+
+            return parsedHeader;
         }
+
+
+
+
 
         private HeaderInfoOutput[] ParseHeader(byte[] header)
         {

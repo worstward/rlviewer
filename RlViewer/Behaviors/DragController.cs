@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
-using System.Drawing;
 using RlViewer.Behaviors.TileCreator;
 
 namespace RlViewer.Behaviors

@@ -9,10 +9,12 @@ namespace RlViewer.GuiFacade
 {
     interface ISuitableForm
     {
-        PictureBox PictureBox { get; }
+        PictureBox Canvas { get; }
         HScrollBar Horizontal { get; }
         VScrollBar Vertical { get; }
         TrackBar TrackBar { get; }
         ProgressBar ProgressBar { get; }
+        CheckBox ReverseCheckBox { get; }
+        ComboBox PaletteComboBox { get; }        
     }
 }

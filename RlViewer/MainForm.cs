@@ -19,11 +19,13 @@ namespace RlViewer
             InitializeComponent();
             guiFacade = new GuiFacade.GuiFacade(this);
             brightnessRb.Checked = true;
+            comboBox1.SelectedIndex = 0;
+            this.Text = string.Empty;
         }
 
         GuiFacade.GuiFacade guiFacade;
 
-        public PictureBox PictureBox
+        public PictureBox Canvas
         {
             get
             {
@@ -60,6 +62,22 @@ namespace RlViewer
             }
         }
 
+        public ComboBox PaletteComboBox
+        {
+            get
+            {
+                return comboBox1;
+            }
+        }
+
+        public CheckBox ReverseCheckBox
+        {
+            get
+            {
+                return checkBox1;
+            }
+        }
+
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -69,11 +87,13 @@ namespace RlViewer
                 {
                     this.Text = guiFacade.OpenFile(openFileDlg.FileName);
                 }
-                else return;
+                else
+                {
+                    this.Text = string.Empty;
+                    return;
+                }
             }
-
             guiFacade.LoadFile();
-
         }
 
 
@@ -96,7 +116,7 @@ namespace RlViewer
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            guiFacade.TraceMouseMovement(e, hScrollBar1, vScrollBar1);
+            guiFacade.TraceMouseMovement(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -142,6 +162,21 @@ namespace RlViewer
                 guiFacade.GetFilter("Brightness", 4);
                 filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
             }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            guiFacade.ChangePalette();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            guiFacade.ChangePalette();
+        }
+
+        private void infoBtn_Click(object sender, EventArgs e)
+        {
+            guiFacade.ShowFileInfo();
         }
 
 

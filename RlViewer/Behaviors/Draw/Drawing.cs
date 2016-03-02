@@ -19,6 +19,8 @@ namespace RlViewer.Behaviors.Draw
     /// </summary>
     public class Drawing
     {
+        
+
         public Drawing(Size screenSize, RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, PointSelector.PointSelector selector)
         {
             _filter = filter;
@@ -31,29 +33,57 @@ namespace RlViewer.Behaviors.Draw
         private Bitmap _canvas;
         private Size _screenSize;
         private PointSelector.PointSelector _selector;
-        private ColorPalette _gcp;
+        private ColorPalette _colorPalette;
         
-        private ColorPalette GrayPalette
+        private ColorPalette Palette
         {
             get
             {
-                return _gcp ?? InitGrayPalette();
+                return _colorPalette ?? InitPalette();
             }
         }
 
 
         /// <summary>
-        /// Initializes look-up palette for 8bpp grayscale image
+        /// Initializes look-up palette for 8bpp image
         /// </summary>
         /// <returns>Color palette</returns>
-        private ColorPalette InitGrayPalette()
+        private ColorPalette InitPalette()
         {
             //TODO: REWRITE PALETTE INIT
-            _gcp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
-            for (int i = 0; i < 256; i++)
-                _gcp.Entries[i] = Color.FromArgb(255, i, i, i);
-            return _gcp;
+            _colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+            if (!PaletteParams.Reversed)
+            {
+                for (int i = 0; i < 256; i++)
+                    _colorPalette.Entries[i] = Color.FromArgb(255, PaletteParams.R * i, PaletteParams.G * i, PaletteParams.B * i);
+            }
+            else
+            {
+                for (int i = 0; i < 256; i++)
+                    _colorPalette.Entries[255 - i] = Color.FromArgb(255, PaletteParams.R * i, PaletteParams.G * i, PaletteParams.B * i);
+                
+            }
+             return _colorPalette;
         }
+
+        /// <summary>
+        /// Changes palette color table according to input RGB values
+        /// </summary>
+        /// <param name="R">Red channel</param>
+        /// <param name="G">Green channel</param>
+        /// <param name="B">Blue channel</param>
+        /// <param name="reversed">Determines if colors in color table are reversed</param>
+        public void GetPalette(int R, int G, int B, bool reversed)
+        {
+            _colorPalette = null;
+            PaletteParams.R = R;
+            PaletteParams.G = G;
+            PaletteParams.B = B;
+            PaletteParams.Reversed = reversed;
+        }
+
+
+
 
         private object _canvasLocker = new object();
 
@@ -64,11 +94,12 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="tiles">Array of Tile objects</param>
         /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
         /// <returns></returns>       
-        public Bitmap DrawImage(Tile[] tiles, Point leftTopPointOfView)
+        public Image DrawImage(Tile[] tiles, Point leftTopPointOfView)
         {
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, _screenSize.Width, _screenSize.Height));
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, _screenSize.Width, _screenSize.Height)).ToArray();
 
-            using (var g = Graphics.FromImage(_canvas))
+            var img = (Image)_canvas.Clone();
+            using (var g = Graphics.FromImage(img))
             {
                 foreach (var tile in visibleTiles)
                 {
@@ -77,7 +108,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 DrawPoints(g, new RectangleF(leftTopPointOfView, _screenSize));
             }
-            return _canvas;
+            return img;
         }
 
         private void DrawPoints(Graphics g, RectangleF screen)
@@ -106,16 +137,78 @@ namespace RlViewer.Behaviors.Draw
         private Bitmap GetBmp(byte[] imgData, int tileWidth, int tileHeight)
         {
             Bitmap bmp = new Bitmap(tileWidth, tileHeight, PixelFormat.Format8bppIndexed);
-            bmp.Palette = GrayPalette;
+            bmp.Palette = Palette;
 
             BitmapData bmpData = bmp.LockBits(new Rectangle(Point.Empty, bmp.Size),
                                             ImageLockMode.WriteOnly,
                                             bmp.PixelFormat);
-
+            
             IntPtr ptr = bmpData.Scan0;
             System.Runtime.InteropServices.Marshal.Copy(imgData, 0, ptr, imgData.Length);
             bmp.UnlockBits(bmpData);
             return bmp;
         }
+
+
+        private static class PaletteParams
+        {
+
+            private static bool _reversed;
+
+            public static bool Reversed
+            {
+                get
+                {
+                    return _reversed;
+                }
+                set
+                {
+                    _reversed = value;
+                }
+            }
+
+
+
+            private static int _red = 1;
+            public static int R
+            {
+                get
+                {
+                    return _red;
+                }
+                set
+                {
+                    _red = value >= 1 ? 1 : 0;
+                }
+            }
+
+            private static int _green = 1;
+            public static int G
+            {
+                get
+                {
+                    return _green;
+                }
+                set
+                {
+                    _green = value >= 1 ? 1 : 0;
+                }
+            }
+
+            private static int _blue = 1;
+            public static int B
+            {
+                get
+                {
+                    return _blue;
+                }
+                set
+                {
+                    _blue = value >= 1 ? 1 : 0;  
+                }
+            }
+        }
+
+
     }
 }
