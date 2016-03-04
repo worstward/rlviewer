@@ -52,16 +52,37 @@ namespace RlViewer.Behaviors.Draw
         {
             //TODO: REWRITE PALETTE INIT
             _colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
-            if (!PaletteParams.Reversed)
+            if (PaletteParams.Reversed)
             {
                 for (int i = 0; i < 256; i++)
-                    _colorPalette.Entries[i] = Color.FromArgb(255, PaletteParams.R * i, PaletteParams.G * i, PaletteParams.B * i);
+                {
+                    var r = PaletteParams.R * i;
+                    r = r > 255 ? 255 : r;
+
+                    var g = PaletteParams.G * i;
+                    g = g > 255 ? 255 : g;
+
+                    var b = PaletteParams.B * i;
+                    b = b > 255 ? 255 : b;
+
+                    _colorPalette.Entries[255 - i] = Color.FromArgb(255, r, g, b);
+                }     
             }
             else
             {
                 for (int i = 0; i < 256; i++)
-                    _colorPalette.Entries[255 - i] = Color.FromArgb(255, PaletteParams.R * i, PaletteParams.G * i, PaletteParams.B * i);
-                
+                {
+                    var r = PaletteParams.R * i;
+                    r = r > 255 ? 255 : r;
+
+                    var g = PaletteParams.G * i;
+                    g = g > 255 ? 255 : g;
+
+                    var b = PaletteParams.B * i;
+                    b = b > 255 ? 255 : b;
+
+                    _colorPalette.Entries[i] = Color.FromArgb(255, r, g, b);
+                }  
             }
              return _colorPalette;
         }
@@ -98,8 +119,8 @@ namespace RlViewer.Behaviors.Draw
         {
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, _screenSize.Width, _screenSize.Height)).ToArray();
 
-            var img = (Image)_canvas.Clone();
-            using (var g = Graphics.FromImage(img))
+            //var img = (Image)_canvas.Clone();
+            using (var g = Graphics.FromImage(_canvas))
             {
                 foreach (var tile in visibleTiles)
                 {
@@ -108,7 +129,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 DrawPoints(g, new RectangleF(leftTopPointOfView, _screenSize));
             }
-            return img;
+            return _canvas;
         }
 
         private void DrawPoints(Graphics g, RectangleF screen)
@@ -117,7 +138,7 @@ namespace RlViewer.Behaviors.Draw
             {
                 if (screen.Contains(point.Location))
                 {
-                    using(var pen = new Pen(Color.Red, 10f))
+                    using(var pen = new Pen(Color.Red, 3f))
                     {
                         g.DrawRectangle(pen, new Rectangle((int)(point.Location.X - screen.Location.X), 
                             (int)(point.Location.Y - screen.Location.Y), 1, 1));
@@ -178,7 +199,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 set
                 {
-                    _red = value >= 1 ? 1 : 0;
+                    _red = value < 1 ? 0 : value;
                 }
             }
 
@@ -191,7 +212,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 set
                 {
-                    _green = value >= 1 ? 1 : 0;
+                    _green = value < 1 ? 0 : value;
                 }
             }
 
@@ -204,7 +225,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 set
                 {
-                    _blue = value >= 1 ? 1 : 0;  
+                    _blue = value < 1 ? 0 : value;
                 }
             }
         }

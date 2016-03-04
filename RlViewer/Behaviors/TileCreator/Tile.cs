@@ -67,7 +67,7 @@ namespace RlViewer.Behaviors.TileCreator
             if (System.IO.File.Exists(path))
                 return System.IO.File.ReadAllBytes(path);
             //if tile doesn't exist, return empty tile
-            Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Tile not found: {0}", path));
+            //Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Tile not found: {0}", path));
             return Resources.EmptyTile;
         }
     }

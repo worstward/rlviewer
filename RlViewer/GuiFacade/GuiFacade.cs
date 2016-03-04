@@ -20,15 +20,17 @@ namespace RlViewer.GuiFacade
             _vertical   = form.Vertical;
             _filterTrackbar = form.TrackBar;
             _progressBar = form.ProgressBar;
+            _cancelButton = form.CancelButton;
             _reverseCheckBox = form.ReverseCheckBox;
             _paletteComboBox = form.PaletteComboBox;
 
             _drag = new Behaviors.DragController();
+            _worker = InitWorker();
             InitControls();
-            InitWorker();
         }
-        
-        private System.ComponentModel.BackgroundWorker _worker = new System.ComponentModel.BackgroundWorker();
+
+        private System.ComponentModel.BackgroundWorker _worker;
+
                 
         private Files.LoadedFile _file;
         private HeaderInfoOutput[] _info;
@@ -39,15 +41,14 @@ namespace RlViewer.GuiFacade
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
         private int _filterDelta;
 
-
         private PictureBox _pictureBox;
         private HScrollBar _horizontal;
         private VScrollBar _vertical;
         private TrackBar _filterTrackbar;
         private ProgressBar _progressBar;
+        private Button _cancelButton;
         private CheckBox _reverseCheckBox;
         private ComboBox _paletteComboBox;
-
 
         public string OpenFile(string fileName)
         {
@@ -113,8 +114,20 @@ namespace RlViewer.GuiFacade
         {
             if (_file != null)
             {
+                if (_worker != null && _worker.IsBusy)
+                {
+                    _worker.CancelAsync();
+                    DisposeWorker(_worker);
+                    _worker = InitWorker();
+                }
+                else
+                {
+                    _worker = InitWorker();
+                }
+
                 _progressBar.Value = 0;
                 _progressBar.Visible = true;
+                _cancelButton.Visible = true;
                 _worker.RunWorkerAsync();
                 //Task.Run(() =>
                 //{
@@ -128,6 +141,16 @@ namespace RlViewer.GuiFacade
             }
         }
 
+        public void CancelLoading()
+        {
+            if (!_worker.CancellationPending)
+            {
+                _worker.CancelAsync();
+                DisposeWorker(_worker);
+                ClearCancelledFileTiles();
+                InitControls();
+            }
+        }
 
 
         private void _worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -144,9 +167,13 @@ namespace RlViewer.GuiFacade
 
         private void _worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _selector = new Behaviors.PointSelector.PointSelector();
-            _progressBar.Visible = false;
-            InitDrawImage();
+            if (_tiles != null)
+            {
+                _selector = new Behaviors.PointSelector.PointSelector();
+                _progressBar.Visible = false;
+                _cancelButton.Visible = false;
+                InitDrawImage();
+            }
         }
 
         public void InitDrawImage()
@@ -191,7 +218,7 @@ namespace RlViewer.GuiFacade
             //        }, TaskScheduler.FromCurrentSynchronizationContext());
             //}
 
-            if (_file != null && _drawer != null)
+            if (_file != null && _drawer != null && _tiles != null)
             {
                 _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
@@ -199,7 +226,7 @@ namespace RlViewer.GuiFacade
 
         public void ChangePalette()
         {
-            if (_file != null && _drawer != null)
+            if (_file != null && _drawer != null && _tiles != null)
             {
                 int[] rgb;
                 try
@@ -218,6 +245,8 @@ namespace RlViewer.GuiFacade
 
         private void InitControls()
         {
+            _pictureBox.Image = null;
+
             _horizontal.Visible = false;
             _vertical.Visible = false;
 
@@ -230,6 +259,7 @@ namespace RlViewer.GuiFacade
             _progressBar.Minimum = 0;
             _progressBar.Maximum = 100;
             _progressBar.Visible = false;
+            _cancelButton.Visible = false;
 
         }
 
@@ -253,10 +283,12 @@ namespace RlViewer.GuiFacade
             //}, TaskScheduler.FromCurrentSynchronizationContext());
 
             var f = _file as RlViewer.Files.LocatorFile;
-            _horizontal.Maximum = f.Width - _pictureBox.Size.Width;
-            _vertical.Maximum = f.Height - _pictureBox.Size.Height;
-            _horizontal.Visible = true;
-            _vertical.Visible = true;
+            var horMax = f.Width - _pictureBox.Size.Width;
+            var verMax = f.Height - _pictureBox.Size.Height;
+            _horizontal.Maximum = horMax > 0 ? horMax : 0;
+            _vertical.Maximum = verMax > 0 ? verMax : 0;
+            _horizontal.Visible = _horizontal.Maximum > 0 ? true : false;
+            _vertical.Visible = _vertical.Maximum > 0 ? true : false;
         }
 
         public void MarkPoint(System.Drawing.Point location)
@@ -322,13 +354,49 @@ namespace RlViewer.GuiFacade
         }
 
 
-        private void InitWorker()
+        private void ClearCancelledFileTiles()
         {
-            _worker.WorkerReportsProgress = true;
-            _worker.DoWork += _worker_DoWork;
-            _worker.ProgressChanged += _worker_ProgressChanged;
-            _worker.RunWorkerCompleted += _worker_RunWorkerCompleted;
+            
+            try
+            {
+                
+                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath), Path.GetExtension(_file.Properties.FilePath));
+                File.SetAttributes(path, FileAttributes.Normal);
+                _file = null;
+                _drawer = null;
+                _selector = null;
+                System.Threading.Thread.Sleep(1000);
+                Directory.Delete(path, true);
+            }
+            catch(Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
+                ErrorGuiMessage(ex.Message);
+            }
         }
+
+
+
+        private System.ComponentModel.BackgroundWorker InitWorker()
+        {
+            System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += _worker_DoWork;
+            worker.ProgressChanged += _worker_ProgressChanged;
+            worker.RunWorkerCompleted += _worker_RunWorkerCompleted;
+
+            return worker;
+        }
+
+        private void DisposeWorker(System.ComponentModel.BackgroundWorker worker)
+        {
+            worker.DoWork -= _worker_DoWork;
+            worker.ProgressChanged -= _worker_ProgressChanged;
+            worker.RunWorkerCompleted -= _worker_RunWorkerCompleted;
+        }
+
+
 
     }
 }

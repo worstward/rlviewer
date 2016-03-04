@@ -132,6 +132,10 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
                     tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
                     worker.ReportProgress((int)(i / totalLines * 100));
+                    if (worker.CancellationPending)
+                    {
+                        return null;
+                    }
                 }
             }
             //GetResizedTiles(tiles.ToArray());

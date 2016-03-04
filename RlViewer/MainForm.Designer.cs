@@ -48,6 +48,7 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.infoBtn = new System.Windows.Forms.Button();
+            this.loadCancelBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -84,9 +85,9 @@
             // 
             this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScrollBar1.Location = new System.Drawing.Point(889, 29);
+            this.vScrollBar1.Location = new System.Drawing.Point(889, 93);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 474);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 410);
             this.vScrollBar1.TabIndex = 4;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
             // 
@@ -219,9 +220,9 @@
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(30, 479);
+            this.progressBar1.Location = new System.Drawing.Point(12, 479);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(856, 23);
+            this.progressBar1.Size = new System.Drawing.Size(829, 23);
             this.progressBar1.TabIndex = 12;
             // 
             // checkBox1
@@ -246,9 +247,10 @@
             "1 1 0",
             "1 0 1",
             "0 1 1",
-            "1 0 0",
-            "0 1 0",
-            "0 0 1"});
+            "54 1 54",
+            "1 54 1",
+            "54 54 1",
+            "1 1 54"});
             this.comboBox1.Location = new System.Drawing.Point(24, 20);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(93, 21);
@@ -276,11 +278,23 @@
             this.infoBtn.UseVisualStyleBackColor = true;
             this.infoBtn.Click += new System.EventHandler(this.infoBtn_Click);
             // 
+            // loadCancelBtn
+            // 
+            this.loadCancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadCancelBtn.Location = new System.Drawing.Point(847, 479);
+            this.loadCancelBtn.Name = "loadCancelBtn";
+            this.loadCancelBtn.Size = new System.Drawing.Size(56, 23);
+            this.loadCancelBtn.TabIndex = 17;
+            this.loadCancelBtn.Text = "Cancel";
+            this.loadCancelBtn.UseVisualStyleBackColor = true;
+            this.loadCancelBtn.Click += new System.EventHandler(this.loadCancelBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.loadCancelBtn);
             this.Controls.Add(this.infoBtn);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.progressBar1);
@@ -333,6 +347,7 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button infoBtn;
+        private System.Windows.Forms.Button loadCancelBtn;
     }
 }
 

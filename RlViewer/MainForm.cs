@@ -62,6 +62,14 @@ namespace RlViewer
             }
         }
 
+        public new Button CancelButton
+        {
+            get
+            {
+                return loadCancelBtn;
+            }
+        }
+
         public ComboBox PaletteComboBox
         {
             get
@@ -177,6 +185,12 @@ namespace RlViewer
         private void infoBtn_Click(object sender, EventArgs e)
         {
             guiFacade.ShowFileInfo();
+        }
+
+        private void loadCancelBtn_Click(object sender, EventArgs e)
+        {
+            this.Text = string.Empty;
+            guiFacade.CancelLoading();
         }
 
 

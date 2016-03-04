@@ -14,7 +14,8 @@ namespace RlViewer.GuiFacade
         VScrollBar Vertical { get; }
         TrackBar TrackBar { get; }
         ProgressBar ProgressBar { get; }
+        Button CancelButton { get; }
         CheckBox ReverseCheckBox { get; }
-        ComboBox PaletteComboBox { get; }        
+        ComboBox PaletteComboBox { get; }
     }
 }
