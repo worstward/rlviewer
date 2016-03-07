@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
 
 namespace RlViewer.GuiFacade
 {
-    class GuiFacade
+    public class GuiFacade
     {
         public GuiFacade(ISuitableForm form)
         {
@@ -20,54 +21,92 @@ namespace RlViewer.GuiFacade
             _vertical   = form.Vertical;
             _filterTrackbar = form.TrackBar;
             _progressBar = form.ProgressBar;
+            _progressLabel = form.ProgressLabel;
             _cancelButton = form.CancelButton;
-            _reverseCheckBox = form.ReverseCheckBox;
-            _paletteComboBox = form.PaletteComboBox;
 
             _drag = new Behaviors.DragController();
-            _worker = InitWorker();
+            _loaderWorker = InitWorker();
+            _filterFacade = new ImageFilterFacade(_filterTrackbar);
+            _keyboardFacade = new KeyboardFacade(
+                () =>
+                {
+                    if (_file != null)
+                    {
+                        _selector.RemoveLast();
+                        DrawImage();
+                    }
+                },
+                () => OpenFile());
+
             InitControls();
         }
 
-        private System.ComponentModel.BackgroundWorker _worker;
+        private System.ComponentModel.BackgroundWorker _loaderWorker;
+        private Settings.Settings _settings = new Settings.Settings();
+        private ImageFilterFacade _filterFacade;
+        private KeyboardFacade _keyboardFacade;
+        
+        internal ImageFilterFacade FilterFacade
+        {
+            get { return _filterFacade; }
+        }
 
-                
         private Files.LoadedFile _file;
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
         private RlViewer.Behaviors.Draw.Drawing _drawer;
         private RlViewer.Behaviors.PointSelector.PointSelector _selector;
         private RlViewer.Behaviors.DragController _drag;
-        private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
-        private int _filterDelta;
 
         private PictureBox _pictureBox;
         private HScrollBar _horizontal;
         private VScrollBar _vertical;
         private TrackBar _filterTrackbar;
         private ProgressBar _progressBar;
+        private Label _progressLabel;
         private Button _cancelButton;
-        private CheckBox _reverseCheckBox;
-        private ComboBox _paletteComboBox;
 
-        public string OpenFile(string fileName)
+        public string OpenFile()
         {
-            Files.FileProperties properties = null;
-            _file = null;
-            _drawer = null;
-            _pictureBox.Image = null;
-            try
+            string caption;
+            using (var openFileDlg = new OpenFileDialog() { Filter = Resources.Filter })
             {
-                properties = new Files.FileProperties(fileName);
+                if (openFileDlg.ShowDialog() == DialogResult.OK)
+                {                
+                
+                    Files.FileProperties properties = null;
+
+                    try
+                    {
+                        if (_loaderWorker != null && _loaderWorker.IsBusy)
+                        {
+                            CancelLoading();
+                        }
+
+                        _file = null;
+                        _drawer = null;
+                        _pictureBox.Image = null;
+                        _loaderWorker = InitWorker();    
+
+                        properties = new Files.FileProperties(openFileDlg.FileName);
+                    }
+                    catch (ArgumentException aex)
+                    {
+                        Logging.Logger.Log(Logging.SeverityGrades.Blocking,
+                            string.Format("Error opening file {0}", aex.Message));
+                        ErrorGuiMessage("Невозможно открыть файл");
+                        return string.Empty;
+                    }
+                    _file = FileFactory.GetFactory(properties).Create(properties);
+                    caption = _file.Properties.FilePath;
+                }
+                else
+                {
+                    caption = string.Empty;
+                }
+                LoadFile();
+                return caption;
             }
-            catch (ArgumentException aex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", aex.Message));
-                ErrorGuiMessage("Невозможно открыть файл");
-                return string.Empty;
-            }
-            _file = FileFactory.GetFactory(properties).Create(properties);
-            return _file.Properties.FilePath;
         }
 
 
@@ -83,15 +122,18 @@ namespace RlViewer.GuiFacade
                 {
                     _info = null;
                     ErrorGuiMessage(icex.Message);
+                    InitControls();
                 }
 
                 if (_info == null)
                 {
                     ErrorGuiMessage("Файл поврежден");
                     _file = null;
+                    InitControls();
                 }
                 else
                 {
+
                     GetImage();
                 }
             }
@@ -114,21 +156,14 @@ namespace RlViewer.GuiFacade
         {
             if (_file != null)
             {
-                if (_worker != null && _worker.IsBusy)
-                {
-                    _worker.CancelAsync();
-                    DisposeWorker(_worker);
-                    _worker = InitWorker();
-                }
-                else
-                {
-                    _worker = InitWorker();
-                }
-
                 _progressBar.Value = 0;
                 _progressBar.Visible = true;
+                _progressLabel.Visible = true;
+                _progressLabel.Text = "0 %";
                 _cancelButton.Visible = true;
-                _worker.RunWorkerAsync();
+                _horizontal.Visible = false;
+                _vertical.Visible = false;
+                _loaderWorker.RunWorkerAsync();
                 //Task.Run(() =>
                 //{
                 //    return TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile).Tiles;
@@ -143,34 +178,45 @@ namespace RlViewer.GuiFacade
 
         public void CancelLoading()
         {
-            if (!_worker.CancellationPending)
+            if (_file != null && !_loaderWorker.CancellationPending && _loaderWorker.IsBusy)
             {
-                _worker.CancelAsync();
-                DisposeWorker(_worker);
+                _loaderWorker.CancelAsync();
+                DisposeWorker(_loaderWorker);
                 ClearCancelledFileTiles();
                 InitControls();
             }
         }
 
 
-        private void _worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void _loaderWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-           
-            _tiles = TileCreatorFactory.GetFactory(_file.Properties)
-                .Create(_file as RlViewer.Files.LocatorFile).GetTilesReportProgress(_file.Properties.FilePath, _worker);
+            if (_settings.AllowViewWhileLoading)
+            {
+                _tiles = TileCreatorFactory.GetFactory(_file.Properties)
+                   .Create(_file as RlViewer.Files.LocatorFile).GetTiles(_file.Properties.FilePath);
+            }
+            else
+            {
+                _tiles = TileCreatorFactory.GetFactory(_file.Properties)
+                    .Create(_file as RlViewer.Files.LocatorFile).GetTiles(_file.Properties.FilePath, _loaderWorker);
+            }
         }
 
-        private void _worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
-        {
+
+
+        private void _loaderWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {         
             _progressBar.Value = e.ProgressPercentage;
+            _progressLabel.Text = string.Format("{0} %", e.ProgressPercentage.ToString());
         }
 
-        private void _worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void _loaderWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             if (_tiles != null)
             {
                 _selector = new Behaviors.PointSelector.PointSelector();
                 _progressBar.Visible = false;
+                _progressLabel.Visible = false;
                 _cancelButton.Visible = false;
                 InitDrawImage();
             }
@@ -180,25 +226,13 @@ namespace RlViewer.GuiFacade
         {
             if (_pictureBox.Size.Width != 0 && _pictureBox.Size.Height != 0 && _tiles != null)
             {               
-                _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filter, _selector);
+                _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filterFacade.Filter, _selector);
+                ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 InitScrollBars();
                 DrawImage();
             }
         }
 
-        public void GetFilter(string filterType, int filterDelta)
-        {
-            _filterDelta = filterDelta;
-            _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).GetFilter();
-            _filterTrackbar.Value = _filter.FilterValue >> _filterDelta;
-        }
-        
-        public void ChangeFilterValue()
-        {
-            _filter.FilterValue = _filterTrackbar.Value << _filterDelta;
-        }
-
-       
         public void DrawImage()
         {
             //System.Threading.ThreadPool.QueueUserWorkItem((e) =>
@@ -220,25 +254,21 @@ namespace RlViewer.GuiFacade
 
             if (_file != null && _drawer != null && _tiles != null)
             {
-                _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+                _pictureBox.Image = _drawer.DrawImage(_tiles,
+                    new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
         }
 
-        public void ChangePalette()
+        public void ChangePalette(int[] rgb, bool isReversed)
         {
-            if (_file != null && _drawer != null && _tiles != null)
+            if (_drawer != null)
             {
-                int[] rgb;
-                try
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed);
+                if (_file != null && _tiles != null)
                 {
-                    rgb = _paletteComboBox.GetItemText(_paletteComboBox.SelectedItem).Split(' ').Select(x => Convert.ToInt32(x)).ToArray();
+                    _pictureBox.Image = _drawer.DrawImage(_tiles,
+                        new System.Drawing.Point(_horizontal.Value, _vertical.Value));
                 }
-                catch (Exception ex)
-                {
-                    rgb = new int[] { 1, 1, 1 };
-                }
-                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], _reverseCheckBox.Checked);
-                _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
         }
         
@@ -246,7 +276,6 @@ namespace RlViewer.GuiFacade
         private void InitControls()
         {
             _pictureBox.Image = null;
-
             _horizontal.Visible = false;
             _vertical.Visible = false;
 
@@ -259,8 +288,8 @@ namespace RlViewer.GuiFacade
             _progressBar.Minimum = 0;
             _progressBar.Maximum = 100;
             _progressBar.Visible = false;
+            _progressLabel.Visible = false;
             _cancelButton.Visible = false;
-
         }
 
         private void ErrorGuiMessage(string message)
@@ -339,8 +368,7 @@ namespace RlViewer.GuiFacade
                     }
                     DrawImage();
                 }
-            }
-           
+            }         
         }
 
 
@@ -354,18 +382,26 @@ namespace RlViewer.GuiFacade
         }
 
 
+        public void ShowSettings()
+        {
+            using (var settgingsForm = new SettingsForm(_settings, this))
+            {
+                settgingsForm.ShowDialog();
+            }
+        }
+
+
         private void ClearCancelledFileTiles()
         {
-            
             try
-            {
-                
-                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath), Path.GetExtension(_file.Properties.FilePath));
+            {          
+                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath), 
+                    Path.GetExtension(_file.Properties.FilePath));
                 File.SetAttributes(path, FileAttributes.Normal);
                 _file = null;
                 _drawer = null;
                 _selector = null;
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(3000);
                 Directory.Delete(path, true);
             }
             catch(Exception ex)
@@ -375,28 +411,32 @@ namespace RlViewer.GuiFacade
             }
         }
 
-
-
         private System.ComponentModel.BackgroundWorker InitWorker()
         {
             System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
-            worker.DoWork += _worker_DoWork;
-            worker.ProgressChanged += _worker_ProgressChanged;
-            worker.RunWorkerCompleted += _worker_RunWorkerCompleted;
+            worker.DoWork += _loaderWorker_DoWork;
+            worker.ProgressChanged += _loaderWorker_ProgressChanged;
+            worker.RunWorkerCompleted += _loaderWorker_RunWorkerCompleted;
 
             return worker;
         }
 
         private void DisposeWorker(System.ComponentModel.BackgroundWorker worker)
         {
-            worker.DoWork -= _worker_DoWork;
-            worker.ProgressChanged -= _worker_ProgressChanged;
-            worker.RunWorkerCompleted -= _worker_RunWorkerCompleted;
+            worker.DoWork -= _loaderWorker_DoWork;
+            worker.ProgressChanged -= _loaderWorker_ProgressChanged;
+            worker.RunWorkerCompleted -= _loaderWorker_RunWorkerCompleted;
         }
 
-
+        public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs e)
+        {
+            if(_keyboardFacade != null)
+            { 
+                _keyboardFacade.ProceedKeyPress(e);
+            }
+        }
 
     }
 }

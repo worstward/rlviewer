@@ -19,7 +19,6 @@ namespace RlViewer
             InitializeComponent();
             guiFacade = new GuiFacade.GuiFacade(this);
             brightnessRb.Checked = true;
-            comboBox1.SelectedIndex = 0;
             this.Text = string.Empty;
         }
 
@@ -61,6 +60,13 @@ namespace RlViewer
                 return progressBar1;
             }
         }
+        public Label ProgressLabel 
+        {
+            get
+            {
+                return percentageLabel;
+            }
+        }
 
         public new Button CancelButton
         {
@@ -70,40 +76,12 @@ namespace RlViewer
             }
         }
 
-        public ComboBox PaletteComboBox
-        {
-            get
-            {
-                return comboBox1;
-            }
-        }
-
-        public CheckBox ReverseCheckBox
-        {
-            get
-            {
-                return checkBox1;
-            }
-        }
 
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var openFileDlg = new OpenFileDialog() { Filter = Resources.Filter })
-            {
-                if (openFileDlg.ShowDialog() == DialogResult.OK)
-                {
-                    this.Text = guiFacade.OpenFile(openFileDlg.FileName);
-                }
-                else
-                {
-                    this.Text = string.Empty;
-                    return;
-                }
-            }
-            guiFacade.LoadFile();
+            this.Text = guiFacade.OpenFile();
         }
-
 
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -140,16 +118,16 @@ namespace RlViewer
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            guiFacade.ChangeFilterValue();
+            guiFacade.FilterFacade.ChangeFilterValue();
             guiFacade.DrawImage();
-            filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+            filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
         private void contrastRb_CheckedChanged(object sender, EventArgs e)
          {
             if (contrastRb.Checked)
             {
-                guiFacade.GetFilter("Contrast", 4);
+                guiFacade.FilterFacade.GetFilter("Contrast", 4);
                 filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
             }
         }
@@ -158,8 +136,8 @@ namespace RlViewer
         {
             if (gammaCorrRb.Checked)
             {
-                guiFacade.GetFilter("Gamma Correction", 0);
-                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+                guiFacade.FilterFacade.GetFilter("Gamma Correction", 0);
+                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
@@ -167,25 +145,11 @@ namespace RlViewer
         {
             if (brightnessRb.Checked)
             {
-                guiFacade.GetFilter("Brightness", 4);
-                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+                guiFacade.FilterFacade.GetFilter("Brightness", 4);
+                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            guiFacade.ChangePalette();
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            guiFacade.ChangePalette();
-        }
-
-        private void infoBtn_Click(object sender, EventArgs e)
-        {
-            guiFacade.ShowFileInfo();
-        }
 
         private void loadCancelBtn_Click(object sender, EventArgs e)
         {
@@ -193,7 +157,25 @@ namespace RlViewer
             guiFacade.CancelLoading();
         }
 
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            guiFacade.ShowSettings();
+        }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            guiFacade.CancelLoading();
+        }
+
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            guiFacade.ShowFileInfo();
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            guiFacade.ProceedKeyPress(e);
+        }
 
     }
 }

@@ -29,7 +29,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
-        public virtual Tile[] GetTilesReportProgress(string filePath, System.ComponentModel.BackgroundWorker worker)
+        public virtual Tile[] GetTiles(string filePath, System.ComponentModel.BackgroundWorker worker)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;
@@ -43,13 +43,19 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
                 tiles = GetTilesFromFile(filePath, worker);
             }
-
-            Logging.Logger.Log(Logging.SeverityGrades.Info,
-                string.Format("Tile creation process succeed. {0} tiles generated", tiles.Length));
+            if (tiles != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                    string.Format("Tile creation process succeed. {0} tiles generated", tiles.Length));
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, "Tile creation process cancelled");
+            }
             return tiles;
         }
 
-        protected virtual Tile[] GetTiles(string filePath)
+        public virtual Tile[] GetTiles(string filePath)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;

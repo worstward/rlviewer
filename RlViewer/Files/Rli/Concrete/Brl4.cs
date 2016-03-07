@@ -15,7 +15,7 @@ namespace RlViewer.Files.Rli.Concrete
         public Brl4(FileProperties properties) : base(properties)
         {
             _header = new Brl4Header(properties.FilePath);
-            Logging.Logger.Log(Logging.SeverityGrades.Info, "Brl4 file opened");
+            Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Brl4 file opened: {0}", properties.FilePath));
         }
         private FileHeader _header;
 

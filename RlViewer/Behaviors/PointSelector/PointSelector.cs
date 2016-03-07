@@ -8,7 +8,6 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class PointSelector
     {
-
         private List<SelectedPoint> _selectedPoints = new List<SelectedPoint>();
 
         public IEnumerator<SelectedPoint> GetEnumerator()
@@ -26,7 +25,6 @@ namespace RlViewer.Behaviors.PointSelector
             _selectedPoints.Add(selectedPoint);
         }
 
-
         public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
         {
             //if we hit the image
@@ -36,13 +34,13 @@ namespace RlViewer.Behaviors.PointSelector
             }
         }
 
-
         public void RemoveLast()
         {
-            _selectedPoints.RemoveAt(_selectedPoints.Count - 1);
+            if (_selectedPoints.Count > 0)
+            {
+                _selectedPoints.RemoveAt(_selectedPoints.Count - 1);
+            }
         }
-
-
 
     }
 }

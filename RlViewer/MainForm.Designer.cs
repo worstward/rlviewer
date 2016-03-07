@@ -37,6 +37,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gammaCorrRb = new System.Windows.Forms.RadioButton();
             this.contrastRb = new System.Windows.Forms.RadioButton();
@@ -44,17 +46,13 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.filterLbl = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.infoBtn = new System.Windows.Forms.Button();
             this.loadCancelBtn = new System.Windows.Forms.Button();
+            this.percentageLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -109,10 +107,10 @@
             this.markRb.AutoSize = true;
             this.markRb.Location = new System.Drawing.Point(52, 19);
             this.markRb.Name = "markRb";
-            this.markRb.Size = new System.Drawing.Size(41, 23);
+            this.markRb.Size = new System.Drawing.Size(49, 23);
             this.markRb.TabIndex = 6;
             this.markRb.TabStop = true;
-            this.markRb.Text = "Mark";
+            this.markRb.Text = "Метка";
             this.markRb.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -124,12 +122,13 @@
             this.groupBox1.Size = new System.Drawing.Size(103, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Tools";
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.settingsToolStripMenuItem,
+            this.infoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(915, 24);
@@ -141,15 +140,29 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.fileToolStripMenuItem.Text = "Файл";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.settingsToolStripMenuItem.Text = "Настройки";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // infoToolStripMenuItem
+            // 
+            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.infoToolStripMenuItem.Text = "Инфо";
+            this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
             // 
             // groupBox2
             // 
@@ -161,17 +174,17 @@
             this.groupBox2.Size = new System.Drawing.Size(276, 58);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Filter";
+            this.groupBox2.Text = "Фильтр";
             // 
             // gammaCorrRb
             // 
             this.gammaCorrRb.AutoSize = true;
             this.gammaCorrRb.Location = new System.Drawing.Point(158, 20);
             this.gammaCorrRb.Name = "gammaCorrRb";
-            this.gammaCorrRb.Size = new System.Drawing.Size(112, 17);
+            this.gammaCorrRb.Size = new System.Drawing.Size(116, 17);
             this.gammaCorrRb.TabIndex = 2;
             this.gammaCorrRb.TabStop = true;
-            this.gammaCorrRb.Text = "Gamma Correction";
+            this.gammaCorrRb.Text = "Гамма коррекция";
             this.gammaCorrRb.UseVisualStyleBackColor = true;
             this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
             // 
@@ -180,10 +193,10 @@
             this.contrastRb.AutoSize = true;
             this.contrastRb.Location = new System.Drawing.Point(87, 20);
             this.contrastRb.Name = "contrastRb";
-            this.contrastRb.Size = new System.Drawing.Size(64, 17);
+            this.contrastRb.Size = new System.Drawing.Size(72, 17);
             this.contrastRb.TabIndex = 1;
             this.contrastRb.TabStop = true;
-            this.contrastRb.Text = "Contrast";
+            this.contrastRb.Text = "Контраст";
             this.contrastRb.UseVisualStyleBackColor = true;
             this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
             // 
@@ -192,10 +205,10 @@
             this.brightnessRb.AutoSize = true;
             this.brightnessRb.Location = new System.Drawing.Point(7, 20);
             this.brightnessRb.Name = "brightnessRb";
-            this.brightnessRb.Size = new System.Drawing.Size(74, 17);
+            this.brightnessRb.Size = new System.Drawing.Size(68, 17);
             this.brightnessRb.TabIndex = 0;
             this.brightnessRb.TabStop = true;
-            this.brightnessRb.Text = "Brightness";
+            this.brightnessRb.Text = "Яркость";
             this.brightnessRb.UseVisualStyleBackColor = true;
             this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
@@ -212,9 +225,9 @@
             this.filterLbl.AutoSize = true;
             this.filterLbl.Location = new System.Drawing.Point(419, 70);
             this.filterLbl.Name = "filterLbl";
-            this.filterLbl.Size = new System.Drawing.Size(61, 13);
+            this.filterLbl.Size = new System.Drawing.Size(100, 13);
             this.filterLbl.TabIndex = 11;
-            this.filterLbl.Text = "Filter value:";
+            this.filterLbl.Text = "Уровень фильтра:";
             // 
             // progressBar1
             // 
@@ -222,61 +235,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(12, 479);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(829, 23);
+            this.progressBar1.Size = new System.Drawing.Size(792, 23);
             this.progressBar1.TabIndex = 12;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(148, 21);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(61, 17);
-            this.checkBox1.TabIndex = 14;
-            this.checkBox1.Text = "reverse";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "1 1 1",
-            "1 1 0",
-            "1 0 1",
-            "0 1 1",
-            "54 1 54",
-            "1 54 1",
-            "54 54 1",
-            "1 1 54"});
-            this.comboBox1.Location = new System.Drawing.Point(24, 20);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(93, 21);
-            this.comboBox1.TabIndex = 13;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.comboBox1);
-            this.groupBox3.Controls.Add(this.checkBox1);
-            this.groupBox3.Location = new System.Drawing.Point(633, 27);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(228, 58);
-            this.groupBox3.TabIndex = 15;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Palette";
-            // 
-            // infoBtn
-            // 
-            this.infoBtn.Location = new System.Drawing.Point(40, 1);
-            this.infoBtn.Name = "infoBtn";
-            this.infoBtn.Size = new System.Drawing.Size(51, 23);
-            this.infoBtn.TabIndex = 16;
-            this.infoBtn.Text = "Info";
-            this.infoBtn.UseVisualStyleBackColor = true;
-            this.infoBtn.Click += new System.EventHandler(this.infoBtn_Click);
             // 
             // loadCancelBtn
             // 
@@ -285,18 +245,28 @@
             this.loadCancelBtn.Name = "loadCancelBtn";
             this.loadCancelBtn.Size = new System.Drawing.Size(56, 23);
             this.loadCancelBtn.TabIndex = 17;
-            this.loadCancelBtn.Text = "Cancel";
+            this.loadCancelBtn.Text = "Отмена";
             this.loadCancelBtn.UseVisualStyleBackColor = true;
             this.loadCancelBtn.Click += new System.EventHandler(this.loadCancelBtn_Click);
+            // 
+            // percentageLabel
+            // 
+            this.percentageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.percentageLabel.AutoSize = true;
+            this.percentageLabel.BackColor = System.Drawing.Color.Transparent;
+            this.percentageLabel.Location = new System.Drawing.Point(817, 484);
+            this.percentageLabel.Name = "percentageLabel";
+            this.percentageLabel.Size = new System.Drawing.Size(24, 13);
+            this.percentageLabel.TabIndex = 18;
+            this.percentageLabel.Text = "0 %";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.loadCancelBtn);
-            this.Controls.Add(this.infoBtn);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.filterLbl);
             this.Controls.Add(this.trackBar1);
@@ -306,9 +276,11 @@
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.menuStrip1);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -318,8 +290,6 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -343,11 +313,10 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label filterLbl;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button infoBtn;
         private System.Windows.Forms.Button loadCancelBtn;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
+        private System.Windows.Forms.Label percentageLabel;
     }
 }
 

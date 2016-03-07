@@ -7,15 +7,14 @@ using System.Windows.Forms;
 
 namespace RlViewer.GuiFacade
 {
-    interface ISuitableForm
+    public interface ISuitableForm
     {
         PictureBox Canvas { get; }
         HScrollBar Horizontal { get; }
         VScrollBar Vertical { get; }
         TrackBar TrackBar { get; }
         ProgressBar ProgressBar { get; }
+        Label ProgressLabel { get; }
         Button CancelButton { get; }
-        CheckBox ReverseCheckBox { get; }
-        ComboBox PaletteComboBox { get; }
     }
 }

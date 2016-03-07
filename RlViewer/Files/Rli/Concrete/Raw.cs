@@ -15,7 +15,7 @@ namespace RlViewer.Files.Rli.Concrete
         public Raw(FileProperties properties) : base(properties)
         {
             _header = new RawHeader(properties.FilePath);
-            Logging.Logger.Log(Logging.SeverityGrades.Info, "Raw file opened");
+            Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Raw file opened: {0}", properties.FilePath));
         }
 
         private RawHeader _header;

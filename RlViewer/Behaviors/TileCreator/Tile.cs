@@ -64,11 +64,25 @@ namespace RlViewer.Behaviors.TileCreator
         /// <returns></returns>
         public static byte[] ReadData(string path)
         {
+            byte[] tile;
             if (System.IO.File.Exists(path))
-                return System.IO.File.ReadAllBytes(path);
+            {
+                try
+                {
+                    tile = System.IO.File.ReadAllBytes(path);
+                }
+                catch (System.IO.IOException ioex)
+                {
+                    tile = Resources.EmptyTile;
+                }
+            }
+            else
+            {
+                tile = Resources.EmptyTile;
+            }
+
             //if tile doesn't exist, return empty tile
-            //Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Tile not found: {0}", path));
-            return Resources.EmptyTile;
+            return tile;
         }
     }
 }
