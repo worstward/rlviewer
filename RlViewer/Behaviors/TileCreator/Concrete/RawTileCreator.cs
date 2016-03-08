@@ -57,7 +57,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalCoef == 0)
                         {
                             _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * _rli.Header.BytesPerSample,
-                                0, Math.Min(_rli.Height, 32768));
+                                0, Math.Min(_rli.Height, 4096));
                         }
                     }
                 }
@@ -130,13 +130,14 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)
                 {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
-                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
                     worker.ReportProgress((int)(i / totalLines * 100));
                     if (worker.CancellationPending)
                     {
                         return null;
                     }
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
+                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
+
                 }
             }
             return tiles.ToArray();
