@@ -384,9 +384,13 @@ namespace RlViewer.GuiFacade
 
         public void ShowSettings()
         {
-            using (var settgingsForm = new SettingsForm(_settings, this))
+            using (var settgingsForm = new SettingsForm(_settings))
             {
-                settgingsForm.ShowDialog();
+                if (settgingsForm.ShowDialog() == DialogResult.OK)
+                {
+                    ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
+                }
+
             }
         }
 

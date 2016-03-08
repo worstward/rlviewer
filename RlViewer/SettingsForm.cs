@@ -12,10 +12,9 @@ namespace RlViewer
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm(Settings.Settings settings, GuiFacade.GuiFacade guiFacade)
+        public SettingsForm(Settings.Settings settings)
         {
             _settings = settings;
-            _guiFacade = guiFacade;
             InitializeComponent();
             comboBox1.SelectedItem = _settings.Palette.Select(x => x.ToString())
                 .Aggregate((x, y) => x.ToString() + " " + y.ToString());
@@ -47,13 +46,17 @@ namespace RlViewer
             {
                 _settings.Palette = new int[] { 1, 1, 1 };
             }
-            _guiFacade.ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             _settings.IsPaletteReversed = checkBox1.Checked;
-            _guiFacade.ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
         }
     }
 }
