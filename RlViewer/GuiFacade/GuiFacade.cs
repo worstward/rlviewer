@@ -47,7 +47,7 @@ namespace RlViewer.GuiFacade
         private Files.LoadedFile _file;
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
-        private RlViewer.Behaviors.Draw.Drawing _drawer;
+        private RlViewer.Behaviors.Draw.Drawer _drawer;
         private RlViewer.Behaviors.PointSelector.PointSelector _pointSelector;
         private RlViewer.Behaviors.AreaSelector.AreaSelector _areaSelector;
         private RlViewer.Behaviors.DragController _drag;
@@ -234,12 +234,14 @@ namespace RlViewer.GuiFacade
         }
 
 
-
         public void InitDrawImage()
         {
             if (_pictureBox.Size.Width != 0 && _pictureBox.Size.Height != 0 && _tiles != null)
-            {               
-                _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filterFacade.Filter, _pointSelector, _areaSelector);
+            {
+                RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter);
+                RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector);
+                _drawer = new Behaviors.Draw.Drawer(_pictureBox.Size, iDrawer, tDrawer);
+
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 InitScrollBars();
                 DrawImage();
@@ -250,14 +252,17 @@ namespace RlViewer.GuiFacade
         {
             if (_file != null && _drawer != null && _tiles != null)
             {
-                _pictureBox.Image = _drawer.DrawImage(_tiles,
+                _pictureBox.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
         }
 
         private void DrawItems()
         {
-            _pictureBox.Image = _drawer.DrawImage(_drawer.Canvas, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+            if (_file != null && _drawer != null)
+            {
+                _pictureBox.Image = _drawer.Draw(new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+            }
         }
 
         public void ChangePalette(int[] rgb, bool isReversed)
@@ -267,7 +272,7 @@ namespace RlViewer.GuiFacade
                 _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed);
                 if (_file != null && _tiles != null)
                 {
-                    _pictureBox.Image = _drawer.DrawImage(_tiles,
+                    _pictureBox.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_horizontal.Value, _vertical.Value));
                 }
             }
@@ -391,7 +396,6 @@ namespace RlViewer.GuiFacade
             }
         }
 
-
         public void ShowSettings()
         {
             using (var settgingsForm = new SettingsForm(_settings))
@@ -403,7 +407,6 @@ namespace RlViewer.GuiFacade
 
             }
         }
-
 
         private void ClearCancelledFileTiles()
         {
