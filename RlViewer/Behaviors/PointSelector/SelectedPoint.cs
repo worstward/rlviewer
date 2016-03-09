@@ -33,7 +33,9 @@ namespace RlViewer.Behaviors.PointSelector
         public float Value
         {
             get { return _value; }
+            set { _value = value; }
         }
+
 
         public float GetValue(RlViewer.Files.LocatorFile file, Point p)
         {

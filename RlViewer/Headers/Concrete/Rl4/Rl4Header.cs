@@ -84,7 +84,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             {
                 parsedHeader = ParseHeader(_headerStruct);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException)
             {
                 return null;
             }

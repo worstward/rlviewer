@@ -15,6 +15,7 @@ namespace RlViewer
         public SizeForm()
         {
             InitializeComponent();
+            maskedTextBox1.PromptChar = ' ';
         }
 
         private System.Drawing.Size _imgSize = new Size();

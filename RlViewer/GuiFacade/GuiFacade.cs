@@ -345,7 +345,7 @@ namespace RlViewer.GuiFacade
                     }
                     else if (_markPointRb.Checked)
                     {
-                        _pointSelector.Add((RlViewer.Files.LocatorFile)_file, new System.Drawing.Point(e.X + _horizontal.Value, e.Y + _vertical.Value));
+                        _pointSelector.AddManualVal((RlViewer.Files.LocatorFile)_file, new System.Drawing.Point(e.X + _horizontal.Value, e.Y + _vertical.Value));
                     }
                 }
                 else if (e.Button == MouseButtons.Right)

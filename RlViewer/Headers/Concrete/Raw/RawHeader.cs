@@ -52,7 +52,6 @@ namespace RlViewer.Headers.Concrete.Raw
         private byte[] _signature = new byte[_headerLength];
         private byte[] _header    = new byte[_headerLength];
         private string _path;
-        private HeaderInfoOutput[] _headerInfo;
 
         private System.Drawing.Size _imgSize = new System.Drawing.Size();
 

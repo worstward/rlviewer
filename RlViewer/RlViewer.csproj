@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\AreaSelector\Area.cs" />
+    <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\Drawer.cs" />
@@ -64,9 +64,13 @@
     <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
-    <Compile Include="Behaviors\IDraggable.cs" />
-    <Compile Include="Behaviors\IFileIO.cs" />
     <Compile Include="Converters.cs" />
+    <Compile Include="Forms\EprInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EprInputForm.Designer.cs">
+      <DependentUpon>EprInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Factories\Filter\Abstract\FilterFactory.cs" />
     <Compile Include="Factories\Filter\Concrete\BrightnessFilterFactory.cs" />
     <Compile Include="Factories\Filter\Concrete\ContrastFilterFactory.cs" />
@@ -80,7 +84,6 @@
     <Compile Include="GuiFacade\ISuitableForm.cs" />
     <Compile Include="GuiFacade\KeyboardFacade.cs" />
     <Compile Include="Headers\Abstract\IHeader.cs" />
-    <Compile Include="Behaviors\IZoommable.cs" />
     <Compile Include="Factories\File\Concrete\Brl4Factory.cs" />
     <Compile Include="Factories\File\Abstract\FileFactory.cs" />
     <Compile Include="Factories\File\Concrete\RhgKFactory.cs" />
@@ -103,20 +106,20 @@
     <Compile Include="Headers\Concrete\Rl4\Rl4RliFileHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4SynthesisSubHeader.cs" />
-    <Compile Include="InfoForm.cs">
+    <Compile Include="Forms\InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InfoForm.Designer.cs">
+    <Compile Include="Forms\InfoForm.Designer.cs">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="InfoOutputHelper.cs" />
     <Compile Include="Logging\LogEntry.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\SeverityGrades.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Files\LoadedFile.cs" />
@@ -134,23 +137,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SettingsForm.cs">
+    <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
+    <Compile Include="Forms\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="RawSizeForm.cs">
+    <Compile Include="Forms\RawSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RawSizeForm.Designer.cs">
+    <Compile Include="Forms\RawSizeForm.Designer.cs">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="InfoForm.resx">
+    <EmbeddedResource Include="Forms\EprInputForm.resx">
+      <DependentUpon>EprInputForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -166,10 +172,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
+    <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RawSizeForm.resx">
+    <EmbeddedResource Include="Forms\RawSizeForm.resx">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="bin\Debug\EmptyTile.tl">

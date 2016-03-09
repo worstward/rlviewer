@@ -51,8 +51,6 @@ namespace RlViewer.Headers.Concrete.Brl4
         private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
         private const int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
-        
-        private HeaderInfoOutput[] _headerInfo;
 
         private Brl4RliFileHeader _headerStruct;
 
@@ -85,7 +83,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             {
                 parsedHeader = ParseHeader(_headerStruct);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException)
             {
                 return null;
             }

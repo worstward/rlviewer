@@ -18,7 +18,7 @@ namespace RlViewer.Behaviors.Draw
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
 
-        public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
+        public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize, Color selectionColor)
         {
             GC.Collect();
 
@@ -27,7 +27,7 @@ namespace RlViewer.Behaviors.Draw
             using (var g = Graphics.FromImage(img))
             {
                 DrawPoints(g, screen);
-                DrawArea(g, screen);
+                DrawArea(g, screen, selectionColor);
             }
             return img;
         }
@@ -41,16 +41,16 @@ namespace RlViewer.Behaviors.Draw
                 {
                     using (var pen = new Pen(Color.Red, 3f))
                     {
-                        g.DrawRectangle(pen, new Rectangle((int)(point.Location.X - screen.Location.X),
-                            (int)(point.Location.Y - screen.Location.Y), 1, 1));
+                        g.DrawRectangle(pen, (int)(point.Location.X - screen.Location.X),
+                            (int)(point.Location.Y - screen.Location.Y), 1, 1);
                     }
                 }
             }
         }
 
-        private void DrawArea(Graphics g, RectangleF screen)
+        private void DrawArea(Graphics g, RectangleF screen, Color selectionColor)
         {
-            using (var pen = new Pen(Color.Blue) { DashPattern = new float[] { 5, 2, 15, 4 } })
+            using (var pen = new Pen(selectionColor) { DashPattern = new float[] { 5, 2, 15, 4 } })
             {
                 g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X), (int)(_areaSelector.Area.Location.Y - screen.Y),
                     _areaSelector.Area.Width, _areaSelector.Area.Height);

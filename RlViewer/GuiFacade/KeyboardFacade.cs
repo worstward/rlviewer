@@ -19,7 +19,8 @@ namespace RlViewer.GuiFacade
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
         {
-            if (kEvent.Control && kEvent.KeyCode == System.Windows.Forms.Keys.Z)
+            if (kEvent.Control && kEvent.KeyCode == System.Windows.Forms.Keys.Z 
+                || kEvent.KeyCode == System.Windows.Forms.Keys.Escape)
             {
                 Undo();
             }

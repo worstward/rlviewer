@@ -48,8 +48,8 @@ namespace RlViewer.Headers.Concrete
         private int _bytesPerSample = 2;
         private int _headerLength = 800;
         private byte[] _signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
-        private string _path;
-        private HeaderInfoOutput[] _headerInfo;
+
+        //private HeaderInfoOutput[] _headerInfo;
         private Rl4RliFileHeader _headerStruct;
 
         private void ReadHeader(string path)
@@ -75,7 +75,7 @@ namespace RlViewer.Headers.Concrete
             {
                 parsedHeader = null;//ParseHeader(_headerStruct);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException)
             {
                 return null;
             }

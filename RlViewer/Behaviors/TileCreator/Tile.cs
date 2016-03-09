@@ -71,7 +71,7 @@ namespace RlViewer.Behaviors.TileCreator
                 {
                     tile = System.IO.File.ReadAllBytes(path);
                 }
-                catch (System.IO.IOException ioex)
+                catch (System.IO.IOException)
                 {
                     tile = Resources.EmptyTile;
                 }

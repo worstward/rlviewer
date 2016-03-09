@@ -15,10 +15,6 @@ namespace RlViewer
         public InfoForm(params HeaderInfoOutput[] headers)
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeTabs(headers);             
         }
 

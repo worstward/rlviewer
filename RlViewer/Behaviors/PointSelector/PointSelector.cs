@@ -15,9 +15,18 @@ namespace RlViewer.Behaviors.PointSelector
             return _selectedPoints.GetEnumerator();
         }
 
-        public void Add(System.Drawing.Point location, float value)
+        public void AddManualVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
         {
-            _selectedPoints.Add(new SelectedPoint(location, value));
+            if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
+            {
+                using (EprInputForm epr = new EprInputForm())
+                {
+                    if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        _selectedPoints.Add(new SelectedPoint(location, epr.EprValue));
+                    }
+                }                
+            }
         }
 
         public void Add(SelectedPoint selectedPoint)
@@ -25,7 +34,7 @@ namespace RlViewer.Behaviors.PointSelector
             _selectedPoints.Add(selectedPoint);
         }
 
-        public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        public void AddFileVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
         {
             //if we hit the image
             if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)

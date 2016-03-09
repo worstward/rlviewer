@@ -79,23 +79,22 @@ namespace RlViewer
             // Determine the suffix and readable value
             string sizeSuffix;
             double readable;
+            const int kb = 1024;
+            const int mb = 1048576;
+            const int gb = 1073741824;
 
-            if (value >= 0x10000000000)
-            {
-                sizeSuffix = "Tb";
-                readable = (value >> 30);
-            }
-            else if (value >= 0x40000000)
+
+            if (value >= gb)
             {
                 sizeSuffix = "Gb";
                 readable = (value >> 20);
             }
-            else if (value >= 0x100000)
+            else if (value >= 1048576)
             {
                 sizeSuffix = "Mb";
                 readable = (value >> 10);
             }
-            else if (value >= 0x400)
+            else if (value >= 1024)
             {
                 sizeSuffix = "Kb";
                 readable = value;
@@ -105,7 +104,7 @@ namespace RlViewer
                 return value.ToString("0 b");
             }
 
-            readable = (readable / 1024);
+            readable /= 1024;
             return readable.ToString("0.## ") + sizeSuffix;
         }
 

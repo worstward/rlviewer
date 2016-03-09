@@ -91,12 +91,12 @@ namespace RlViewer.Behaviors.Draw
 
         public Image Draw(TileCreator.Tile[] tiles, Point pointOfView)
         {
-            return _iDrawer.DrawItems(_tDrawer.DrawImage(_canvas, tiles, pointOfView, _screenSize, Palette), pointOfView, _screenSize);
+            return _iDrawer.DrawItems(_tDrawer.DrawImage(_canvas, tiles, pointOfView, _screenSize, Palette), pointOfView, _screenSize, Palette.Entries[240]);
         }
 
         public Image Draw(Point pointOfView)
         {
-            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize);
+            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize, Palette.Entries[240]);
         }
 
 

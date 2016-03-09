@@ -49,7 +49,8 @@ namespace RlViewer
             catch (Exception ex)
             {
                 _palette = new int[] { 1, 1, 1 };
-                Logging.Logger.Log(Logging.SeverityGrades.Warning, "Attempt to get palette from settings failed");
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, 
+                    string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
             }
         }
 
