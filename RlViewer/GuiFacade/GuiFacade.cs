@@ -122,7 +122,6 @@ namespace RlViewer.GuiFacade
                 {
                     _info = null;
                     ErrorGuiMessage(icex.Message);
-                    InitControls();
                 }
 
                 if (_info == null)
