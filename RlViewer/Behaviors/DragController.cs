@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors
         {
           get
           {
-              return new System.Drawing.Point(_delta.X, _delta.Y);
+              return _delta;
           }
         }
 
