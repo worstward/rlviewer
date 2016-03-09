@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\AreaSelector\Area.cs" />
+    <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\Drawing.cs" />
     <Compile Include="Behaviors\Filters\Concrete\BrightnessFilter.cs" />

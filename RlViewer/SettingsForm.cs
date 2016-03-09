@@ -23,15 +23,19 @@ namespace RlViewer
         }
 
         private Settings.Settings _settings;
-        private GuiFacade.GuiFacade _guiFacade;
+
+        private int[] _palette;
+        private bool _isReversed;
+        private bool _allowViewWhileLoading;
+
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (allowViewCheckBox.Checked)
             {
-                _settings.AllowViewWhileLoading = true;
+                _allowViewWhileLoading = true;
             }
-            else _settings.AllowViewWhileLoading = false;
+            else _allowViewWhileLoading = false;
 
         }
 
@@ -39,23 +43,40 @@ namespace RlViewer
         {
             try
             {
-                _settings.Palette = comboBox1.GetItemText(comboBox1.SelectedItem).Split(' ')
+                _palette = comboBox1.GetItemText(comboBox1.SelectedItem).Split(' ')
                     .Select(x => Convert.ToInt32(x)).ToArray();
             }
             catch (Exception ex)
             {
-                _settings.Palette = new int[] { 1, 1, 1 };
+                _palette = new int[] { 1, 1, 1 };
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, "Attempt to get palette from settings failed");
             }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            _settings.IsPaletteReversed = checkBox1.Checked;
+            _isReversed = checkBox1.Checked;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            _settings.AllowViewWhileLoading = _allowViewWhileLoading;
+            _settings.Palette = _palette;
+            _settings.IsPaletteReversed = _isReversed;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _settings.AllowViewWhileLoading = _allowViewWhileLoading;
+            _settings.Palette = _palette;
+            _settings.IsPaletteReversed = _isReversed;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Close();
         }
     }

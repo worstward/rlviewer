@@ -76,6 +76,29 @@ namespace RlViewer
             }
         }
 
+        public RadioButton DragRb
+        {
+            get
+            {
+                return dragRb;
+            }
+        }
+        public RadioButton MarkPointRb
+        {
+            get
+            {
+                return markPointRb;
+            }
+        }
+        public RadioButton MarkAreaRb
+        {
+            get
+            {
+                return markAreaRb;
+            }
+        }
+
+
 
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -107,7 +130,7 @@ namespace RlViewer
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            guiFacade.ClickStarted(e, markRb.Checked);
+            guiFacade.ClickStarted(e);
             guiFacade.DrawImage();
         }
 
@@ -128,7 +151,7 @@ namespace RlViewer
             if (contrastRb.Checked)
             {
                 guiFacade.FilterFacade.GetFilter("Contrast", 4);
-                filterLbl.Text = string.Format("Filter value: {0}", trackBar1.Value);
+                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 

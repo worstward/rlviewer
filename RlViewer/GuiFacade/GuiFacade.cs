@@ -16,27 +16,20 @@ namespace RlViewer.GuiFacade
     {
         public GuiFacade(ISuitableForm form)
         {
-            _pictureBox = form.Canvas;
-            _horizontal = form.Horizontal;
-            _vertical   = form.Vertical;
-            _filterTrackbar = form.TrackBar;
-            _progressBar = form.ProgressBar;
-            _progressLabel = form.ProgressLabel;
-            _cancelButton = form.CancelButton;
+            _pictureBox      = form.Canvas;
+            _horizontal      = form.Horizontal;
+            _vertical        = form.Vertical;
+            _filterTrackbar  = form.TrackBar;
+            _progressBar     = form.ProgressBar;
+            _progressLabel   = form.ProgressLabel;
+            _cancelButton    = form.CancelButton;
+            _markPointRb     = form.MarkPointRb;
+            _markAreaRb      = form.MarkAreaRb;
 
             _drag = new Behaviors.DragController();
             _loaderWorker = InitWorker();
             _filterFacade = new ImageFilterFacade(_filterTrackbar);
-            _keyboardFacade = new KeyboardFacade(
-                () =>
-                {
-                    if (_file != null)
-                    {
-                        _selector.RemoveLast();
-                        DrawImage();
-                    }
-                },
-                () => OpenFile());
+            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
 
             InitControls();
         }
@@ -55,7 +48,8 @@ namespace RlViewer.GuiFacade
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
         private RlViewer.Behaviors.Draw.Drawing _drawer;
-        private RlViewer.Behaviors.PointSelector.PointSelector _selector;
+        private RlViewer.Behaviors.PointSelector.PointSelector _pointSelector;
+        private RlViewer.Behaviors.AreaSelector.AreaSelector _areaSelector;
         private RlViewer.Behaviors.DragController _drag;
 
         private PictureBox _pictureBox;
@@ -65,6 +59,8 @@ namespace RlViewer.GuiFacade
         private ProgressBar _progressBar;
         private Label _progressLabel;
         private Button _cancelButton;
+        private RadioButton _markPointRb;
+        private RadioButton _markAreaRb;
 
         public string OpenFile()
         {
@@ -169,7 +165,7 @@ namespace RlViewer.GuiFacade
                 //}).ContinueWith((tileCreationTask) =>
                 //{
                 //    _tiles = tileCreationTask.Result;
-                //    _selector = new Behaviors.PointSelector.PointSelector();
+                //    _pointSelector = new Behaviors.PointSelector.PointSelector();
                 //    InitDrawImage();
                 //}, TaskScheduler.FromCurrentSynchronizationContext());
             }
@@ -202,7 +198,6 @@ namespace RlViewer.GuiFacade
         }
 
 
-
         private void _loaderWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {         
             _progressBar.Value = e.ProgressPercentage;
@@ -213,7 +208,8 @@ namespace RlViewer.GuiFacade
         {
             if (_tiles != null)
             {
-                _selector = new Behaviors.PointSelector.PointSelector();
+                _pointSelector = new Behaviors.PointSelector.PointSelector();
+                _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 _progressBar.Visible = false;
                 _progressLabel.Visible = false;
                 _cancelButton.Visible = false;
@@ -221,11 +217,29 @@ namespace RlViewer.GuiFacade
             }
         }
 
+        private void Undo()
+        {
+            if (_file != null)
+            {
+                if (_markPointRb.Checked)
+                {
+                    _pointSelector.RemoveLast();
+                }
+                else if (_markAreaRb.Checked)
+                {
+                    _areaSelector.ResetArea();
+                }
+                DrawItems();
+            }
+        }
+
+
+
         public void InitDrawImage()
         {
             if (_pictureBox.Size.Width != 0 && _pictureBox.Size.Height != 0 && _tiles != null)
             {               
-                _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filterFacade.Filter, _selector);
+                _drawer = new Behaviors.Draw.Drawing(_pictureBox.Size, _filterFacade.Filter, _pointSelector, _areaSelector);
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 InitScrollBars();
                 DrawImage();
@@ -234,28 +248,16 @@ namespace RlViewer.GuiFacade
 
         public void DrawImage()
         {
-            //System.Threading.ThreadPool.QueueUserWorkItem((e) =>
-            //    {
-            //        _pictureBox.Image = _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
-            //    });
-
-            //if (_drawer != null)
-            //{
-            //    Task.Run(() =>
-            //        {
-            //            return _drawer.DrawImage(_tiles, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
-            //        })
-            //        .ContinueWith((t) =>
-            //        {
-            //            _pictureBox.Image = t.Result;
-            //        }, TaskScheduler.FromCurrentSynchronizationContext());
-            //}
-
             if (_file != null && _drawer != null && _tiles != null)
             {
                 _pictureBox.Image = _drawer.DrawImage(_tiles,
-                    new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+                        new System.Drawing.Point(_horizontal.Value, _vertical.Value));
             }
+        }
+
+        private void DrawItems()
+        {
+            _pictureBox.Image = _drawer.DrawImage(_drawer.Canvas, new System.Drawing.Point(_horizontal.Value, _vertical.Value));
         }
 
         public void ChangePalette(int[] rgb, bool isReversed)
@@ -319,28 +321,27 @@ namespace RlViewer.GuiFacade
             _vertical.Visible = _vertical.Maximum > 0 ? true : false;
         }
 
-        public void MarkPoint(System.Drawing.Point location)
-        {
-            if (_file != null && _selector != null)
-            {
-                _selector.Add((RlViewer.Files.LocatorFile)_file,
-                    new System.Drawing.Point(location.X + _horizontal.Value, location.Y + _vertical.Value));
-            }
-        }
 
-        public void ClickStarted(MouseEventArgs e, bool canMark)
+        public void ClickStarted(MouseEventArgs e)
         {
             if (_file != null && _drawer != null)
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!canMark)
+                    if (!_markPointRb.Checked && !_markAreaRb.Checked)
                     {
                         _pictureBox.Cursor = Cursors.SizeAll;
-                        _drag.StartTracing(e.Location, !canMark);
+                        _drag.StartTracing(e.Location, !_markPointRb.Checked);
                         return;
                     }
-                    MarkPoint(e.Location);
+                    else if (_markAreaRb.Checked)
+                    {
+                        _areaSelector.StartArea(e.Location, new Point(_horizontal.Value, _vertical.Value));
+                    }
+                    else if (_markPointRb.Checked)
+                    {
+                        _pointSelector.Add((RlViewer.Files.LocatorFile)_file, new System.Drawing.Point(e.X + _horizontal.Value, e.Y + _vertical.Value));
+                    }
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
@@ -367,16 +368,26 @@ namespace RlViewer.GuiFacade
                     }
                     DrawImage();
                 }
+                else if (_areaSelector != null && _markAreaRb.Checked)
+                {
+                    _areaSelector.ResizeArea(e);
+                    DrawItems();
+                }
+                
             }         
         }
 
 
         public void ClickFinished()
         {
-            if (_file != null &&  _drag != null)
+            if (_file != null && _drag != null)
             {
                 _pictureBox.Cursor = Cursors.Arrow;
                 _drag.StopTracing();
+                if (_areaSelector != null)
+                {
+                    _areaSelector.StopResizing();
+                }
             }
         }
 
@@ -403,7 +414,8 @@ namespace RlViewer.GuiFacade
                 File.SetAttributes(path, FileAttributes.Normal);
                 _file = null;
                 _drawer = null;
-                _selector = null;
+                _pointSelector = null;
+                _areaSelector = null;
                 System.Threading.Thread.Sleep(3000);
                 Directory.Delete(path, true);
             }

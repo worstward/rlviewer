@@ -39,13 +39,14 @@
             this.infoTabsControl.Size = new System.Drawing.Size(545, 351);
             this.infoTabsControl.TabIndex = 0;
             // 
-            // InfoFrm
+            // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(569, 375);
             this.Controls.Add(this.infoTabsControl);
-            this.Name = "InfoFrm";
+            this.Name = "InfoForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "InfoFrm";
             this.ResumeLayout(false);
 

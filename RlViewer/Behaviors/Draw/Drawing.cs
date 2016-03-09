@@ -19,20 +19,29 @@ namespace RlViewer.Behaviors.Draw
     /// </summary>
     public class Drawing
     {
-        
-
-        public Drawing(Size screenSize, RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, PointSelector.PointSelector selector)
+        public Drawing(Size screenSize, RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, 
+            PointSelector.PointSelector pointSelector, AreaSelector.AreaSelector areaSelector)
         {
             _filter = filter;
             _screenSize = screenSize;
-            _selector = selector;
+            _pointSelector = pointSelector;
+            _areaSelector = areaSelector;
             _canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
+
         }
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
-        private Bitmap _canvas;
+        private Image _canvas;
+
+        public Image Canvas
+        {
+            get { return _canvas; }
+        }
+
+
         private Size _screenSize;
-        private PointSelector.PointSelector _selector;
+        private PointSelector.PointSelector _pointSelector;
+        private AreaSelector.AreaSelector _areaSelector;
         private ColorPalette _colorPalette;
         
         private ColorPalette Palette
@@ -127,14 +136,34 @@ namespace RlViewer.Behaviors.Draw
                     g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height),
                         new Point(tile.LeftTopCoord.X - leftTopPointOfView.X, tile.LeftTopCoord.Y - leftTopPointOfView.Y));
                 }
-                DrawPoints(g, new RectangleF(leftTopPointOfView, _screenSize));
             }
-            return _canvas;
+            return DrawImage(_canvas, leftTopPointOfView);
         }
+
+        public Image DrawImage(Image canvas, Point leftTopPointOfView)
+        {
+            return DrawItems(canvas, leftTopPointOfView);
+        }
+
+
+        private Image DrawItems(Image canvas, Point leftTopPointOfView)
+        {
+            GC.Collect();
+            var screen = new RectangleF(leftTopPointOfView, _screenSize);
+            var img = (Image)canvas.Clone();
+            using (var g = Graphics.FromImage(img))
+            {
+                DrawPoints(g, screen);
+                DrawArea(g, screen);
+            }
+            return img;
+        }
+
+
 
         private void DrawPoints(Graphics g, RectangleF screen)
         {
-            foreach (var point in _selector)
+            foreach (var point in _pointSelector)
             {
                 if (screen.Contains(point.Location))
                 {
@@ -144,6 +173,15 @@ namespace RlViewer.Behaviors.Draw
                             (int)(point.Location.Y - screen.Location.Y), 1, 1));
                     }           
                 }
+            }
+        }
+
+        private void DrawArea(Graphics g, RectangleF screen)
+        {
+            using(var pen = new Pen(Palette.Entries[200]) {DashPattern = new float[] {5, 2, 15, 4}})
+            {
+                g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X), (int)(_areaSelector.Area.Location.Y - screen.Y),
+                    _areaSelector.Area.Width, _areaSelector.Area.Height);
             }
         }
 

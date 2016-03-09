@@ -16,5 +16,8 @@ namespace RlViewer.GuiFacade
         ProgressBar ProgressBar { get; }
         Label ProgressLabel { get; }
         Button CancelButton { get; }
+        RadioButton DragRb { get; }
+        RadioButton MarkPointRb { get; }
+        RadioButton MarkAreaRb { get; }
     }
 }
