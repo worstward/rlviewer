@@ -51,6 +51,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadCancelBtn = new System.Windows.Forms.Button();
             this.percentageLabel = new System.Windows.Forms.Label();
+            this.сохранитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -154,7 +155,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.сохранитьToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.fileToolStripMenuItem.Text = "Файл";
@@ -162,7 +164,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -185,14 +187,14 @@
             // оФайлеToolStripMenuItem
             // 
             this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.оФайлеToolStripMenuItem.Text = "О файле";
             this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
             // 
             // логToolStripMenuItem1
             // 
             this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.логToolStripMenuItem1.Text = "Лог";
             this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
@@ -292,6 +294,13 @@
             this.percentageLabel.TabIndex = 18;
             this.percentageLabel.Text = "0 %";
             // 
+            // сохранитьToolStripMenuItem
+            // 
+            this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.сохранитьToolStripMenuItem.Text = "Сохранить";
+            this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -352,6 +361,7 @@
         private System.Windows.Forms.RadioButton markAreaRb;
         private System.Windows.Forms.ToolStripMenuItem оФайлеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem логToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem сохранитьToolStripMenuItem;
     }
 }
 

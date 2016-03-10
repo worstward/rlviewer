@@ -206,5 +206,10 @@ namespace RlViewer.Forms
             guiFacade.ShowLog();
         }
 
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            guiFacade.Save();
+        }
+
     }
 }

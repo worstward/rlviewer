@@ -17,7 +17,7 @@ namespace RlViewer.Files.Rli.Concrete
             _header = new Brl4Header(properties.FilePath);
             Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Brl4 file opened: {0}", properties.FilePath));
         }
-        private FileHeader _header;
+        private Brl4Header _header;
 
         public override FileHeader Header
         {
@@ -27,12 +27,18 @@ namespace RlViewer.Files.Rli.Concrete
 
         public override int Height
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return _header.HeaderStruct.rlParams.height;
+            }
         }
 
         public override int Width
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return _header.HeaderStruct.rlParams.width;
+            }
         }
     }
 }

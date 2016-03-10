@@ -9,8 +9,19 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Rl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Rl4RliFileHeader
+    public struct Rl4RliFileHeader
     {
+        public Rl4RliFileHeader(byte[] fileSign, int fileVersion, Rl4RhgSubHeaderStruct rhgParams, 
+            Rl4RliSubHeaderStruct rlParams, Rl4SynthesisSubHeaderStruct synthParams, byte[] reserved)
+        {
+            this.fileSign = fileSign;
+            this.fileVersion = fileVersion;
+            this.rhgParams = rhgParams;
+            this.rlParams = rlParams;
+            this.synthParams = synthParams;
+            this.reserved = reserved;
+        }
+
         // signature
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] fileSign;

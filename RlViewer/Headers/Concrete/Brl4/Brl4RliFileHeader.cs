@@ -9,9 +9,10 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Brl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Brl4RliFileHeader
+    public struct Brl4RliFileHeader
     {
-        public Brl4RliFileHeader(byte[] fileSign, int fileVersion, Brl4RhgSubHeaderStruct rhgParams, Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, byte[] reserved)
+        public Brl4RliFileHeader(byte[] fileSign, int fileVersion, Brl4RhgSubHeaderStruct rhgParams,
+            Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, byte[] reserved)
         {
             this.fileSign = fileSign;
             this.fileVersion = fileVersion;
@@ -44,5 +45,9 @@ namespace RlViewer.Headers.Concrete.Brl4
         //
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]
         public byte[] reserved;
+
+       
+
+
     }
 }

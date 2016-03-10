@@ -144,6 +144,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             synthHeader.Add(new Tuple<string, string>("Шаг разложения по наклонной дальности, м", headerStruct.synthParams.dD.ToString()));
             synthHeader.Add(new Tuple<string, string>("Длина волны, м",                  headerStruct.synthParams.lambda.ToString()));
             synthHeader.Add(new Tuple<string, string>("Поляризация",                     headerStruct.synthParams.polarization.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Угол зондирования",               headerStruct.synthParams.angle_zond.ToString()));
             
             var comments = new List<Tuple<string, string>>();
             comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments)));

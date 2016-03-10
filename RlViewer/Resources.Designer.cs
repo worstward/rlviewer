@@ -73,9 +73,18 @@ namespace RlViewer {
         /// <summary>
         ///   Looks up a localized string similar to Локационные файлы |*.k;*.rl4;*.brl4;*.raw|Файлы голограмм (*.k)|*.k|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw.
         /// </summary>
-        internal static string Filter {
+        internal static string OpenFilter {
             get {
-                return ResourceManager.GetString("Filter", resourceCulture);
+                return ResourceManager.GetString("OpenFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw.
+        /// </summary>
+        internal static string SaveFilter {
+            get {
+                return ResourceManager.GetString("SaveFilter", resourceCulture);
             }
         }
     }

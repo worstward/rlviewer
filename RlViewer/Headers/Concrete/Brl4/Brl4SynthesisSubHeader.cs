@@ -9,7 +9,7 @@ namespace RlViewer.Headers.Concrete.Brl4
 {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Brl4SynthesisSubHeaderStruct
+    public struct Brl4SynthesisSubHeaderStruct
     {
         // алгоритм синтеза
         public byte processAlgorithm; // 255
@@ -104,6 +104,9 @@ namespace RlViewer.Headers.Concrete.Brl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1453)]
         public byte[] reserved5;
+
+
+
     }
 
 

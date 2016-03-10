@@ -19,7 +19,7 @@ namespace RlViewer.Factories.TileCreator.Abstract
             switch (properties.Type)
             {
                 case FileType.brl4:
-                    throw new NotSupportedException("Implement me");
+                    return new Brl4TileCreatorFactory();
                 case FileType.rl4:
                     return new Rl4TileCreatorFactory();
                 case FileType.raw:

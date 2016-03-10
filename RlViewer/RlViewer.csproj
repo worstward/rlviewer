@@ -47,11 +47,14 @@
   <ItemGroup>
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
-    <Compile Include="Behaviors\Converters\Rl4ToBrl4.cs" />
+    <Compile Include="Behaviors\Converters\Converter.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
-    <Compile Include="Behaviors\Saving\Saver.cs" />
+    <Compile Include="Behaviors\Saving\Abstract\Saver.cs" />
+    <Compile Include="Behaviors\Saving\Concrete\Brl4Saver.cs" />
+    <Compile Include="Behaviors\Saving\Concrete\Rl4Saver.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\Brl4TileCreator.cs" />
     <Compile Include="Facades\DrawerFacade.cs" />
     <Compile Include="Behaviors\Draw\ImageDrawer.cs" />
     <Compile Include="Behaviors\Draw\ItemDrawer.cs" />
@@ -69,6 +72,7 @@
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="ConvertHelper.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\Brl4TileCreatorFactory.cs" />
     <Compile Include="Forms\EprInputForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -184,6 +188,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

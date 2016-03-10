@@ -121,7 +121,10 @@
   <data name="EmptyTile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>bin\Debug\EmptyTile.tl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Filter" xml:space="preserve">
+  <data name="OpenFilter" xml:space="preserve">
     <value>Локационные файлы |*.k;*.rl4;*.brl4;*.raw|Файлы голограмм (*.k)|*.k|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw</value>
+  </data>
+  <data name="SaveFilter" xml:space="preserve">
+    <value>Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw</value>
   </data>
 </root>

@@ -8,44 +8,40 @@ using System.Runtime.InteropServices;
 
 namespace RlViewer.Headers.Concrete.Rl4
 {
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Rl4StrHeaderStruct
+    public struct Rl4StrHeaderStruct
     {
         [MarshalAs(UnmanagedType.I1)]
-	    bool isNavigation;
+	    public bool isNavigation;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-	    byte[] time;
+        public byte[] time;
 
-        double Vx;
-        double Vy;
-        double Vz;
+        public double Vx;
+        public double Vy;
+        public double Vz;
 
-	    double latitude;
-	    double longtitude;
+        public double latitude;
+        public double longtitude;
 
-	    double H;
-	    double V;
+        public double H;
+        public double V;
 
-	    double Ve;
-	    double Vn;
+        public double Ve;
+        public double Vn;
 
-	    double a;
+        public double a;
 
-	    double g;
-	    double f;
-	    double w;
+        public double g;
+        public double f;
+        public double w;
 
-	    double Vu;
+        public double Vu;
 
-	    double WH;
+        public double WH;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 119)]
-        byte[] reserved;
-
-       
-
+        public byte[] reserved;
     }
 
 }

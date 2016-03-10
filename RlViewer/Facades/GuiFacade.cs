@@ -16,19 +16,10 @@ namespace RlViewer.Facades
     {
         public GuiFacade(ISuitableForm form)
         {
-            _pictureBox      = form.Canvas;
-            _horizontal      = form.Horizontal;
-            _vertical        = form.Vertical;
-            _filterTrackbar  = form.TrackBar;
-            _progressBar     = form.ProgressBar;
-            _progressLabel   = form.ProgressLabel;
-            _cancelButton    = form.CancelButton;
-            _markPointRb     = form.MarkPointRb;
-            _markAreaRb      = form.MarkAreaRb;
-
+            _form = form;
             _drag = new Behaviors.DragController();
             _loaderWorker = InitWorker();
-            _filterFacade = new ImageFilterFacade(_filterTrackbar);
+            _filterFacade = new ImageFilterFacade(_form.TrackBar);
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
 
             InitControls();
@@ -38,7 +29,9 @@ namespace RlViewer.Facades
         private Settings.Settings _settings = new Settings.Settings();
         private ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
-        
+        private Behaviors.Saving.Concrete.Rl4Saver _saver;
+
+
         internal ImageFilterFacade FilterFacade
         {
             get { return _filterFacade; }
@@ -52,20 +45,12 @@ namespace RlViewer.Facades
         private RlViewer.Behaviors.AreaSelector.AreaSelector _areaSelector;
         private RlViewer.Behaviors.DragController _drag;
 
-        private PictureBox _pictureBox;
-        private HScrollBar _horizontal;
-        private VScrollBar _vertical;
-        private TrackBar _filterTrackbar;
-        private ProgressBar _progressBar;
-        private Label _progressLabel;
-        private Button _cancelButton;
-        private RadioButton _markPointRb;
-        private RadioButton _markAreaRb;
+        private ISuitableForm _form;
 
         public string OpenFile()
         {
             string caption;
-            using (var openFileDlg = new OpenFileDialog() { Filter = Resources.Filter })
+            using (var openFileDlg = new OpenFileDialog() { Filter = Resources.OpenFilter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {                
@@ -80,7 +65,7 @@ namespace RlViewer.Facades
 
                         _file = null;
                         _drawer = null;
-                        _pictureBox.Image = null;
+                        _form.Canvas.Image = null;
                         _loaderWorker = InitWorker();    
 
                         properties = new Files.FileProperties(openFileDlg.FileName);
@@ -151,13 +136,13 @@ namespace RlViewer.Facades
         {
             if (_file != null)
             {
-                _progressBar.Value = 0;
-                _progressBar.Visible = true;
-                _progressLabel.Visible = true;
-                _progressLabel.Text = "0 %";
-                _cancelButton.Visible = true;
-                _horizontal.Visible = false;
-                _vertical.Visible = false;
+                _form.ProgressBar.Value = 0;
+                _form.ProgressBar.Visible = true;
+                _form.ProgressLabel.Visible = true;
+                _form.ProgressLabel.Text = "0 %";
+                _form.CancelButton.Visible = true;
+                _form.Horizontal.Visible = false;
+                _form.Vertical.Visible = false;
                 _loaderWorker.RunWorkerAsync();
                 //Task.Run(() =>
                 //{
@@ -199,9 +184,9 @@ namespace RlViewer.Facades
 
 
         private void _loaderWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
-        {         
-            _progressBar.Value = e.ProgressPercentage;
-            _progressLabel.Text = string.Format("{0} %", e.ProgressPercentage.ToString());
+        {
+            _form.ProgressBar.Value = e.ProgressPercentage;
+            _form.ProgressLabel.Text = string.Format("{0} %", e.ProgressPercentage.ToString());
         }
 
         private void _loaderWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -210,9 +195,9 @@ namespace RlViewer.Facades
             {
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
-                _progressBar.Visible = false;
-                _progressLabel.Visible = false;
-                _cancelButton.Visible = false;
+                _form.ProgressBar.Visible = false;
+                _form.ProgressLabel.Visible = false;
+                _form.CancelButton.Visible = false;
                 InitDrawImage();
             }
         }
@@ -221,11 +206,11 @@ namespace RlViewer.Facades
         {
             if (_file != null)
             {
-                if (_markPointRb.Checked)
+                if (_form.MarkPointRb.Checked)
                 {
                     _pointSelector.RemoveLast();
                 }
-                else if (_markAreaRb.Checked)
+                else if (_form.MarkAreaRb.Checked)
                 {
                     _areaSelector.ResetArea();
                 }
@@ -236,11 +221,11 @@ namespace RlViewer.Facades
 
         public void InitDrawImage()
         {
-            if (_pictureBox.Size.Width != 0 && _pictureBox.Size.Height != 0 && _tiles != null)
+            if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null)
             {
                 RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter);
                 RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector);
-                _drawer = new RlViewer.Facades.DrawerFacade(_pictureBox.Size, iDrawer, tDrawer);
+                _drawer = new RlViewer.Facades.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 InitScrollBars();
@@ -252,8 +237,8 @@ namespace RlViewer.Facades
         {
             if (_file != null && _drawer != null && _tiles != null)
             {
-                _pictureBox.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+                _form.Canvas.Image = _drawer.Draw(_tiles,
+                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -261,7 +246,7 @@ namespace RlViewer.Facades
         {
             if (_file != null && _drawer != null)
             {
-                _pictureBox.Image = _drawer.Draw(new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+                _form.Canvas.Image = _drawer.Draw(new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -272,30 +257,50 @@ namespace RlViewer.Facades
                 _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed);
                 if (_file != null && _tiles != null)
                 {
-                    _pictureBox.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_horizontal.Value, _vertical.Value));
+                    _form.Canvas.Image = _drawer.Draw(_tiles,
+                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
                 }
             }
         }
-        
+
+        public void Save()
+        {
+            if (_file != null)
+            {
+                using (var sfd = new SaveFileDialog())
+                {
+                    sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
+                    sfd.Filter = Resources.SaveFilter;
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                       
+                        var loc = _file as RlViewer.Files.LocatorFile;
+                        _saver = new Behaviors.Saving.Concrete.Rl4Saver(loc);
+                        _saver.Save(sfd.FileName, FileType.brl4, new Point(0, 0), new Size(loc.Width, loc.Height));
+                    }
+                }
+            }
+
+        }
+
 
         private void InitControls()
         {
-            _pictureBox.Image = null;
-            _horizontal.Visible = false;
-            _vertical.Visible = false;
+            _form.Canvas.Image = null;
+            _form.Horizontal.Visible = false;
+            _form.Vertical.Visible = false;
 
-            _filterTrackbar.SmallChange = 1;
-            _filterTrackbar.LargeChange = 1;
-            _filterTrackbar.Minimum = -16;
-            _filterTrackbar.Maximum = 16;
-            _filterTrackbar.Value = 0;
+            _form.TrackBar.SmallChange = 1;
+            _form.TrackBar.LargeChange = 1;
+            _form.TrackBar.Minimum = -16;
+            _form.TrackBar.Maximum = 16;
+            _form.TrackBar.Value = 0;
 
-            _progressBar.Minimum = 0;
-            _progressBar.Maximum = 100;
-            _progressBar.Visible = false;
-            _progressLabel.Visible = false;
-            _cancelButton.Visible = false;
+            _form.ProgressBar.Minimum = 0;
+            _form.ProgressBar.Maximum = 100;
+            _form.ProgressBar.Visible = false;
+            _form.ProgressLabel.Visible = false;
+            _form.CancelButton.Visible = false;
         }
 
         private void ErrorGuiMessage(string message)
@@ -318,12 +323,12 @@ namespace RlViewer.Facades
             //}, TaskScheduler.FromCurrentSynchronizationContext());
 
             var f = _file as RlViewer.Files.LocatorFile;
-            var horMax = f.Width - _pictureBox.Size.Width;
-            var verMax = f.Height - _pictureBox.Size.Height;
-            _horizontal.Maximum = horMax > 0 ? horMax : 0;
-            _vertical.Maximum = verMax > 0 ? verMax : 0;
-            _horizontal.Visible = _horizontal.Maximum > 0 ? true : false;
-            _vertical.Visible = _vertical.Maximum > 0 ? true : false;
+            var horMax = f.Width - _form.Canvas.Size.Width;
+            var verMax = f.Height - _form.Canvas.Size.Height;
+            _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
+            _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
+            _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
+            _form.Vertical.Visible = _form.Vertical.Maximum > 0 ? true : false;
         }
 
 
@@ -333,25 +338,26 @@ namespace RlViewer.Facades
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!_markPointRb.Checked && !_markAreaRb.Checked)
+                    if (!_form.MarkPointRb.Checked && !_form.MarkAreaRb.Checked)
                     {
-                        _pictureBox.Cursor = Cursors.SizeAll;
-                        _drag.StartTracing(e.Location, !_markPointRb.Checked);
+                        _form.Canvas.Cursor = Cursors.SizeAll;
+                        _drag.StartTracing(e.Location, !_form.MarkPointRb.Checked);
                         return;
                     }
-                    else if (_markAreaRb.Checked)
+                    else if (_form.MarkAreaRb.Checked)
                     {
 
-                        _areaSelector.StartArea(e.Location, new Point(_horizontal.Value, _vertical.Value));
+                        _areaSelector.StartArea(e.Location, new Point(_form.Horizontal.Value, _form.Vertical.Value));
                     }
-                    else if (_markPointRb.Checked)
+                    else if (_form.MarkPointRb.Checked)
                     {
-                        _pointSelector.AddManualVal((RlViewer.Files.LocatorFile)_file, new System.Drawing.Point(e.X + _horizontal.Value, e.Y + _vertical.Value));
+                        _pointSelector.AddManualVal((RlViewer.Files.LocatorFile)_file,
+                            new System.Drawing.Point(e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value));
                     }
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
-                    _pictureBox.Cursor = Cursors.SizeAll;
+                    _form.Canvas.Cursor = Cursors.SizeAll;
                     _drag.StartTracing(e.Location, true);
                 }
             }
@@ -364,17 +370,17 @@ namespace RlViewer.Facades
             {
                 if (_drag.Trace(e.Location))
                 {
-                    if ((_vertical.Value - _drag.Delta.Y) >= 0 && (_vertical.Value - _drag.Delta.Y) < _vertical.Maximum)
+                    if ((_form.Vertical.Value - _drag.Delta.Y) >= 0 && (_form.Vertical.Value - _drag.Delta.Y) < _form.Vertical.Maximum)
                     {
-                        _vertical.Value -= _drag.Delta.Y;
+                        _form.Vertical.Value -= _drag.Delta.Y;
                     }
-                    if ((_horizontal.Value - _drag.Delta.X) >= 0 && (_horizontal.Value - _drag.Delta.X) < _horizontal.Maximum)
+                    if ((_form.Horizontal.Value - _drag.Delta.X) >= 0 && (_form.Horizontal.Value - _drag.Delta.X) < _form.Horizontal.Maximum)
                     {
-                        _horizontal.Value -= _drag.Delta.X;
+                        _form.Horizontal.Value -= _drag.Delta.X;
                     }
                     DrawImage();
                 }
-                else if (_areaSelector != null && _markAreaRb.Checked)
+                else if (_areaSelector != null && _form.MarkAreaRb.Checked)
                 {
                     _areaSelector.ResizeArea(e);
                     DrawItems();
@@ -388,7 +394,7 @@ namespace RlViewer.Facades
         {
             if (_file != null && _drag != null)
             {
-                _pictureBox.Cursor = Cursors.Arrow;
+                _form.Canvas.Cursor = Cursors.Arrow;
                 _drag.StopTracing();
                 if (_areaSelector != null)
                 {
