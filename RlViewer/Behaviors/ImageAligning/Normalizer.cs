@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.Saving
+namespace RlViewer.Behaviors.ImageAligning
 {
-    abstract class Saver
+    class Normalizer
     {
-        public abstract void Save();
+ 
 
     }
 }

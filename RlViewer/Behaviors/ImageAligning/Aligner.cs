@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.Navigation
+namespace RlViewer.Behaviors.ImageAligning
 {
-    interface INavigatable
+    class Aligning
     {
     }
 }

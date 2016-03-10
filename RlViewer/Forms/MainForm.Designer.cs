@@ -1,4 +1,4 @@
-﻿namespace RlViewer
+﻿namespace RlViewer.Forms
 {
     partial class MainForm
     {
@@ -34,11 +34,14 @@
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.markAreaRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.логToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gammaCorrRb = new System.Windows.Forms.RadioButton();
             this.contrastRb = new System.Windows.Forms.RadioButton();
@@ -48,7 +51,6 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadCancelBtn = new System.Windows.Forms.Button();
             this.percentageLabel = new System.Windows.Forms.Label();
-            this.markAreaRb = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -125,6 +127,18 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             // 
+            // markAreaRb
+            // 
+            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markAreaRb.AutoSize = true;
+            this.markAreaRb.Location = new System.Drawing.Point(107, 19);
+            this.markAreaRb.Name = "markAreaRb";
+            this.markAreaRb.Size = new System.Drawing.Size(60, 23);
+            this.markAreaRb.TabIndex = 7;
+            this.markAreaRb.TabStop = true;
+            this.markAreaRb.Text = "Область";
+            this.markAreaRb.UseVisualStyleBackColor = true;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -161,10 +175,26 @@
             // 
             // infoToolStripMenuItem
             // 
+            this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.оФайлеToolStripMenuItem,
+            this.логToolStripMenuItem1});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.infoToolStripMenuItem.Text = "Инфо";
-            this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
+            // 
+            // оФайлеToolStripMenuItem
+            // 
+            this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.оФайлеToolStripMenuItem.Text = "О файле";
+            this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
+            // 
+            // логToolStripMenuItem1
+            // 
+            this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.логToolStripMenuItem1.Text = "Лог";
+            this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
             // groupBox2
             // 
@@ -262,18 +292,6 @@
             this.percentageLabel.TabIndex = 18;
             this.percentageLabel.Text = "0 %";
             // 
-            // markAreaRb
-            // 
-            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markAreaRb.AutoSize = true;
-            this.markAreaRb.Location = new System.Drawing.Point(107, 19);
-            this.markAreaRb.Name = "markAreaRb";
-            this.markAreaRb.Size = new System.Drawing.Size(60, 23);
-            this.markAreaRb.TabIndex = 7;
-            this.markAreaRb.TabStop = true;
-            this.markAreaRb.Text = "Область";
-            this.markAreaRb.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -332,6 +350,8 @@
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
         private System.Windows.Forms.Label percentageLabel;
         private System.Windows.Forms.RadioButton markAreaRb;
+        private System.Windows.Forms.ToolStripMenuItem оФайлеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem логToolStripMenuItem1;
     }
 }
 

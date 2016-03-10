@@ -46,7 +46,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             if (tiles != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
-                    string.Format("Tile creation process succeed. {0} tiles generated", tiles.Length));
+                    string.Format("Tile creation process succeed. {0} {1} generated", tiles.Length, tiles.Length == 1 ? "tile" : "tiles"));
             }
             else
             {

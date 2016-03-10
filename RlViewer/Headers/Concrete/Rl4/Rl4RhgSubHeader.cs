@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Rl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct RhgSubHeaderStruct
+    struct Rl4RhgSubHeaderStruct
     {
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
@@ -49,5 +49,16 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
         public byte[] reserved3;
+
+
+        public static explicit operator RlViewer.Headers.Concrete.Brl4.Brl4RhgSubHeaderStruct(Rl4RhgSubHeaderStruct rl4SynthSubHeader)
+        {
+            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RhgSubHeaderStruct>(rl4SynthSubHeader);
+
+            using (var ms = new System.IO.MemoryStream(headerStructArr))
+            {
+                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RhgSubHeaderStruct>(ms);
+            }
+        }
     }
 }

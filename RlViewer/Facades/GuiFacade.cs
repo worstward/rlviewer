@@ -10,7 +10,7 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
 
-namespace RlViewer.GuiFacade
+namespace RlViewer.Facades
 {
     public class GuiFacade
     {
@@ -47,7 +47,7 @@ namespace RlViewer.GuiFacade
         private Files.LoadedFile _file;
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
-        private RlViewer.Behaviors.Draw.Drawer _drawer;
+        private RlViewer.Facades.DrawerFacade _drawer;
         private RlViewer.Behaviors.PointSelector.PointSelector _pointSelector;
         private RlViewer.Behaviors.AreaSelector.AreaSelector _areaSelector;
         private RlViewer.Behaviors.DragController _drag;
@@ -69,7 +69,6 @@ namespace RlViewer.GuiFacade
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {                
-                
                     Files.FileProperties properties = null;
 
                     try
@@ -100,6 +99,7 @@ namespace RlViewer.GuiFacade
                 {
                     caption = string.Empty;
                 }
+
                 LoadFile();
                 return caption;
             }
@@ -139,7 +139,7 @@ namespace RlViewer.GuiFacade
         {
             if(_file != null)
             {
-                using (var iFrm = new InfoForm(_info))
+                using (var iFrm = new Forms.InfoForm(_info))
                 {                   
                     iFrm.ShowDialog();
                 }
@@ -240,7 +240,7 @@ namespace RlViewer.GuiFacade
             {
                 RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter);
                 RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector);
-                _drawer = new Behaviors.Draw.Drawer(_pictureBox.Size, iDrawer, tDrawer);
+                _drawer = new RlViewer.Facades.DrawerFacade(_pictureBox.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 InitScrollBars();
@@ -341,6 +341,7 @@ namespace RlViewer.GuiFacade
                     }
                     else if (_markAreaRb.Checked)
                     {
+
                         _areaSelector.StartArea(e.Location, new Point(_horizontal.Value, _vertical.Value));
                     }
                     else if (_markPointRb.Checked)
@@ -398,7 +399,7 @@ namespace RlViewer.GuiFacade
 
         public void ShowSettings()
         {
-            using (var settgingsForm = new SettingsForm(_settings))
+            using (var settgingsForm = new Forms.SettingsForm(_settings))
             {
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -407,6 +408,15 @@ namespace RlViewer.GuiFacade
 
             }
         }
+
+        public void ShowLog()
+        {
+            using (var logForm = new Forms.LogForm())
+            {
+                logForm.ShowDialog();
+            }
+        }
+
 
         private void ClearCancelledFileTiles()
         {

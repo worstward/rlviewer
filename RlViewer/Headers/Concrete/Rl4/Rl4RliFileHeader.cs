@@ -20,17 +20,20 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         // rhg subheader
         [MarshalAs(UnmanagedType.Struct)]
-        public RhgSubHeaderStruct rhgParams;
+        public Rl4RhgSubHeaderStruct rhgParams;
 
         // rli subheader
         [MarshalAs(UnmanagedType.Struct)]
-        public Rl4SubHeaderStruct rlParams;
+        public Rl4RliSubHeaderStruct rlParams;
 
         // synthesis subheader
         [MarshalAs(UnmanagedType.Struct)]
-        public SynthesisSubHeaderStruct synthParams;
+        public Rl4SynthesisSubHeaderStruct synthParams;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]
         public byte[] reserved;
+
+
+        
     }
 }

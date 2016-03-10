@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-namespace RlViewer
+namespace RlViewer.Forms
 {
-    public partial class MainForm : Form, RlViewer.GuiFacade.ISuitableForm
+    public partial class MainForm : Form, RlViewer.Facades.ISuitableForm
     {
 
         public MainForm()
         {
             InitializeComponent();
-            guiFacade = new GuiFacade.GuiFacade(this);
+            guiFacade = new Facades.GuiFacade(this);
             brightnessRb.Checked = true;
             this.Text = string.Empty;
         }
 
-        GuiFacade.GuiFacade guiFacade;
+        Facades.GuiFacade guiFacade;
 
         public PictureBox Canvas
         {
@@ -190,14 +190,20 @@ namespace RlViewer
             guiFacade.CancelLoading();
         }
 
-        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            guiFacade.ShowFileInfo();
-        }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             guiFacade.ProceedKeyPress(e);
+        }
+
+        private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            guiFacade.ShowFileInfo();
+        }
+
+        private void логToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            guiFacade.ShowLog();
         }
 
     }

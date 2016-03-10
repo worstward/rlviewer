@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using RlViewer.Files;
 using RlViewer.Headers.Concrete.Rl4;
+using RlViewer.Behaviors.Converters;
 
 
 namespace RlViewer.Headers.Concrete.Rl4

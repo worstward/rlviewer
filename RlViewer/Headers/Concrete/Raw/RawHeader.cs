@@ -61,7 +61,7 @@ namespace RlViewer.Headers.Concrete.Raw
             {
                 if (_imgSize.Width == 0 || _imgSize.Height == 0)
                 {
-                    using(var sizeFrm = new SizeForm())
+                    using(var sizeFrm = new Forms.SizeForm())
                     {
                         if (sizeFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {

@@ -19,11 +19,11 @@ namespace RlViewer.Behaviors.PointSelector
         {
             if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
             {
-                using (EprInputForm epr = new EprInputForm())
+                using (Forms.EprInputForm epr = new Forms.EprInputForm())
                 {
                     if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        _selectedPoints.Add(new SelectedPoint(location, epr.EprValue));
+                        _selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
                     }
                 }                
             }
@@ -34,14 +34,14 @@ namespace RlViewer.Behaviors.PointSelector
             _selectedPoints.Add(selectedPoint);
         }
 
-        public void AddFileVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
-        {
-            //if we hit the image
-            if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
-            {
-                _selectedPoints.Add(new SelectedPoint(file, location));
-            }
-        }
+        //public void AddFileVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        //{
+        //    //if we hit the image
+        //    if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
+        //    {
+        //        _selectedPoints.Add(new SelectedPoint(file, location));
+        //    }
+        //}
 
         public void RemoveLast()
         {

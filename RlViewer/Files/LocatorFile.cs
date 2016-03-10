@@ -32,5 +32,19 @@ namespace RlViewer.Files
             handle.Free();
             return temp;
         }
+
+        public static byte[] WriteStruct<T>(T str)
+        {
+            int size = Marshal.SizeOf(typeof(T));
+            byte[] arr = new byte[size];
+
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(str, ptr, true);
+            Marshal.Copy(ptr, arr, 0, size);
+            Marshal.FreeHGlobal(ptr);
+            return arr;
+        }
+
+
     }
 }

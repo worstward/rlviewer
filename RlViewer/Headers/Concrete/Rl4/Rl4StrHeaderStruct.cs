@@ -43,6 +43,9 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 119)]
         byte[] reserved;
+
+       
+
     }
 
 }

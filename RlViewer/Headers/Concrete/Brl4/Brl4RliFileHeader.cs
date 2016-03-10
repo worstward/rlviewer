@@ -11,6 +11,17 @@ namespace RlViewer.Headers.Concrete.Brl4
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct Brl4RliFileHeader
     {
+        public Brl4RliFileHeader(byte[] fileSign, int fileVersion, Brl4RhgSubHeaderStruct rhgParams, Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, byte[] reserved)
+        {
+            this.fileSign = fileSign;
+            this.fileVersion = fileVersion;
+            this.rhgParams = rhgParams;
+            this.rlParams = rlParams;
+            this.synthParams = synthParams;
+            this.reserved = reserved;
+        }
+
+
         // сигнатура
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] fileSign;
@@ -20,15 +31,15 @@ namespace RlViewer.Headers.Concrete.Brl4
 
         // подзаголовок РГГ
         [MarshalAs(UnmanagedType.Struct)]
-        public RhgSubHeaderStruct rhgParams;
+        public Brl4RhgSubHeaderStruct rhgParams;
 
         // подзаголовок РЛИ
         [MarshalAs(UnmanagedType.Struct)]
-        public Rl4SubHeaderStruct rlParams;
+        public Brl4RliSubHeaderStruct rlParams;
 
         // подзаголовок параметров синтеза
         [MarshalAs(UnmanagedType.Struct)]
-        public SynthesisSubHeaderStruct synthParams;
+        public Brl4SynthesisSubHeaderStruct synthParams;
 
         //
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]

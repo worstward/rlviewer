@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RlViewer
+namespace RlViewer.Forms
 {
     public partial class InfoForm : Form
     {

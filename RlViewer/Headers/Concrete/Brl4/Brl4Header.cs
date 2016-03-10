@@ -104,6 +104,9 @@ namespace RlViewer.Headers.Concrete.Brl4
                 throw aex;
             }
 
+            
+
+
             var rhgHeader = new List<Tuple<string, string>>();
 
             var fname = string.IsNullOrEmpty(Path.GetFileName(Encoding.UTF8.GetString(headerStruct.rhgParams.fileName).Trim('\0'))) ?

@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Draw
 {
-    class ItemDrawer
+    class ItemDrawer : ImageDrawer
     {
         public ItemDrawer(PointSelector.PointSelector pointSelector, AreaSelector.AreaSelector areaSelector)
         {
@@ -18,7 +18,7 @@ namespace RlViewer.Behaviors.Draw
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
 
-        public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize, Color selectionColor)
+        public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
         {
             GC.Collect();
 
@@ -27,7 +27,7 @@ namespace RlViewer.Behaviors.Draw
             using (var g = Graphics.FromImage(img))
             {
                 DrawPoints(g, screen);
-                DrawArea(g, screen, selectionColor);
+                DrawArea(g, screen);
             }
             return img;
         }
@@ -48,9 +48,9 @@ namespace RlViewer.Behaviors.Draw
             }
         }
 
-        private void DrawArea(Graphics g, RectangleF screen, Color selectionColor)
+        private void DrawArea(Graphics g, RectangleF screen)
         {
-            using (var pen = new Pen(selectionColor) { DashPattern = new float[] { 5, 2, 15, 4 } })
+            using (var pen = new Pen(Palette.Entries[240]) { DashPattern = new float[] { 5, 2, 15, 4 } })
             {
                 g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X), (int)(_areaSelector.Area.Location.Y - screen.Y),
                     _areaSelector.Area.Width, _areaSelector.Area.Height);

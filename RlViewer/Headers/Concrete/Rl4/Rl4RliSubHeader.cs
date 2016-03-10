@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Rl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct Rl4SubHeaderStruct
+    struct Rl4RliSubHeaderStruct
     {
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
@@ -82,5 +82,19 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
         public byte[] reserved4;
+
+
+        public static explicit operator RlViewer.Headers.Concrete.Brl4.Brl4RliSubHeaderStruct(Rl4RliSubHeaderStruct rl4RliSubHeader)
+        {
+            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(rl4RliSubHeader);
+
+            using (var ms = new System.IO.MemoryStream(headerStructArr))
+            {
+                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliSubHeaderStruct>(ms);
+            }
+        }
+
+
+
     }
 }

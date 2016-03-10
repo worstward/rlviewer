@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Brl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct RhgSubHeaderStruct
+    struct Brl4RhgSubHeaderStruct
     {
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]

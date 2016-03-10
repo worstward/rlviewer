@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.Draw
     /// <summary>
     /// Incapsulates image output functions
     /// </summary>
-    public class TileDrawer
+    public class TileDrawer : ImageDrawer
     {
         public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter)
         {
@@ -33,7 +33,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="tiles">Array of Tile objects</param>
         /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
         /// <returns></returns>       
-        public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize, ColorPalette palette)
+        public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, screenSize.Width, screenSize.Height)).ToArray();
 
@@ -42,7 +42,7 @@ namespace RlViewer.Behaviors.Draw
             {
                 foreach (var tile in visibleTiles)
                 {
-                    g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, palette),
+                    g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette),
                         new Point(tile.LeftTopCoord.X - leftTopPointOfView.X, tile.LeftTopCoord.Y - leftTopPointOfView.Y));
                 }
             }

@@ -6,31 +6,19 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-
 namespace RlViewer.Behaviors.Draw
 {
-    class Drawer
+    public abstract class ImageDrawer
     {
-        public Drawer(Size screenSize, ItemDrawer iDrawer, TileDrawer tDrawer)
-        {
-            _screenSize = screenSize;
-            _iDrawer = iDrawer;
-            _tDrawer = tDrawer;
-            _canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
-        }
 
-        private ItemDrawer _iDrawer;
-        private TileDrawer _tDrawer;
-        private Size _screenSize;
-        private Image _canvas;
 
         private ColorPalette _colorPalette;
 
-        private ColorPalette Palette
+        public virtual ColorPalette Palette
         {
             get
             {
-                return _colorPalette ?? InitPalette(PaletteParams.Reversed);
+                return _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
             }
         }
 
@@ -39,31 +27,29 @@ namespace RlViewer.Behaviors.Draw
         /// Initializes look-up palette for 8bpp image
         /// </summary>
         /// <returns>Color palette</returns>
-        private ColorPalette InitPalette(bool isReversed)
+        private ColorPalette InitPalette(int rCoef, int gCoef, int bCoef, bool isReversed)
         {
             //TODO: REWRITE PALETTE INIT
             _colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
-            if (isReversed)
-            {
-                for (int i = 0; i < 256; i++)
-                {
-                    var r = PaletteParams.R * i;
-                    var g = PaletteParams.G * i;
-                    var b = PaletteParams.B * i;
-                    _colorPalette.Entries[255 - i] = Color.FromArgb(255, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 256; i++)
-                {
-                    var r = PaletteParams.R * i;
-                    var g = PaletteParams.G * i;
-                    var b = PaletteParams.B * i;
 
-                    _colorPalette.Entries[i] = Color.FromArgb(255, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+            const int transparency = 255;
+
+            for (int i = 0; i < 256; i++)
+            {
+                var r = rCoef * i;
+                var g = gCoef * i;
+                var b = bCoef * i;
+                if (isReversed)
+                {
+                    _colorPalette.Entries[255 - i] = Color.FromArgb(transparency, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                }
+                else
+                {
+                    _colorPalette.Entries[i] = Color.FromArgb(transparency, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                 }
             }
+
+
             return _colorPalette;
         }
 
@@ -89,15 +75,6 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
-        public Image Draw(TileCreator.Tile[] tiles, Point pointOfView)
-        {
-            return _iDrawer.DrawItems(_tDrawer.DrawImage(_canvas, tiles, pointOfView, _screenSize, Palette), pointOfView, _screenSize, Palette.Entries[240]);
-        }
-
-        public Image Draw(Point pointOfView)
-        {
-            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize, Palette.Entries[240]);
-        }
 
 
         private static class PaletteParams

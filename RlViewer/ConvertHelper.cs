@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace RlViewer
 {
-    static class Converters
+    static class ConvertHelper
     {
 
         /// <summary>
         /// Преобразует массив байт со структурой SYSTEMTIME в объект DateTime
-        /// </summary>
+        /// </summary>C
         /// <param name="timeArray">16 байт структуры SYSTEMTIME</param>
         /// <returns></returns>
         public static DateTime ToDateTime(this byte[] timeArray)

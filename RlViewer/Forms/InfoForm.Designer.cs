@@ -1,4 +1,4 @@
-﻿namespace RlViewer
+﻿namespace RlViewer.Forms
 {
     partial class InfoForm
     {

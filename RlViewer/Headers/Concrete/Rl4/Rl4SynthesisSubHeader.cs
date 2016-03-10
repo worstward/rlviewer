@@ -9,7 +9,7 @@ namespace RlViewer.Headers.Concrete.Rl4
 {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct SynthesisSubHeaderStruct
+    struct Rl4SynthesisSubHeaderStruct
     {
         // алгоритм синтеза
         public byte processAlgorithm; // 255
@@ -99,6 +99,18 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1453)]
         public byte[] reserved5;
+
+
+        public static explicit operator RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct(Rl4SynthesisSubHeaderStruct rl4SynthSubHeader)
+        {
+            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4SynthesisSubHeaderStruct>(rl4SynthSubHeader);
+
+            using (var ms = new System.IO.MemoryStream(headerStructArr))
+            {
+                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct>(ms);
+            }
+        }
+
     }
 
 }

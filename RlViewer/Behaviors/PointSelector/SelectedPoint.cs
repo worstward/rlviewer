@@ -10,10 +10,11 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class SelectedPoint
     {
-        public SelectedPoint(Point location, float value)
+        public SelectedPoint(RlViewer.Files.LocatorFile file, Point location, float epr)
         {
             _location = location;
-            _value = value;
+            _value = GetValue(file, location);
+            _epr = epr;
         }
 
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location)
@@ -28,14 +29,21 @@ namespace RlViewer.Behaviors.PointSelector
         {
             get { return _location; }
         }
-        private float _value;
 
+        private float _value;
         public float Value
         {
             get { return _value; }
             set { _value = value; }
         }
 
+
+        private float _epr;
+        public float Epr
+        {
+            get { return _epr; }
+            set { _epr = value; }
+        }
 
         public float GetValue(RlViewer.Files.LocatorFile file, Point p)
         {

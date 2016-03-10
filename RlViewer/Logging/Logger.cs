@@ -25,7 +25,8 @@ namespace RlViewer.Logging
         public static void Log(SeverityGrades severity, string message)
         {
             var logEntry = new LogEntry(DateTime.Now, severity, message);
-            Logs.Add(logEntry);
+
+            _logs.Add(logEntry);
             SaveEntry(logEntry);
         }
 
