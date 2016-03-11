@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Headers.Abstract
 {
-    public abstract class FileHeader
+    public abstract class LocatorFileHeader
     {
         /// <summary>
         /// Gets a byte sequence that identifies class of the input file

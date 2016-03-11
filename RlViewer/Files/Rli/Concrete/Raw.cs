@@ -20,7 +20,7 @@ namespace RlViewer.Files.Rli.Concrete
 
         private RawHeader _header;
 
-        public override FileHeader Header
+        public override LocatorFileHeader Header
         {
             get { return _header; }
         }

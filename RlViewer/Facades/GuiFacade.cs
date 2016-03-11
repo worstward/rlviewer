@@ -19,7 +19,7 @@ namespace RlViewer.Facades
             _form = form;
             _drag = new Behaviors.DragController();
             _loaderWorker = InitWorker();
-            _filterFacade = new ImageFilterFacade(_form.TrackBar);
+            _filterFacade = new ImageFilterFacade();
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
 
             InitControls();
@@ -31,11 +31,6 @@ namespace RlViewer.Facades
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
 
-
-        internal ImageFilterFacade FilterFacade
-        {
-            get { return _filterFacade; }
-        }
 
         private Files.LoadedFile _file;
         private HeaderInfoOutput[] _info;
@@ -137,6 +132,8 @@ namespace RlViewer.Facades
         {
             if (_file != null)
             {
+                _filterFacade.GetFilter("Brightness", 4);
+
                 _form.ProgressBar.Value = 0;
                 _form.ProgressBar.Visible = true;
                 _form.ProgressLabel.Visible = true;
@@ -264,6 +261,22 @@ namespace RlViewer.Facades
             }
         }
 
+        public void ToggleNavigation()
+        {
+            if (_form.NavigationCb.Checked)
+            {
+                _form.WorkingAreaSplitter.Panel2Collapsed = false;
+                _form.WorkingAreaSplitter.Panel2.Show();
+            }
+            else
+            {
+                _form.WorkingAreaSplitter.Panel2Collapsed = true;
+                _form.WorkingAreaSplitter.Panel2.Hide();
+            }
+            InitDrawImage();
+        }
+
+
         public void Save()
         {
             if (_file != null)
@@ -291,11 +304,11 @@ namespace RlViewer.Facades
             _form.Horizontal.Visible = false;
             _form.Vertical.Visible = false;
 
-            _form.TrackBar.SmallChange = 1;
-            _form.TrackBar.LargeChange = 1;
-            _form.TrackBar.Minimum = -16;
-            _form.TrackBar.Maximum = 16;
-            _form.TrackBar.Value = 0;
+            _form.FilterTrackBar.SmallChange = 1;
+            _form.FilterTrackBar.LargeChange = 1;
+            _form.FilterTrackBar.Minimum = -16;
+            _form.FilterTrackBar.Maximum = 16;
+            _form.FilterTrackBar.Value = 0;
 
             _form.ProgressBar.Minimum = 0;
             _form.ProgressBar.Maximum = 100;
@@ -333,6 +346,19 @@ namespace RlViewer.Facades
         }
 
 
+
+        public void ChangeFilterValue()
+        {
+            _filterFacade.ChangeFilterValue(_form.FilterTrackBar.Value);
+        }
+
+        public void GetFilter(string filterType, int filterDelta)
+        {
+            _filterFacade.GetFilter(filterType, filterDelta);
+            _form.FilterTrackBar.Value = _filterFacade.Filter.FilterValue >> filterDelta;
+        }
+
+        #region pictureBoxMouseHandlers
         public void ClickStarted(MouseEventArgs e)
         {
             if (_file != null && _drawer != null)
@@ -363,7 +389,6 @@ namespace RlViewer.Facades
                 }
             }
         }
-
 
         public void TraceMouseMovement(MouseEventArgs e)
         {
@@ -403,6 +428,8 @@ namespace RlViewer.Facades
                 }
             }
         }
+
+#endregion
 
         public void ShowSettings()
         {

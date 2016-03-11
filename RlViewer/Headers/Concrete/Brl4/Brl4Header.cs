@@ -7,7 +7,7 @@ using System.IO;
 
 namespace RlViewer.Headers.Concrete.Brl4
 {
-    class Brl4Header : RlViewer.Headers.Abstract.FileHeader
+    class Brl4Header : RlViewer.Headers.Abstract.LocatorFileHeader
     {
         public Brl4Header(string path)
         {

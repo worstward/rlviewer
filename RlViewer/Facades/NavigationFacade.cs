@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Hierarchy.Rhg.Abstract
+namespace RlViewer.Facades
 {
-    abstract class RhgFile : LocatorFile
+    class NavigationFacade
     {
     }
 }

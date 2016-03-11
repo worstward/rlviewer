@@ -74,6 +74,7 @@
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="ConvertHelper.cs" />
+    <Compile Include="Facades\NavigationFacade.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Brl4TileCreatorFactory.cs" />
     <Compile Include="Forms\EprInputForm.cs">
       <SubType>Form</SubType>

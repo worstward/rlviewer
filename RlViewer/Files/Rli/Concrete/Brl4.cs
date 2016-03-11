@@ -19,7 +19,7 @@ namespace RlViewer.Files.Rli.Concrete
         }
         private Brl4Header _header;
 
-        public override FileHeader Header
+        public override LocatorFileHeader Header
         {
             get { return _header; }
         }

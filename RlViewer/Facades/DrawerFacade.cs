@@ -34,7 +34,6 @@ namespace RlViewer.Facades
             _tDrawer.GetPalette(R, G, B, reversed);
         }
 
-
         public Image Draw(Tile[] tiles, Point pointOfView)
         {
             return _iDrawer.DrawItems(_tDrawer.DrawImage(_canvas, tiles, pointOfView, _screenSize), pointOfView, _screenSize);

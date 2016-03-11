@@ -16,9 +16,9 @@ namespace RlViewer.Files.Rhg.Concrete
             _header = new RhgKHeader(properties.FilePath);
         }
 
-        private FileHeader _header;
+        private LocatorFileHeader _header;
 
-        public override FileHeader Header
+        public override LocatorFileHeader Header
         {
             get { return _header; }
         }

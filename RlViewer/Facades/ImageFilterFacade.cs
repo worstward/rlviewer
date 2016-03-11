@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Facades
 {
+
     class ImageFilterFacade
     {
-        public ImageFilterFacade(System.Windows.Forms.TrackBar filterTrackBar)
-        {
-            _filterTrackBar = filterTrackBar;
-        }
 
-        private System.Windows.Forms.TrackBar _filterTrackBar;
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
 
         public RlViewer.Behaviors.Filters.Abstract.ImageFiltering Filter
@@ -29,12 +25,12 @@ namespace RlViewer.Facades
         {
             _filterDelta = filterDelta;
             _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).GetFilter();
-            _filterTrackBar.Value = _filter.FilterValue >> _filterDelta;
+
         }
 
-        public void ChangeFilterValue()
+        public void ChangeFilterValue(int value)
         {
-            _filter.FilterValue = _filterTrackBar.Value << _filterDelta;
+            _filter.FilterValue = value << _filterDelta;
         }
     }
 }

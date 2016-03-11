@@ -9,6 +9,6 @@ namespace RlViewer.Headers.Abstract
 {
     interface IHeader
     {
-        FileHeader Header { get; }
+        LocatorFileHeader Header { get; }
     }
 }

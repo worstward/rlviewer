@@ -18,7 +18,7 @@ namespace RlViewer.Files
 
         }
 
-        public abstract FileHeader Header { get; }
+        public abstract LocatorFileHeader Header { get; }
 
         public abstract int Width { get; }
         public abstract int Height { get; }

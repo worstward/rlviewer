@@ -18,12 +18,13 @@ namespace RlViewer.Forms
         {
             InitializeComponent();
             guiFacade = new Facades.GuiFacade(this);
-            brightnessRb.Checked = true;
             this.Text = string.Empty;
         }
 
+
         Facades.GuiFacade guiFacade;
 
+        #region ISuitableForm controls
         public PictureBox Canvas
         {
             get
@@ -46,7 +47,7 @@ namespace RlViewer.Forms
                 return vScrollBar1;
             }
         }
-        public TrackBar TrackBar
+        public TrackBar FilterTrackBar
         {
             get
             {
@@ -98,14 +99,35 @@ namespace RlViewer.Forms
             }
         }
 
+        public CheckBox NavigationCb
+        {
+            get
+            {
+                return checkBox1;
+            }
+        }
 
+        public DataGridView NavigationDgv
+        {
+            get
+            {
+                return dataGridView1;
+            }
+        }
 
+        public SplitContainer WorkingAreaSplitter
+        {
+            get
+            {
+                return splitContainer1;
+            }
+        }
+        #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Text = guiFacade.OpenFile();
         }
-
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
@@ -116,7 +138,6 @@ namespace RlViewer.Forms
         {
             guiFacade.DrawImage();
         }
-
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
@@ -141,38 +162,37 @@ namespace RlViewer.Forms
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            guiFacade.FilterFacade.ChangeFilterValue();
+            guiFacade.ChangeFilterValue();
             guiFacade.DrawImage();
             filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
         private void contrastRb_CheckedChanged(object sender, EventArgs e)
          {
-            if (contrastRb.Checked)
+            if(((RadioButton)sender).Checked)
             {
-                guiFacade.FilterFacade.GetFilter("Contrast", 4);
+                guiFacade.GetFilter("Contrast", 4);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
         private void gammaCorrRb_CheckedChanged(object sender, EventArgs e)
         {
-            if (gammaCorrRb.Checked)
+            if (((RadioButton)sender).Checked)
             {
-                guiFacade.FilterFacade.GetFilter("Gamma Correction", 0);
+                guiFacade.GetFilter("Gamma Correction", 0);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
         private void brightnessRb_CheckedChanged(object sender, EventArgs e)
         {
-            if (brightnessRb.Checked)
+            if (((RadioButton)sender).Checked)
             {
-                guiFacade.FilterFacade.GetFilter("Brightness", 4);
+                guiFacade.GetFilter("Brightness", 4);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
-
 
         private void loadCancelBtn_Click(object sender, EventArgs e)
         {
@@ -189,7 +209,6 @@ namespace RlViewer.Forms
         {
             guiFacade.CancelLoading();
         }
-
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -210,6 +229,17 @@ namespace RlViewer.Forms
         {
             guiFacade.Save();
         }
+
+        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            guiFacade.InitDrawImage();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            guiFacade.ToggleNavigation();
+        }
+
 
     }
 }

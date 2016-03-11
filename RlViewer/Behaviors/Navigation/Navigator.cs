@@ -8,6 +8,6 @@ namespace RlViewer.Behaviors.Navigation
 {
     class Navigation
     {
-        
+                                                                                                      
     }
 }

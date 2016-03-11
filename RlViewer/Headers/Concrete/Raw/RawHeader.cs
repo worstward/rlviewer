@@ -8,7 +8,7 @@ using RlViewer.Headers.Abstract;
 
 namespace RlViewer.Headers.Concrete.Raw
 {
-    class RawHeader : FileHeader
+    class RawHeader : LocatorFileHeader
     {
 
         public RawHeader(string path)

@@ -13,7 +13,7 @@ namespace RlViewer.Files.Rhg.Abstract
         {
 
         }
-        public override abstract FileHeader Header { get; }
+        public override abstract LocatorFileHeader Header { get; }
 
     }
 }

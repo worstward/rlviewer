@@ -10,7 +10,7 @@ using RlViewer.Headers.Concrete.Rl4;
 
 namespace RlViewer.Headers.Concrete
 {
-    class RhgKHeader : FileHeader
+    class RhgKHeader : LocatorFileHeader
     {
         public RhgKHeader(string path)
         {

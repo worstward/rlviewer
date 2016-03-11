@@ -11,7 +11,7 @@ using RlViewer.Behaviors.Converters;
 
 namespace RlViewer.Headers.Concrete.Rl4
 {
-    class Rl4Header : RlViewer.Headers.Abstract.FileHeader
+    class Rl4Header : RlViewer.Headers.Abstract.LocatorFileHeader
     {
         public Rl4Header(string path)
         {
@@ -61,7 +61,6 @@ namespace RlViewer.Headers.Concrete.Rl4
             get { return _headerStruct; }
         }
 
- 
         private void ReadHeader(string path)
         {
             byte[] header = new byte[FileHeaderLength];

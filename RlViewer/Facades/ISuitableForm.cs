@@ -12,12 +12,16 @@ namespace RlViewer.Facades
         PictureBox Canvas { get; }
         HScrollBar Horizontal { get; }
         VScrollBar Vertical { get; }
-        TrackBar TrackBar { get; }
+        TrackBar FilterTrackBar { get; }
         ProgressBar ProgressBar { get; }
         Label ProgressLabel { get; }
         Button CancelButton { get; }
         RadioButton DragRb { get; }
         RadioButton MarkPointRb { get; }
         RadioButton MarkAreaRb { get; }
+        CheckBox NavigationCb { get; }
+        DataGridView NavigationDgv { get; }
+        SplitContainer WorkingAreaSplitter { get; }
+
     }
 }
