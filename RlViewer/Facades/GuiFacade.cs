@@ -29,7 +29,7 @@ namespace RlViewer.Facades
         private Settings.Settings _settings = new Settings.Settings();
         private ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
-        private Behaviors.Saving.Concrete.Rl4Saver _saver;
+        private Behaviors.Saving.Abstract.Saver _saver;
 
 
         internal ImageFilterFacade FilterFacade
@@ -79,13 +79,14 @@ namespace RlViewer.Facades
                     }
                     _file = FileFactory.GetFactory(properties).Create(properties);
                     caption = _file.Properties.FilePath;
+                    LoadFile();
                 }
                 else
                 {
                     caption = string.Empty;
                 }
 
-                LoadFile();
+                
                 return caption;
             }
         }
@@ -346,7 +347,7 @@ namespace RlViewer.Facades
                     }
                     else if (_form.MarkAreaRb.Checked)
                     {
-
+                        _areaSelector.ResetArea();
                         _areaSelector.StartArea(e.Location, new Point(_form.Horizontal.Value, _form.Vertical.Value));
                     }
                     else if (_form.MarkPointRb.Checked)

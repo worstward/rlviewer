@@ -10,13 +10,11 @@ namespace RlViewer.Behaviors.Saving.Abstract
     //make factory
     abstract class Saver
     {
-        public Saver(Files.LocatorFile file)
+        public Saver(Files.LoadedFile file)
         {
 
         }
 
-
         public abstract void Save(string path, FileType saveAsType, Point leftTop, Size areaSize);
-
     }
 }

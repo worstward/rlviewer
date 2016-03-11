@@ -46,6 +46,7 @@
             this.ClientSize = new System.Drawing.Size(569, 375);
             this.Controls.Add(this.infoTabsControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximumSize = new System.Drawing.Size(585, 409);
             this.Name = "InfoForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Информация о файле";

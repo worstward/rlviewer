@@ -51,6 +51,8 @@
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationInterpolator.cs" />
+    <Compile Include="Behaviors\Navigation\Navigator.cs" />
     <Compile Include="Behaviors\Saving\Abstract\Saver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Brl4Saver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl4Saver.cs" />

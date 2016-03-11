@@ -27,7 +27,6 @@ namespace RlViewer.Headers.Concrete.Brl4
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         public byte[] dummy1;
-
         public int strSignalCount;
 
         // размер кадра

@@ -32,7 +32,7 @@ namespace RlViewer.Behaviors.Draw
             //TODO: REWRITE PALETTE INIT
             _colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
 
-            const int transparency = 255;
+            const int alpha = 255;
 
             for (int i = 0; i < 256; i++)
             {
@@ -41,11 +41,11 @@ namespace RlViewer.Behaviors.Draw
                 var b = bCoef * i;
                 if (isReversed)
                 {
-                    _colorPalette.Entries[255 - i] = Color.FromArgb(transparency, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    _colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                 }
                 else
                 {
-                    _colorPalette.Entries[i] = Color.FromArgb(transparency, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    _colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                 }
             }
 
@@ -73,9 +73,6 @@ namespace RlViewer.Behaviors.Draw
             PaletteParams.B = B;
             PaletteParams.Reversed = reversed;
         }
-
-
-
 
         private static class PaletteParams
         {

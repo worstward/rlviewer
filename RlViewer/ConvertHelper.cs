@@ -53,6 +53,34 @@ namespace RlViewer
         }
 
 
+        public static string ToPolarizationType(this byte type)
+        {
+            //0 – ВВ, 1 – ГГ, 2 – ВГ, 3 – ГВ
+
+            string sType;
+
+            switch (type)
+            {
+                case 0:
+                    sType = "ВВ";
+                    break;
+                case 1:
+                    sType = "ГГ";
+                    break;
+                case 2:
+                    sType = "ВГ";
+                    break;
+                case 3:
+                    sType = "ГВ";
+                    break;
+                default:
+                    sType = "Не определено";
+                    break;
+            }
+            return sType;
+        }
+
+
         public static string ToRliFileType(this byte type)
         {
             string sType;

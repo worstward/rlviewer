@@ -145,6 +145,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximumSize = new System.Drawing.Size(319, 384);
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Настройки";

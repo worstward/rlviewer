@@ -58,6 +58,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.maskedTextBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximumSize = new System.Drawing.Size(241, 79);
             this.Name = "EprInputForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ЭПР в точке";

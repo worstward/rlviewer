@@ -203,8 +203,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
                     for (int j = 0; j < TileSize.Height; j++)
                     {
-                        ms.Read(tileData, j * TileSize.Width, TileSize.Width);
-                        ms.Seek(linePixelWidth - TileSize.Width, SeekOrigin.Current);
+                        ms.Read(tileData, j * TileSize.Width, Math.Min(linePixelWidth, TileSize.Width));
+                        ms.Seek(Math.Max(linePixelWidth - TileSize.Width, 0), SeekOrigin.Current);
                     }
 
                     tiles.Add(new Tile(SaveTile(Path.Combine(pathCollection[1], i + "-" + lineNumber), tileData),

@@ -44,6 +44,19 @@ namespace RlViewer.Behaviors.Converters
             return rl4StrHeader;
         }
 
+        [Obsolete("Демка для питерцев")]
+        public static byte[] ToBrl4StrHeader(byte[] rl4StrHeader)
+        {
+            //16 это массив systime
+            var offset = sizeof(bool) + 16;
+            Buffer.BlockCopy(rl4StrHeader, offset + sizeof(double) * 3, rl4StrHeader, offset, sizeof(double));
+            Buffer.BlockCopy(rl4StrHeader, offset + sizeof(double) * 4, rl4StrHeader, offset + sizeof(double), sizeof(double));
+            Buffer.BlockCopy(rl4StrHeader, offset + sizeof(double) * 5, rl4StrHeader, offset + sizeof(double) * 2, sizeof(double));
+
+            return rl4StrHeader;
+        }
+
+
 
         private static RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct ToBrl4StrHeader(this Rl4StrHeaderStruct rl4StrHeader, double LatSns, double LongSns, double Hsns)
         {

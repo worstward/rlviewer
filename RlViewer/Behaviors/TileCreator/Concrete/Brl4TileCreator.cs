@@ -173,8 +173,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         {
             byte[] line = new byte[signalDataLength * tileHeight];
             float[] fLine = new float[line.Length / 4];
-            byte[] normalizedLine = new byte[fLine.Length];
-
             int index = 0;
 
             while (index != line.Length && s.Position != s.Length)
@@ -184,9 +182,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * NormalizationCoef)).ToArray<byte>();
+            //normalize and return
+            return fLine.AsParallel<float>().Select(x => (byte)(x * NormalizationCoef)).ToArray<byte>();
 
-            return normalizedLine;
         }
 
         private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size TileSize)
@@ -202,8 +200,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
                     for (int j = 0; j < TileSize.Height; j++)
                     {
-                        ms.Read(tileData, j * TileSize.Width, TileSize.Width);
-                        ms.Seek(linePixelWidth - TileSize.Width, SeekOrigin.Current);
+                        ms.Read(tileData, j * TileSize.Width, Math.Min(linePixelWidth, TileSize.Width));
+                        ms.Seek(Math.Max(linePixelWidth - TileSize.Width, 0), SeekOrigin.Current);
                     }
 
                     tiles.Add(new Tile(SaveTile(Path.Combine(pathCollection[1], i + "-" + lineNumber), tileData),

@@ -48,20 +48,18 @@
             // maskedTextBox1
             // 
             this.maskedTextBox1.Location = new System.Drawing.Point(64, 12);
-            this.maskedTextBox1.Mask = "00000";
+            this.maskedTextBox1.Mask = "000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(110, 20);
             this.maskedTextBox1.TabIndex = 1;
-            this.maskedTextBox1.ValidatingType = typeof(int);
             // 
             // maskedTextBox2
             // 
             this.maskedTextBox2.Location = new System.Drawing.Point(64, 38);
-            this.maskedTextBox2.Mask = "00000";
+            this.maskedTextBox2.Mask = "000000";
             this.maskedTextBox2.Name = "maskedTextBox2";
             this.maskedTextBox2.Size = new System.Drawing.Size(110, 20);
             this.maskedTextBox2.TabIndex = 2;
-            this.maskedTextBox2.ValidatingType = typeof(int);
             // 
             // label1
             // 
@@ -92,6 +90,7 @@
             this.Controls.Add(this.maskedTextBox1);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximumSize = new System.Drawing.Size(283, 101);
             this.Name = "SizeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Размер изображения";

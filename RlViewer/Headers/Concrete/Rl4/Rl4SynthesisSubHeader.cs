@@ -25,28 +25,27 @@ namespace RlViewer.Headers.Concrete.Rl4
         public float dD;
         public byte board;
 
-        public float V;
-        public float H;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]
+        public byte[] reserved1;
 
-        public float g;
-        public float f;
-        public float w;
-
-        public float a;
-        public float latitude;
-        public float longtitude;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] time;
-
-        // параметры сигнала
+	    // параметры сигнала
         public float VH;
         public float lambda;
         public float Fn;
-        public byte polarization;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 841)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 842)]
         public byte[] reserved2;
+
+
+
+        //// параметры сигнала
+        //public float VH;
+        //public float lambda;
+        //public float Fn;
+        //public byte polarization;
+
+        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 841)]
+        //public byte[] reserved2;
 
         // диапазон синтеза по азимуту
         [MarshalAs(UnmanagedType.I1)]
@@ -97,7 +96,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         public byte[] rhgName;
 
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1453)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1576)]
         public byte[] reserved5;
 
 

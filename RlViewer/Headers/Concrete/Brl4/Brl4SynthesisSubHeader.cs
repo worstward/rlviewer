@@ -102,7 +102,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         public byte[] rhgName;
 
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1453)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1576)]
         public byte[] reserved5;
 
 
