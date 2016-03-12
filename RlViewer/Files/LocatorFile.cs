@@ -18,10 +18,12 @@ namespace RlViewer.Files
 
         }
 
+        public abstract Navigation.Navigation Navigation { get; }
         public abstract LocatorFileHeader Header { get; }
 
         public abstract int Width { get; }
         public abstract int Height { get; }
+
 
         public static T ReadStruct<T>(Stream s)
         {

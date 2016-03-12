@@ -9,6 +9,7 @@ using System.Drawing;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
+using RlViewer.Navigation;
 
 namespace RlViewer.Facades
 {
@@ -32,7 +33,7 @@ namespace RlViewer.Facades
         private Behaviors.Saving.Abstract.Saver _saver;
 
 
-        private Files.LoadedFile _file;
+        private Files.LocatorFile _file;
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
         private RlViewer.Facades.DrawerFacade _drawer;
@@ -61,20 +62,22 @@ namespace RlViewer.Facades
                         _file = null;
                         _drawer = null;
                         _form.Canvas.Image = null;
-                        _loaderWorker = InitWorker();    
+                        _loaderWorker = InitWorker();
+                        _form.NavigationDgv.Rows.Clear();
 
                         properties = new Files.FileProperties(openFileDlg.FileName);
+                         _file = FileFactory.GetFactory(properties).Create(properties);
+                        caption = _file.Properties.FilePath;
+                        LoadFile();
                     }
-                    catch (ArgumentException aex)
+                    catch (Exception aex)
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Blocking,
                             string.Format("Error opening file {0}", aex.Message));
                         ErrorGuiMessage("Невозможно открыть файл");
                         return string.Empty;
                     }
-                    _file = FileFactory.GetFactory(properties).Create(properties);
-                    caption = _file.Properties.FilePath;
-                    LoadFile();
+                   
                 }
                 else
                 {
@@ -85,6 +88,9 @@ namespace RlViewer.Facades
                 return caption;
             }
         }
+
+   
+
 
 
         public void LoadFile()
@@ -159,7 +165,7 @@ namespace RlViewer.Facades
             if (_file != null && !_loaderWorker.CancellationPending && _loaderWorker.IsBusy)
             {
                 _loaderWorker.CancelAsync();
-                DisposeWorker(_loaderWorker);
+                _loaderWorker.Dispose();
                 ClearCancelledFileTiles();
                 InitControls();
             }
@@ -261,6 +267,9 @@ namespace RlViewer.Facades
             }
         }
 
+
+     
+
         public void ToggleNavigation()
         {
             if (_form.NavigationCb.Checked)
@@ -287,10 +296,16 @@ namespace RlViewer.Facades
                     sfd.Filter = Resources.SaveFilter;
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                       
-                        var loc = _file as RlViewer.Files.LocatorFile;
-                        _saver = new Behaviors.Saving.Concrete.Rl4Saver(loc);
-                        _saver.Save(sfd.FileName, FileType.brl4, new Point(0, 0), new Size(loc.Width, loc.Height));
+                        using (var sSize = new Forms.SaveSizeForm(_file.Width, _file.Height, _areaSelector))
+                        {
+                            if (sSize.ShowDialog() == DialogResult.OK)
+                            {
+                                //var loc = _file as RlViewer.Files.LocatorFile;
+                                _saver = new Behaviors.Saving.Concrete.Rl4Saver(_file);
+                                _saver.Save(sfd.FileName, sSize.LeftTop,
+                                    new Size(sSize.ImageWidth, sSize.ImageHeight));
+                            }
+                        }
                     }
                 }
             }
@@ -359,6 +374,36 @@ namespace RlViewer.Facades
         }
 
         #region pictureBoxMouseHandlers
+
+        public string ShowMousePosition(MouseEventArgs e)
+        {
+            return string.Format("X:{0} Y:{1}", e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
+        }
+
+        public string ShowNavigation(MouseEventArgs e)
+        {
+            if (_file != null && !_loaderWorker.IsBusy)
+            {
+                if (e.Y > 0 && e.Y < _file.Height && e.X > 0 && e.X < _file.Width)
+                {
+                    if (_form.NavigationCb.Checked && _file.Navigation != null)
+                    {
+                        _form.NavigationDgv.Rows.Clear();
+                        var info = _file.Navigation[e.Y + _form.Vertical.Value].NaviInfo();
+                        foreach (var i in info)
+                        {
+                            _form.NavigationDgv.Rows.Add(i.Item1, i.Item2);
+                        }
+                    }
+                    return ShowMousePosition(e);
+                }
+
+            }
+            return string.Empty;
+        }
+
+
+
         public void ClickStarted(MouseEventArgs e)
         {
             if (_file != null && _drawer != null)
@@ -396,11 +441,13 @@ namespace RlViewer.Facades
             {
                 if (_drag.Trace(e.Location))
                 {
-                    if ((_form.Vertical.Value - _drag.Delta.Y) >= 0 && (_form.Vertical.Value - _drag.Delta.Y) < _form.Vertical.Maximum)
+                    if ((_form.Vertical.Value - _drag.Delta.Y) >= 0 &&
+                        (_form.Vertical.Value - _drag.Delta.Y) < _form.Vertical.Maximum)
                     {
                         _form.Vertical.Value -= _drag.Delta.Y;
                     }
-                    if ((_form.Horizontal.Value - _drag.Delta.X) >= 0 && (_form.Horizontal.Value - _drag.Delta.X) < _form.Horizontal.Maximum)
+                    if ((_form.Horizontal.Value - _drag.Delta.X) >= 0 &&
+                        (_form.Horizontal.Value - _drag.Delta.X) < _form.Horizontal.Maximum)
                     {
                         _form.Horizontal.Value -= _drag.Delta.X;
                     }
@@ -483,13 +530,6 @@ namespace RlViewer.Facades
             worker.RunWorkerCompleted += _loaderWorker_RunWorkerCompleted;
 
             return worker;
-        }
-
-        private void DisposeWorker(System.ComponentModel.BackgroundWorker worker)
-        {
-            worker.DoWork -= _loaderWorker_DoWork;
-            worker.ProgressChanged -= _loaderWorker_ProgressChanged;
-            worker.RunWorkerCompleted -= _loaderWorker_RunWorkerCompleted;
         }
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs e)

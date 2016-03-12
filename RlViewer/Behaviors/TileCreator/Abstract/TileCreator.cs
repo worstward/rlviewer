@@ -125,6 +125,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     for (int i = 0; i < floatArr.Length; i++)
                     {
                         int index = (int)(floatArr[i] / histogramStep);
+   
+
                         if (index >= histogram.Count)
                             histogram[histogram.Count - 1]++;
                         else histogram[index]++;

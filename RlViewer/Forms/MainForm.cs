@@ -147,11 +147,13 @@ namespace RlViewer.Forms
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             guiFacade.TraceMouseMovement(e);
+            mouseCoordLabel.Text = guiFacade.ShowNavigation(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             guiFacade.ClickStarted(e);
+            
             guiFacade.DrawImage();
         }
 

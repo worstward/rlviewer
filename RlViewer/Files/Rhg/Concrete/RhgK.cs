@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RlViewer.Files.Rhg.Abstract;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete;
+using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rhg.Concrete
 {
@@ -16,11 +17,22 @@ namespace RlViewer.Files.Rhg.Concrete
             _header = new RhgKHeader(properties.FilePath);
         }
 
-        private LocatorFileHeader _header;
 
+        private LocatorFileHeader _header;
         public override LocatorFileHeader Header
         {
             get { return _header; }
+        }
+
+
+        private Navigation.Navigation _navi;
+
+        public override Navigation.Navigation Navigation
+        {
+            get
+            {
+                return _navi;
+            }
         }
 
         public override int Width

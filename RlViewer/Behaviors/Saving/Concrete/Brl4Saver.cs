@@ -23,9 +23,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.Brl4 _file;
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
-        public override void Save(string path, FileType saveAsType, Point leftTop, Size areaSize)
+        public override void Save(string path, Point leftTop, Size areaSize)
         {
-            switch (saveAsType)
+            var type = System.IO.Path.GetExtension(path).Substring(1).ToEnum<FileType>();
+            switch (type)
             {
                 case FileType.brl4:
                     break;

@@ -11,7 +11,7 @@ namespace RlViewer.Factories.File.Concrete
 {
     class Rl4Factory : FileFactory
     {
-        public override LoadedFile Create(FileProperties properties)
+        public override LocatorFile Create(FileProperties properties)
         {
             return new Rl4(properties);
         }

@@ -29,6 +29,7 @@ namespace RlViewer.Forms
             var dgv = new DataGridView()
             {
                 BackgroundColor = Color.White,
+                Location = new Point(this.Location.X + 5, this.Location.Y),
                 RowHeadersVisible = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 Anchor = AnchorStyles.Top,
@@ -59,7 +60,7 @@ namespace RlViewer.Forms
                     dgv.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
             }
-
+            //dgv.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
 
             return dgv;
         }

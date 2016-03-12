@@ -5,11 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using RlViewer.Headers.Concrete.Rl4;
 using RlViewer.Headers.Concrete.Brl4;
+using RlViewer.Files;
 
 namespace RlViewer.Behaviors.Converters
 {
     public static class Converters
     {
+
+        public static Rl4RliSubHeaderStruct ChangeImgDimensions(this Rl4RliFileHeader head, int width, int height)
+        {
+            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(head.rlParams);
+
+            var offset = 16 + 24 + 1 + 4 + 8 + 4 + 8;//offset to width and height
+            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));
+            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int), sizeof(int));
+
+            using (var ms = new System.IO.MemoryStream(headerStructArr))
+            {
+                return RlViewer.Files.LocatorFile.ReadStruct<Rl4RliSubHeaderStruct>(ms);
+            }
+        }
+
         public static RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader ToBrl4
             (this Rl4RliFileHeader rl4RliFileHeader, byte calibration, byte polarization, float angle_zond)
         {

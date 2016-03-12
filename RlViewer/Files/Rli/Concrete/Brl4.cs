@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RlViewer.Files.Rli.Abstract;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Brl4;
-
+using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rli.Concrete
 {
@@ -15,8 +15,20 @@ namespace RlViewer.Files.Rli.Concrete
         public Brl4(FileProperties properties) : base(properties)
         {
             _header = new Brl4Header(properties.FilePath);
+            _navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.board, 
+                Header.FileHeaderLength, Width * Header.BytesPerSample);
             Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Brl4 file opened: {0}", properties.FilePath));
         }
+
+        private Navigation.Navigation _navi;
+        public override Navigation.Navigation Navigation
+        {
+            get
+            {
+                return _navi;
+            }
+        }
+
         private Brl4Header _header;
 
         public override LocatorFileHeader Header

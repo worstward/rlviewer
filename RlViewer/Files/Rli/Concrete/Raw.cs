@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RlViewer.Files.Rli.Abstract;
 using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.Raw;
-
+using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rli.Concrete
 {
@@ -23,6 +23,15 @@ namespace RlViewer.Files.Rli.Concrete
         public override LocatorFileHeader Header
         {
             get { return _header; }
+        }
+
+        private Navigation.Navigation _navi;
+        public override Navigation.Navigation Navigation
+        {
+            get
+            {
+                return _navi;
+            }
         }
 
         public override int Height

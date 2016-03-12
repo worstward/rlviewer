@@ -52,7 +52,13 @@
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationInterpolator.cs" />
-    <Compile Include="Behaviors\Navigation\Navigator.cs" />
+    <Compile Include="Forms\SaveSizeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SaveSizeForm.Designer.cs">
+      <DependentUpon>SaveSizeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Navigation\Abstract\NavigationContainer.cs" />
     <Compile Include="Behaviors\Saving\Abstract\Saver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Brl4Saver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl4Saver.cs" />
@@ -74,7 +80,6 @@
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="ConvertHelper.cs" />
-    <Compile Include="Facades\NavigationFacade.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Brl4TileCreatorFactory.cs" />
     <Compile Include="Forms\EprInputForm.cs">
       <SubType>Form</SubType>
@@ -117,7 +122,7 @@
     <Compile Include="Headers\Concrete\Rl4\Rl4Header.cs" />
     <Compile Include="Files\FileProperties.cs" />
     <Compile Include="Files\FileType.cs" />
-    <Compile Include="Headers\Abstract\FileHeader.cs" />
+    <Compile Include="Headers\Abstract\LocatorFileHeader.cs" />
     <Compile Include="Files\Rli\Concrete\Raw.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RliSubHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RliFileHeader.cs" />
@@ -146,6 +151,13 @@
     <Compile Include="Files\Rli\Abstract\RliFile.cs" />
     <Compile Include="Files\Rli\Concrete\Brl4.cs" />
     <Compile Include="Files\Rli\Concrete\Rl4.cs" />
+    <Compile Include="Navigation\Concrete\Brl4NavigationContainer.cs" />
+    <Compile Include="Navigation\Concrete\RawNavigationContainer.cs" />
+    <Compile Include="Navigation\Concrete\RhgKNavigationContainer.cs" />
+    <Compile Include="Navigation\Concrete\Rl4NavigationContainer.cs" />
+    <Compile Include="Navigation\Navigation.cs" />
+    <Compile Include="Navigation\NavigationString.cs" />
+    <Compile Include="Navigation\NaviStringExt.cs" />
     <Compile Include="ParallelProp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -178,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SaveSizeForm.resx">
+      <DependentUpon>SaveSizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

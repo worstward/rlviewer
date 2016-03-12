@@ -20,6 +20,6 @@ namespace RlViewer.Files.Rli.Abstract
         public abstract override int Width { get; }
         public abstract override int Height { get; }
 
-
+        
     }
 }

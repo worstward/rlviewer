@@ -10,7 +10,7 @@ namespace RlViewer.Headers.Concrete.Rl4
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Rl4RliSubHeaderStruct
     {
-
+        //65
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public byte[] fileTime;
 
