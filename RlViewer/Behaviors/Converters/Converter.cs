@@ -16,9 +16,10 @@ namespace RlViewer.Behaviors.Converters
         {
             byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(head.rlParams);
 
-            var offset = 16 + 24 + 1 + 4 + 8 + 4 + 8;//offset to width and height
-            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int), sizeof(int));
+            var offset = 16 + 24 + 1 + 4 + 8 + 4 ;//offset to cadrwidth
+            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));//change cadrwidth
+            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset + sizeof(int) * 2, sizeof(int));//change image width
+            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int) * 3, sizeof(int));//change image height
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {

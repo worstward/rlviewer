@@ -159,6 +159,66 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
+        protected virtual IEnumerable<Tile> SaveTiles(string folderPath, byte[] line, int linePixelWidth, int lineNumber, System.Drawing.Size TileSize)
+        {
+            byte[] tileData = new byte[TileSize.Width * TileSize.Height];
+            List<Tile> tiles = new List<Tile>();
+
+            using (var ms = new MemoryStream(line))
+            {
+                for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
+                {
+                    ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
+                    for (int j = 0; j < TileSize.Height; j++)
+                    {
+                        ms.Read(tileData, j * TileSize.Width, Math.Min(linePixelWidth, TileSize.Width));
+                        ms.Seek(Math.Max(linePixelWidth - TileSize.Width, 0), SeekOrigin.Current);
+                    }
+
+                    tiles.Add(new Tile(SaveTile(Path.Combine(folderPath, i + "-" + lineNumber), tileData),
+                                       new System.Drawing.Point(i * TileSize.Width, lineNumber * TileSize.Height), TileSize));
+                }
+            }
+            return tiles;
+        }
+
+
+        protected virtual string SaveTile(string path, byte[] tileData)
+        {
+            path += ".tl";
+            File.WriteAllBytes(path, tileData);
+            return path;
+        }
+
+        protected virtual string SaveTileImage(string path, System.Drawing.Bitmap bmp)
+        {
+            path += ".bmp";
+            bmp.Save(path);
+            return path;
+        }
+
+
+        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationCoef)
+        {
+            byte[] line = new byte[signalDataLength * tileHeight];
+            float[] fLine = new float[line.Length / 4];
+            byte[] normalizedLine = new byte[fLine.Length];
+
+            int index = 0;
+
+            while (index != line.Length && s.Position != s.Length)
+            {
+                s.Seek(strHeaderLength, SeekOrigin.Current);
+                index += s.Read(line, index, signalDataLength);
+            }
+            Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
+
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationCoef)).ToArray<byte>();
+
+            return normalizedLine;
+        }
+
+
         protected virtual Dictionary<float, string> InitTilePath(string filePath)
         {
             Dictionary<float, string> paths = new Dictionary<float, string>();

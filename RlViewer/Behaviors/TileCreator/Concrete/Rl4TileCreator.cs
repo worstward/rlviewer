@@ -125,8 +125,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)
                 {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
-                    tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationCoef);
+                    tiles.AddRange(SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize));
                     worker.ReportProgress((int)(i / totalLines * 100));
                     if (worker.CancellationPending)
                     {
@@ -160,8 +160,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
                         for (int i = 0; i < totalLines; i++)
                         {
-                            tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
-                            SaveTiles(tileLine, _rli.Width, i, TileSize);
+                            tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationCoef);
+                            SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize);
                         }
                     }
                 });
@@ -170,64 +170,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             //return tiles.ToArray();
         }
 
-        private byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight)
-        {
-            byte[] line = new byte[signalDataLength * tileHeight];
-            float[] fLine = new float[line.Length / 4];
-            byte[] normalizedLine = new byte[fLine.Length];
-
-            int index = 0;
-
-            while (index != line.Length && s.Position != s.Length)
-            {
-                s.Seek(strHeaderLength, SeekOrigin.Current);
-                index += s.Read(line, index, signalDataLength);
-            }
-            Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
-
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * NormalizationCoef)).ToArray<byte>();
-
-            return normalizedLine;
-        }
-
-        private IEnumerable<Tile> SaveTiles(byte[] line, int linePixelWidth, int lineNumber, Size TileSize)
-        {
-            byte[] tileData = new byte[TileSize.Width * TileSize.Height];
-            List<Tile> tiles = new List<Tile>();
-
-            using (var ms = new MemoryStream(line))
-            {
-                for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
-                {
-                    ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
-
-                    for (int j = 0; j < TileSize.Height; j++)
-                    {
-                        ms.Read(tileData, j * TileSize.Width, Math.Min(linePixelWidth, TileSize.Width));
-                        ms.Seek(Math.Max(linePixelWidth - TileSize.Width, 0), SeekOrigin.Current);
-                    }
-
-                    tiles.Add(new Tile(SaveTile(Path.Combine(pathCollection[1], i + "-" + lineNumber), tileData),
-                                       new Point(i * TileSize.Width, lineNumber * TileSize.Height), TileSize));
-                }
-            }
-            return tiles;
-        }
+        
 
 
-        private string SaveTile(string path, byte[] tileData)
-        {
-            path += ".tl";
-            File.WriteAllBytes(path, tileData);
-            return path;
-        }
-
-        private string SaveTileImage(string path, Bitmap bmp)
-        {
-            path += ".bmp";
-            bmp.Save(path);
-            return path;
-        }
     }
 
 
