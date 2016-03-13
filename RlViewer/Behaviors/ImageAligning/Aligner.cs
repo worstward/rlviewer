@@ -8,5 +8,13 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning
     {
+        public Aligning(PointSelector.PointSelector selector)
+        {
+            _selector = selector;
+        }
+
+
+        PointSelector.PointSelector _selector;
+
     }
 }

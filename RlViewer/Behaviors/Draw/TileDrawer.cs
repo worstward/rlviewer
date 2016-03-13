@@ -37,9 +37,11 @@ namespace RlViewer.Behaviors.Draw
         {
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, screenSize.Width, screenSize.Height)).ToArray();
 
-            //var img = (Image)_canvas.Clone();
             using (var g = Graphics.FromImage(canvas))
             {
+                //g.ScaleTransform(1.0F, -1.0F);
+                //g.TranslateTransform(0.0F, -(float)canvas.Height);
+
                 foreach (var tile in visibleTiles)
                 {
                     g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette),

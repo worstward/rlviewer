@@ -138,8 +138,6 @@ namespace RlViewer.Facades
         {
             if (_file != null)
             {
-                _filterFacade.GetFilter("Brightness", 4);
-
                 _form.ProgressBar.Value = 0;
                 _form.ProgressBar.Visible = true;
                 _form.ProgressLabel.Visible = true;
@@ -423,7 +421,7 @@ namespace RlViewer.Facades
                     }
                     else if (_form.MarkPointRb.Checked)
                     {
-                        _pointSelector.AddManualVal((RlViewer.Files.LocatorFile)_file,
+                        _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
                             new System.Drawing.Point(e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value));
                     }
                 }

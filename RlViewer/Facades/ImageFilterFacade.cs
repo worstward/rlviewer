@@ -9,6 +9,11 @@ namespace RlViewer.Facades
 
     class ImageFilterFacade
     {
+        public ImageFilterFacade()
+        {
+            GetFilter("Brightness", 4);
+        }
+
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
 

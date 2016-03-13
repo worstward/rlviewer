@@ -158,13 +158,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 using (var fw = System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 { 
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
-                    byte[] frameData = new byte[areaSize.Width * _file.Header.BytesPerSample];
-
-                    var lineToStartSaving = leftTop.Y * (_file.Width * _file.Header.BytesPerSample);
-                    var sampleToStartSaving = leftTop.X * _file.Header.BytesPerSample;
+                    byte[] frameStrData = new byte[areaSize.Width * _file.Header.BytesPerSample];
 
                     var fileHeaderSize = Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader());
                     var strHeaderSize = Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
+
+
+                    var lineToStartSaving = leftTop.Y * (_file.Width * _file.Header.BytesPerSample + strHeaderSize);
+                    var sampleToStartSaving = leftTop.X * _file.Header.BytesPerSample;
 
                     fr.Seek(fileHeaderSize, SeekOrigin.Begin);    
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
@@ -175,10 +176,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         //fr.Seek(leftTop.X * )
                         //read-write string data
                         fr.Seek(strHeaderSize, SeekOrigin.Current);
+
+                        //fr.Seek(leftTop.X * )
+                        //read-write string data
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
-                        fr.Read(frameData, 0, frameData.Length);
-                        fw.Write(frameData, 0, frameData.Length);
-                        fr.Seek(strDataLength - frameData.Length - sampleToStartSaving, SeekOrigin.Current);
+                        fr.Read(frameStrData, 0, frameStrData.Length);
+                        fw.Write(frameStrData, 0, frameStrData.Length);
+                        fr.Seek(strDataLength - frameStrData.Length - sampleToStartSaving, SeekOrigin.Current);
                     }
 
                 }

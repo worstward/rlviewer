@@ -26,6 +26,7 @@ namespace RlViewer.Behaviors.Draw
             var img = (Image)canvas.Clone();
             using (var g = Graphics.FromImage(img))
             {
+
                 DrawPoints(g, screen);
                 DrawArea(g, screen);
             }

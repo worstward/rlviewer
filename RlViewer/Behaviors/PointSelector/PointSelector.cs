@@ -15,17 +15,31 @@ namespace RlViewer.Behaviors.PointSelector
             return _selectedPoints.GetEnumerator();
         }
 
-        public void AddManualVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        public void Sort()
         {
-            if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
+            _selectedPoints.OrderBy(x => x.Location.X).ThenBy(x => x.Location.Y);
+        }
+
+
+        public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        {
+            //16 points required for the algorythm to work properly
+            if (_selectedPoints.Count <= 16)
             {
-                using (Forms.EprInputForm epr = new Forms.EprInputForm())
+                if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
                 {
-                    if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    using (Forms.EprInputForm epr = new Forms.EprInputForm())
                     {
-                        _selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
+                        if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            _selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
+                        }
                     }
-                }                
+                }
+                if (_selectedPoints.Count == 16)
+                {
+                    Sort();
+                }
             }
         }
 
