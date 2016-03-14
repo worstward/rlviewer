@@ -9,22 +9,17 @@ namespace RlViewer.Behaviors.AreaSelector
 {
     public class AreaSelector
     {
-        public AreaSelector()
-        {
-
-        }
-
-        private Point _location;
         private Point _initialLocation;
         private Point _pointOfView;
         private bool _canResize;
 
-        public void ResizeArea(System.Windows.Forms.MouseEventArgs e)
+        public void ResizeArea(Point mouseLocation)
         {
             if (_canResize)
             {
-                int width = e.X + _pointOfView.X - _initialLocation.X;
-                int height = e.Y + _pointOfView.Y - _initialLocation.Y;
+                int width = mouseLocation.X + _pointOfView.X - _initialLocation.X;
+                int height = mouseLocation.Y + _pointOfView.Y - _initialLocation.Y;
+                Point _location = _initialLocation;
 
                 if (height < 0 && width > 0)
                 {
@@ -74,7 +69,7 @@ namespace RlViewer.Behaviors.AreaSelector
         {
             _canResize = true;
             _pointOfView = pointOfView;
-            _location = _initialLocation = new Point(location.X + pointOfView.X, location.Y + pointOfView.Y);
+            _initialLocation = new Point(location.X + pointOfView.X, location.Y + pointOfView.Y);
         }
 
         public void StopResizing()

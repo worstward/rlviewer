@@ -13,9 +13,7 @@ namespace RlViewer.Navigation
             _naviContainer = GetNavigationContainer(properties, board, headerLength, dataLength);
         }
 
-        NavigationContainer _naviContainer;
-
-
+        private NavigationContainer _naviContainer;
 
         public NavigationString this[int stringNumber]
         {
@@ -40,10 +38,7 @@ namespace RlViewer.Navigation
 
                 default: throw new ArgumentException();
             }
-
-
         }
-
 
     }
 }

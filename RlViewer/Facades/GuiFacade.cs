@@ -382,8 +382,9 @@ namespace RlViewer.Facades
         {
             if (_file != null && !_loaderWorker.IsBusy)
             {
-                if (e.Y > 0 && e.Y < _file.Height && e.X > 0 && e.X < _file.Width)
+                if (e.Y + _form.Vertical.Value > 0 && e.Y + _form.Vertical.Value < _file.Height && e.X > 0 && e.X < _file.Width)
                 {
+
                     if (_form.NavigationCb.Checked && _file.Navigation != null)
                     {
                         _form.NavigationDgv.Rows.Clear();
@@ -453,7 +454,7 @@ namespace RlViewer.Facades
                 }
                 else if (_areaSelector != null && _form.MarkAreaRb.Checked)
                 {
-                    _areaSelector.ResizeArea(e);
+                    _areaSelector.ResizeArea(e.Location);
                     DrawItems();
                 }
                 

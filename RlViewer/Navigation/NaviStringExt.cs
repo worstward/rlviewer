@@ -37,9 +37,11 @@ namespace RlViewer.Navigation
 
         private static string ParseLatitudeOrLongitude(double value, Direction direction)
         {
-            value = Math.Abs(value);
+            //radians to degrees
+            value = Math.Abs(value * ( 180 / Math.PI ));
 
             var degrees = (int)value;
+
             value = (value - degrees) * 60;
 
             var minutes = (int)(value);

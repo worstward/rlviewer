@@ -164,19 +164,25 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             byte[] tileData = new byte[TileSize.Width * TileSize.Height];
             List<Tile> tiles = new List<Tile>();
 
+            int bytesToRead = 0;
             using (var ms = new MemoryStream(line))
             {
                 for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
                 {
+                    Array.Clear(tileData, 0, tileData.Length);
                     ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
+
+                    bytesToRead = Math.Min(TileSize.Width, linePixelWidth - i * TileSize.Width);
+
                     for (int j = 0; j < TileSize.Height; j++)
                     {
-                        ms.Read(tileData, j * TileSize.Width, Math.Min(linePixelWidth, TileSize.Width));
-                        ms.Seek(Math.Max(linePixelWidth - TileSize.Width, 0), SeekOrigin.Current);
+                        ms.Read(tileData, j * TileSize.Width, bytesToRead);
+                        ms.Seek(Math.Max(linePixelWidth - bytesToRead, 0), SeekOrigin.Current);
                     }
-
+                  
                     tiles.Add(new Tile(SaveTile(Path.Combine(folderPath, i + "-" + lineNumber), tileData),
                                        new System.Drawing.Point(i * TileSize.Width, lineNumber * TileSize.Height), TileSize));
+                    
                 }
             }
             return tiles;
