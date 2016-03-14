@@ -15,7 +15,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         private System.Drawing.Size _tileSize = new System.Drawing.Size(512, 512);
         protected System.Drawing.Size TileSize
         {
-            get { return _tileSize; }
+            get
+            {
+                return _tileSize;
+            }
         }
 
         public abstract Tile[] Tiles { get; }
@@ -75,11 +78,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles;
         }
 
-
-
-
         protected abstract Tile[] GetTilesFromTl(string path);
-
         protected abstract Tile[] GetTilesFromFile(string path, System.ComponentModel.BackgroundWorker worker);
         protected abstract Tile[] GetTilesFromFile(string path);
 

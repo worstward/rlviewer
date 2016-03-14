@@ -52,6 +52,11 @@
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationInterpolator.cs" />
+    <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\RawSaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\RhgKSaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\Rl4SaverFactory.cs" />
     <Compile Include="Forms\SaveSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>

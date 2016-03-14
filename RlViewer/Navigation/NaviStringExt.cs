@@ -13,29 +13,26 @@ namespace RlViewer.Navigation
             return new Tuple<string, string>[] 
             {
                 new Tuple<string, string>("Широта", ParseLatitude(s.AircraftLatitude)),
-                new Tuple<string, string>("Долгота", ParseLongitude(s.AircraftLongitude))
+                new Tuple<string, string>("Долгота", ParseLongitude(s.AircraftLongitude)),
+                new Tuple<string, string>("Курс ", ParseToDegrees(s.Track, string.Empty))
             };
         }
 
 
-        private enum Direction
-        {
-            N, E, S, W
-        }
         private static string ParseLatitude(double value)
         {
-            var direction = value < 0 ? Direction.S : Direction.N;
-            return ParseLatitudeOrLongitude(value, direction);
+            var direction = value < 0 ? "S" : "N";
+            return ParseToDegrees(value, direction);
         }
 
         private static string ParseLongitude(double value)
         {
-            var direction = value < 0 ? Direction.W : Direction.E;
-            return ParseLatitudeOrLongitude(value, direction);
+            var direction = value < 0 ? "W" : "E";
+            return ParseToDegrees(value, direction);
         }
 
 
-        private static string ParseLatitudeOrLongitude(double value, Direction direction)
+        private static string ParseToDegrees(double value, string suffix)
         {
             //radians to degrees
             value = Math.Abs(value * ( 180 / Math.PI ));
@@ -47,7 +44,7 @@ namespace RlViewer.Navigation
             var minutes = (int)(value);
             var seconds = (value - minutes) * 60;
 
-            return string.Format("{0:000}º {1:00}' {2:00}'' {3}", degrees, minutes, seconds, direction);
+            return string.Format("{0:000}º {1:00}' {2:00}'' {3}", degrees, minutes, seconds, suffix);
         }
 
 

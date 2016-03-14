@@ -8,7 +8,7 @@ namespace RlViewer.Factories.Filter.Concrete
 {
     class GammaCorrectionFilterFactory : Filter.Abstract.FilterFactory
     {
-        public override RlViewer.Behaviors.Filters.Abstract.ImageFiltering GetFilter()
+        public override RlViewer.Behaviors.Filters.Abstract.ImageFiltering Create()
         {
             return new RlViewer.Behaviors.Filters.Concrete.GammaCorrectionFilter();
         }

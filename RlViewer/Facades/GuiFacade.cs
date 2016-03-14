@@ -9,6 +9,7 @@ using System.Drawing;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
+using RlViewer.Factories.Saver.Abstract;
 using RlViewer.Navigation;
 
 namespace RlViewer.Facades
@@ -67,6 +68,7 @@ namespace RlViewer.Facades
 
                         properties = new Files.FileProperties(openFileDlg.FileName);
                          _file = FileFactory.GetFactory(properties).Create(properties);
+                         _saver = SaverFactory.GetFactory(properties).Create(_file);
                         caption = _file.Properties.FilePath;
                         LoadFile();
                     }
@@ -291,7 +293,7 @@ namespace RlViewer.Facades
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
-                    sfd.Filter = Resources.SaveFilter;
+                    sfd.Filter = _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.Raw) ? Resources.RawSaveFilter : Resources.SaveFilter;
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
                         using (var sSize = new Forms.SaveSizeForm(_file.Width, _file.Height, _areaSelector))
@@ -299,9 +301,16 @@ namespace RlViewer.Facades
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
                                 //var loc = _file as RlViewer.Files.LocatorFile;
-                                _saver = new Behaviors.Saving.Concrete.Rl4Saver(_file);
-                                _saver.Save(sfd.FileName, sSize.LeftTop,
-                                    new Size(sSize.ImageWidth, sSize.ImageHeight));
+                                try
+                                {
+                                    _saver.Save(sfd.FileName, Path.GetExtension(sfd.FileName).Substring(1).ToEnum<RlViewer.FileType>(), sSize.LeftTop,
+                                        new Size(sSize.ImageWidth, sSize.ImageHeight));
+                                }
+                                catch (ArgumentException aex)
+                                {
+                                    ErrorGuiMessage(string.Format("Unable to save file: {0}", sfd.FileName));
+                                    Logging.Logger.Log(Logging.SeverityGrades.Error, aex.Message);
+                                }
                             }
                         }
                     }

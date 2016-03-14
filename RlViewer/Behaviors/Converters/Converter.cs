@@ -27,6 +27,23 @@ namespace RlViewer.Behaviors.Converters
             }
         }
 
+        public static Brl4RliSubHeaderStruct ChangeImgDimensions(this Brl4RliFileHeader head, int width, int height)
+        {
+            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4RliSubHeaderStruct>(head.rlParams);
+
+            var offset = 16 + 24 + 1 + 4 + 8 + 4;//offset to cadrwidth
+            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));//change cadrwidth
+            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset + sizeof(int) * 2, sizeof(int));//change image width
+            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int) * 3, sizeof(int));//change image height
+
+            using (var ms = new System.IO.MemoryStream(headerStructArr))
+            {
+                return RlViewer.Files.LocatorFile.ReadStruct<Brl4RliSubHeaderStruct>(ms);
+            }
+        }
+
+
+
         public static RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader ToBrl4
             (this Rl4RliFileHeader rl4RliFileHeader, byte calibration, byte polarization, float angle_zond)
         {

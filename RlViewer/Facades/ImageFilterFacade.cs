@@ -29,7 +29,7 @@ namespace RlViewer.Facades
         public void GetFilter(string filterType, int filterDelta)
         {
             _filterDelta = filterDelta;
-            _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).GetFilter();
+            _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).Create();
 
         }
 

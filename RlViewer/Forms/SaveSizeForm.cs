@@ -109,18 +109,20 @@ namespace RlViewer.Forms
             y1CoordTextBox.Text = selector.Area.Location.Y.ToString();
 
             var x2 = selector.Area.Location.X + selector.Area.Width;
-            x2 = x2 < _fileWidth ? x2 : _fileWidth;
+            //x2 = x2 < _fileWidth ? x2 : _fileWidth - 1;
+            x2 = x2 == 0 ? _fileWidth : x2;
             var y2 = selector.Area.Location.Y + selector.Area.Height;
-            y2 = y2 < _fileHeight ? y2 : _fileHeight;
+           // y2 = y2 < _fileHeight ? y2 : _fileHeight - 1;
+            y2 = y2 == 0 ? _fileHeight : y2;
 
-            x2CoordTextBox.Text = x2.ToString();
-            y2CoordTextBox.Text = y2.ToString();
+            x2CoordTextBox.Text = (x2 - 1).ToString();
+            y2CoordTextBox.Text = (y2 - 1).ToString();
 
             xSizeCoordTextBox.Text = selector.Area.Location.X.ToString();
             ySizeCoordTextBox.Text = selector.Area.Location.Y.ToString();
-            widthTextBox.Text = selector.Area.Width.ToString();
-            heightTextBox.Text = selector.Area.Height.ToString();
 
+            widthTextBox.Text = (x2 - selector.Area.Location.X).ToString();
+            heightTextBox.Text = (y2 - selector.Area.Location.Y).ToString();
 
         }
 
@@ -140,8 +142,11 @@ namespace RlViewer.Forms
             {
                 _width = Convert.ToInt32(x2CoordTextBox.Text) - Convert.ToInt32(x1CoordTextBox.Text);
                 _heigth = Convert.ToInt32(y2CoordTextBox.Text) - Convert.ToInt32(y1CoordTextBox.Text);
+
                 int x = Convert.ToInt32(x1CoordTextBox.Text);
                 int y = Convert.ToInt32(y1CoordTextBox.Text);
+
+               
                 if (_width < 0)
                 {
                     _width = -_width;
@@ -154,6 +159,7 @@ namespace RlViewer.Forms
                 }
 
                 _leftTop = new Point(x, y);
+                
             }
             else if (radioButton3.Checked)
             {
@@ -178,8 +184,16 @@ namespace RlViewer.Forms
             }
 
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            if (Convert.ToInt32(x1CoordTextBox.Text) < _fileWidth && Convert.ToInt32(x2CoordTextBox.Text) < _fileWidth &&
+                   Convert.ToInt32(y1CoordTextBox.Text) < _fileHeight && Convert.ToInt32(y2CoordTextBox.Text) < _fileHeight)
+            {
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Selected area is out of bounds", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -9,9 +9,9 @@ namespace RlViewer.Factories.Filter.Abstract
 {
     abstract class FilterFactory
     {
-        public abstract RlViewer.Behaviors.Filters.Abstract.ImageFiltering GetFilter();
+        public abstract RlViewer.Behaviors.Filters.Abstract.ImageFiltering Create();
 
-         public static FilterFactory GetFactory(string filterType)
+        public static FilterFactory GetFactory(string filterType)
         {
             switch (filterType)
             {

@@ -20,7 +20,7 @@ namespace RlViewer.Navigation.Concrete
         private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection, byte board)
         {
             var naviStrings = strCollection.Select
-                (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, 1, board));
+                (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, board));
 
             return naviStrings.ToArray();
         }

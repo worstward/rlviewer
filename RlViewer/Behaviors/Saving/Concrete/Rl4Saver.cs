@@ -22,10 +22,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.Rl4 _file;
         private RlViewer.Headers.Concrete.Rl4.Rl4Header _head;
 
-        public override void Save(string path, Point leftTop, Size areaSize)
-        {
-            var type = System.IO.Path.GetExtension(path).Substring(1).ToEnum<FileType>();
-            switch (type)
+        public override void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize)
+        {           
+            switch (destinationType)
             {
                 case FileType.brl4:
                     SaveAsBrl4(path, leftTop, areaSize);
@@ -46,7 +45,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                using (var fw = System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".rl4";
+                using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
 
@@ -91,22 +91,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private void SaveAsBrl4(string path, Point leftTop, Size areaSize)
         {
-            
-            //if (File.Exists(path))
-            //{
-            //    try
-            //    {
-            //        File.Delete(path);
-            //    }
-            //    catch
-            //    { 
-            //        Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to save file {0}", path));
-            //        return;
-            //    }
-            //}
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                using (var fw = System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".brl4";
+                using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
 
@@ -155,7 +143,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                using (var fw = System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".raw";
+                using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 { 
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
                     byte[] frameStrData = new byte[areaSize.Width * _file.Header.BytesPerSample];
