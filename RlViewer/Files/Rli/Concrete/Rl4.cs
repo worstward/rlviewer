@@ -17,8 +17,8 @@ namespace RlViewer.Files.Rli.Concrete
         public Rl4(FileProperties properties) : base(properties)
         {
             _header = new Rl4Header(properties.FilePath);
-            _navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.board,
-                Header.FileHeaderLength, Width * Header.BytesPerSample); 
+            _navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.D0, _header.HeaderStruct.synthParams.dD,
+                _header.HeaderStruct.synthParams.board, Header.FileHeaderLength, Width * Header.BytesPerSample); 
             Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Rl4 file opened: {0}", properties.FilePath));
         }
 

@@ -52,6 +52,7 @@
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationInterpolator.cs" />
+    <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />

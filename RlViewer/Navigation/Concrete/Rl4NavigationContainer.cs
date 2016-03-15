@@ -8,7 +8,7 @@ namespace RlViewer.Navigation.Concrete
 {
     class Rl4NavigationContainer : NavigationContainer
     {
-        public Rl4NavigationContainer(string path, byte board, int headerLength, int dataLength)
+        public Rl4NavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
         {
             _naviStrings =
                 ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(

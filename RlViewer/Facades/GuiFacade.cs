@@ -70,9 +70,11 @@ namespace RlViewer.Facades
 
                         properties = new Files.FileProperties(openFileDlg.FileName);
                          _file = FileFactory.GetFactory(properties).Create(properties);
-                         _saver = SaverFactory.GetFactory(properties).Create(_file);
-                         caption = _caption = _file.Properties.FilePath;
+ 
+                        _saver = SaverFactory.GetFactory(properties).Create(_file);
+                        caption = _caption = _file.Properties.FilePath;
                         LoadFile();
+
                     }
                     catch (Exception aex)
                     {
@@ -81,20 +83,15 @@ namespace RlViewer.Facades
                         ErrorGuiMessage("Невозможно открыть файл");
                         return string.Empty;
                     }
-                   
                 }
                 else
                 {
                     caption = _caption;
                 }
-
-                
+   
                 return caption;
             }
         }
-
-   
-
 
 
         public void LoadFile()
@@ -226,7 +223,6 @@ namespace RlViewer.Facades
             }
         }
 
-
         public void InitDrawImage()
         {
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null)
@@ -348,18 +344,6 @@ namespace RlViewer.Facades
 
         private void InitScrollBars()
         {
-            //Task.Run(() =>
-            //{
-            //    return _file as RlViewer.Files.LocatorFile;
-            //})
-            //.ContinueWith((t) =>
-            //{
-            //    _horizontal.Maximum = t.Result.Width - _pictureBox.Size.Width;
-            //    _vertical.Maximum = t.Result.Height - _pictureBox.Size.Height;
-            //    _horizontal.Visible = true;
-            //    _vertical.Visible = true;
-            //}, TaskScheduler.FromCurrentSynchronizationContext());
-
             var f = _file as RlViewer.Files.LocatorFile;
             var horMax = f.Width - _form.Canvas.Size.Width;
             var verMax = f.Height - _form.Canvas.Size.Height;
@@ -368,7 +352,6 @@ namespace RlViewer.Facades
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
             _form.Vertical.Visible = _form.Vertical.Maximum > 0 ? true : false;
         }
-
 
 
         public void ChangeFilterValue()
@@ -399,8 +382,9 @@ namespace RlViewer.Facades
                     if (_form.NavigationCb.Checked && _file.Navigation != null)
                     {
                         _form.NavigationDgv.Rows.Clear();
-                        var info = _file.Navigation[e.Y + _form.Vertical.Value].NaviInfo();
-                        foreach (var i in info)
+
+
+                        foreach (var i in _file.Navigation[e.Y + _form.Vertical.Value, e.X + _form.Horizontal.Value])
                         {
                             _form.NavigationDgv.Rows.Add(i.Item1, i.Item2);
                         }

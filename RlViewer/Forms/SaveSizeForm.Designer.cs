@@ -62,7 +62,7 @@
             this.button1.Location = new System.Drawing.Point(18, 391);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
+            this.button1.TabIndex = 9;
             this.button1.Text = "Ok";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -174,7 +174,7 @@
             this.heightTextBox.Mask = "0000000";
             this.heightTextBox.Name = "heightTextBox";
             this.heightTextBox.Size = new System.Drawing.Size(100, 20);
-            this.heightTextBox.TabIndex = 14;
+            this.heightTextBox.TabIndex = 8;
             // 
             // widthTextBox
             // 
@@ -182,7 +182,7 @@
             this.widthTextBox.Mask = "0000000";
             this.widthTextBox.Name = "widthTextBox";
             this.widthTextBox.Size = new System.Drawing.Size(100, 20);
-            this.widthTextBox.TabIndex = 13;
+            this.widthTextBox.TabIndex = 7;
             // 
             // xSizeCoordTextBox
             // 
@@ -190,7 +190,7 @@
             this.xSizeCoordTextBox.Mask = "0000000";
             this.xSizeCoordTextBox.Name = "xSizeCoordTextBox";
             this.xSizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.xSizeCoordTextBox.TabIndex = 13;
+            this.xSizeCoordTextBox.TabIndex = 5;
             // 
             // ySizeCoordTextBox
             // 
@@ -198,7 +198,7 @@
             this.ySizeCoordTextBox.Mask = "0000000";
             this.ySizeCoordTextBox.Name = "ySizeCoordTextBox";
             this.ySizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.ySizeCoordTextBox.TabIndex = 11;
+            this.ySizeCoordTextBox.TabIndex = 6;
             // 
             // panel2
             // 
@@ -257,7 +257,7 @@
             this.y2CoordTextBox.Mask = "0000000";
             this.y2CoordTextBox.Name = "y2CoordTextBox";
             this.y2CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.y2CoordTextBox.TabIndex = 12;
+            this.y2CoordTextBox.TabIndex = 4;
             // 
             // x1CoordTextBox
             // 
@@ -265,7 +265,7 @@
             this.x1CoordTextBox.Mask = "0000000";
             this.x1CoordTextBox.Name = "x1CoordTextBox";
             this.x1CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.x1CoordTextBox.TabIndex = 11;
+            this.x1CoordTextBox.TabIndex = 1;
             // 
             // x2CoordTextBox
             // 
@@ -273,7 +273,7 @@
             this.x2CoordTextBox.Mask = "0000000";
             this.x2CoordTextBox.Name = "x2CoordTextBox";
             this.x2CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.x2CoordTextBox.TabIndex = 10;
+            this.x2CoordTextBox.TabIndex = 3;
             // 
             // y1CoordTextBox
             // 
@@ -281,14 +281,14 @@
             this.y1CoordTextBox.Mask = "0000000";
             this.y1CoordTextBox.Name = "y1CoordTextBox";
             this.y1CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.y1CoordTextBox.TabIndex = 9;
+            this.y1CoordTextBox.TabIndex = 2;
             // 
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(204, 391);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 6;
+            this.button2.TabIndex = 10;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
@@ -301,6 +301,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
             this.Name = "SaveSizeForm";
             this.Text = "SaveSizeForm";

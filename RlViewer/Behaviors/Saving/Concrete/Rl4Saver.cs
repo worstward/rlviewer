@@ -42,7 +42,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private void SaveAsRl4(string path, Point leftTop, Size areaSize)
         {
-
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".rl4";

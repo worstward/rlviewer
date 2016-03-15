@@ -8,33 +8,36 @@ namespace RlViewer.Navigation
 {
     public class Navigation
     {
-        public Navigation(RlViewer.Files.FileProperties properties, byte board, int headerLength, int dataLength)
+        public Navigation(RlViewer.Files.FileProperties properties, float initialRange, float step, byte board, int headerLength, int dataLength)
         {
-            _naviContainer = GetNavigationContainer(properties, board, headerLength, dataLength);
+            _naviContainer = GetNavigationContainer(properties, initialRange, step, board, headerLength, dataLength);
+            _interpolator = new Behaviors.Navigation.NavigationInterpolator(initialRange, step);
         }
 
         private NavigationContainer _naviContainer;
+        private RlViewer.Behaviors.Navigation.NavigationInterpolator _interpolator;
 
-        public NavigationString this[int stringNumber]
+        public Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
         {
             get
             {
-                return _naviContainer[stringNumber];
+                return _naviContainer[stringNumber].NaviInfo(sampleNumber, _interpolator);    //.NaviInfo();          
             }
         }
 
-        private NavigationContainer GetNavigationContainer(RlViewer.Files.FileProperties properties, byte board, int headerLength, int dataLength)
+
+        private NavigationContainer GetNavigationContainer(RlViewer.Files.FileProperties properties, float initialRange, float step, byte board, int headerLength, int dataLength)
         {
             switch (properties.Type)
             {
                 case FileType.brl4:
-                    return new RlViewer.Navigation.Concrete.Brl4NavigationContainer(properties.FilePath, board, headerLength, dataLength);
-                case FileType.k:
-                    return new RlViewer.Navigation.Concrete.RhgKNavigationContainer(properties.FilePath, board);
-                case FileType.raw:
-                    return new RlViewer.Navigation.Concrete.RawNavigationContainer(properties.FilePath, board);
+                    return new RlViewer.Navigation.Concrete.Brl4NavigationContainer(properties.FilePath, initialRange, step, board, headerLength, dataLength);
+                //case FileType.k:
+                //    return new RlViewer.Navigation.Concrete.RhgKNavigationContainer(properties.FilePath, board);
+                //case FileType.raw:
+                //    return new RlViewer.Navigation.Concrete.RawNavigationContainer(properties.FilePath, board);
                 case FileType.rl4:
-                    return new RlViewer.Navigation.Concrete.Rl4NavigationContainer(properties.FilePath, board, headerLength, dataLength);
+                    return new RlViewer.Navigation.Concrete.Rl4NavigationContainer(properties.FilePath, initialRange, step, board, headerLength, dataLength);
 
                 default: throw new ArgumentException();
             }

@@ -27,6 +27,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
             switch (destinationType)
             {
                 case FileType.brl4:
+                    SaveAsBrl4(path, leftTop, areaSize);
                     break;
                 case FileType.raw:
                     SaveAsRaw(path, leftTop, areaSize);
