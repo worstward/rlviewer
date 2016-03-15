@@ -13,7 +13,13 @@ namespace RlViewer.Behaviors.AreaSelector
         private Point _pointOfView;
         private bool _canResize;
 
-        public void ResizeArea(Point mouseLocation, Point pointOfView)
+        /// <summary>
+        /// Resizes selected area
+        /// </summary>
+        /// <param name="mouseLocation">Current cursor position</param>
+        /// <param name="pointOfView">Current canvas top left point</param>
+        /// <returns>Value, that determines if resizing was successful</returns>
+        public bool ResizeArea(Point mouseLocation, Point pointOfView)
         {
             if (_canResize)
             {
@@ -47,6 +53,7 @@ namespace RlViewer.Behaviors.AreaSelector
                 Area.Width = width;
                 Area.Height = height;
             }
+            return _canResize;
             // _bytesPerAreaLine = _area.Width * _loc.Header.BytesPerSample;
         }
 

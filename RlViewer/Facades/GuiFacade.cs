@@ -46,6 +46,12 @@ namespace RlViewer.Facades
         private ISuitableForm _form;
         private string _caption = string.Empty;
 
+        public delegate void RequestCancel();
+
+        public event RequestCancel OnCancelRequested;
+
+
+
         public string OpenFile()
         {
             string caption;
@@ -365,7 +371,7 @@ namespace RlViewer.Facades
             _form.FilterTrackBar.Value = _filterFacade.Filter.FilterValue >> filterDelta;
         }
 
-        #region pictureBoxMouseHandlers
+        #region MouseHandlers
 
         public string ShowMousePosition(MouseEventArgs e)
         {
@@ -454,8 +460,10 @@ namespace RlViewer.Facades
                 }
                 else if (_areaSelector != null && _form.MarkAreaRb.Checked)
                 {
-                    _areaSelector.ResizeArea(e.Location, new Point(_form.Horizontal.Value, _form.Vertical.Value));
-                    DrawItems();
+                    if (_areaSelector.ResizeArea(e.Location, new Point(_form.Horizontal.Value, _form.Vertical.Value)))
+                    {
+                        DrawItems();
+                    }
                 }
                 
             }         

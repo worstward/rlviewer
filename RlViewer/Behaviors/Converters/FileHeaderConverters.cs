@@ -9,7 +9,7 @@ using RlViewer.Files;
 
 namespace RlViewer.Behaviors.Converters
 {
-    public static class Converters
+    public static class FileHeaderConverters
     {
 
         public static Rl4RliSubHeaderStruct ChangeImgDimensions(this Rl4RliFileHeader head, int width, int height)

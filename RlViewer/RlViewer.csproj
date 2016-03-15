@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
-    <Compile Include="Behaviors\Converters\Converter.cs" />
+    <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
-    <Compile Include="ConvertHelper.cs" />
+    <Compile Include="Behaviors\Converters\SupportiveConverters.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Brl4TileCreatorFactory.cs" />
     <Compile Include="Forms\EprInputForm.cs">
       <SubType>Form</SubType>

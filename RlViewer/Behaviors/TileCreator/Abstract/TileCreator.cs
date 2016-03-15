@@ -32,7 +32,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
-        public virtual Tile[] GetTiles(string filePath, System.ComponentModel.BackgroundWorker worker)
+        public virtual Tile[] GetTiles(string filePath, System.ComponentModel.BackgroundWorker worker = null)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;
@@ -44,7 +44,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             else
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
-                tiles = GetTilesFromFile(filePath, worker);
+                if (worker != null)
+                {
+                    tiles = GetTilesFromFile(filePath, worker);
+                }
+                else
+                {
+                    tiles = GetTilesFromFile(filePath);
+                }
             }
             if (tiles != null)
             {
@@ -58,25 +65,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles;
         }
 
-        public virtual Tile[] GetTiles(string filePath)
-        {
-            var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
-            Tile[] tiles;
-            if (Directory.Exists(path))
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
-                tiles = GetTilesFromTl(Path.Combine(path, "x1"));
-            }
-            else
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
-                tiles = GetTilesFromFile(filePath);
-            }
 
-            Logging.Logger.Log(Logging.SeverityGrades.Info, 
-                string.Format("Tile creation process succeed. {0} tiles generated", tiles.Length));
-            return tiles;
-        }
 
         protected abstract Tile[] GetTilesFromTl(string path);
         protected abstract Tile[] GetTilesFromFile(string path, System.ComponentModel.BackgroundWorker worker);

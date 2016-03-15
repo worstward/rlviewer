@@ -125,7 +125,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         //read-write string header
 
                         fr.Read(strHeader, 0, strHeaderSize);
-                        var brl4StrHead = Converters.Converters.ToBrl4StrHeader(strHeader);
+                        var brl4StrHead = Converters.FileHeaderConverters.ToBrl4StrHeader(strHeader);
                         fw.Write(brl4StrHead, 0, strHeaderSize);
 
                         //fr.Seek(leftTop.X * )

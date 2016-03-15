@@ -77,7 +77,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     {
                         //read-write string header
                         fr.Read(strHeader, 0, strHeaderSize);
-                        var rl4StrHead = Converters.Converters.ToRl4StrHeader(strHeader, 100, 100, 100);
+                        var rl4StrHead = Converters.FileHeaderConverters.ToRl4StrHeader(strHeader, 100, 100, 100);
                         fw.Write(rl4StrHead, 0, strHeaderSize);
 
 
