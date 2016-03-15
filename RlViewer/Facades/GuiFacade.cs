@@ -46,11 +46,17 @@ namespace RlViewer.Facades
         private ISuitableForm _form;
         private string _caption = string.Empty;
 
-        public delegate void RequestCancel();
 
-        public event RequestCancel OnCancelRequested;
-
-
+        public void OpenWithDoubleClick()
+        {
+            foreach (var path in System.Environment.GetCommandLineArgs())
+            {
+                if (!path.EndsWith(".exe"))
+                {
+                    OpenFile(path);
+                }
+            }
+        }
 
         public string OpenFile()
         {
@@ -58,47 +64,56 @@ namespace RlViewer.Facades
             using (var openFileDlg = new OpenFileDialog() { Filter = Resources.OpenFilter })
             {
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
-                {                
-                    Files.FileProperties properties = null;
-
-                    try
-                    {
-                        if (_loaderWorker != null && _loaderWorker.IsBusy)
-                        {
-                            CancelLoading();
-                        }
-
-                        _file = null;
-                        _drawer = null;
-                        _form.Canvas.Image = null;
-                        _loaderWorker = InitWorker();
-                        _form.NavigationDgv.Rows.Clear();
-
-                        properties = new Files.FileProperties(openFileDlg.FileName);
-                         _file = FileFactory.GetFactory(properties).Create(properties);
- 
-                        _saver = SaverFactory.GetFactory(properties).Create(_file);
-                        caption = _caption = _file.Properties.FilePath;
-                        LoadFile();
-
-                    }
-                    catch (Exception aex)
-                    {
-                        Logging.Logger.Log(Logging.SeverityGrades.Blocking,
-                            string.Format("Error opening file {0}", aex.Message));
-                        ErrorGuiMessage("Невозможно открыть файл");
-                        return string.Empty;
-                    }
+                {
+                    return OpenFile(openFileDlg.FileName);
                 }
                 else
                 {
                     caption = _caption;
                 }
-   
+
                 return caption;
             }
         }
 
+
+
+        public string OpenFile(string fileName)
+        {
+            Files.FileProperties properties = null;
+            string caption;
+            try
+            {
+                if (_loaderWorker != null && _loaderWorker.IsBusy)
+                {
+                    CancelLoading();
+                }
+
+                _file = null;
+                _drawer = null;
+                _form.Canvas.Image = null;
+                _loaderWorker = InitWorker();
+                _form.NavigationDgv.Rows.Clear();
+
+                properties = new Files.FileProperties(fileName);
+                _file = FileFactory.GetFactory(properties).Create(properties);
+
+                _saver = SaverFactory.GetFactory(properties).Create(_file);
+                caption = _caption = _file.Properties.FilePath;
+                LoadFile();
+
+            }
+            catch (Exception aex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking,
+                    string.Format("Error opening file {0}", aex.Message));
+                ErrorGuiMessage("Невозможно открыть файл");
+                return string.Empty;
+            }
+            return caption;
+        }
+
+        
 
         public void LoadFile()
         {

@@ -242,6 +242,11 @@ namespace RlViewer.Forms
             guiFacade.ToggleNavigation();
         }
 
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            guiFacade.OpenWithDoubleClick();
+        }
+
 
     }
 }

@@ -25,7 +25,7 @@ namespace RlViewer.Navigation
                     fs.Seek(dataLength,SeekOrigin.Current);
                 }
             }
-            return naviCollection.ToArray<T>();
+            return naviCollection.ToArray();
         }
 
     }
