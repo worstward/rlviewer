@@ -13,32 +13,37 @@ namespace RlViewer.Behaviors.AreaSelector
         private Point _pointOfView;
         private bool _canResize;
 
-        public void ResizeArea(Point mouseLocation)
+        public void ResizeArea(Point mouseLocation, Point pointOfView)
         {
             if (_canResize)
             {
-                int width = mouseLocation.X + _pointOfView.X - _initialLocation.X;
-                int height = mouseLocation.Y + _pointOfView.Y - _initialLocation.Y;
-                Point _location = _initialLocation;
 
-                if (height < 0 && width > 0)
+                int width = mouseLocation.X + pointOfView.X - _initialLocation.X;
+                int height = mouseLocation.Y + pointOfView.Y - _initialLocation.Y;
+
+
+                if (height > 0 && width > 0)
                 {
-                    _location = new Point(_initialLocation.X, _initialLocation.Y + height);
+                    Area.Location = _initialLocation;
+                }
+                else if (height < 0 && width > 0)
+                {
+                    Area.Location = new Point(_initialLocation.X, _initialLocation.Y + height);
                     height = -height;
                 }
                 else if (height > 0 && width < 0)
                 {
-                    _location = new Point(_initialLocation.X + width, _initialLocation.Y);
+                    Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y);
                     width = -width;
                 }
                 else if (width < 0 && height < 0)
                 {
-                    _location = new Point(_initialLocation.X + width, _initialLocation.Y + height);
+                    Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y + height);
                     width = -width;
                     height = -height;
                 }
 
-                Area.Location = _location;
+
                 Area.Width = width;
                 Area.Height = height;
             }

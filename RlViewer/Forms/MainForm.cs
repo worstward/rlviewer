@@ -159,7 +159,7 @@ namespace RlViewer.Forms
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            guiFacade.ClickFinished();
+            guiFacade.ClickFinished(e);
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)

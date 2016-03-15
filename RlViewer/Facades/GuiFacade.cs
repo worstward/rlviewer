@@ -21,6 +21,7 @@ namespace RlViewer.Facades
             _form = form;
             _drag = new Behaviors.DragController();
             _loaderWorker = InitWorker();
+            _settings = new Settings.Settings();
             _filterFacade = new ImageFilterFacade();
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
 
@@ -28,7 +29,7 @@ namespace RlViewer.Facades
         }
 
         private System.ComponentModel.BackgroundWorker _loaderWorker;
-        private Settings.Settings _settings = new Settings.Settings();
+        private Settings.Settings _settings;
         private ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
@@ -43,6 +44,7 @@ namespace RlViewer.Facades
         private RlViewer.Behaviors.DragController _drag;
 
         private ISuitableForm _form;
+        private string _caption = string.Empty;
 
         public string OpenFile()
         {
@@ -69,7 +71,7 @@ namespace RlViewer.Facades
                         properties = new Files.FileProperties(openFileDlg.FileName);
                          _file = FileFactory.GetFactory(properties).Create(properties);
                          _saver = SaverFactory.GetFactory(properties).Create(_file);
-                        caption = _file.Properties.FilePath;
+                         caption = _caption = _file.Properties.FilePath;
                         LoadFile();
                     }
                     catch (Exception aex)
@@ -83,7 +85,7 @@ namespace RlViewer.Facades
                 }
                 else
                 {
-                    caption = string.Empty;
+                    caption = _caption;
                 }
 
                 
@@ -141,7 +143,9 @@ namespace RlViewer.Facades
             if (_file != null)
             {
                 _form.ProgressBar.Value = 0;
+                _form.ProgressBar.ForeColor = Color.Blue;
                 _form.ProgressBar.Visible = true;
+
                 _form.ProgressLabel.Visible = true;
                 _form.ProgressLabel.Text = "0 %";
                 _form.CancelButton.Visible = true;
@@ -266,8 +270,6 @@ namespace RlViewer.Facades
                 }
             }
         }
-
-
      
 
         public void ToggleNavigation()
@@ -403,7 +405,12 @@ namespace RlViewer.Facades
                             _form.NavigationDgv.Rows.Add(i.Item1, i.Item2);
                         }
                     }
+
                     return ShowMousePosition(e);
+                }
+                else
+                {
+                    _form.NavigationDgv.Rows.Clear();
                 }
 
             }
@@ -463,7 +470,7 @@ namespace RlViewer.Facades
                 }
                 else if (_areaSelector != null && _form.MarkAreaRb.Checked)
                 {
-                    _areaSelector.ResizeArea(e.Location);
+                    _areaSelector.ResizeArea(e.Location, new Point(_form.Horizontal.Value, _form.Vertical.Value));
                     DrawItems();
                 }
                 
@@ -471,16 +478,16 @@ namespace RlViewer.Facades
         }
 
 
-        public void ClickFinished()
+        public void ClickFinished(MouseEventArgs e)
         {
             if (_file != null && _drag != null)
             {
                 _form.Canvas.Cursor = Cursors.Arrow;
                 _drag.StopTracing();
-                if (_areaSelector != null)
+                if (e.Button == MouseButtons.Left && _areaSelector != null)
                 {
                     _areaSelector.StopResizing();
-                }
+                }               
             }
         }
 

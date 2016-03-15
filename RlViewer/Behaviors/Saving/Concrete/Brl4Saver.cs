@@ -19,7 +19,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
             _head = _file.Header as RlViewer.Headers.Concrete.Brl4.Brl4Header;
         }
 
-        
         private RlViewer.Files.Rli.Concrete.Brl4 _file;
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
@@ -90,8 +89,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 }
             }
         }
-
-
 
 
         private void SaveAsBrl4(string path, Point leftTop, Size areaSize)

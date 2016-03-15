@@ -264,9 +264,9 @@
             this.filterLbl.AutoSize = true;
             this.filterLbl.Location = new System.Drawing.Point(477, 70);
             this.filterLbl.Name = "filterLbl";
-            this.filterLbl.Size = new System.Drawing.Size(100, 13);
+            this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
-            this.filterLbl.Text = "Уровень фильтра:";
+            this.filterLbl.Text = "Уровень фильтра: 0";
             // 
             // progressBar1
             // 

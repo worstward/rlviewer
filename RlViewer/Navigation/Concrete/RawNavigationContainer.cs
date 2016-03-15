@@ -10,25 +10,25 @@ namespace RlViewer.Navigation.Concrete
     {
         public RawNavigationContainer(string path, byte board)
         {
-            _naviStrings = 
-                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(path, 16384, 1));
+            //_naviStrings = 
+            //    ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(path, 16384, 1));
         }
 
-        private NavigationString[] _naviStrings;
+        //private NavigationString[] _naviStrings;
 
-        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
-        {
-            var naviStrings = strCollection.Select
-                (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, 1, 1));
+        //private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
+        //{
+        //    var naviStrings = strCollection.Select
+        //        (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, 1, 1));
 
-            return naviStrings.ToArray();
-        }
+        //    return naviStrings.ToArray();
+        //}
 
         public override NavigationString this[int stringNumber]
         {
             get 
             {
-                return _naviStrings[stringNumber];
+                throw new NotSupportedException("Raw navigation");
             }
         }
 
