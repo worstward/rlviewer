@@ -10,10 +10,17 @@ namespace RlViewer.Headers.Concrete.Raw
 {
     class RawHeader : LocatorFileHeader
     {
-
         public RawHeader(string path)
         {
             _path = path;
+            using (var sizeFrm = new Forms.SizeForm())
+            {
+                if (sizeFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _imgSize = sizeFrm.ImgSize;
+                }
+
+            }
         }
 
         protected override byte[] Signature
@@ -59,16 +66,6 @@ namespace RlViewer.Headers.Concrete.Raw
         {
             get
             {
-                if (_imgSize.Width == 0 || _imgSize.Height == 0)
-                {
-                    using(var sizeFrm = new Forms.SizeForm())
-                    {
-                        if (sizeFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            _imgSize = sizeFrm.ImgSize;
-                        }
-                    }
-                }
                 return _imgSize;
             }
         }
@@ -76,7 +73,14 @@ namespace RlViewer.Headers.Concrete.Raw
 
         public override HeaderInfoOutput[] GetHeaderInfo()
         {
-            return new HeaderInfoOutput[] { new HeaderInfoOutput("Инфо", new List<Tuple<string, string>>()) };
+            return new HeaderInfoOutput[] 
+            { 
+                new HeaderInfoOutput("Инфо", new List<Tuple<string, string>>() 
+                {
+                    new Tuple<string, string>("Ширина, пикс", _imgSize.Width.ToString()),
+                    new Tuple<string, string>("Высота, пикс", _imgSize.Height.ToString()) 
+                })
+            };
         }
 
     }

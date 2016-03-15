@@ -60,12 +60,5 @@ namespace RlViewer.Forms
             }
         }
 
-        private void SizeForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (ImgWidth == 0 || ImgHeight == 0)
-            {
-                this.DialogResult = DialogResult.Cancel;
-            }
-        }
     }
 }

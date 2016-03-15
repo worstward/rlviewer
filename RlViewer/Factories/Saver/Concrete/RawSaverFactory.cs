@@ -11,7 +11,7 @@ namespace RlViewer.Factories.Saver.Concrete
     {
         public override Behaviors.Saving.Abstract.Saver Create(Files.LoadedFile file)
         {
-            throw new NotImplementedException();
+            return new RawSaver(file);
         }
     }
 }
