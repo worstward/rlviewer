@@ -46,10 +46,12 @@
             this.ClientSize = new System.Drawing.Size(607, 283);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(623, 317);
             this.Name = "LogForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "События";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LogForm_KeyDown);
             this.ResumeLayout(false);
 
         }

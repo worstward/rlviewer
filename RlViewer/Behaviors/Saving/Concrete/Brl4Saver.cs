@@ -48,10 +48,18 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
-                    var rl4Head = _head.HeaderStruct.ToRl4();
 
-                    fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Head),
-                    0, Marshal.SizeOf(rl4Head));
+                    var rlSubHeader = _head.HeaderStruct.ChangeImgDimensions(areaSize.Width, areaSize.Height);
+
+                    RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader brl4Header =
+                        new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
+                            _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
+
+
+                    var rl4Header = brl4Header.ToRl4(); 
+
+                    fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Header),
+                    0, Marshal.SizeOf(rl4Header));
 
                     var strHeaderSize = Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
                     byte[] strHeader = new byte[strHeaderSize];

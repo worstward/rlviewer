@@ -86,31 +86,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         }
 
 
-        //protected override Tile[] GetTilesFromFile(string filePath)
-        //{
-        //    pathCollection = InitTilePath(filePath);
-
-        //    List<Tile> tiles = new List<Tile>();
-        //    byte[] tileLine;
-        //    using (var fs = File.Open(_rli.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        //    {
-        //        fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
-        //        int strHeaderLength = 0;
-
-        //        int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
-
-        //        //var lineHeight = (int)(TileSize.Height * paths.Keys.Max());
-        //        var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
-        //        for (int i = 0; i < totalLines; i++)
-        //        {
-        //            tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height);
-        //            tiles.AddRange(SaveTiles(tileLine, _rli.Width, i, TileSize));
-        //        }
-        //    }
-        //    //GetResizedTiles(tiles.ToArray());
-        //    return tiles.ToArray();
-        //}
-
         /// <summary>
         /// Saves tiles to local folder and creates tile objects array from Rl4 file.  Reports progress to backgroundworker object.
         /// </summary>
@@ -172,92 +147,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             });
             return GetTilesFromTl(path);
 
-            //return tiles.ToArray();
         }
-
-
-       
-
-        //private Tile[] GetResizedTiles(Tile[] tiles)
-        //{
-        //    foreach (var zooms in paths)
-        //    {
-        //        //we skip zoom value of 1 (normal picture) since it's already processed by GetTiles()
-        //        if (zooms.Key < 1)
-        //        {
-        //            foreach (var tile in tiles)
-        //            {
-        //                ResizeTileIn(tile, zooms.Key);
-        //            }
-        //        }
-        //        else if(zooms.Key > 1)
-        //        {
-        //            foreach (var tile in tiles)
-        //            {
-        //                ResizeTileIn(tile, zooms.Key);
-        //            }
-        //        }
-
-
-        //    }
-        //    return null;
-        //}
-
-
-        //Tile[] ResizeTileIn(Tile tile, float zoomValue)
-        //{
-        //    var tiles = new List<Tile>();
-
-        //        Bitmap littleTile = new Bitmap(TileSize.Width, TileSize.Height);
-        //        var img = Image.FromFile(tile.FilePath);
-        //        var resized = Resizer.ResizeImage(img, (int)(tile.Size.Width / zoomValue), (int)(tile.Size.Width / zoomValue));
-
-        //        for (int i = 0; i < resized.Width; i += littleTile.Width)
-        //        {
-        //            for (int j = 0; j < resized.Height; j += littleTile.Height)
-        //            {
-        //                var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / TileSize.Width + "-" +
-        //                     (tile.LeftTopCoord.Y * zoomValue + j) / TileSize.Height);
-
-        //                var newBmp = resized.Clone(new Rectangle(new Point(i, j), littleTile.Size), PixelFormat.Format8bppIndexed);
-
-        //                tiles.Add(new Tile(SaveTileImage(newPath, newBmp),
-        //                    new PointF(tile.LeftTopCoord.X + i * zoomValue, tile.LeftTopCoord.Y + j * zoomValue),
-        //                    littleTile.Size));
-        //            }                  
-        //        }
-            
-        //    return tiles.ToArray();
-        //}
-
-        //Tile[] ResizeTileOut(Tile[] tile, float zoomValue)
-        //{
-        //    var tiles = new List<Tile>();
-
-        //    Bitmap largeTile = new Bitmap(TileSize.Width * (int)zoomValue, TileSize.Height * (int)zoomValue);
-
-
-        //    //for (int i = 0; i < resized.Width; i += littleTile.Width)
-        //    //{
-        //    //    for (int j = 0; j < resized.Height; j += littleTile.Height)
-        //    //    {
-        //    //        var newPath = Path.Combine(paths[zoomValue], (tile.LeftTopCoord.X / zoomValue + i) / TileSize.Width + "-" +
-        //    //             (tile.LeftTopCoord.Y * zoomValue + j) / TileSize.Height);
-
-        //    //        var newBmp = resized.Clone(new Rectangle(new Point(i, j), littleTile.Size), PixelFormat.Format8bppIndexed);
-
-        //    //        tiles.Add(new Tile(SaveTileImage(newPath, newBmp),
-        //    //            new PointF(tile.LeftTopCoord.X + i * zoomValue, tile.LeftTopCoord.Y + j * zoomValue),
-        //    //            littleTile.Size));
-        //    //    }-
-        //    //}
-
-
-        //    //var resized = Resizer.ResizeImage(img, (int)(tile.Size.Width / zoomValue), (int)(tile.Size.Width / zoomValue));
-        //    return null;
-        //}
-
-
+      
     }
 }
 

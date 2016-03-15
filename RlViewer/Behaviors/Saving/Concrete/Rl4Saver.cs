@@ -99,10 +99,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
 
                     var rlSubHeader = _head.HeaderStruct.ChangeImgDimensions(areaSize.Width, areaSize.Height);
+
                     RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader rl4Header =
                         new Headers.Concrete.Rl4.Rl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
                             _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
+                    
                     var brl4Head = rl4Header.ToBrl4(0, 1, 30);
+
                     fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(brl4Head),
                     0, Marshal.SizeOf(brl4Head));
 

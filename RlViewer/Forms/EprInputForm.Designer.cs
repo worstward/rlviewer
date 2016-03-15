@@ -58,10 +58,12 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.maskedTextBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(241, 79);
             this.Name = "EprInputForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ЭПР в точке";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EprInputForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

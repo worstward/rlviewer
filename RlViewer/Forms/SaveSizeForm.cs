@@ -28,13 +28,17 @@ namespace RlViewer.Forms
 
             _fileWidth = fileWidth;
             _fileHeight = fileHeight;
+
             _selector = selector;
+           
             radioButton1.Checked = true;
 
-            InitControls(selector);
+            InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
         }
 
         AreaSelector _selector;
+
+
         private int _fileWidth;
         private int _fileHeight;
 
@@ -62,7 +66,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                InitControls(_selector);
+                InitControls(_selector.Area.Location.X, _selector.Area.Location.Y, _selector.Area.Width, _selector.Area.Height);
                 _leftTop = new Point(0, 0);
                 _width = _fileWidth;
                 _heigth = _fileHeight;
@@ -73,7 +77,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                InitControls(_selector);
+                InitControls(_selector.Area.Location.X, _selector.Area.Location.Y, _selector.Area.Width, _selector.Area.Height);
                
             }
         }
@@ -82,12 +86,12 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                InitControls(_selector);
+                InitControls(_selector.Area.Location.X, _selector.Area.Location.Y, _selector.Area.Width, _selector.Area.Height);
 
             }
         }
 
-        private void InitControls(AreaSelector selector)
+        private void InitControls(int x, int y, int width, int height)
         {
             if (radioButton1.Checked)
             {
@@ -105,24 +109,28 @@ namespace RlViewer.Forms
                 ControlEnabler(panel3, true);
             }
 
-            x1CoordTextBox.Text = selector.Area.Location.X.ToString();
-            y1CoordTextBox.Text = selector.Area.Location.Y.ToString();
 
-            var x2 = selector.Area.Location.X + selector.Area.Width;
-            //x2 = x2 < _fileWidth ? x2 : _fileWidth - 1;
-            x2 = x2 == 0 ? _fileWidth : x2;
-            var y2 = selector.Area.Location.Y + selector.Area.Height;
-           // y2 = y2 < _fileHeight ? y2 : _fileHeight - 1;
-            y2 = y2 == 0 ? _fileHeight : y2;
+            x = x > 0 ? x : 0;
+            y = y > 0 ? y : 0;
+
+            x1CoordTextBox.Text = x.ToString();
+            y1CoordTextBox.Text = y.ToString();
+
+            var x2 = x + width;
+            x2 = x2 == 0 || x2 > _fileWidth  ? _fileWidth : x2;
+            var y2 = y + height;
+            y2 = y2 == 0 || y2 > _fileHeight ? _fileHeight : y2;
 
             x2CoordTextBox.Text = (x2 - 1).ToString();
             y2CoordTextBox.Text = (y2 - 1).ToString();
 
-            xSizeCoordTextBox.Text = selector.Area.Location.X.ToString();
-            ySizeCoordTextBox.Text = selector.Area.Location.Y.ToString();
+            xSizeCoordTextBox.Text = x.ToString();
+            ySizeCoordTextBox.Text = y.ToString();
 
-            widthTextBox.Text = (x2 - selector.Area.Location.X).ToString();
-            heightTextBox.Text = (y2 - selector.Area.Location.Y).ToString();
+            var computedWidth = x2 - x;
+            var computedHeight = y2 - y;
+            widthTextBox.Text = (x2 - x).ToString();
+            heightTextBox.Text = (y2 - y).ToString();
 
         }
 
@@ -199,6 +207,14 @@ namespace RlViewer.Forms
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void SaveSizeForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }

@@ -44,6 +44,7 @@
             this.button1.Text = "Ok";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.button1_KeyDown);
             // 
             // maskedTextBox1
             // 
@@ -90,10 +91,12 @@
             this.Controls.Add(this.maskedTextBox1);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(283, 101);
             this.Name = "SizeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Размер изображения";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SizeForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
