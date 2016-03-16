@@ -108,7 +108,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.  Reports progress to backgroundworker object.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFile(string filePath, System.ComponentModel.BackgroundWorker worker)
+        protected override Tile[] GetTilesFromFile(string filePath)
         {
             pathCollection = InitTilePath(filePath);
             
@@ -126,11 +126,13 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 {
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationCoef);
                     tiles.AddRange(SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize));
-                    worker.ReportProgress((int)(i / totalLines * 100));
-                    if (worker.CancellationPending)
+
+                    OnProgressReport((int)(i / totalLines * 100));
+                    if (OnCancelWorker())
                     {
                         return null;
                     }
+
                 }
             }
             return tiles.ToArray();
@@ -140,7 +142,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFile(string filePath)
+        protected override Tile[] GetTilesFromFileAsync(string filePath)
         {
             pathCollection = InitTilePath(filePath);
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath), "x1");

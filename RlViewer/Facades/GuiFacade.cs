@@ -196,24 +196,38 @@ namespace RlViewer.Facades
 
         private void _loaderWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            var creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
+
+            creator.Report += TileCreatorProgressReporter;
+
+            creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+
             if (_settings.AllowViewWhileLoading)
             {
-                _tiles = TileCreatorFactory.GetFactory(_file.Properties)
-                   .Create(_file as RlViewer.Files.LocatorFile).GetTiles(_file.Properties.FilePath);
+                _tiles = creator.GetTiles(_file.Properties.FilePath, true);
             }
             else
             {
-                _tiles = TileCreatorFactory.GetFactory(_file.Properties)
-                    .Create(_file as RlViewer.Files.LocatorFile).GetTiles(_file.Properties.FilePath, _loaderWorker);
+                _tiles = creator.GetTiles(_file.Properties.FilePath);
             }
+
+            creator.Report -= TileCreatorProgressReporter;
+            creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+
         }
 
 
-        private void _loaderWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+
+        private void TileCreatorProgressReporter(int progress)
         {
-            _form.ProgressBar.Value = e.ProgressPercentage;
-            _form.ProgressLabel.Text = string.Format("{0} %", e.ProgressPercentage.ToString());
+            _form.ProgressBar.Invoke((Action)delegate
+            {
+                _form.ProgressBar.Value = progress;
+                _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
+            });
         }
+
+
 
         private void _loaderWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
@@ -548,7 +562,7 @@ namespace RlViewer.Facades
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += _loaderWorker_DoWork;
-            worker.ProgressChanged += _loaderWorker_ProgressChanged;
+            //worker.ProgressChanged += _loaderWorker_ProgressChanged;
             worker.RunWorkerCompleted += _loaderWorker_RunWorkerCompleted;
 
             return worker;

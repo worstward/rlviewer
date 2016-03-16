@@ -31,8 +31,45 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
+        public delegate void ReportProgress(int percentage);
 
-        public virtual Tile[] GetTiles(string filePath, System.ComponentModel.BackgroundWorker worker = null)
+        public event ReportProgress Report;
+
+        protected virtual void OnProgressReport(int percentage)
+        {
+            if (Report != null)
+            {
+                Report(percentage);
+            }
+        }
+
+
+        public event EventHandler<CancelEventArgs> CancelJob;
+
+        protected virtual bool OnCancelWorker()
+        {
+            EventHandler<CancelEventArgs> handler = CancelJob;
+
+            if (handler != null)
+            {
+                var e = new CancelEventArgs();
+                handler(null, e);
+                
+                return e.Cancel;
+            }
+            return false;
+        }
+
+        public class CancelEventArgs : EventArgs
+        {
+
+            public bool Cancel;
+        }
+
+
+
+
+        public virtual Tile[] GetTiles(string filePath, bool allowScrolling = false)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;
@@ -44,9 +81,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             else
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
-                if (worker != null)
+                if (allowScrolling)
                 {
-                    tiles = GetTilesFromFile(filePath, worker);
+                    tiles = GetTilesFromFileAsync(filePath);
                 }
                 else
                 {
@@ -68,7 +105,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
         protected abstract Tile[] GetTilesFromTl(string path);
-        protected abstract Tile[] GetTilesFromFile(string path, System.ComponentModel.BackgroundWorker worker);
+        protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
 
         protected virtual float ComputeNormalizationCoef(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
