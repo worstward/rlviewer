@@ -24,7 +24,6 @@ namespace RlViewer.Files.Rli.Concrete
 
 
         private Rl4Header _header;
-
         public override LocatorFileHeader Header
         {
             get { return _header; }

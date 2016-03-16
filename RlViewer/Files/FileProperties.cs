@@ -24,7 +24,7 @@ namespace RlViewer.Files
             try
             {
                 //get file extension without dot
-                type = System.IO.Path.GetExtension(path).Substring(1).ToEnum<FileType>();
+                type = System.IO.Path.GetExtension(path).Replace(".", "").ToEnum<FileType>();
             }
             catch (ArgumentException aex)
             {

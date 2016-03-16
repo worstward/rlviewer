@@ -9,12 +9,19 @@ namespace RlViewer.Settings
     public class Settings
     {
         private bool _allowViewWhileLoading;
-
         public bool AllowViewWhileLoading
         {
             get { return _allowViewWhileLoading; }
             set { _allowViewWhileLoading = value; }
         }
+
+        private bool _forceTileGen;
+        public bool ForceTileGeneration
+        {
+            get { return _forceTileGen; }
+            set { _forceTileGen = value; }
+        }
+
 
         private int[] _palette = new int[3] { 1, 1, 1 };
 

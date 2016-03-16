@@ -105,8 +105,6 @@ namespace RlViewer.Headers.Concrete.Brl4
             }
 
             
-
-
             var rhgHeader = new List<Tuple<string, string>>();
 
             var fname = string.IsNullOrEmpty(Path.GetFileName(Encoding.UTF8.GetString(headerStruct.rhgParams.fileName).Trim('\0'))) ?
@@ -144,7 +142,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             synthHeader.Add(new Tuple<string, string>("Шаг разложения по наклонной дальности, м", headerStruct.synthParams.dD.ToString()));
             synthHeader.Add(new Tuple<string, string>("Длина волны, м",                  headerStruct.synthParams.lambda.ToString()));
             synthHeader.Add(new Tuple<string, string>("Поляризация",                     headerStruct.synthParams.polarization.ToPolarizationType()));
-            synthHeader.Add(new Tuple<string, string>("Угол зондирования",               headerStruct.synthParams.angle_zond.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Угол зондирования",          string.Format("{0}°",headerStruct.synthParams.angle_zond.ToString())));
             
             var comments = new List<Tuple<string, string>>();
             comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments)));

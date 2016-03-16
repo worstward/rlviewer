@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.Navigation
 {
-    public class NavigationInterpolator
+    public class NavigationComputing
     {
-        public NavigationInterpolator(double initialRange, double step)
+        public NavigationComputing(double initialRange, double step)
         {
             _initialRange = initialRange;
             _step = step;

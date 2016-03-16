@@ -7,8 +7,9 @@ using System.IO;
 
 namespace RlViewer.Navigation
 {
-    public abstract class NavigationContainer
+    public abstract class NavigationContainer// : WorkerEventController
     {
+
         public abstract NavigationString this[int stringNumber] { get; }
 
         protected virtual T[] GetNaviStrings<T>(string path, int headerLength, int dataLength) where T : struct
@@ -19,10 +20,16 @@ namespace RlViewer.Navigation
             using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Seek(headerLength, SeekOrigin.Begin);
+
                 while (fs.Position < fs.Length)
                 {
                     naviCollection.Add(RlViewer.Files.LocatorFile.ReadStruct<T>(fs));
                     fs.Seek(dataLength,SeekOrigin.Current);
+                    //OnProgressReport((int)(fs.Position / fs.Length * 100));
+                    //if (OnCancelWorker())
+                    //{
+                    //    return null;
+                    //}
                 }
             }
             return naviCollection.ToArray();

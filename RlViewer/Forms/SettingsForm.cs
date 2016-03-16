@@ -18,8 +18,9 @@ namespace RlViewer.Forms
             InitializeComponent();
             comboBox1.SelectedItem = _settings.Palette.Select(x => x.ToString())
                 .Aggregate((x, y) => x.ToString() + " " + y.ToString());
-            checkBox1.Checked = _settings.IsPaletteReversed;
+            inverseCheckBox.Checked = _settings.IsPaletteReversed;
             allowViewCheckBox.Checked = _settings.AllowViewWhileLoading;
+            forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
         }
 
         private Settings.Settings _settings;
@@ -27,23 +28,23 @@ namespace RlViewer.Forms
         private int[] _palette;
         private bool _isReversed;
         private bool _allowViewWhileLoading;
-
+        private bool _forceTileGen;
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (allowViewCheckBox.Checked)
-            {
-                _allowViewWhileLoading = true;
-            }
-            else _allowViewWhileLoading = false;
+            _allowViewWhileLoading = ((CheckBox)sender).Checked;
+        }
 
+        private void forceTileGenCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _forceTileGen = ((CheckBox)sender).Checked;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                _palette = comboBox1.GetItemText(comboBox1.SelectedItem).Split(' ')
+                _palette = ((ComboBox)sender).GetItemText(comboBox1.SelectedItem).Split(' ')
                     .Select(x => Convert.ToInt32(x)).ToArray();
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace RlViewer.Forms
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            _isReversed = checkBox1.Checked;
+            _isReversed = ((CheckBox)sender).Checked;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -64,15 +65,9 @@ namespace RlViewer.Forms
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
+            _settings.ForceTileGeneration = _forceTileGen;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            _settings.AllowViewWhileLoading = _allowViewWhileLoading;
-            _settings.Palette = _palette;
-            _settings.IsPaletteReversed = _isReversed;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -88,5 +83,7 @@ namespace RlViewer.Forms
                 this.Close();
             }
         }
+
+
     }
 }

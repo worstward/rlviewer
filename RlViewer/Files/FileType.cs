@@ -23,7 +23,11 @@ namespace RlViewer
         /// <summary>
         /// Формат файла РГГ МРК2
         /// </summary>
-        k
+        k,
+        /// <summary>
+        /// Формат изображений для вывода
+        /// </summary>
+        bmp
     }
 
     public static class EnumExt

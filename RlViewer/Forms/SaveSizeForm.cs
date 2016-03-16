@@ -110,10 +110,10 @@ namespace RlViewer.Forms
             }
 
 
-            x = x < 0 ? x : 0;
-            y = y < 0 ? y : 0;
-            x = x > _fileWidth ? x : 0;
-            y = y > _fileHeight? y : 0;
+            x = x > 0 ? x : 0;
+            y = y > 0 ? y : 0;
+            x = x < _fileWidth ? x : 0;
+            y = y < _fileHeight ? y : 0;
 
 
             x1CoordTextBox.Text = x.ToString();

@@ -10,7 +10,7 @@ using RlViewer.Files;
 
 namespace RlViewer.Behaviors.TileCreator.Abstract
 {
-    public abstract class TileCreator
+    public abstract class TileCreator : WorkerEventController
     {
         private System.Drawing.Size _tileSize = new System.Drawing.Size(512, 512);
         protected System.Drawing.Size TileSize
@@ -23,56 +23,27 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public abstract Tile[] Tiles { get; }
 
+
+        private string _tileExtension = ".tl";
         protected virtual string TileFileExtension
         {
             get
             {
-                return ".tl";
+                return _tileExtension;
             }
         }
 
-        public delegate void ReportProgress(int percentage);
-
-        public event ReportProgress Report;
-
-        protected virtual void OnProgressReport(int percentage)
-        {
-            if (Report != null)
-            {
-                Report(percentage);
-            }
-        }
-
-
-        public event EventHandler<CancelEventArgs> CancelJob;
-
-        protected virtual bool OnCancelWorker()
-        {
-            EventHandler<CancelEventArgs> handler = CancelJob;
-
-            if (handler != null)
-            {
-                var e = new CancelEventArgs();
-                handler(null, e);
-                
-                return e.Cancel;
-            }
-            return false;
-        }
-
-        public class CancelEventArgs : EventArgs
-        {
-
-            public bool Cancel;
-        }
-
-
-
-
-        public virtual Tile[] GetTiles(string filePath, bool allowScrolling = false)
+    
+        public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;
+
+            if (forceTileGeneration && Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+
             if (Directory.Exists(path))
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
@@ -244,7 +215,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationCoef)).ToArray<byte>();
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationCoef)).ToArray();
 
             return normalizedLine;
         }

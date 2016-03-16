@@ -19,12 +19,12 @@ namespace RlViewer.Navigation
             };
         }
 
-        public static Tuple<string, string>[] NaviInfo(this NavigationString s, int sampleNum, RlViewer.Behaviors.Navigation.NavigationInterpolator interpolator)
+        public static Tuple<string, string>[] NaviInfo(this NavigationString s, int sampleNum, RlViewer.Behaviors.Navigation.NavigationComputing computer)
         {
             return new Tuple<string, string>[] 
             {
-                new Tuple<string, string>("Широта", ParseLatitude(interpolator.InterpolateLatitude(sampleNum, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
-                new Tuple<string, string>("Долгота",ParseLongitude(interpolator.InterpolateLongtitude(sampleNum, s.AircraftLongitude, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
+                new Tuple<string, string>("Широта", ParseLatitude(computer.InterpolateLatitude(sampleNum, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
+                new Tuple<string, string>("Долгота",ParseLongitude(computer.InterpolateLongtitude(sampleNum, s.AircraftLongitude, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
                 new Tuple<string, string>("Курс", ParseToDegrees(s.Track))
             };
         }

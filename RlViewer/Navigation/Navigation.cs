@@ -11,17 +11,18 @@ namespace RlViewer.Navigation
         public Navigation(RlViewer.Files.FileProperties properties, float initialRange, float step, byte board, int headerLength, int dataLength)
         {
             _naviContainer = GetNavigationContainer(properties, initialRange, step, board, headerLength, dataLength);
-            _interpolator = new Behaviors.Navigation.NavigationInterpolator(initialRange, step);
+            _computer = new Behaviors.Navigation.NavigationComputing(initialRange, step);
         }
 
+
         private NavigationContainer _naviContainer;
-        private RlViewer.Behaviors.Navigation.NavigationInterpolator _interpolator;
+        private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
 
         public Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
         {
             get
             {
-                return _naviContainer[stringNumber].NaviInfo(sampleNumber, _interpolator);    //.NaviInfo();          
+                return _naviContainer[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
             }
         }
 

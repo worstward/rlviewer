@@ -18,6 +18,7 @@ namespace RlViewer.Files
 
         }
 
+
         public abstract Navigation.Navigation Navigation { get; }
         public abstract LocatorFileHeader Header { get; }
 
