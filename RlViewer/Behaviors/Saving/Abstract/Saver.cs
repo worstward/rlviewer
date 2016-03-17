@@ -17,8 +17,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
         }
 
-        public abstract void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize);
-
+        public abstract void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize, float normalization);
 
     }
 }

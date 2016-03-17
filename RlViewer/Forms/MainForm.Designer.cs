@@ -58,6 +58,7 @@
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.mouseCoordLabel = new System.Windows.Forms.Label();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -274,7 +275,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(12, 479);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(792, 23);
+            this.progressBar1.Size = new System.Drawing.Size(829, 23);
             this.progressBar1.TabIndex = 12;
             // 
             // loadCancelBtn
@@ -293,7 +294,7 @@
             this.percentageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.percentageLabel.AutoSize = true;
             this.percentageLabel.BackColor = System.Drawing.Color.Transparent;
-            this.percentageLabel.Location = new System.Drawing.Point(817, 484);
+            this.percentageLabel.Location = new System.Drawing.Point(691, 510);
             this.percentageLabel.Name = "percentageLabel";
             this.percentageLabel.Size = new System.Drawing.Size(24, 13);
             this.percentageLabel.TabIndex = 18;
@@ -389,16 +390,26 @@
             this.mouseCoordLabel.Size = new System.Drawing.Size(0, 13);
             this.mouseCoordLabel.TabIndex = 21;
             // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(721, 510);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(35, 13);
+            this.statusLabel.TabIndex = 4;
+            this.statusLabel.Text = "status";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.percentageLabel);
+            this.Controls.Add(this.statusLabel);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.mouseCoordLabel);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.loadCancelBtn);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.filterLbl);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox2);
@@ -464,6 +475,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn paramColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
         private System.Windows.Forms.Label mouseCoordLabel;
+        private System.Windows.Forms.Label statusLabel;
     }
 }
 

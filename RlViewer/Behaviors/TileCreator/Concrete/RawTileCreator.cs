@@ -46,7 +46,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
 
         private object _locker = new object();
-        public float NormalizationCoef
+        public override float NormalizationCoef
         {
             get
             {

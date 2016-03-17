@@ -11,9 +11,9 @@ namespace RlViewer.Factories.File.Concrete
 {
     class RhgKFactory : FileFactory
     {
-        public override LocatorFile Create(FileProperties properties)
+        public override LocatorFile Create(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
         {
-            return new RhgK(properties);
+            return new RhgK(properties, header, navi);
         }
     }
 }

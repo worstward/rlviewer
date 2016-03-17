@@ -12,9 +12,10 @@ namespace RlViewer.Files.Rhg.Concrete
 {
     public class RhgK : RhgFile
     {
-        public RhgK(FileProperties properties) : base(properties)
+        public RhgK(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+            : base(properties, header, navi)
         {
-            _header = new RhgKHeader(properties.FilePath);
+            _header = header as RhgKHeader;
         }
 
 
@@ -24,14 +25,11 @@ namespace RlViewer.Files.Rhg.Concrete
             get { return _header; }
         }
 
-
-        private Navigation.Navigation _navi;
-
-        public override Navigation.Navigation Navigation
+        public override Navigation.NavigationContainer Navigation
         {
             get
             {
-                return _navi;
+                return null;
             }
         }
 

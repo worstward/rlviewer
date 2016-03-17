@@ -12,9 +12,9 @@ namespace RlViewer.Factories.File.Concrete
 {
     class Brl4Factory : FileFactory
     {
-        public override LocatorFile Create(FileProperties properties)
+        public override LocatorFile Create(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
         {
-            return new Brl4(properties);
+            return new Brl4(properties, header, navi);
         }
     }
 }

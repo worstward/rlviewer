@@ -14,11 +14,13 @@ namespace RlViewer.Files.Rli.Concrete
 {
     public class Rl4 : RliFile
     {
-        public Rl4(FileProperties properties) : base(properties)
+        public Rl4(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+            : base(properties, header, navi)
         {
-            _header = new Rl4Header(properties.FilePath);
-            _navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.D0, _header.HeaderStruct.synthParams.dD,
-                _header.HeaderStruct.synthParams.board, Header.FileHeaderLength, Width * Header.BytesPerSample); 
+            _header = header as Rl4Header;
+            _navi = navi;
+            //_navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.D0, _header.HeaderStruct.synthParams.dD,
+            //    _header.HeaderStruct.synthParams.board, Header.FileHeaderLength, Width * Header.BytesPerSample); 
             Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Rl4 file opened: {0}", properties.FilePath));
         }
 
@@ -30,8 +32,8 @@ namespace RlViewer.Files.Rli.Concrete
         }
 
 
-        private Navigation.Navigation _navi;
-        public override Navigation.Navigation Navigation
+        private Navigation.NavigationContainer _navi;
+        public override Navigation.NavigationContainer Navigation
         {
             get
             {

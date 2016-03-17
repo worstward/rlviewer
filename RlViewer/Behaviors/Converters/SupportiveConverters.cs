@@ -117,12 +117,12 @@ namespace RlViewer
                 sizeSuffix = "Gb";
                 readable = (value >> 20);
             }
-            else if (value >= 1048576)
+            else if (value >= mb)
             {
                 sizeSuffix = "Mb";
                 readable = (value >> 10);
             }
-            else if (value >= 1024)
+            else if (value >= kb)
             {
                 sizeSuffix = "Kb";
                 readable = value;

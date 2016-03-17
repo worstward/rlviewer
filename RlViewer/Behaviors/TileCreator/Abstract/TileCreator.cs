@@ -33,7 +33,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-    
+        public abstract float NormalizationCoef { get; }
+
+
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
             var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));

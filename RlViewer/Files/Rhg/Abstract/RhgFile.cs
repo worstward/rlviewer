@@ -9,7 +9,8 @@ namespace RlViewer.Files.Rhg.Abstract
 {
     public abstract class RhgFile : LocatorFile
     {
-        protected RhgFile(FileProperties properties) : base(properties)
+        protected RhgFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+            : base(properties, header, navi)
         {
 
         }

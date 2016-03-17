@@ -8,7 +8,7 @@ namespace RlViewer.Navigation.Concrete
 {
     class RhgKNavigationContainer : NavigationContainer
     {
-        public RhgKNavigationContainer(string path, byte board)
+        public RhgKNavigationContainer(string path)
         {
             //_naviStrings =
               //  ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.r>(path, 16384, 1));
@@ -24,6 +24,16 @@ namespace RlViewer.Navigation.Concrete
             return naviStrings.ToArray();
         }
 
+        protected override Behaviors.Navigation.NavigationComputing Computer
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override void GetNavigation()
+        {
+            
+        }
+
         public override NavigationString this[int stringNumber]
         {
             get
@@ -31,5 +41,14 @@ namespace RlViewer.Navigation.Concrete
                 return _naviStrings[stringNumber];
             }
         }
+
+        public override Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
+        {
+            get
+            {
+                throw new NotImplementedException();   
+            }
+        }  
+
     }
 }

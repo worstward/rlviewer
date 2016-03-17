@@ -12,9 +12,10 @@ namespace RlViewer.Files.Rli.Concrete
 {
     public class Raw : RliFile
     {
-        public Raw(FileProperties properties) : base(properties)
+        public Raw(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+            : base(properties, header, navi)
         {
-            _header = new RawHeader(properties.FilePath);
+            _header = header as RawHeader;
             Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Raw file opened: {0}", properties.FilePath));
         }
 
@@ -25,12 +26,11 @@ namespace RlViewer.Files.Rli.Concrete
             get { return _header; }
         }
 
-        private Navigation.Navigation _navi;
-        public override Navigation.Navigation Navigation
+        public override Navigation.NavigationContainer Navigation
         {
             get
             {
-                return _navi;
+                return null;
             }
         }
 

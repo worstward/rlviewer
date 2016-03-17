@@ -29,11 +29,15 @@ namespace RlViewer.Facades
 
         private System.ComponentModel.BackgroundWorker _loaderWorker;
         private Settings.Settings _settings;
+        private TileCreator _creator;
         private ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
 
         private Files.FileProperties _properties;
+        private Headers.Abstract.LocatorFileHeader _header;
+        private Navigation.NavigationContainer _navi;
+
         private Files.LocatorFile _file;
         private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
@@ -96,6 +100,7 @@ namespace RlViewer.Facades
             try
             {
                 _properties = new Files.FileProperties(fileName);
+                _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);       
             }
             catch (ArgumentException aex)
             {
@@ -106,7 +111,8 @@ namespace RlViewer.Facades
 
             caption = _caption = _properties.FilePath;
 
-
+            _form.StatusLabel.Text = "Чтение навигации";
+            InitProgressBar();
             _loaderWorker = InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
             _loaderWorker.RunWorkerAsync();
          
@@ -137,7 +143,6 @@ namespace RlViewer.Facades
                 }
                 else
                 {
-
                     GetImage();
                 }
             }
@@ -156,32 +161,24 @@ namespace RlViewer.Facades
         }
 
 
+        private void InitProgressBar()
+        {
+            _form.ProgressBar.Value = 0;
+            _form.ProgressBar.Visible = true;
+            _form.ProgressLabel.Visible = true;
+            _form.ProgressLabel.Text = "0 %";
+            _form.StatusLabel.Visible = true;
+            _form.CancelButton.Visible = true;
+            _form.Horizontal.Visible = false;
+            _form.Vertical.Visible = false;
+        }
+
         public void GetImage()
         {
-            if (_file != null)
-            {
-                _form.ProgressBar.Value = 0;
-                _form.ProgressBar.ForeColor = Color.Blue;
-                _form.ProgressBar.Visible = true;
-
-                _form.ProgressLabel.Visible = true;
-                _form.ProgressLabel.Text = "0 %";
-                _form.CancelButton.Visible = true;
-                _form.Horizontal.Visible = false;
-                _form.Vertical.Visible = false;
-
-                _loaderWorker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
-                _loaderWorker.RunWorkerAsync();
-                //Task.Run(() =>
-                //{
-                //    return TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile).Tiles;
-                //}).ContinueWith((tileCreationTask) =>
-                //{
-                //    _tiles = tileCreationTask.Result;
-                //    _pointSelector = new Behaviors.PointSelector.PointSelector();
-                //    InitDrawImage();
-                //}, TaskScheduler.FromCurrentSynchronizationContext());
-            }
+            _form.StatusLabel.Text = "Генерация тайлов";
+            InitProgressBar();
+            _loaderWorker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+            _loaderWorker.RunWorkerAsync();
         }
 
         public void CancelLoading()
@@ -200,13 +197,24 @@ namespace RlViewer.Facades
         {
             try
             {
-                _file = FileFactory.GetFactory(_properties).Create(_properties);
+                _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
+
+                _navi.Report += ProgressReporter;
+                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;              
+                _navi.GetNavigation();
+                _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
                 _saver = SaverFactory.GetFactory(_properties).Create(_file);
+
+                _navi.Report -= ProgressReporter;
+                _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+
             }           
             catch (Exception ex)
             {
+
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", ex.Message));
                 ErrorGuiMessage("Невозможно открыть файл");
+                InitControls();
             }
         }
 
@@ -219,19 +227,18 @@ namespace RlViewer.Facades
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            var creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
+            _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
-            creator.Report += TileCreatorProgressReporter;
-            creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _creator.Report += ProgressReporter;
+            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
 
-            _tiles = creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-
-            creator.Report -= TileCreatorProgressReporter;
-            creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _creator.Report -= ProgressReporter;
+            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
         }
 
 
-        private void TileCreatorProgressReporter(int progress)
+        private void ProgressReporter(int progress)
         {
             _form.ProgressBar.Invoke((Action)delegate
             {
@@ -250,6 +257,7 @@ namespace RlViewer.Facades
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 _form.ProgressBar.Visible = false;
                 _form.ProgressLabel.Visible = false;
+                _form.StatusLabel.Visible = false;
                 _form.CancelButton.Visible = false;
                 InitDrawImage();
             }
@@ -350,7 +358,7 @@ namespace RlViewer.Facades
                                 try
                                 {
                                     _saver.Save(sfd.FileName, Path.GetExtension(sfd.FileName).Replace(".", "")
-                                        .ToEnum<RlViewer.FileType>(), sSize.LeftTop, new Size(sSize.ImageWidth, sSize.ImageHeight));
+                                        .ToEnum<RlViewer.FileType>(), sSize.LeftTop, new Size(sSize.ImageWidth, sSize.ImageHeight), _creator.NormalizationCoef);
                                 }
                                 catch (ArgumentException aex)
                                 {
@@ -382,6 +390,7 @@ namespace RlViewer.Facades
             _form.ProgressBar.Maximum = 100;
             _form.ProgressBar.Visible = false;
             _form.ProgressLabel.Visible = false;
+            _form.StatusLabel.Visible = false;
             _form.CancelButton.Visible = false;
         }
 

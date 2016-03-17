@@ -21,7 +21,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.Raw _file;
         private RlViewer.Headers.Concrete.Raw.RawHeader _head;
 
-        public override void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize)
+        public override void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize, float normalization = 0)
         {           
             switch (destinationType)
             {
@@ -29,7 +29,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     SaveAsRaw(path, leftTop, areaSize);
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, leftTop, areaSize);
+                    SaveAsBmp(path, leftTop, areaSize, normalization);
                     break;
                 default:
                     throw new ArgumentException();
@@ -43,7 +43,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".raw";
+                var fname = Path.ChangeExtension(path, ".raw");
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 { 
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
@@ -67,11 +67,11 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        private void SaveAsBmp(string path, Point leftTop, Size areaSize)
+        private void SaveAsBmp(string path, Point leftTop, Size areaSize, float normalization)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var fname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".bmp";
+                var fname = Path.ChangeExtension(path, ".bmp");
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
@@ -122,7 +122,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);
                         Buffer.BlockCopy(frameStrData, 0, floatFrameStrData, 0, frameStrData.Length);
-                        fw.Write(floatFrameStrData.Select(x => (byte)(x * 255f / 87000f)).ToArray(), 0, floatFrameStrData.Length);
+                        fw.Write(floatFrameStrData.Select(x => (byte)(x * normalization)).ToArray(), 0, floatFrameStrData.Length);
                         //fw.Write(padBytes, 0, padBytes.Length);
                         fw.Write(padBytes, 0, padBytes.Length);
 

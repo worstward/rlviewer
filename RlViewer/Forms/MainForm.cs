@@ -69,6 +69,14 @@ namespace RlViewer.Forms
             }
         }
 
+        public Label StatusLabel
+        {
+            get
+            {
+                return statusLabel;
+            }
+        }
+
         public new Button CancelButton
         {
             get

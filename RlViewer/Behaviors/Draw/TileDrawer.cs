@@ -53,7 +53,7 @@ namespace RlViewer.Behaviors.Draw
        
 
         /// <summary>
-        /// Creates 8bpp grayscale image from raw byte array
+        /// Creates 8bpp image from raw byte array
         /// </summary>
         /// <param name="imgData">Raw image data</param>
         /// <param name="tileWidth">Image width</param>

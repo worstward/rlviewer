@@ -15,6 +15,7 @@ namespace RlViewer.Facades
         TrackBar FilterTrackBar { get; }
         ProgressBar ProgressBar { get; }
         Label ProgressLabel { get; }
+        Label StatusLabel { get; }
         Button CancelButton { get; }
         RadioButton DragRb { get; }
         RadioButton MarkPointRb { get; }

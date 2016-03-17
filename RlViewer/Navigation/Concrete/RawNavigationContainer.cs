@@ -8,21 +8,20 @@ namespace RlViewer.Navigation.Concrete
 {
     class RawNavigationContainer : NavigationContainer
     {
-        public RawNavigationContainer(string path, byte board)
+        public RawNavigationContainer(string path)
         {
-            //_naviStrings = 
-            //    ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(path, 16384, 1));
+        }
+        
+
+        protected override Behaviors.Navigation.NavigationComputing Computer
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        //private NavigationString[] _naviStrings;
-
-        //private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
-        //{
-        //    var naviStrings = strCollection.Select
-        //        (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, 1, 1));
-
-        //    return naviStrings.ToArray();
-        //}
+        public override void GetNavigation()
+        {
+            
+        }
 
         public override NavigationString this[int stringNumber]
         {
@@ -31,6 +30,15 @@ namespace RlViewer.Navigation.Concrete
                 throw new NotSupportedException("Raw navigation");
             }
         }
+
+        public override Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }  
+
 
     }
 }

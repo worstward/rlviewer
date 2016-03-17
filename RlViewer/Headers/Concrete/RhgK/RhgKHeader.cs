@@ -63,7 +63,7 @@ namespace RlViewer.Headers.Concrete
 
             using (var ms = new MemoryStream(header))
             {
-                _headerStruct = default(Rl4RliFileHeader);//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
+                _headerStruct = new Rl4RliFileHeader();//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
         }
 

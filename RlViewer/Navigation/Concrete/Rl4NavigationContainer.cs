@@ -10,10 +10,29 @@ namespace RlViewer.Navigation.Concrete
     {
         public Rl4NavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
         {
-            _naviStrings =
-                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(
-                                                path, headerLength, dataLength), board);
+            _path = path;
+            _initialRange = initialRange;
+            _step = step;
+            _board = board;
+            _headerLength = headerLength;
+            _dataLength = dataLength;
         }
+
+        private string _path;
+        private float _initialRange;
+        private float _step;
+        private byte _board;
+        private int _headerLength;
+        private int _dataLength;
+
+
+
+        private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
+        protected override RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        {
+            get { return _computer; }
+        }
+
 
         private NavigationString[] _naviStrings;
 
@@ -25,12 +44,38 @@ namespace RlViewer.Navigation.Concrete
             return naviStrings.ToArray();
         }
 
+        public override void GetNavigation()
+        {
+            _naviStrings =
+                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(
+                _path, _headerLength, _dataLength), _board);
+            _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+        }
+
         public override NavigationString this[int stringNumber]
         {
             get
             {
-                return _naviStrings[stringNumber];
+                try
+                {
+                    return _naviStrings[stringNumber];
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Error, "Wrong navigation data");
+                    _naviStrings = null;
+                    return new NavigationString(1, 1, 1, 1, 1);
+                }
             }
         }
+
+        public override Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
+        {
+            get
+            {
+                return _naviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
+            }
+        }  
+
     }
 }

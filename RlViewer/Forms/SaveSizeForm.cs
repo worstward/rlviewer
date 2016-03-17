@@ -30,8 +30,11 @@ namespace RlViewer.Forms
             _fileHeight = fileHeight;
 
             _selector = selector;
-           
-            radioButton1.Checked = true;
+
+            if (selector.Area.Height != 0)
+            {
+                radioButton3.Checked = true;
+            }
 
             InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
         }

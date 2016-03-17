@@ -20,7 +20,6 @@ namespace RlViewer.Behaviors.Saving
             bfOffBits = offset;
         }
 
-
         public ushort bfType;
         public uint bfSize;
         public ushort bfReserved1;
@@ -31,10 +30,10 @@ namespace RlViewer.Behaviors.Saving
     [StructLayout(LayoutKind.Sequential)]
     public struct BITMAPINFOHEADER
     {
-        public BITMAPINFOHEADER(int width, int height, uint sizeImg = 0, uint clrUsed = 256,
+        public BITMAPINFOHEADER(int width, int height, uint sizeImg = 0, uint bSize = 40, uint clrUsed = 256,
             uint clrImportant = 0, BitmapCompressionMode mode = BitmapCompressionMode.BI_RGB, ushort bpp = 8, ushort planes = 1)
         {
-            biSize = 40;
+            biSize = bSize;
             biWidth = width;
             biHeight = height;
             biPlanes = planes;

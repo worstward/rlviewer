@@ -13,13 +13,14 @@ namespace RlViewer.Files
 {
     public abstract class LocatorFile : LoadedFile, IHeader
     {
-        protected LocatorFile(FileProperties properties) : base(properties)
+        protected LocatorFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+            : base(properties)
         {
 
         }
 
 
-        public abstract Navigation.Navigation Navigation { get; }
+        public abstract Navigation.NavigationContainer Navigation { get; }
         public abstract LocatorFileHeader Header { get; }
 
         public abstract int Width { get; }

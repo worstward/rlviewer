@@ -54,6 +54,16 @@
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
+    <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\RawHeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\RhgKHeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\Rl4HeaderFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Abstract\NavigationContainerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\Brl4NavigationContainerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\RawNavigationContainerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\RhgKNavigationContainerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\Rl4NavigationContainerFactory.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
@@ -163,7 +173,6 @@
     <Compile Include="Navigation\Concrete\RawNavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RhgKNavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\Rl4NavigationContainer.cs" />
-    <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\NavigationString.cs" />
     <Compile Include="Navigation\NaviStringExt.cs" />
     <Compile Include="ParallelProp.cs" />

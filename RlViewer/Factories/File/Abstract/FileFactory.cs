@@ -11,7 +11,7 @@ namespace RlViewer.Factories.File.Abstract
     public abstract class FileFactory
     {
 
-        public abstract LocatorFile Create(FileProperties properties);
+        public abstract LocatorFile Create(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi);
 
         public static FileFactory GetFactory(FileProperties properties)
         {
