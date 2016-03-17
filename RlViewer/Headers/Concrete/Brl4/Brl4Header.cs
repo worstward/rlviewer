@@ -18,7 +18,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get
             {
-                return _signature;
+                return signature;
             }
         }
 
@@ -26,7 +26,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return _headerLength;
+                return headerLength;
             }
         }
 
@@ -34,7 +34,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return _strHeaderLength;
+                return strHeaderLength;
             }
         }
 
@@ -42,21 +42,29 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return _bytesPerSample;
+                return bytesPerSample;
             }
         }
 
+        public override HeaderInfoOutput[] HeaderInfo
+        {
+            get
+            {
+                return headerInfo = headerInfo ?? GetHeaderInfo();
+            }
+        }
 
-        private int _bytesPerSample = 4;
-        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
-        private const int _headerLength = 16384;
-        private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
+        private int bytesPerSample = 4;
+        private int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
+        private const int headerLength = 16384;
+        private byte[] signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
+        private HeaderInfoOutput[] headerInfo;
 
-        private Brl4RliFileHeader _headerStruct;
+        private Brl4RliFileHeader headerStruct;
 
         public Brl4RliFileHeader HeaderStruct
         {
-            get { return _headerStruct; }
+            get { return headerStruct; }
         }
 
 
@@ -71,17 +79,17 @@ namespace RlViewer.Headers.Concrete.Brl4
 
             using (var ms = new MemoryStream(header))
             {
-                _headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
+                headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
         }
 
-        public override HeaderInfoOutput[] GetHeaderInfo()
+        protected override HeaderInfoOutput[] GetHeaderInfo()
         {
             HeaderInfoOutput[] parsedHeader = null;
 
             try
             {
-                parsedHeader = ParseHeader(_headerStruct);
+                parsedHeader = ParseHeader(headerStruct);
             }
             catch (ArgumentException)
             {
@@ -101,7 +109,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             catch (ArgumentException aex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, aex.Message);
-                throw aex;
+                throw;
             }
 
             
@@ -120,7 +128,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по азимуту",         headerStruct.rhgParams.height.ToString()));
         
             var rliHeader = new List<Tuple<string, string>>();
-            //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(_path).Length.ToReadableFileSize()));
+            //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 

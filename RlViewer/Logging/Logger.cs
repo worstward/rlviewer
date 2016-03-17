@@ -13,12 +13,12 @@ namespace RlViewer.Logging
     {
         private static string logFileName = "log.txt";
 
-        private static List<LogEntry> _logs = new List<LogEntry>();
+        private static List<LogEntry> logs = new List<LogEntry>();
         public static List<LogEntry> Logs
         {
             get
             {
-                return _logs;
+                return logs;
             }
         }
 
@@ -26,14 +26,14 @@ namespace RlViewer.Logging
         {
             var logEntry = new LogEntry(DateTime.Now, severity, message);
 
-            _logs.Add(logEntry);
+            logs.Add(logEntry);
             SaveEntry(logEntry);
         }
 
-        private static object _saveLocker = new object();
+        private static object saveLocker = new object();
         private static void SaveEntry(LogEntry entry)
         {
-            lock (_saveLocker)
+            lock (saveLocker)
             {
                 using (var stream = new StreamWriter(logFileName, true))
                 {

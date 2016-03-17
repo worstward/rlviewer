@@ -15,14 +15,14 @@ namespace RlViewer.Files.Rhg.Concrete
         public RhgK(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {
-            _header = header as RhgKHeader;
+            header = header as RhgKHeader;
         }
 
 
-        private LocatorFileHeader _header;
+        private LocatorFileHeader header;
         public override LocatorFileHeader Header
         {
-            get { return _header; }
+            get { return header; }
         }
 
         public override Navigation.NavigationContainer Navigation

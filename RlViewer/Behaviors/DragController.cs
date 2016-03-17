@@ -12,40 +12,40 @@ namespace RlViewer.Behaviors
     public class DragController
     {
 
-        private bool _isMouseDown;
+        private bool isMouseDown;
 
-        private Point _previousMouseLocation;
+        private Point previousMouseLocation;
 
-        private Point _delta;
+        private Point delta;
 
         public Point Delta
         {
           get
           {
-              return _delta;
+              return delta;
           }
         }
 
         public void StartTracing(Point location, bool canDrag)
         {
-            _isMouseDown = canDrag;
-            _previousMouseLocation = location;
+            isMouseDown = canDrag;
+            previousMouseLocation = location;
         }
 
         public void StopTracing()
         {
-            _isMouseDown = false;
+            isMouseDown = false;
         }
 
         public bool Trace(Point location)
         {
-            if (_isMouseDown)
+            if (isMouseDown)
             {
-                _delta = new Point(location.X - _previousMouseLocation.X, location.Y - _previousMouseLocation.Y);
-                _previousMouseLocation = location;
-                //Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0}-{1}", _delta.X.ToString(), _delta.Y.ToString()));
+                delta = new Point(location.X - previousMouseLocation.X, location.Y - previousMouseLocation.Y);
+                previousMouseLocation = location;
+                //Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0}-{1}", delta.X.ToString(), delta.Y.ToString()));
             }
-            return _isMouseDown;
+            return isMouseDown;
         }
 
     }

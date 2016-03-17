@@ -12,13 +12,13 @@ namespace RlViewer.Behaviors.Draw
     {
 
 
-        private ColorPalette _colorPalette;
+        private ColorPalette colorPalette;
 
         public virtual ColorPalette Palette
         {
             get
             {
-                return _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
+                return colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
             }
         }
 
@@ -30,7 +30,7 @@ namespace RlViewer.Behaviors.Draw
         private ColorPalette InitPalette(int rCoef, int gCoef, int bCoef, bool isReversed)
         {
             //TODO: REWRITE PALETTE INIT
-            _colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+            colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
 
             const int alpha = 255;
 
@@ -41,16 +41,16 @@ namespace RlViewer.Behaviors.Draw
                 var b = bCoef * i;
                 if (isReversed)
                 {
-                    _colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                 }
                 else
                 {
-                    _colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                 }
             }
 
 
-            return _colorPalette;
+            return colorPalette;
         }
 
         private int TrimToByteRange(int value)
@@ -67,7 +67,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="reversed">Determines if colors in color table are reversed</param>
         public void GetPalette(int R, int G, int B, bool reversed)
         {
-            _colorPalette = null;
+            colorPalette = null;
             PaletteParams.R = R;
             PaletteParams.G = G;
             PaletteParams.B = B;
@@ -77,58 +77,58 @@ namespace RlViewer.Behaviors.Draw
         private static class PaletteParams
         {
 
-            private static bool _reversed;
+            private static bool reversed;
 
             public static bool Reversed
             {
                 get
                 {
-                    return _reversed;
+                    return reversed;
                 }
                 set
                 {
-                    _reversed = value;
+                    reversed = value;
                 }
             }
 
 
 
-            private static int _red = 1;
+            private static int red = 1;
             public static int R
             {
                 get
                 {
-                    return _red;
+                    return red;
                 }
                 set
                 {
-                    _red = value < 1 ? 0 : value;
+                    red = value < 1 ? 0 : value;
                 }
             }
 
-            private static int _green = 1;
+            private static int green = 1;
             public static int G
             {
                 get
                 {
-                    return _green;
+                    return green;
                 }
                 set
                 {
-                    _green = value < 1 ? 0 : value;
+                    green = value < 1 ? 0 : value;
                 }
             }
 
-            private static int _blue = 1;
+            private static int blue = 1;
             public static int B
             {
                 get
                 {
-                    return _blue;
+                    return blue;
                 }
                 set
                 {
-                    _blue = value < 1 ? 0 : value;
+                    blue = value < 1 ? 0 : value;
                 }
             }
         }

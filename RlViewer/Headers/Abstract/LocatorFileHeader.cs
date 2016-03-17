@@ -21,11 +21,14 @@ namespace RlViewer.Headers.Abstract
         public abstract int BytesPerSample { get; }
 
         public abstract int StrHeaderLength { get; }
+
+        public abstract HeaderInfoOutput[] HeaderInfo { get; }
+
         /// <summary>
         /// Returns parsed info from file header
         /// </summary>
         /// <returns>Array of parsed subheaders info</returns>
-        public abstract HeaderInfoOutput[] GetHeaderInfo();
+        protected abstract HeaderInfoOutput[] GetHeaderInfo();
 
         protected virtual void CheckInfo(byte[] header)
         {

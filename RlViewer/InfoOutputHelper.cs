@@ -14,11 +14,11 @@ namespace RlViewer
     {
         public HeaderInfoOutput(string HeaderName, IEnumerable<Tuple<string, string>> Params)
         {
-            _headerName = HeaderName;
-            _params     = Params;
+            headerName = HeaderName;
+            parameters = Params;
         }
 
-        private string _headerName;
+        private string headerName;
 
         /// <summary>
         /// Describes header contents
@@ -27,11 +27,11 @@ namespace RlViewer
         {
           get
           {
-              return _headerName;
+              return headerName;
           }
         }
 
-        private IEnumerable<Tuple<string, string>> _params;
+        private IEnumerable<Tuple<string, string>> parameters;
 
         /// <summary>
         /// Name-value pair of header parameters
@@ -40,7 +40,7 @@ namespace RlViewer
         {
           get
           {
-              return _params;
+              return parameters;
           }
         }
     }

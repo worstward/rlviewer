@@ -28,291 +28,291 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.heightTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.widthTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.xSizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.ySizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.y2CoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.x1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.x2CoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.y1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            button1 = new System.Windows.Forms.Button();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            radioButton3 = new System.Windows.Forms.RadioButton();
+            radioButton1 = new System.Windows.Forms.RadioButton();
+            radioButton2 = new System.Windows.Forms.RadioButton();
+            panel3 = new System.Windows.Forms.Panel();
+            label8 = new System.Windows.Forms.Label();
+            label7 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
+            label5 = new System.Windows.Forms.Label();
+            heightTextBox = new System.Windows.Forms.MaskedTextBox();
+            widthTextBox = new System.Windows.Forms.MaskedTextBox();
+            xSizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            ySizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            panel2 = new System.Windows.Forms.Panel();
+            label4 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
+            y2CoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            x1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            x2CoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            y1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
+            button2 = new System.Windows.Forms.Button();
+            groupBox1.SuspendLayout();
+            panel3.SuspendLayout();
+            panel2.SuspendLayout();
+            SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(18, 391);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Ok";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.Location = new System.Drawing.Point(18, 391);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(75, 23);
+            button1.TabIndex = 9;
+            button1.Text = "Ok";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += new System.EventHandler(button1_Click);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButton3);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.panel3);
-            this.groupBox1.Controls.Add(this.panel2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(273, 373);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Параметры сохранения";
+            groupBox1.Controls.Add(radioButton3);
+            groupBox1.Controls.Add(radioButton1);
+            groupBox1.Controls.Add(radioButton2);
+            groupBox1.Controls.Add(panel3);
+            groupBox1.Controls.Add(panel2);
+            groupBox1.Location = new System.Drawing.Point(12, 12);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new System.Drawing.Size(273, 373);
+            groupBox1.TabIndex = 5;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Параметры сохранения";
             // 
             // radioButton3
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(6, 211);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(164, 17);
-            this.radioButton3.TabIndex = 6;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "По координатам и размеру";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            radioButton3.AutoSize = true;
+            radioButton3.Location = new System.Drawing.Point(6, 211);
+            radioButton3.Name = "radioButton3";
+            radioButton3.Size = new System.Drawing.Size(164, 17);
+            radioButton3.TabIndex = 6;
+            radioButton3.TabStop = true;
+            radioButton3.Text = "По координатам и размеру";
+            radioButton3.UseVisualStyleBackColor = true;
+            radioButton3.CheckedChanged += new System.EventHandler(radioButton3_CheckedChanged);
             // 
             // radioButton1
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 28);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(115, 17);
-            this.radioButton1.TabIndex = 8;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Все изображение";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            radioButton1.AutoSize = true;
+            radioButton1.Location = new System.Drawing.Point(6, 28);
+            radioButton1.Name = "radioButton1";
+            radioButton1.Size = new System.Drawing.Size(115, 17);
+            radioButton1.TabIndex = 8;
+            radioButton1.TabStop = true;
+            radioButton1.Text = "Все изображение";
+            radioButton1.UseVisualStyleBackColor = true;
+            radioButton1.CheckedChanged += new System.EventHandler(radioButton1_CheckedChanged);
             // 
             // radioButton2
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(6, 51);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(109, 17);
-            this.radioButton2.TabIndex = 4;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "По координатам";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            radioButton2.AutoSize = true;
+            radioButton2.Location = new System.Drawing.Point(6, 51);
+            radioButton2.Name = "radioButton2";
+            radioButton2.Size = new System.Drawing.Size(109, 17);
+            radioButton2.TabIndex = 4;
+            radioButton2.TabStop = true;
+            radioButton2.Text = "По координатам";
+            radioButton2.UseVisualStyleBackColor = true;
+            radioButton2.CheckedChanged += new System.EventHandler(radioButton2_CheckedChanged);
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.label8);
-            this.panel3.Controls.Add(this.label7);
-            this.panel3.Controls.Add(this.label6);
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Controls.Add(this.heightTextBox);
-            this.panel3.Controls.Add(this.widthTextBox);
-            this.panel3.Controls.Add(this.xSizeCoordTextBox);
-            this.panel3.Controls.Add(this.ySizeCoordTextBox);
-            this.panel3.Location = new System.Drawing.Point(6, 234);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(261, 123);
-            this.panel3.TabIndex = 5;
+            panel3.Controls.Add(label8);
+            panel3.Controls.Add(label7);
+            panel3.Controls.Add(label6);
+            panel3.Controls.Add(label5);
+            panel3.Controls.Add(heightTextBox);
+            panel3.Controls.Add(widthTextBox);
+            panel3.Controls.Add(xSizeCoordTextBox);
+            panel3.Controls.Add(ySizeCoordTextBox);
+            panel3.Location = new System.Drawing.Point(6, 234);
+            panel3.Name = "panel3";
+            panel3.Size = new System.Drawing.Size(261, 123);
+            panel3.TabIndex = 5;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(139, 63);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(38, 13);
-            this.label8.TabIndex = 18;
-            this.label8.Text = "Height";
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(139, 63);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(38, 13);
+            label8.TabIndex = 18;
+            label8.Text = "Height";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(139, 15);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "Width";
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(139, 15);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(35, 13);
+            label7.TabIndex = 17;
+            label7.Text = "Width";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 63);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(14, 13);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Y";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(9, 63);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(14, 13);
+            label6.TabIndex = 16;
+            label6.Text = "Y";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 15);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(14, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "X";
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(9, 15);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(14, 13);
+            label5.TabIndex = 15;
+            label5.Text = "X";
             // 
             // heightTextBox
             // 
-            this.heightTextBox.Location = new System.Drawing.Point(142, 79);
-            this.heightTextBox.Mask = "0000000";
-            this.heightTextBox.Name = "heightTextBox";
-            this.heightTextBox.Size = new System.Drawing.Size(100, 20);
-            this.heightTextBox.TabIndex = 8;
+            heightTextBox.Location = new System.Drawing.Point(142, 79);
+            heightTextBox.Mask = "0000000";
+            heightTextBox.Name = "heightTextBox";
+            heightTextBox.Size = new System.Drawing.Size(100, 20);
+            heightTextBox.TabIndex = 8;
             // 
             // widthTextBox
             // 
-            this.widthTextBox.Location = new System.Drawing.Point(142, 31);
-            this.widthTextBox.Mask = "0000000";
-            this.widthTextBox.Name = "widthTextBox";
-            this.widthTextBox.Size = new System.Drawing.Size(100, 20);
-            this.widthTextBox.TabIndex = 7;
+            widthTextBox.Location = new System.Drawing.Point(142, 31);
+            widthTextBox.Mask = "0000000";
+            widthTextBox.Name = "widthTextBox";
+            widthTextBox.Size = new System.Drawing.Size(100, 20);
+            widthTextBox.TabIndex = 7;
             // 
             // xSizeCoordTextBox
             // 
-            this.xSizeCoordTextBox.Location = new System.Drawing.Point(9, 31);
-            this.xSizeCoordTextBox.Mask = "0000000";
-            this.xSizeCoordTextBox.Name = "xSizeCoordTextBox";
-            this.xSizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.xSizeCoordTextBox.TabIndex = 5;
+            xSizeCoordTextBox.Location = new System.Drawing.Point(9, 31);
+            xSizeCoordTextBox.Mask = "0000000";
+            xSizeCoordTextBox.Name = "xSizeCoordTextBox";
+            xSizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
+            xSizeCoordTextBox.TabIndex = 5;
             // 
             // ySizeCoordTextBox
             // 
-            this.ySizeCoordTextBox.Location = new System.Drawing.Point(9, 79);
-            this.ySizeCoordTextBox.Mask = "0000000";
-            this.ySizeCoordTextBox.Name = "ySizeCoordTextBox";
-            this.ySizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.ySizeCoordTextBox.TabIndex = 6;
+            ySizeCoordTextBox.Location = new System.Drawing.Point(9, 79);
+            ySizeCoordTextBox.Mask = "0000000";
+            ySizeCoordTextBox.Name = "ySizeCoordTextBox";
+            ySizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
+            ySizeCoordTextBox.TabIndex = 6;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.y2CoordTextBox);
-            this.panel2.Controls.Add(this.x1CoordTextBox);
-            this.panel2.Controls.Add(this.x2CoordTextBox);
-            this.panel2.Controls.Add(this.y1CoordTextBox);
-            this.panel2.Location = new System.Drawing.Point(6, 74);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(261, 135);
-            this.panel2.TabIndex = 7;
+            panel2.Controls.Add(label4);
+            panel2.Controls.Add(label3);
+            panel2.Controls.Add(label2);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(y2CoordTextBox);
+            panel2.Controls.Add(x1CoordTextBox);
+            panel2.Controls.Add(x2CoordTextBox);
+            panel2.Controls.Add(y1CoordTextBox);
+            panel2.Location = new System.Drawing.Point(6, 74);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(261, 135);
+            panel2.TabIndex = 7;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(139, 67);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "Y2";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(139, 67);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(20, 13);
+            label4.TabIndex = 16;
+            label4.Text = "Y2";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(139, 17);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(20, 13);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "X2";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(139, 17);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(20, 13);
+            label3.TabIndex = 15;
+            label3.Text = "X2";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 67);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 13);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Y1";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(9, 67);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(20, 13);
+            label2.TabIndex = 14;
+            label2.Text = "Y1";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 13);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "X1";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(9, 14);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(20, 13);
+            label1.TabIndex = 13;
+            label1.Text = "X1";
             // 
             // y2CoordTextBox
             // 
-            this.y2CoordTextBox.Location = new System.Drawing.Point(142, 83);
-            this.y2CoordTextBox.Mask = "0000000";
-            this.y2CoordTextBox.Name = "y2CoordTextBox";
-            this.y2CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.y2CoordTextBox.TabIndex = 4;
+            y2CoordTextBox.Location = new System.Drawing.Point(142, 83);
+            y2CoordTextBox.Mask = "0000000";
+            y2CoordTextBox.Name = "y2CoordTextBox";
+            y2CoordTextBox.Size = new System.Drawing.Size(100, 20);
+            y2CoordTextBox.TabIndex = 4;
             // 
             // x1CoordTextBox
             // 
-            this.x1CoordTextBox.Location = new System.Drawing.Point(9, 33);
-            this.x1CoordTextBox.Mask = "0000000";
-            this.x1CoordTextBox.Name = "x1CoordTextBox";
-            this.x1CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.x1CoordTextBox.TabIndex = 1;
+            x1CoordTextBox.Location = new System.Drawing.Point(9, 33);
+            x1CoordTextBox.Mask = "0000000";
+            x1CoordTextBox.Name = "x1CoordTextBox";
+            x1CoordTextBox.Size = new System.Drawing.Size(100, 20);
+            x1CoordTextBox.TabIndex = 1;
             // 
             // x2CoordTextBox
             // 
-            this.x2CoordTextBox.Location = new System.Drawing.Point(142, 33);
-            this.x2CoordTextBox.Mask = "0000000";
-            this.x2CoordTextBox.Name = "x2CoordTextBox";
-            this.x2CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.x2CoordTextBox.TabIndex = 3;
+            x2CoordTextBox.Location = new System.Drawing.Point(142, 33);
+            x2CoordTextBox.Mask = "0000000";
+            x2CoordTextBox.Name = "x2CoordTextBox";
+            x2CoordTextBox.Size = new System.Drawing.Size(100, 20);
+            x2CoordTextBox.TabIndex = 3;
             // 
             // y1CoordTextBox
             // 
-            this.y1CoordTextBox.Location = new System.Drawing.Point(9, 83);
-            this.y1CoordTextBox.Mask = "0000000";
-            this.y1CoordTextBox.Name = "y1CoordTextBox";
-            this.y1CoordTextBox.Size = new System.Drawing.Size(100, 20);
-            this.y1CoordTextBox.TabIndex = 2;
+            y1CoordTextBox.Location = new System.Drawing.Point(9, 83);
+            y1CoordTextBox.Mask = "0000000";
+            y1CoordTextBox.Name = "y1CoordTextBox";
+            y1CoordTextBox.Size = new System.Drawing.Size(100, 20);
+            y1CoordTextBox.TabIndex = 2;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(204, 391);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            button2.Location = new System.Drawing.Point(204, 391);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(75, 23);
+            button2.TabIndex = 10;
+            button2.Text = "Cancel";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += new System.EventHandler(button2_Click);
             // 
             // SaveSizeForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(297, 426);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.KeyPreview = true;
-            this.Name = "SaveSizeForm";
-            this.Text = "SaveSizeForm";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SaveSizeForm_KeyDown);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(297, 426);
+            Controls.Add(button2);
+            Controls.Add(groupBox1);
+            Controls.Add(button1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            KeyPreview = true;
+            Name = "SaveSizeForm";
+            Text = "SaveSizeForm";
+            KeyDown += new System.Windows.Forms.KeyEventHandler(SaveSizeForm_KeyDown);
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ResumeLayout(false);
 
         }
 

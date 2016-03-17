@@ -15,7 +15,7 @@ namespace RlViewer.Forms
         public LogForm()
         {
             InitializeComponent();
-            this.MaximumSize = this.Size;
+            MaximumSize = Size;
             dgv = GetDataGrid();
             LoadData();
             dgv.Size = SetDgvSize();
@@ -29,7 +29,7 @@ namespace RlViewer.Forms
             var dgv = new DataGridView()
             {
                 BackgroundColor = Color.White,
-                Location = new Point(this.Location.X + 5, this.Location.Y),
+                Location = new Point(Location.X + 5, Location.Y),
                 RowHeadersVisible = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 Anchor = AnchorStyles.Top,
@@ -72,7 +72,7 @@ namespace RlViewer.Forms
             //some magic numbers to set proper offsets and make each row appear correctly
             foreach (DataGridViewRow row in dgv.Rows) height += (row.Height + 7);
             height += 30;
-            return new Size(this.Width - 10, height);
+            return new Size(Width - 10, height);
         }
 
 
@@ -89,7 +89,7 @@ namespace RlViewer.Forms
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                Close();
             }
         }
 

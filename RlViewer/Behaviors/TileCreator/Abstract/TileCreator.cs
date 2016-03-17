@@ -12,24 +12,24 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class TileCreator : WorkerEventController
     {
-        private System.Drawing.Size _tileSize = new System.Drawing.Size(512, 512);
+        private System.Drawing.Size tileSize = new System.Drawing.Size(512, 512);
         protected System.Drawing.Size TileSize
         {
             get
             {
-                return _tileSize;
+                return tileSize;
             }
         }
 
         public abstract Tile[] Tiles { get; }
 
 
-        private string _tileExtension = ".tl";
+        private string tileExtension = ".tl";
         protected virtual string TileFileExtension
         {
             get
             {
-                return _tileExtension;
+                return tileExtension;
             }
         }
 
@@ -210,10 +210,17 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             int index = 0;
 
-            while (index != line.Length && s.Position != s.Length)
+            try
             {
-                s.Seek(strHeaderLength, SeekOrigin.Current);
-                index += s.Read(line, index, signalDataLength);
+                while (index != line.Length && s.Position != s.Length)
+                {
+                    s.Seek(strHeaderLength, SeekOrigin.Current);
+                    index += s.Read(line, index, signalDataLength);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, ex.Message);
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 

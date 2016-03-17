@@ -8,23 +8,23 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class PointSelector
     {
-        private List<SelectedPoint> _selectedPoints = new List<SelectedPoint>();
+        private List<SelectedPoint> selectedPoints = new List<SelectedPoint>();
 
         public IEnumerator<SelectedPoint> GetEnumerator()
         {
-            return _selectedPoints.GetEnumerator();
+            return selectedPoints.GetEnumerator();
         }
 
         public void Sort()
         {
-            _selectedPoints.OrderBy(x => x.Location.X).ThenBy(x => x.Location.Y);
+            selectedPoints.OrderBy(x => x.Location.X).ThenBy(x => x.Location.Y);
         }
 
 
         public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
         {
             //16 points required for the algorythm to work properly
-            if (_selectedPoints.Count <= 16)
+            if (selectedPoints.Count <= 16)
             {
                 if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
                 {
@@ -32,11 +32,11 @@ namespace RlViewer.Behaviors.PointSelector
                     {
                         if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {
-                            _selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
+                            selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
                         }
                     }
                 }
-                if (_selectedPoints.Count == 16)
+                if (selectedPoints.Count == 16)
                 {
                     Sort();
                 }
@@ -45,7 +45,7 @@ namespace RlViewer.Behaviors.PointSelector
 
         public void Add(SelectedPoint selectedPoint)
         {
-            _selectedPoints.Add(selectedPoint);
+            selectedPoints.Add(selectedPoint);
         }
 
         //public void AddFileVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
@@ -53,15 +53,15 @@ namespace RlViewer.Behaviors.PointSelector
         //    //if we hit the image
         //    if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
         //    {
-        //        _selectedPoints.Add(new SelectedPoint(file, location));
+        //        selectedPoints.Add(new SelectedPoint(file, location));
         //    }
         //}
 
         public void RemoveLast()
         {
-            if (_selectedPoints.Count > 0)
+            if (selectedPoints.Count > 0)
             {
-                _selectedPoints.RemoveAt(_selectedPoints.Count - 1);
+                selectedPoints.RemoveAt(selectedPoints.Count - 1);
             }
         }
 

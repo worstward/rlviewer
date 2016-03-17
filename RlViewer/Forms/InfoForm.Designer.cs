@@ -28,31 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.infoTabsControl = new System.Windows.Forms.TabControl();
-            this.SuspendLayout();
+            infoTabsControl = new System.Windows.Forms.TabControl();
+            SuspendLayout();
             // 
             // infoTabsControl
             // 
-            this.infoTabsControl.Location = new System.Drawing.Point(12, 12);
-            this.infoTabsControl.Name = "infoTabsControl";
-            this.infoTabsControl.SelectedIndex = 0;
-            this.infoTabsControl.Size = new System.Drawing.Size(545, 351);
-            this.infoTabsControl.TabIndex = 0;
+            infoTabsControl.Location = new System.Drawing.Point(12, 12);
+            infoTabsControl.Name = "infoTabsControl";
+            infoTabsControl.SelectedIndex = 0;
+            infoTabsControl.Size = new System.Drawing.Size(545, 351);
+            infoTabsControl.TabIndex = 0;
             // 
             // InfoForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 375);
-            this.Controls.Add(this.infoTabsControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.KeyPreview = true;
-            this.MaximumSize = new System.Drawing.Size(585, 409);
-            this.Name = "InfoForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Информация о файле";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InfoForm_KeyDown);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(569, 375);
+            Controls.Add(infoTabsControl);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            KeyPreview = true;
+            MaximumSize = new System.Drawing.Size(585, 409);
+            Name = "InfoForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Информация о файле";
+            KeyDown += new System.Windows.Forms.KeyEventHandler(InfoForm_KeyDown);
+            ResumeLayout(false);
 
         }
 

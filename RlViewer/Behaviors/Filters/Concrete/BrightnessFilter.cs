@@ -11,35 +11,35 @@ namespace RlViewer.Behaviors.Filters.Concrete
         public BrightnessFilter()
         {
             RegisterFilter();
-            FilterValue = Filters[this.GetType().ToString()].FilterValue;
+            FilterValue = Filters[GetType().ToString()].FilterValue;
         }
 
 
-        private byte[] _brightnessLookUp;
+        private byte[] brightnessLookUp;
 
         public override byte[] LuTable
         {
             get
             {
-                return _brightnessLookUp;
+                return brightnessLookUp;
             }
             protected set
             {
-                _brightnessLookUp = value;
+                brightnessLookUp = value;
             }
         }
 
-        static int _brightnesValue;
+        static int brightnesValue;
         public override int FilterValue
         {
             get
             {
-                return _brightnesValue;
+                return brightnesValue;
             }
             set
             {
-                _brightnesValue = value;
-                _brightnessLookUp = InitLut(_brightnesValue);
+                brightnesValue = value;
+                brightnessLookUp = InitLut(brightnesValue);
             }
         }
 

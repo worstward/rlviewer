@@ -22,13 +22,13 @@ namespace RlViewer.Headers.Concrete
         {
             get
             {
-                return _signature;
+                return signature;
             }
         }
 
         public override int FileHeaderLength
         {
-            get { return _headerLength; }
+            get { return headerLength; }
         }
 
         public override int StrHeaderLength
@@ -40,17 +40,25 @@ namespace RlViewer.Headers.Concrete
         {
             get
             {
-                return _bytesPerSample;
+                return bytesPerSample;
             }
         }
 
 
-        private int _bytesPerSample = 2;
-        private int _headerLength = 800;
-        private byte[] _signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
+        public override HeaderInfoOutput[] HeaderInfo
+        {
+            get
+            {
+                return headerInfo ?? (headerInfo = GetHeaderInfo());
+            }
+        }
 
-        //private HeaderInfoOutput[] _headerInfo;
-        private Rl4RliFileHeader _headerStruct;
+        private int bytesPerSample = 2;
+        private int headerLength = 800;
+        private byte[] signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
+
+        private HeaderInfoOutput[] headerInfo;
+        private Rl4RliFileHeader headerStruct;
 
         private void ReadHeader(string path)
         {
@@ -63,17 +71,17 @@ namespace RlViewer.Headers.Concrete
 
             using (var ms = new MemoryStream(header))
             {
-                _headerStruct = new Rl4RliFileHeader();//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
+                headerStruct = new Rl4RliFileHeader();//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
         }
 
-        public override HeaderInfoOutput[] GetHeaderInfo()
+        protected override HeaderInfoOutput[] GetHeaderInfo()
         {
             HeaderInfoOutput[] parsedHeader = null;
 
             try
             {
-                parsedHeader = null;//ParseHeader(_headerStruct);
+                parsedHeader = null;//ParseHeader(headerStruct);
             }
             catch (ArgumentException)
             {

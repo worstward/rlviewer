@@ -19,11 +19,11 @@ namespace RlViewer.Forms
             maskedTextBox2.PromptChar = ' ';
         }
 
-        private System.Drawing.Size _imgSize = new Size();
+        private System.Drawing.Size imgSize = new Size();
 
         public System.Drawing.Size ImgSize
         {
-            get { return _imgSize; }
+            get { return imgSize; }
         }
 
         private int ImgWidth
@@ -55,8 +55,8 @@ namespace RlViewer.Forms
             }
             else
             {
-                _imgSize = new Size(ImgWidth, ImgHeight);
-                this.DialogResult = DialogResult.OK;
+                imgSize = new Size(ImgWidth, ImgHeight);
+                DialogResult = DialogResult.OK;
             }
         }
 
@@ -64,7 +64,7 @@ namespace RlViewer.Forms
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                Close();
             }
         }
 
@@ -72,7 +72,7 @@ namespace RlViewer.Forms
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                Close();
             }
         }
 

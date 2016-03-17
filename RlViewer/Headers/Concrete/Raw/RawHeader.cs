@@ -52,14 +52,21 @@ namespace RlViewer.Headers.Concrete.Raw
             }
         }
 
+        public override HeaderInfoOutput[] HeaderInfo
+        {
+            get
+            {
+                return _headerInfo = _headerInfo ?? GetHeaderInfo();
+            }
+        }
 
         private int _bytesPerSample = 4;
         private const int _strHeaderLength = 0;
         private const int _headerLength = 0;
         private byte[] _signature = new byte[_headerLength];
-        private byte[] _header    = new byte[_headerLength];
+        private byte[] _header = new byte[_headerLength];
         private string _path;
-
+        private HeaderInfoOutput[] _headerInfo;
         private System.Drawing.Size _imgSize = new System.Drawing.Size();
 
         public System.Drawing.Size ImgSize
@@ -71,7 +78,7 @@ namespace RlViewer.Headers.Concrete.Raw
         }
 
 
-        public override HeaderInfoOutput[] GetHeaderInfo()
+        protected override HeaderInfoOutput[] GetHeaderInfo()
         {
             return new HeaderInfoOutput[] 
             { 

@@ -23,7 +23,6 @@ namespace RlViewer.Facades
             _settings = new Settings.Settings();
             _filterFacade = new ImageFilterFacade();
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
-
             InitControls();
         }
 
@@ -39,7 +38,6 @@ namespace RlViewer.Facades
         private Navigation.NavigationContainer _navi;
 
         private Files.LocatorFile _file;
-        private HeaderInfoOutput[] _info;
         private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
         private RlViewer.Facades.DrawerFacade _drawer;
         private RlViewer.Behaviors.PointSelector.PointSelector _pointSelector;
@@ -94,7 +92,6 @@ namespace RlViewer.Facades
             _file = null;
             _drawer = null;
             _form.Canvas.Image = null;
-            //_loaderWorker = InitWorker();
             _form.NavigationDgv.Rows.Clear();
 
             try
@@ -119,47 +116,18 @@ namespace RlViewer.Facades
             return caption;
         }
 
-        
-
-        public void LoadFile()
-        {
-            if (_file != null)
-            {
-                try
-                {
-                    _info = ((RlViewer.Files.LocatorFile)_file).Header.GetHeaderInfo();
-                }
-                catch(InvalidCastException icex)
-                {
-                    _info = null;
-                    ErrorGuiMessage(icex.Message);
-                }
-
-                if (_info == null)
-                {
-                    ErrorGuiMessage("Файл поврежден");
-                    _file = null;
-                    InitControls();
-                }
-                else
-                {
-                    GetImage();
-                }
-            }
-        }
 
 
         public void ShowFileInfo()
         {
             if(_file != null)
             {
-                using (var iFrm = new Forms.InfoForm(_info))
+                using (var iFrm = new Forms.InfoForm(_file.Header.HeaderInfo))
                 {                   
                     iFrm.ShowDialog();
                 }
             }
         }
-
 
         private void InitProgressBar()
         {
@@ -221,7 +189,7 @@ namespace RlViewer.Facades
 
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            LoadFile();
+            GetImage();
         }
 
 

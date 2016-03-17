@@ -18,7 +18,8 @@ namespace RlViewer.Forms
         {
             InitializeComponent();
             guiFacade = new Facades.GuiFacade(this);
-            this.Text = string.Empty;
+            Text = string.Empty;
+            checkBox1.Checked = false;
         }
 
 
@@ -134,7 +135,7 @@ namespace RlViewer.Forms
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Text = guiFacade.OpenFile();
+            Text = guiFacade.OpenFile();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -206,7 +207,7 @@ namespace RlViewer.Forms
 
         private void loadCancelBtn_Click(object sender, EventArgs e)
         {
-            this.Text = string.Empty;
+            Text = string.Empty;
             guiFacade.CancelLoading();
         }
 

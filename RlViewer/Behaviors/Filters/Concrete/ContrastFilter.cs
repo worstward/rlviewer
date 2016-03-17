@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.Filters.Concrete
         public ContrastFilter()
         {
             RegisterFilter();
-            FilterValue = Filters[this.GetType().ToString()].FilterValue;
+            FilterValue = Filters[GetType().ToString()].FilterValue;
         }
 
 

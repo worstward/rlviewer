@@ -9,43 +9,43 @@ namespace RlViewer.Behaviors.AreaSelector
 {
     public class SelectedArea
     {
-        private Point _location;
+        private Point location;
         public Point Location
         {
             get
             {
-                return _location;
+                return location;
             }
             set
             {
-                _location = value;
+                location = value;
             }
         }
 
-        private int _width;
+        private int width;
 
         public int Width
         {
             get
             {
-                return _width;
+                return width;
             }
             set
             {
-                _width = value;
+                width = value;
             }
         }
 
-        private int _height;
+        private int height;
         public int Height
         {
             get
             {
-                return _height;
+                return height;
             }
                 set
             {
-                _height = value;
+                height = value;
             }
         }
 

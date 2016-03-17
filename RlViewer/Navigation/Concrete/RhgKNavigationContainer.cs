@@ -14,7 +14,7 @@ namespace RlViewer.Navigation.Concrete
               //  ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.r>(path, 16384, 1));
         }
 
-        private NavigationString[] _naviStrings;
+        private NavigationString[] naviStrings;
 
         private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
         {
@@ -38,7 +38,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return _naviStrings[stringNumber];
+                return naviStrings[stringNumber];
             }
         }
 

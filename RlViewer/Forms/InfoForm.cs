@@ -42,7 +42,7 @@ namespace RlViewer.Forms
             var dgv = new DataGridView()
             {
                 Size = infoTabsControl.Size,
-                Location = this.Location,
+                Location = Location,
                 BackgroundColor = Color.White,
                 RowHeadersVisible = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
@@ -82,7 +82,7 @@ namespace RlViewer.Forms
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                Close();
             }
         }
 
