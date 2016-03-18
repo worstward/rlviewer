@@ -19,12 +19,14 @@ namespace RlViewer.Behaviors.Draw
     /// </summary>
     public class TileDrawer : ImageDrawer
     {
-        public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter)
+        public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, RlViewer.Behaviors.Scaling.Scaler scaler)
         {
             _filter = filter;
+            _scaler = scaler;
         }
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
+        private RlViewer.Behaviors.Scaling.Scaler _scaler;
 
         /// <summary>
         /// Creates image from visible parts of tiles
@@ -35,17 +37,20 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>       
         public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView, screenSize.Width, screenSize.Height)).ToArray();
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+                (int)(screenSize.Width / _scaler.ZoomFactor), (int)(screenSize.Height / _scaler.ZoomFactor))).ToArray();
 
             using (var g = Graphics.FromImage(canvas))
             {
                 //g.ScaleTransform(1.0F, -1.0F);
                 //g.TranslateTransform(0.0F, -(float)canvas.Height);
-
+                Bitmap bmp;
                 foreach (var tile in visibleTiles)
                 {
-                    g.DrawImage(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette),
-                        new Point(tile.LeftTopCoord.X - leftTopPointOfView.X, tile.LeftTopCoord.Y - leftTopPointOfView.Y));
+                    bmp = new Bitmap(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette),
+                        new Size((int)(tile.Size.Width * _scaler.ZoomFactor), (int)(tile.Size.Height * _scaler.ZoomFactor)));
+                    g.DrawImage(bmp, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) * _scaler.ZoomFactor),
+                        (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) * _scaler.ZoomFactor)));
                 }
             }
             return canvas;

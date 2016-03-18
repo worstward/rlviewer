@@ -18,7 +18,7 @@ namespace RlViewer.Forms
             maskedTextBox1.PromptChar = ' ';
         }
 
-        private int eprValue;
+        private int _eprValue;
 
         public int EprValue
         {
@@ -28,13 +28,13 @@ namespace RlViewer.Forms
                 //    return Convert.ToInt32(maskedTextBox1.Text);
 
                 //return 0;
-                return eprValue;
+                return _eprValue;
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!Int32.TryParse(maskedTextBox1.Text, out eprValue))
+            if (!Int32.TryParse(maskedTextBox1.Text, out _eprValue))
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //DialogResult = DialogResult.Cancel;

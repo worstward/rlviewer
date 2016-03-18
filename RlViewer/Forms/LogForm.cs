@@ -16,13 +16,13 @@ namespace RlViewer.Forms
         {
             InitializeComponent();
             MaximumSize = Size;
-            dgv = GetDataGrid();
+            _dgv = GetDataGrid();
             LoadData();
-            dgv.Size = SetDgvSize();
-            panel1.Controls.Add(dgv);
+            _dgv.Size = SetDgvSize();
+            panel1.Controls.Add(_dgv);
         }
 
-        DataGridView dgv;
+        DataGridView _dgv;
 
         private DataGridView GetDataGrid()
         {
@@ -70,7 +70,7 @@ namespace RlViewer.Forms
         {
             int height = 0;
             //some magic numbers to set proper offsets and make each row appear correctly
-            foreach (DataGridViewRow row in dgv.Rows) height += (row.Height + 7);
+            foreach (DataGridViewRow row in _dgv.Rows) height += (row.Height + 7);
             height += 30;
             return new Size(Width - 10, height);
         }
@@ -81,7 +81,7 @@ namespace RlViewer.Forms
         {
             foreach (var logEntry in Logging.Logger.Logs)
             {
-                dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
+                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
             }  
         }
 

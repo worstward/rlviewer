@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace RlViewer.Behaviors.Saving.Abstract
 {
-    public abstract class Saver
+    public abstract class Saver : WorkerEventController
     {
         public Saver(Files.LoadedFile file)
         {

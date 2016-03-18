@@ -33,7 +33,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-        public abstract float NormalizationCoef { get; }
+        public abstract float NormalizationFactor { get; }
 
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
@@ -81,7 +81,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
 
-        protected virtual float ComputeNormalizationCoef(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
+        protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
             byte[] arr = new byte[strDataLen + strHeadLen];
             float[] floatArr = new float[strDataLen / 4];
@@ -202,7 +202,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
-        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationCoef)
+        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor)
         {
             byte[] line = new byte[signalDataLength * tileHeight];
             float[] fLine = new float[line.Length / 4];
@@ -224,7 +224,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationCoef)).ToArray();
+            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationFactor)).ToArray();
 
             return normalizedLine;
         }

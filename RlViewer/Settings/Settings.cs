@@ -8,35 +8,35 @@ namespace RlViewer.Settings
 {
     public class Settings
     {
-        private bool allowViewWhileLoading;
+        private bool _allowViewWhileLoading;
         public bool AllowViewWhileLoading
         {
-            get { return allowViewWhileLoading; }
-            set { allowViewWhileLoading = value; }
+            get { return _allowViewWhileLoading; }
+            set { _allowViewWhileLoading = value; }
         }
 
-        private bool forceTileGen;
+        private bool _forceTileGen;
         public bool ForceTileGeneration
         {
-            get { return forceTileGen; }
-            set { forceTileGen = value; }
+            get { return _forceTileGen; }
+            set { _forceTileGen = value; }
         }
 
 
-        private int[] palette = new int[3] { 1, 1, 1 };
+        private int[] _palette = new int[3] { 1, 1, 1 };
 
         public int[] Palette
         {
-            get { return palette; }
-            set { palette = value; }
+            get { return _palette; }
+            set { _palette = value; }
         }
 
-        private bool isPaletteReversed;
+        private bool _isPaletteReversed;
 
         public bool IsPaletteReversed
         {
-            get { return isPaletteReversed; }
-            set { isPaletteReversed = value; }
+            get { return _isPaletteReversed; }
+            set { _isPaletteReversed = value; }
         }
 
 

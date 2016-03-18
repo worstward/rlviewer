@@ -22,7 +22,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         {
             get 
             {
-                return signature;
+                return _signature;
             }
         }
 
@@ -30,7 +30,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         {
             get
             {
-                return headerLength;
+                return _headerLength;
             }
         }
 
@@ -38,14 +38,14 @@ namespace RlViewer.Headers.Concrete.Rl4
         {
             get 
             {
-                return strHeaderLength;
+                return _strHeaderLength;
             }
         }
         public override int BytesPerSample
         {
             get
             {
-                return bytesPerSample;
+                return _bytesPerSample;
             }
         }
 
@@ -53,23 +53,26 @@ namespace RlViewer.Headers.Concrete.Rl4
         {
             get
             {
-                return headerInfo = headerInfo ?? GetHeaderInfo();
+                return _headerInfo = _headerInfo ?? GetHeaderInfo();
             }
         }
 
 
 
-        private int bytesPerSample = 4;
-        private int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Rl4StrHeaderStruct());
-        private const int headerLength = 16384;
-        private byte[] signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
-        private Rl4RliFileHeader headerStruct;
-        private HeaderInfoOutput[] headerInfo;
+        private int _bytesPerSample = 4;
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Rl4StrHeaderStruct());
+        private const int _headerLength = 16384;
+        private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
+        private Rl4RliFileHeader _headerStruct;
+        private HeaderInfoOutput[] _headerInfo;
 
 
         public Rl4RliFileHeader HeaderStruct
         {
-            get { return headerStruct; }
+            get
+            {
+                return _headerStruct;
+            }
         }
 
         private void ReadHeader(string path)
@@ -83,7 +86,7 @@ namespace RlViewer.Headers.Concrete.Rl4
 
             using (var ms = new MemoryStream(header))
             {
-                headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
+                _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
             }
         }
 
@@ -93,7 +96,7 @@ namespace RlViewer.Headers.Concrete.Rl4
 
             try
             {
-                parsedHeader = ParseHeader(headerStruct);
+                parsedHeader = ParseHeader(_headerStruct);
             }
             catch (ArgumentException)
             {
@@ -144,7 +147,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",      headerStruct.rlParams.dy.ToString()));
 
             var synthHeader = new List<Tuple<string, string>>();
-            synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthParams.processAlgorithm == 255 ? "Омега-К" : "Не определено"));           
+            synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthParams.processAlgorithm == 18 ? "Омега-К" : "Не определено"));           
             synthHeader.Add(new Tuple<string, string>("Частота повторения, Гц",          headerStruct.synthParams.Fn.ToString()));
             //synthHeader.Add(new Tuple<string, string>("Время",                           headerStruct.synthParams.time.ToDateTime().ToString()));
             synthHeader.Add(new Tuple<string, string>("Начальная дальность, м",          headerStruct.synthParams.D0.ToString()));

@@ -18,7 +18,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get
             {
-                return signature;
+                return _signature;
             }
         }
 
@@ -26,7 +26,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return headerLength;
+                return _headerLength;
             }
         }
 
@@ -34,7 +34,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return strHeaderLength;
+                return _strHeaderLength;
             }
         }
 
@@ -42,7 +42,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get 
             {
-                return bytesPerSample;
+                return _bytesPerSample;
             }
         }
 
@@ -50,21 +50,24 @@ namespace RlViewer.Headers.Concrete.Brl4
         {
             get
             {
-                return headerInfo = headerInfo ?? GetHeaderInfo();
+                return _headerInfo = _headerInfo ?? GetHeaderInfo();
             }
         }
 
-        private int bytesPerSample = 4;
-        private int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
-        private const int headerLength = 16384;
-        private byte[] signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
-        private HeaderInfoOutput[] headerInfo;
+        private int _bytesPerSample = 4;
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
+        private const int _headerLength = 16384;
+        private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
+        private HeaderInfoOutput[] _headerInfo;
 
-        private Brl4RliFileHeader headerStruct;
+        private Brl4RliFileHeader _headerStruct;
 
         public Brl4RliFileHeader HeaderStruct
         {
-            get { return headerStruct; }
+            get
+            { 
+                return _headerStruct;
+            }
         }
 
 
@@ -79,7 +82,7 @@ namespace RlViewer.Headers.Concrete.Brl4
 
             using (var ms = new MemoryStream(header))
             {
-                headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
+                _headerStruct = RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
             }
         }
 
@@ -89,7 +92,7 @@ namespace RlViewer.Headers.Concrete.Brl4
 
             try
             {
-                parsedHeader = ParseHeader(headerStruct);
+                parsedHeader = ParseHeader(_headerStruct);
             }
             catch (ArgumentException)
             {

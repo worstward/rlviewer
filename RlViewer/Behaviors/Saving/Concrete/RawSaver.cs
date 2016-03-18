@@ -54,6 +54,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+
+
                         //fr.Seek(leftTop.X * )
                         //read-write string data
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
@@ -118,6 +125,12 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+
 
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);

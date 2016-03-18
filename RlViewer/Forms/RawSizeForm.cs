@@ -19,11 +19,14 @@ namespace RlViewer.Forms
             maskedTextBox2.PromptChar = ' ';
         }
 
-        private System.Drawing.Size imgSize = new Size();
+        private System.Drawing.Size _imgSize = new Size();
 
         public System.Drawing.Size ImgSize
         {
-            get { return imgSize; }
+            get 
+            {
+                return _imgSize;
+            }
         }
 
         private int ImgWidth
@@ -55,7 +58,7 @@ namespace RlViewer.Forms
             }
             else
             {
-                imgSize = new Size(ImgWidth, ImgHeight);
+                _imgSize = new Size(ImgWidth, ImgHeight);
                 DialogResult = DialogResult.OK;
             }
         }

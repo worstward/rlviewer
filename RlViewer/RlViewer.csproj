@@ -54,6 +54,7 @@
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
+    <Compile Include="Behaviors\Scaling\Scaler.cs" />
     <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RawHeaderFactory.cs" />

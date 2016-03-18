@@ -22,6 +22,7 @@ namespace RlViewer.Facades
             _drag = new Behaviors.DragController();
             _settings = new Settings.Settings();
             _filterFacade = new ImageFilterFacade();
+            _scaler = new Behaviors.Scaling.Scaler(1);
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
             InitControls();
         }
@@ -32,6 +33,8 @@ namespace RlViewer.Facades
         private ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
+        private RlViewer.Behaviors.Scaling.Scaler _scaler;
+
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
@@ -102,7 +105,7 @@ namespace RlViewer.Facades
             catch (ArgumentException aex)
             {
                 ErrorGuiMessage("Unsupported file type");
-                Logging.Logger.Log(Logging.SeverityGrades.Error, aex.Message);
+                Logging.Logger.Log(Logging.SeverityGrades.Error, "Неподдерживаемый формат файла");
                 return string.Empty;
             }
 
@@ -143,22 +146,88 @@ namespace RlViewer.Facades
 
         public void GetImage()
         {
-            _form.StatusLabel.Text = "Генерация тайлов";
-            InitProgressBar();
-            _loaderWorker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
-            _loaderWorker.RunWorkerAsync();
+            if (_file != null)
+            {
+                _form.StatusLabel.Text = "Генерация тайлов";
+                InitProgressBar();
+                _loaderWorker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                _loaderWorker.RunWorkerAsync();
+            }
         }
 
         public void CancelLoading()
         {
-            if (_file != null && !_loaderWorker.CancellationPending && _loaderWorker.IsBusy)
+            if (_loaderWorker != null && !_loaderWorker.CancellationPending && _loaderWorker.IsBusy)
             {
                 _loaderWorker.CancelAsync();
                 _loaderWorker.Dispose();
-                ClearCancelledFileTiles();
                 InitControls();
+
+                if (_file != null)
+                {
+                    _file = null;
+                    _drawer = null;
+                    _pointSelector = null;
+                    _areaSelector = null;
+
+                    ClearCancelledFileTiles();
+                }
             }
         }
+
+        private void loaderWorker_SaveFile(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+
+            object[] args;
+            string path;
+            Point leftTop;
+            int width;
+            int height;
+
+            try
+            {
+                args    = (object[])e.Argument;
+                path    = (string)args[0];
+                leftTop = (Point)args[1];
+                width   = (int)args[2];
+                height  = (int)args[3];
+            }
+            catch (InvalidCastException)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Invalid saver params");
+                throw;
+            }
+           
+
+            try
+            {
+                _saver = SaverFactory.GetFactory(_properties).Create(_file);   
+
+                _saver.Report += ProgressReporter;
+                _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+
+                _saver.Save(path, Path.GetExtension(path).Replace(".", "")
+                    .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
+            }
+            catch (ArgumentException aex)
+            {
+                ErrorGuiMessage(string.Format("Unable to save file: {0}", path));
+                Logging.Logger.Log(Logging.SeverityGrades.Error, aex.Message);
+            }  
+        }
+
+        private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            _saver.Report -= ProgressReporter;
+            _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _form.ProgressBar.Visible = false;
+            _form.ProgressLabel.Visible = false;
+            _form.StatusLabel.Visible = false;
+            _form.CancelButton.Visible = false;
+        }
+
+
+
 
 
         private void loaderWorker_InitFile(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -168,18 +237,18 @@ namespace RlViewer.Facades
                 _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
                 _navi.Report += ProgressReporter;
-                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;              
+                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
                 _navi.GetNavigation();
+
                 _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
-                _saver = SaverFactory.GetFactory(_properties).Create(_file);
-
-                _navi.Report -= ProgressReporter;
-                _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
-
-            }           
+            }
+            catch (ArgumentNullException)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
+                InitControls();
+            }
             catch (Exception ex)
             {
-
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", ex.Message));
                 ErrorGuiMessage("Невозможно открыть файл");
                 InitControls();
@@ -189,6 +258,8 @@ namespace RlViewer.Facades
 
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            _navi.Report -= ProgressReporter;
+            _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
             GetImage();
         }
 
@@ -200,9 +271,7 @@ namespace RlViewer.Facades
             _creator.Report += ProgressReporter;
             _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-
-            _creator.Report -= ProgressReporter;
-            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+          
         }
 
 
@@ -219,6 +288,9 @@ namespace RlViewer.Facades
 
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            _creator.Report -= ProgressReporter;
+            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+
             if (_tiles != null)
             {
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
@@ -251,8 +323,8 @@ namespace RlViewer.Facades
         {
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null)
             {
-                RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter);
-                RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector);
+                RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter, _scaler);
+                RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
                 _drawer = new RlViewer.Facades.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
@@ -265,16 +337,19 @@ namespace RlViewer.Facades
         {
             if (_file != null && _drawer != null && _tiles != null)
             {
-                _form.Canvas.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
+                Task.Run(() =>_form.Canvas.Image = _drawer.Draw(_tiles,
+                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
             }
         }
+
+
 
         private void DrawItems()
         {
             if (_file != null && _drawer != null)
             {
-                _form.Canvas.Image = _drawer.Draw(new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
+                Task.Run(()=> _form.Canvas.Image = _drawer.Draw(
+                    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
             }
         }
 
@@ -322,17 +397,10 @@ namespace RlViewer.Facades
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                //var loc = _file as RlViewer.Files.LocatorFile;
-                                try
-                                {
-                                    _saver.Save(sfd.FileName, Path.GetExtension(sfd.FileName).Replace(".", "")
-                                        .ToEnum<RlViewer.FileType>(), sSize.LeftTop, new Size(sSize.ImageWidth, sSize.ImageHeight), _creator.NormalizationCoef);
-                                }
-                                catch (ArgumentException aex)
-                                {
-                                    ErrorGuiMessage(string.Format("Unable to save file: {0}", sfd.FileName));
-                                    Logging.Logger.Log(Logging.SeverityGrades.Error, aex.Message);
-                                }
+                                _form.StatusLabel.Text = "Сохранение файла";
+                                InitProgressBar();
+                                _loaderWorker = InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
+                                _loaderWorker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
                             }
                         }
                     }
@@ -370,8 +438,8 @@ namespace RlViewer.Facades
         private void InitScrollBars()
         {
             var f = _file as RlViewer.Files.LocatorFile;
-            var horMax = f.Width - _form.Canvas.Size.Width;
-            var verMax = f.Height - _form.Canvas.Size.Height;
+            var horMax = (int)((f.Width * _scaler.ZoomFactor - _form.Canvas.Size.Width));
+            var verMax = (int)((f.Height * _scaler.ZoomFactor - _form.Canvas.Size.Height));
             _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
@@ -532,10 +600,6 @@ namespace RlViewer.Facades
                 var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath), 
                     Path.GetExtension(_file.Properties.FilePath));
                 File.SetAttributes(path, FileAttributes.Normal);
-                _file = null;
-                _drawer = null;
-                _pointSelector = null;
-                _areaSelector = null;
                 System.Threading.Thread.Sleep(3000);
                 Directory.Delete(path, true);
             }

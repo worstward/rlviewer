@@ -27,7 +27,7 @@ namespace RlViewer.Behaviors.Draw
         /// Initializes look-up palette for 8bpp image
         /// </summary>
         /// <returns>Color palette</returns>
-        private ColorPalette InitPalette(int rCoef, int gCoef, int bCoef, bool isReversed)
+        private ColorPalette InitPalette(int rFactor, int gFactor, int bFactor, bool isReversed)
         {
             //TODO: REWRITE PALETTE INIT
             colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
@@ -36,9 +36,9 @@ namespace RlViewer.Behaviors.Draw
 
             for (int i = 0; i < 256; i++)
             {
-                var r = rCoef * i;
-                var g = gCoef * i;
-                var b = bCoef * i;
+                var r = rFactor * i;
+                var g = gFactor * i;
+                var b = bFactor * i;
                 if (isReversed)
                 {
                     colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));

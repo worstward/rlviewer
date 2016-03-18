@@ -38,9 +38,16 @@ namespace RlViewer.Navigation.Concrete
 
         private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection, byte board)
         {
-            var naviStrings = strCollection.Select
-                (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, board));
-
+            IEnumerable<NavigationString> naviStrings;
+            try
+            {
+                naviStrings = strCollection.Select
+                    (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, board));
+            }
+            catch (ArgumentNullException)
+            {
+                throw;
+            }
             return naviStrings.ToArray();
         }
 

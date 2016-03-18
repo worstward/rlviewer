@@ -11,14 +11,14 @@ namespace RlViewer.Logging
     //TODO: logs filtering based on severity e
     public static class Logger
     {
-        private static string logFileName = "log.txt";
+        private static string _logFileName = "log.txt";
 
-        private static List<LogEntry> logs = new List<LogEntry>();
+        private static List<LogEntry> _logs = new List<LogEntry>();
         public static List<LogEntry> Logs
         {
             get
             {
-                return logs;
+                return _logs;
             }
         }
 
@@ -26,7 +26,7 @@ namespace RlViewer.Logging
         {
             var logEntry = new LogEntry(DateTime.Now, severity, message);
 
-            logs.Add(logEntry);
+            _logs.Add(logEntry);
             SaveEntry(logEntry);
         }
 
@@ -35,7 +35,7 @@ namespace RlViewer.Logging
         {
             lock (saveLocker)
             {
-                using (var stream = new StreamWriter(logFileName, true))
+                using (var stream = new StreamWriter(_logFileName, true))
                 {
                     stream.WriteLine(entry.ToString());
                 }

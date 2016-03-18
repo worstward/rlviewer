@@ -12,33 +12,36 @@ namespace RlViewer
 
         public ParallelProperties(int offset, int dataSize)
         {
-            options = new ParallelOptions { MaxDegreeOfParallelism = maxThread };
-            chunks = System.Collections.Concurrent.Partitioner.Create(0, dataSize, dataSize / maxThread);
+            _options = new ParallelOptions { MaxDegreeOfParallelism = _maxThread };
+            _chunks = System.Collections.Concurrent.Partitioner.Create(0, dataSize, dataSize / _maxThread);
         }
 
 
-        private int maxThread = Environment.ProcessorCount;
+        private int _maxThread = Environment.ProcessorCount;
 
         public int MaxThread
         {
-            get { return maxThread; }
+            get
+            {
+                return _maxThread;
+            }
         }
 
-        private ParallelOptions options;
+        private ParallelOptions _options;
         public ParallelOptions Options
         {
             get
             {
-                return options;
+                return _options;
             }
         }
 
-        private OrderablePartitioner<Tuple<int, int>> chunks;
+        private OrderablePartitioner<Tuple<int, int>> _chunks;
         public OrderablePartitioner<Tuple<int, int>> Chunks
         {
             get
             {
-                return chunks;
+                return _chunks;
             }
         }
     }

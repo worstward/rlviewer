@@ -12,7 +12,8 @@ namespace RlViewer.Logging
             Blocking = 1,
             Error,
             Warning,
-            Info
+            Info,
+            Internal
         }
 
         public static class SeverityGradesExt
@@ -33,6 +34,9 @@ namespace RlViewer.Logging
                         break;
                     case SeverityGrades.Warning:
                         severityString = "Warning";
+                        break;
+                    case SeverityGrades.Internal:
+                        severityString = "Internal";
                         break;
                     default:
                         severityString = "Unknown";

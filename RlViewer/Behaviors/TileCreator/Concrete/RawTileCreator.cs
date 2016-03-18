@@ -23,7 +23,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         private Dictionary<float, string> pathCollection;
 
         private LocatorFile _rli;
-        private float _normalCoef;
+        private float _normalFactor;
 
         private Tile[] _tiles;
         private Dictionary<float, Tile[]> tileSets = new Dictionary<float, Tile[]>();
@@ -46,22 +46,22 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
 
         private object _locker = new object();
-        public override float NormalizationCoef
+        public override float NormalizationFactor
         {
             get
             {
-                if (_normalCoef == 0)
+                if (_normalFactor == 0)
                 {
                     lock (_locker)
                     {
-                        if (_normalCoef == 0)
+                        if (_normalFactor == 0)
                         {
-                            _normalCoef = ComputeNormalizationCoef(_rli, _rli.Width * _rli.Header.BytesPerSample,
+                            _normalFactor = ComputeNormalizationFactor(_rli, _rli.Width * _rli.Header.BytesPerSample,
                                 0, Math.Min(_rli.Height, 4096));
                         }
                     }
                 }
-                return _normalCoef;
+                return _normalFactor;
             }
         }
 
@@ -105,7 +105,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)
                 {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationCoef);
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
                     tiles.AddRange(SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize));
 
                     OnProgressReport((int)(i / totalLines * 100));
@@ -141,7 +141,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                     var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
                     for (int i = 0; i < totalLines; i++)
                     {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationCoef);
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
                         SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize);
                     }
                 }

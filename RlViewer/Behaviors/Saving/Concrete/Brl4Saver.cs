@@ -77,6 +77,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+
+
                         //read-write string header
                         fr.Read(strHeader, 0, strHeaderSize);
                         var rl4StrHead = Converters.FileHeaderConverters.ToRl4StrHeader(strHeader, 100, 100, 100);
@@ -126,6 +133,12 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+
 
                         fr.Read(strHeader, 0, strHeaderSize);
                         fw.Write(strHeader, 0, strHeaderSize);
@@ -163,6 +176,12 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
 
                         //fr.Seek(leftTop.X * )
                         //read-write string data
@@ -234,6 +253,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     for (int i = 0; i < areaSize.Height; i++)
                     {
+
+                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+
                         fr.Seek(strHeaderSize, SeekOrigin.Current);
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);

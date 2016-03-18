@@ -8,7 +8,7 @@ namespace RlViewer.Behaviors
 {
     public interface INormalizable
     {
-        float NormalizationCoef
+        float NormalizationFactor
         {
             get;
         }

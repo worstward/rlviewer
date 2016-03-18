@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace RlViewer.Forms
 {
-    public partial class SettingsForm : Form
+    public partial class  SettingsForm : Form
     {
         public SettingsForm(Settings.Settings settings)
         {

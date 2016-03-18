@@ -7,16 +7,19 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Draw
 {
-    class ItemDrawer : ImageDrawer
+    public class ItemDrawer : ImageDrawer
     {
-        public ItemDrawer(PointSelector.PointSelector pointSelector, AreaSelector.AreaSelector areaSelector)
+        public ItemDrawer(PointSelector.PointSelector pointSelector, AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler)
         {
             _pointSelector = pointSelector;
             _areaSelector = areaSelector;
+            _scaler = scaler;
         }
 
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
+        private RlViewer.Behaviors.Scaling.Scaler _scaler;
+
 
         public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
         {
