@@ -256,6 +256,14 @@ namespace RlViewer.Forms
             guiFacade.OpenWithDoubleClick();
         }
 
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            //var track
+
+
+            //guiFacade.ChangeZoomFactor();
+        }
+
 
     }
 }

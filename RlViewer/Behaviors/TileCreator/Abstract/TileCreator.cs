@@ -85,20 +85,38 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         {
             byte[] arr = new byte[strDataLen + strHeadLen];
             float[] floatArr = new float[strDataLen / 4];
+            float normal = 0;
 
-            int histogramStep = 1000;
+            int frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
+            float maxSampleValue = 0;
+
+            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+
+
+                while (s.Position != frameLength && s.Position != s.Length)
+                {
+
+                    s.Read(arr, 0, arr.Length);
+                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
+                    var localMax = floatArr.Max();
+                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
+
+                }
+            }
+
+
+
+            float histogramStep = maxSampleValue / 1000f;
 
             var histogram = new List<int>();
 
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < histogramStep; i++)
             {
                 histogram.Add(0);
             }
-
-            float normal;
-
-            int frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
             using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -155,7 +173,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 return 255f / normal;
             }
         }
-
 
         protected virtual IEnumerable<Tile> SaveTiles(string folderPath, byte[] line, int linePixelWidth, int lineNumber, System.Drawing.Size TileSize)
         {
@@ -223,6 +240,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, ex.Message);
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
+
+
+            //for (int i = 0; i < normalizedLine.Length; i++)
+            //{
+                
+            //    normalizedLine[i] = (byte)(fLine[i] * normalizationFactor);
+            //}
+
 
             normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationFactor)).ToArray();
 

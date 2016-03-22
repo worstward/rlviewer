@@ -102,9 +102,9 @@ namespace RlViewer.Facades
                 _properties = new Files.FileProperties(fileName);
                 _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);       
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException)
             {
-                ErrorGuiMessage("Unsupported file type");
+                ErrorGuiMessage("Неподдерживаемый формат файла");
                 Logging.Logger.Log(Logging.SeverityGrades.Error, "Неподдерживаемый формат файла");
                 return string.Empty;
             }
@@ -119,6 +119,11 @@ namespace RlViewer.Facades
             return caption;
         }
 
+
+        public void ChangeZoomFactor(float zoom)
+        {
+            _scaler = new Behaviors.Scaling.Scaler(zoom);
+        }
 
 
         public void ShowFileInfo()
@@ -270,20 +275,8 @@ namespace RlViewer.Facades
 
             _creator.Report += ProgressReporter;
             _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
-            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-          
+            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);          
         }
-
-
-        private void ProgressReporter(int progress)
-        {
-            _form.ProgressBar.Invoke((Action)delegate
-            {
-                _form.ProgressBar.Value = progress;
-                _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
-            });
-        }
-
 
 
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -301,6 +294,16 @@ namespace RlViewer.Facades
                 _form.CancelButton.Visible = false;
                 InitDrawImage();
             }
+        }
+
+
+        private void ProgressReporter(int progress)
+        {
+            _form.ProgressBar.Invoke((Action)delegate
+            {
+                _form.ProgressBar.Value = progress;
+                _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
+            });
         }
 
         private void Undo()
@@ -337,8 +340,10 @@ namespace RlViewer.Facades
         {
             if (_file != null && _drawer != null && _tiles != null)
             {
-                Task.Run(() =>_form.Canvas.Image = _drawer.Draw(_tiles,
+                Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+                //_form.Canvas.Image = _drawer.Draw(_tiles,
+                //        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -350,6 +355,8 @@ namespace RlViewer.Facades
             {
                 Task.Run(()=> _form.Canvas.Image = _drawer.Draw(
                     new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+                //_form.Canvas.Image = _drawer.Draw(
+                //    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -438,8 +445,8 @@ namespace RlViewer.Facades
         private void InitScrollBars()
         {
             var f = _file as RlViewer.Files.LocatorFile;
-            var horMax = (int)((f.Width * _scaler.ZoomFactor - _form.Canvas.Size.Width));
-            var verMax = (int)((f.Height * _scaler.ZoomFactor - _form.Canvas.Size.Height));
+            var horMax = (int)((f.Width - _form.Canvas.Size.Width / _scaler.ZoomFactor));
+            var verMax = (int)((f.Height - _form.Canvas.Size.Height / _scaler.ZoomFactor));
             _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
@@ -462,7 +469,11 @@ namespace RlViewer.Facades
 
         public string ShowMousePosition(MouseEventArgs e)
         {
-            return string.Format("X:{0} Y:{1}", e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
+            return string.Format("X:{0} Y:{1}",
+               e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
+
+            //return string.Format("X:{0} Y:{1}", 
+            //    Math.Ceiling(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value, Math.Ceiling(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value);
         }
 
         public string ShowNavigation(MouseEventArgs e)

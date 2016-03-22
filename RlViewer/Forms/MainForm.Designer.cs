@@ -59,6 +59,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.mouseCoordLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -69,6 +70,7 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // hScrollBar1
@@ -400,11 +402,20 @@
             this.statusLabel.TabIndex = 4;
             this.statusLabel.Text = "status";
             // 
+            // trackBar2
+            // 
+            this.trackBar2.Location = new System.Drawing.Point(826, 16);
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(66, 45);
+            this.trackBar2.TabIndex = 22;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.progressBar1);
@@ -439,6 +450,7 @@
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,6 +489,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
         private System.Windows.Forms.Label mouseCoordLabel;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.TrackBar trackBar2;
     }
 }
 

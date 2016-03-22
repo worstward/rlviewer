@@ -10,15 +10,27 @@ namespace RlViewer.Behaviors.Draw
 {
     public abstract class ImageDrawer
     {
+        public ImageDrawer(Scaling.Scaler scaler)
+        {
+            _scaler = scaler;
+        }
 
 
-        private ColorPalette colorPalette;
+        private Scaling.Scaler _scaler;
+
+        protected Scaling.Scaler Scaler
+        {
+            get { return _scaler; }
+        }
+
+
+        private ColorPalette _colorPalette;
 
         public virtual ColorPalette Palette
         {
             get
             {
-                return colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
+                return _colorPalette = _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
             }
         }
 
@@ -30,7 +42,7 @@ namespace RlViewer.Behaviors.Draw
         private ColorPalette InitPalette(int rFactor, int gFactor, int bFactor, bool isReversed)
         {
             //TODO: REWRITE PALETTE INIT
-            colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+            ColorPalette colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
 
             const int alpha = 255;
 
@@ -67,7 +79,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="reversed">Determines if colors in color table are reversed</param>
         public void GetPalette(int R, int G, int B, bool reversed)
         {
-            colorPalette = null;
+            _colorPalette = null;
             PaletteParams.R = R;
             PaletteParams.G = G;
             PaletteParams.B = B;
