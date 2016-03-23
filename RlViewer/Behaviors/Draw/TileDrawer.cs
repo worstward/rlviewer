@@ -26,17 +26,99 @@ namespace RlViewer.Behaviors.Draw
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
 
-        object locker = new object();
-
+        private object _tileLocker = new object();
+        private object _itemLocker = new object();
 
         private Image ScaleDown()
         {
             return null;
         }
 
-        private Image ScaleUp(Image canvas, Tile[] visibleTiles, Point leftTop, Size screen)
+        private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            return null;
+            int scaledScreenX = (int)(screenSize.Width / Scaler.ZoomFactor);
+            int scaledScreenY = (int)(screenSize.Height / Scaler.ZoomFactor);
+
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+                scaledScreenX, scaledScreenY)).ToArray();
+
+            Point pointToDraw = new Point();
+
+            using (var g = Graphics.FromImage(canvas))
+            {
+                //g.ScaleTransform(1.0F, -1.0F);
+                //g.TranslateTransform(0.0F, -(float)canvas.Height);
+                Size cropS = new Size();
+                Tile leftTopTile = null;
+                foreach (var tile in visibleTiles)
+                {
+                    int shiftTileX = (int)(leftTopPointOfView.X - tile.LeftTopCoord.X);
+                    shiftTileX = shiftTileX < 0 ? 0 : shiftTileX;
+                    if (shiftTileX >= tile.Size.Width) continue;
+
+                    int shiftTileY = (int)(leftTopPointOfView.Y - tile.LeftTopCoord.Y);
+                    shiftTileY = shiftTileY < 0 ? 0 : shiftTileY;
+                    if (shiftTileY >= tile.Size.Height) continue;
+
+                    int croppedWidth  = shiftTileX + scaledScreenX > tile.Size.Width  ? tile.Size.Width  - shiftTileX : scaledScreenX;
+                    int croppedHeight = shiftTileY + scaledScreenY > tile.Size.Height ? tile.Size.Height - shiftTileY : scaledScreenY;
+
+                    Size cropSize = new Size((int)((croppedWidth / (float)scaledScreenX) * screenSize.Width),
+                        (int)((croppedHeight / (float)scaledScreenY) * screenSize.Height));
+
+
+                    //take first visible tile to measure offset for other tiles
+                    if (tile == visibleTiles.First())
+                    {
+                        leftTopTile = tile;
+                        cropS = cropSize;
+                    }
+
+                    int x = tile.LeftTopCoord.X <= leftTopPointOfView.X ? 0 : cropS.Width  +
+                        ((tile.LeftTopCoord.X - leftTopTile.LeftTopCoord.X) / tile.Size.Width - 1) * tile.Size.Width * (int)Scaler.ZoomFactor;
+                    int y = tile.LeftTopCoord.Y <= leftTopPointOfView.Y ? 0 : cropS.Height +
+                        ((tile.LeftTopCoord.Y - leftTopTile.LeftTopCoord.Y) / tile.Size.Height - 1) * tile.Size.Height * (int)Scaler.ZoomFactor;
+
+                    pointToDraw = new Point(x, y);
+
+                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
+                    using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
+                    using (Bitmap resized = Resize(cropped, cropSize))
+                    {
+                        lock (_tileLocker)
+                        {
+                            g.DrawImage(resized, pointToDraw);
+                        }
+                    }
+
+                }
+            }
+            return canvas;
+        }
+
+      
+
+
+        private Image ScaleNormal(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        {
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+                screenSize.Width, screenSize.Height)).ToArray();
+
+            using (var g = Graphics.FromImage(canvas))
+            {
+                foreach (var tile in visibleTiles)
+                {
+                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
+                    {
+                        lock (_tileLocker)
+                        {
+                            g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
+                                (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
+                        }
+                    }
+                }
+            }
+            return canvas;
         }
 
 
@@ -49,75 +131,26 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>       
         public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            int scaledScreenX = (int)(screenSize.Width / Scaler.ZoomFactor);
-            int scaledScreenY = (int)(screenSize.Height / Scaler.ZoomFactor);
-
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
-                scaledScreenX, scaledScreenY)).ToArray();
-
-            int shiftTileX;
-            int shiftTileY;
-            Point pointToDraw = new Point();
-            Size cropSize;
-
-            using (var g = Graphics.FromImage(canvas))
+            if (Scaler.ZoomFactor == 1)
             {
-                //g.ScaleTransform(1.0F, -1.0F);
-                //g.TranslateTransform(0.0F, -(float)canvas.Height);
-
-
-                foreach (var tile in visibleTiles)
-                {
-                    shiftTileX = Scaler.ZoomFactor > 1 ? -(tile.LeftTopCoord.X - leftTopPointOfView.X) : 0;
-                    shiftTileX = (int)Math.Abs(shiftTileX);
-
-                    shiftTileY = Scaler.ZoomFactor > 1 ? -(tile.LeftTopCoord.Y - leftTopPointOfView.Y) : 0;
-                    shiftTileY = (int)Math.Abs(shiftTileY);
-
-                    pointToDraw = Scaler.ZoomFactor == 1 ? new Point((int)(tile.LeftTopCoord.X - leftTopPointOfView.X),
-                       (int)(tile.LeftTopCoord.Y - leftTopPointOfView.Y)) : pointToDraw;
-
-                    //int x = tile.LeftTopCoord.X <= leftTopPointOfView.X ? 0 : screenSize.Width - (leftTopPointOfView.X - tile.LeftTopCoord.X);
-                    //int y = tile.LeftTopCoord.Y <= leftTopPointOfView.Y ? 0 : screenSize.Height - (leftTopPointOfView.Y - tile.LeftTopCoord.Y);
-                    //pointToDraw = new Point(x, y);
-
-                    cropSize = Scaler.ZoomFactor == 1 ? tile.Size : screenSize;
-                    
-
-                    
-                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
-                    using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY,
-                            (int)(cropSize.Width / Scaler.ZoomFactor), (int)(cropSize.Height / Scaler.ZoomFactor)))
-                    using (Bitmap resized = Resize(cropped, cropSize))
-                    {
-                        lock (locker)
-                        {
-                            g.DrawImage(resized, pointToDraw);
-                        }
-                    }
-
-                    //bmp = new Bitmap(GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette),
-                    //    new Size((int)(tile.Size.Width * _scaler.ZoomFactor), (int)(tile.Size.Height * _scaler.ZoomFactor)));
-
-                    //g.DrawImage(bmp, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
-                    //   (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
-     
-                }
+                return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
             }
-            return canvas;
+            else if (Scaler.ZoomFactor > 1)
+            {
+                return ScaleUp(canvas, tiles, leftTopPointOfView, screenSize);
+            }
+            else
+            {
+                return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
+            }
+            
         }
 
         private Bitmap Crop(Bitmap bmp, int x, int y, int w, int h)
         {
-            int width = x + w > bmp.Width ? bmp.Width - x : w;
-            int height = y + h > bmp.Height ? bmp.Height - y : h;
-
-            Rectangle rect = new Rectangle(x, y, width, height);
+            Rectangle rect = new Rectangle(x, y, w, h);
             return bmp.Clone(rect, bmp.PixelFormat);
         }
-
-
-        object L = new object();
 
         private Bitmap Resize(Bitmap bmp, Size newSize)
         {
@@ -126,7 +159,7 @@ namespace RlViewer.Behaviors.Draw
             {
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                lock (L)
+                lock (_itemLocker)
                 {
                     g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);
                 }

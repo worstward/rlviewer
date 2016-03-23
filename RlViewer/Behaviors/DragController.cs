@@ -11,7 +11,13 @@ namespace RlViewer.Behaviors
 {
     public class DragController
     {
+        public DragController(Scaling.Scaler scaler)
+        {
+            _scaler = scaler;
+        }
 
+
+        private Scaling.Scaler _scaler;
         private bool isMouseDown;
 
         private Point previousMouseLocation;
@@ -41,7 +47,8 @@ namespace RlViewer.Behaviors
         {
             if (isMouseDown)
             {
-                delta = new Point(location.X - previousMouseLocation.X, location.Y - previousMouseLocation.Y);
+                delta = new Point((int)((location.X - previousMouseLocation.X) / _scaler.ZoomFactor),
+                    (int)((location.Y - previousMouseLocation.Y) / _scaler.ZoomFactor));
                 previousMouseLocation = location;
                 //Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0}-{1}", delta.X.ToString(), delta.Y.ToString()));
             }

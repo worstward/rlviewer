@@ -18,6 +18,9 @@ namespace RlViewer.Behaviors.Draw
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
 
+        private object _locker = new object();
+
+
         public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
         {
             GC.Collect();
@@ -26,9 +29,11 @@ namespace RlViewer.Behaviors.Draw
             var img = (Image)canvas.Clone();
             using (var g = Graphics.FromImage(img))
             {
-
-                DrawPoints(g, screen);
-                DrawArea(g, screen);
+                lock (_locker)
+                {
+                    DrawPoints(g, screen);
+                    DrawArea(g, screen);
+                }
             }
             return img;
         }

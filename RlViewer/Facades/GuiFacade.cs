@@ -19,10 +19,10 @@ namespace RlViewer.Facades
         public GuiFacade(ISuitableForm form)
         {
             _form = form;
-            _drag = new Behaviors.DragController();
             _settings = new Settings.Settings();
             _filterFacade = new ImageFilterFacade();
             _scaler = new Behaviors.Scaling.Scaler(1);
+            _drag = new Behaviors.DragController(_scaler);
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
             InitControls();
         }
@@ -417,17 +417,32 @@ namespace RlViewer.Facades
         }
 
 
+        public void ChangeScaleFactor(int scaleFactor)
+        {
+            scaleFactor = (int)Math.Pow(2, scaleFactor);
+            _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
+            InitDrawImage();
+            _drag = new Behaviors.DragController(_scaler);
+        }
+
+
+
         private void InitControls()
         {
             _form.Canvas.Image = null;
             _form.Horizontal.Visible = false;
             _form.Vertical.Visible = false;
 
+
+
             _form.FilterTrackBar.SmallChange = 1;
             _form.FilterTrackBar.LargeChange = 1;
             _form.FilterTrackBar.Minimum = -16;
             _form.FilterTrackBar.Maximum = 16;
             _form.FilterTrackBar.Value = 0;
+
+            _form.ScaleTrackBar.Minimum = 0;
+            _form.ScaleTrackBar.Maximum = 5;
 
             _form.ProgressBar.Minimum = 0;
             _form.ProgressBar.Maximum = 100;
@@ -445,8 +460,10 @@ namespace RlViewer.Facades
         private void InitScrollBars()
         {
             var f = _file as RlViewer.Files.LocatorFile;
-            var horMax = (int)((f.Width - _form.Canvas.Size.Width / _scaler.ZoomFactor));
-            var verMax = (int)((f.Height - _form.Canvas.Size.Height / _scaler.ZoomFactor));
+
+
+            var horMax = (int)((f.Width - _form.Canvas.Size.Width));
+            var verMax = (int)((f.Height - _form.Canvas.Size.Height));
             _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
@@ -469,11 +486,11 @@ namespace RlViewer.Facades
 
         public string ShowMousePosition(MouseEventArgs e)
         {
-            return string.Format("X:{0} Y:{1}",
-               e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
+            //return string.Format("X:{0} Y:{1}",
+            //   e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
 
-            //return string.Format("X:{0} Y:{1}", 
-            //    Math.Ceiling(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value, Math.Ceiling(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value);
+            return string.Format("X:{0} Y:{1}", 
+                Math.Ceiling(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value, Math.Ceiling(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value);
         }
 
         public string ShowNavigation(MouseEventArgs e)

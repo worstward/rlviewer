@@ -131,6 +131,16 @@ namespace RlViewer.Forms
                 return splitContainer1;
             }
         }
+
+        public TrackBar ScaleTrackBar
+        {
+            get
+            {
+                return trackBar2;
+            }
+        }
+
+
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -258,10 +268,7 @@ namespace RlViewer.Forms
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-            //var track
-
-
-            //guiFacade.ChangeZoomFactor();
+            guiFacade.ChangeScaleFactor(((TrackBar)sender).Value);
         }
 
 
