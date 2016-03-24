@@ -50,8 +50,8 @@ namespace RlViewer.Behaviors.PointSelector
             using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 //TODO: provide complex samples support (2 float = 8 bytes)
-                var offset = p.X * file.Header.BytesPerSample + 
-                    p.Y * (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength) + file.Header.FileHeaderLength;
+                var offset = p.X * file.Header.BytesPerSample +
+                    p.Y * (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength) + file.Header.FileHeaderLength + file.Header.StrHeaderLength;
                 fs.Seek(offset, SeekOrigin.Begin);
                 var floatValue = new byte[file.Header.BytesPerSample];
                 fs.Read(floatValue, 0, floatValue.Length);

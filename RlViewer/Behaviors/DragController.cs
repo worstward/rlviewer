@@ -47,10 +47,9 @@ namespace RlViewer.Behaviors
         {
             if (isMouseDown)
             {
-                delta = new Point((int)((location.X - previousMouseLocation.X) / _scaler.ZoomFactor),
-                    (int)((location.Y - previousMouseLocation.Y) / _scaler.ZoomFactor));
+                delta = new Point((int)((location.X - previousMouseLocation.X) / Math.Sqrt(_scaler.ZoomFactor)),
+                    (int)((location.Y - previousMouseLocation.Y) / Math.Sqrt(_scaler.ZoomFactor)));
                 previousMouseLocation = location;
-                //Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0}-{1}", delta.X.ToString(), delta.Y.ToString()));
             }
             return isMouseDown;
         }

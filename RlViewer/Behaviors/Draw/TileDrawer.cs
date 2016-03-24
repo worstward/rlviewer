@@ -36,8 +36,8 @@ namespace RlViewer.Behaviors.Draw
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            int scaledScreenX = (int)(screenSize.Width / Scaler.ZoomFactor);
-            int scaledScreenY = (int)(screenSize.Height / Scaler.ZoomFactor);
+            int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ZoomFactor);
+            int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ZoomFactor);
 
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 scaledScreenX, scaledScreenY)).ToArray();
@@ -60,14 +60,14 @@ namespace RlViewer.Behaviors.Draw
                     shiftTileY = shiftTileY < 0 ? 0 : shiftTileY;
                     if (shiftTileY >= tile.Size.Height) continue;
 
-                    int croppedWidth  = shiftTileX + scaledScreenX > tile.Size.Width  ? tile.Size.Width  - shiftTileX : scaledScreenX;
-                    int croppedHeight = shiftTileY + scaledScreenY > tile.Size.Height ? tile.Size.Height - shiftTileY : scaledScreenY;
+                    int croppedWidth  = shiftTileX + scaledScreenX >= tile.Size.Width  ? tile.Size.Width  - shiftTileX : scaledScreenX;
+                    int croppedHeight = shiftTileY + scaledScreenY >= tile.Size.Height ? tile.Size.Height - shiftTileY : scaledScreenY;
 
-                    Size cropSize = new Size((int)((croppedWidth / (float)scaledScreenX) * screenSize.Width),
-                        (int)((croppedHeight / (float)scaledScreenY) * screenSize.Height));
+                    Size cropSize = new Size((int)((croppedWidth / (float)scaledScreenX) * (croppedWidth * Scaler.ZoomFactor)),
+                        (int)((croppedHeight / (float)scaledScreenY) * (croppedHeight * Scaler.ZoomFactor)));
 
 
-                    //take first visible tile to measure offset for other tiles
+                    //take lefttop visible tile to measure offset for other tiles
                     if (tile == visibleTiles.First())
                     {
                         leftTopTile = tile;
@@ -131,6 +131,8 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>       
         public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
+            if (screenSize.Width <= 0 || screenSize.Height <= 0) return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize); 
+
             if (Scaler.ZoomFactor == 1)
             {
                 return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
@@ -155,19 +157,20 @@ namespace RlViewer.Behaviors.Draw
         private Bitmap Resize(Bitmap bmp, Size newSize)
         {
             Bitmap newBmp = new Bitmap(newSize.Width, newSize.Height);
-            using (var g = Graphics.FromImage(newBmp))
+            lock (_itemLocker)
             {
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                lock (_itemLocker)
+                using (var g = Graphics.FromImage(newBmp))
                 {
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+
                     g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);
+             
                 }
             }
             return newBmp;
             
         }
-
 
         /// <summary>
         /// Creates 8bpp image from raw byte array

@@ -132,15 +132,6 @@ namespace RlViewer.Forms
             }
         }
 
-        public TrackBar ScaleTrackBar
-        {
-            get
-            {
-                return trackBar2;
-            }
-        }
-
-
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -166,7 +157,8 @@ namespace RlViewer.Forms
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             guiFacade.TraceMouseMovement(e);
-            mouseCoordLabel.Text = guiFacade.ShowNavigation(e);
+            mouseCoordLabel.Text = guiFacade.ShowMousePosition(e);
+            guiFacade.ShowNavigation(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -184,7 +176,6 @@ namespace RlViewer.Forms
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
             guiFacade.ChangeFilterValue();
-            guiFacade.DrawImage();
             filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
@@ -268,7 +259,12 @@ namespace RlViewer.Forms
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-            guiFacade.ChangeScaleFactor(((TrackBar)sender).Value);
+            //guiFacade.ChangeScaleFactor();
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            ((PictureBox)sender).Focus();
         }
 
 

@@ -24,15 +24,15 @@ namespace RlViewer.Behaviors.Draw
         public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
         {
             GC.Collect();
-
+            Image img;
             var screen = new RectangleF(leftTopPointOfView, screenSize);
-            var img = (Image)canvas.Clone();
-            using (var g = Graphics.FromImage(img))
+            lock (_locker)
             {
-                lock (_locker)
+                img = (Image)canvas.Clone();
+                using (var g = Graphics.FromImage(img))
                 {
                     DrawPoints(g, screen);
-                    DrawArea(g, screen);
+                    DrawArea(g, screen);             
                 }
             }
             return img;
@@ -45,11 +45,9 @@ namespace RlViewer.Behaviors.Draw
             {
                 if (screen.Contains(point.Location))
                 {
-                    using (var pen = new Pen(Color.Red, 3f))
-                    {
-                        g.DrawRectangle(pen, (int)(point.Location.X - screen.Location.X),
-                            (int)(point.Location.Y - screen.Location.Y), 1, 1);
-                    }
+                    g.FillRectangle(Brushes.Red, (int)((point.Location.X - screen.X) * Scaler.ZoomFactor),
+                        (int)((point.Location.Y - screen.Y) * Scaler.ZoomFactor), (int)Scaler.ZoomFactor * 3, (int)Scaler.ZoomFactor * 3);
+                    
                 }
             }
         }
@@ -58,8 +56,9 @@ namespace RlViewer.Behaviors.Draw
         {
             using (var pen = new Pen(Palette.Entries[240]) { DashPattern = new float[] { 5, 2, 15, 4 } })
             {
-                g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X), (int)(_areaSelector.Area.Location.Y - screen.Y),
-                    _areaSelector.Area.Width, _areaSelector.Area.Height);
+                g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X) * Scaler.ZoomFactor,
+                    (int)(_areaSelector.Area.Location.Y - screen.Y) * Scaler.ZoomFactor,
+                    _areaSelector.Area.Width * Scaler.ZoomFactor, _areaSelector.Area.Height * Scaler.ZoomFactor);
             }
         }
 

@@ -23,6 +23,5 @@ namespace RlViewer.Facades
         CheckBox NavigationCb { get; }
         DataGridView NavigationDgv { get; }
         SplitContainer WorkingAreaSplitter { get; }
-        TrackBar ScaleTrackBar { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace RlViewer.Behaviors.PointSelector
             //16 points required for the algorythm to work properly
             if (selectedPoints.Count <= 16)
             {
-                if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
+                if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
                 {
                     using (Forms.EprInputForm epr = new Forms.EprInputForm())
                     {
