@@ -203,21 +203,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles;
         }
 
-
         protected virtual string SaveTile(string path, byte[] tileData)
         {
             path += ".tl";
             File.WriteAllBytes(path, tileData);
             return path;
         }
-
-        protected virtual string SaveTileImage(string path, System.Drawing.Bitmap bmp)
-        {
-            path += ".bmp";
-            bmp.Save(path);
-            return path;
-        }
-
 
         protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor)
         {
@@ -241,18 +232,17 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-
-            //for (int i = 0; i < normalizedLine.Length; i++)
-            //{
-                
-            //    normalizedLine[i] = (byte)(fLine[i] * normalizationFactor);
-            //}
-
-
-            normalizedLine = fLine.AsParallel<float>().Select(x => (byte)(x * normalizationFactor)).ToArray();
+            normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(x * normalizationFactor)).ToArray();
 
             return normalizedLine;
         }
+
+        private byte ToByteRange(float val)
+        {
+            val =  val > 255 ? 255 : val;
+            return (byte)val;
+        }
+
 
 
         protected virtual Dictionary<float, string> InitTilePath(string filePath)

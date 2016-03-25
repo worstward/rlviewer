@@ -17,9 +17,10 @@ namespace RlViewer.Forms
             InitializeComponent();
             MaximumSize = Size;
             _dgv = GetDataGrid();
-            LoadData();
-            _dgv.Size = SetDgvSize();
             panel1.Controls.Add(_dgv);
+            InitComboBox(comboBox1);
+
+           
         }
 
         DataGridView _dgv;
@@ -31,7 +32,7 @@ namespace RlViewer.Forms
                 BackgroundColor = Color.White,
                 Location = new Point(Location.X + 5, Location.Y),
                 RowHeadersVisible = false,
-                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
+                //AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 Anchor = AnchorStyles.Top,
                 AllowUserToResizeColumns = false,
                 AllowUserToAddRows = false,
@@ -70,20 +71,40 @@ namespace RlViewer.Forms
         {
             int height = 0;
             //some magic numbers to set proper offsets and make each row appear correctly
-            foreach (DataGridViewRow row in _dgv.Rows) height += (row.Height + 7);
-            height += 30;
+                 
+            foreach (DataGridViewRow row in _dgv.Rows)
+            {
+                row.MinimumHeight = 25;
+                height += row.Height;
+            }
+            height += _dgv.ColumnHeadersHeight;
+            
             return new Size(Width - 10, height);
         }
 
 
 
-        private void LoadData()
+        private void LoadData(Logging.SeverityGrades grade)
         {
-            foreach (var logEntry in Logging.Logger.Logs)
+            _dgv.Rows.Clear();
+
+            foreach (var logEntry in Logging.Logger.Logs.Where(x => x.Severity == grade))
             {
                 _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
             }  
         }
+
+        private void LoadData()
+        {
+            _dgv.Rows.Clear();
+
+            foreach (var logEntry in Logging.Logger.Logs)
+            {
+                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
+            }
+        }
+
+
 
         private void LogForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -91,6 +112,34 @@ namespace RlViewer.Forms
             {
                 Close();
             }
+        }
+
+        private void InitComboBox(ComboBox cb)
+        {
+            var enumVals = Enum.GetValues(typeof(Logging.SeverityGrades));
+            cb.Items.Add("All");
+            foreach (var item in enumVals)
+            {
+                cb.Items.Add(item);
+            }
+            cb.SelectedIndex = 0;
+        }
+
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Logging.SeverityGrades grade;
+
+            if (Enum.TryParse<Logging.SeverityGrades>(comboBox1.SelectedItem.ToString(), out grade))
+            {
+                LoadData(grade);
+            }
+            else
+            {
+                LoadData();
+            }
+            _dgv.Size = SetDgvSize();
+
         }
 
 

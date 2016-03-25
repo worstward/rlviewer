@@ -37,6 +37,11 @@ namespace RlViewer.Forms
             }
         }
 
+
+        /// <summary>
+        /// Initializes DataGrid containing file info
+        /// </summary>
+        /// <returns></returns>
         private DataGridView GetDataGrid()
         {
             var dgv = new DataGridView()
@@ -69,6 +74,7 @@ namespace RlViewer.Forms
             }
             return dgv;
         }
+
 
         private void ShowInfo(IEnumerable<Tuple<string, string>> hInfo, DataGridView dgv)
         {

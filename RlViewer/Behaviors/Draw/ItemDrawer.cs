@@ -45,8 +45,8 @@ namespace RlViewer.Behaviors.Draw
             {
                 if (screen.Contains(point.Location))
                 {
-                    g.FillRectangle(Brushes.Red, (int)((point.Location.X - screen.X) * Scaler.ZoomFactor),
-                        (int)((point.Location.Y - screen.Y) * Scaler.ZoomFactor), (int)Scaler.ZoomFactor * 3, (int)Scaler.ZoomFactor * 3);
+                    g.FillRectangle(Brushes.Red, (int)((point.Location.X - screen.X) * Scaler.ScaleFactor),
+                        (int)((point.Location.Y - screen.Y) * Scaler.ScaleFactor), (int)Scaler.ScaleFactor, (int)Scaler.ScaleFactor);
                     
                 }
             }
@@ -56,9 +56,9 @@ namespace RlViewer.Behaviors.Draw
         {
             using (var pen = new Pen(Palette.Entries[240]) { DashPattern = new float[] { 5, 2, 15, 4 } })
             {
-                g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X) * Scaler.ZoomFactor,
-                    (int)(_areaSelector.Area.Location.Y - screen.Y) * Scaler.ZoomFactor,
-                    _areaSelector.Area.Width * Scaler.ZoomFactor, _areaSelector.Area.Height * Scaler.ZoomFactor);
+                g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X) * Scaler.ScaleFactor,
+                    (int)(_areaSelector.Area.Location.Y - screen.Y) * Scaler.ScaleFactor,
+                    _areaSelector.Area.Width * Scaler.ScaleFactor, _areaSelector.Area.Height * Scaler.ScaleFactor);
             }
         }
 

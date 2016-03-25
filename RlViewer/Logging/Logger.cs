@@ -7,8 +7,6 @@ using System.IO;
 
 namespace RlViewer.Logging
 {
-
-    //TODO: logs filtering based on severity e
     public static class Logger
     {
         private static string _logFileName = "log.txt";

@@ -36,61 +36,65 @@ namespace RlViewer.Behaviors.Draw
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ZoomFactor);
-            int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ZoomFactor);
+            int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
+            int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
 
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 scaledScreenX, scaledScreenY)).ToArray();
 
             Point pointToDraw = new Point();
 
-            using (var g = Graphics.FromImage(canvas))
+            
+            //g.ScaleTransform(1.0F, -1.0F);
+            //g.TranslateTransform(0.0F, -(float)canvas.Height);
+            Size cropS = new Size();
+            Tile leftTopTile = null;
+            foreach (var tile in visibleTiles)
             {
-                //g.ScaleTransform(1.0F, -1.0F);
-                //g.TranslateTransform(0.0F, -(float)canvas.Height);
-                Size cropS = new Size();
-                Tile leftTopTile = null;
-                foreach (var tile in visibleTiles)
+                //stores relative offset by X for visible part from the beginning of the current tile
+                int shiftTileX = (int)(leftTopPointOfView.X - tile.LeftTopCoord.X);
+                shiftTileX = shiftTileX < 0 ? 0 : shiftTileX;
+
+                //stores relative offset by Y for visible part from the beginning of the current tile
+                int shiftTileY = (int)(leftTopPointOfView.Y - tile.LeftTopCoord.Y);
+                shiftTileY = shiftTileY < 0 ? 0 : shiftTileY;
+
+                //if not all scaled tile is visible we only take the visible part.
+                int croppedWidth  = tile.Size.Width - shiftTileX >= scaledScreenX ? scaledScreenX : tile.Size.Width - shiftTileX;
+                int croppedHeight = tile.Size.Height - shiftTileY >= scaledScreenY ? scaledScreenY : tile.Size.Height - shiftTileY;
+
+                //determines resized canvas size
+                Size resizedCanvasSize = new Size((int)(croppedWidth * Scaler.ScaleFactor), (int)(croppedHeight * Scaler.ScaleFactor));
+                   
+                //take lefttop visible tile to measure offset for other tiles
+                if (tile == visibleTiles.First())
                 {
-                    int shiftTileX = (int)(leftTopPointOfView.X - tile.LeftTopCoord.X);
-                    shiftTileX = shiftTileX < 0 ? 0 : shiftTileX;
-                    if (shiftTileX >= tile.Size.Width) continue;
+                    leftTopTile = tile;
+                    cropS = resizedCanvasSize;
+                }
 
-                    int shiftTileY = (int)(leftTopPointOfView.Y - tile.LeftTopCoord.Y);
-                    shiftTileY = shiftTileY < 0 ? 0 : shiftTileY;
-                    if (shiftTileY >= tile.Size.Height) continue;
-
-                    int croppedWidth  = shiftTileX + scaledScreenX >= tile.Size.Width  ? tile.Size.Width  - shiftTileX : scaledScreenX;
-                    int croppedHeight = shiftTileY + scaledScreenY >= tile.Size.Height ? tile.Size.Height - shiftTileY : scaledScreenY;
-
-                    Size cropSize = new Size((int)((croppedWidth / (float)scaledScreenX) * (croppedWidth * Scaler.ZoomFactor)),
-                        (int)((croppedHeight / (float)scaledScreenY) * (croppedHeight * Scaler.ZoomFactor)));
+                //see pointToDraw description                    
+                int x = tile.LeftTopCoord.X <= leftTopPointOfView.X ? 0 : cropS.Width  +
+                    ((tile.LeftTopCoord.X - leftTopTile.LeftTopCoord.X) / tile.Size.Width - 1) * tile.Size.Width * (int)Scaler.ScaleFactor;
+                int y = tile.LeftTopCoord.Y <= leftTopPointOfView.Y ? 0 : cropS.Height +
+                    ((tile.LeftTopCoord.Y - leftTopTile.LeftTopCoord.Y) / tile.Size.Height - 1) * tile.Size.Height * (int)Scaler.ScaleFactor;
 
 
-                    //take lefttop visible tile to measure offset for other tiles
-                    if (tile == visibleTiles.First())
+                //determines left top point on resized canvas to start drawing current tile from
+                pointToDraw = new Point(x, y);
+                lock (_tileLocker)
+                {
+                    using (var g = Graphics.FromImage(canvas))
                     {
-                        leftTopTile = tile;
-                        cropS = cropSize;
-                    }
-
-                    int x = tile.LeftTopCoord.X <= leftTopPointOfView.X ? 0 : cropS.Width  +
-                        ((tile.LeftTopCoord.X - leftTopTile.LeftTopCoord.X) / tile.Size.Width - 1) * tile.Size.Width * (int)Scaler.ZoomFactor;
-                    int y = tile.LeftTopCoord.Y <= leftTopPointOfView.Y ? 0 : cropS.Height +
-                        ((tile.LeftTopCoord.Y - leftTopTile.LeftTopCoord.Y) / tile.Size.Height - 1) * tile.Size.Height * (int)Scaler.ZoomFactor;
-
-                    pointToDraw = new Point(x, y);
-
-                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
-                    using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
-                    using (Bitmap resized = Resize(cropped, cropSize))
-                    {
-                        lock (_tileLocker)
+                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
+                        using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
+                        using (Bitmap resized = Resize(cropped, resizedCanvasSize))
                         {
-                            g.DrawImage(resized, pointToDraw);
-                        }
-                    }
 
+                            g.DrawImage(resized, pointToDraw);                       
+                        }
+
+                    }
                 }
             }
             return canvas;
@@ -104,17 +108,19 @@ namespace RlViewer.Behaviors.Draw
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 screenSize.Width, screenSize.Height)).ToArray();
 
-            using (var g = Graphics.FromImage(canvas))
+            lock (_tileLocker)
             {
-                foreach (var tile in visibleTiles)
+                using (var g = Graphics.FromImage(canvas))
                 {
-                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
+                    foreach (var tile in visibleTiles)
                     {
-                        lock (_tileLocker)
+                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
                         {
-                            g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
-                                (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
-                        }
+
+                                g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
+                                    (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
+                            }
+                    
                     }
                 }
             }
@@ -125,6 +131,7 @@ namespace RlViewer.Behaviors.Draw
         /// <summary>
         /// Creates image from visible parts of tiles
         /// </summary>
+        /// <param name="canvas">Bitmap to draw on</param>
         /// <param name="screenSize">Size of output window (picturebox)</param>
         /// <param name="tiles">Array of Tile objects</param>
         /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
@@ -133,11 +140,11 @@ namespace RlViewer.Behaviors.Draw
         {
             if (screenSize.Width <= 0 || screenSize.Height <= 0) return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize); 
 
-            if (Scaler.ZoomFactor == 1)
+            if (Scaler.ScaleFactor == 1)
             {
                 return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
             }
-            else if (Scaler.ZoomFactor > 1)
+            else if (Scaler.ScaleFactor > 1)
             {
                 return ScaleUp(canvas, tiles, leftTopPointOfView, screenSize);
             }

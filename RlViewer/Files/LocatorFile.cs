@@ -8,7 +8,6 @@ using RlViewer.Headers.Concrete;
 using System.IO;
 using System.Runtime.InteropServices;
 
-
 namespace RlViewer.Files
 {
     public abstract class LocatorFile : LoadedFile, IHeader
@@ -18,7 +17,6 @@ namespace RlViewer.Files
         {
 
         }
-
 
         public abstract Navigation.NavigationContainer Navigation { get; }
         public abstract LocatorFileHeader Header { get; }

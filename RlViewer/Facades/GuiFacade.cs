@@ -21,7 +21,7 @@ namespace RlViewer.Facades
             _form = form;
             _settings = new Settings.Settings();
             _filterFacade = new ImageFilterFacade();
-            _scaler = new Behaviors.Scaling.Scaler(1);
+            _scaler = new Behaviors.Scaling.Scaler();
             _drag = new Behaviors.DragController(_scaler);
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
             InitControls();
@@ -167,12 +167,11 @@ namespace RlViewer.Facades
 
                 if (_file != null)
                 {
+                    ClearCancelledFileTiles();
                     _file = null;
                     _drawer = null;
                     _pointSelector = null;
                     _areaSelector = null;
-
-                    ClearCancelledFileTiles();
                 }
             }
         }
@@ -296,11 +295,11 @@ namespace RlViewer.Facades
         {
             if (e.Delta > 0)
             {
-                ChangeScaleFactor((int)Math.Log(_scaler.ZoomFactor, 2) + 1);
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
             }
             else
             {
-                ChangeScaleFactor((int)Math.Log(_scaler.ZoomFactor, 2) - 1);
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
             }
         }
 
@@ -339,7 +338,7 @@ namespace RlViewer.Facades
                 _drawer = new RlViewer.Facades.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
-                InitScrollBars(_scaler.ZoomFactor);
+                InitScrollBars(_scaler.ScaleFactor);
                 DrawImage();
             }
         }
@@ -427,19 +426,19 @@ namespace RlViewer.Facades
 
         public void ChangeScaleFactor(float value)
         {
-            if (value > 7 || value < 0) return;
+            if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;
             float scaleFactor = (float)Math.Pow(2, value);
             InitScrollBars(scaleFactor);
 
-            float a = _form.Canvas.Width / scaleFactor / 2;
-            a = _scaler.ZoomFactor > scaleFactor ? -a / 2 : a;
+            float a = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / 2;
+            a = _scaler.ScaleFactor > scaleFactor ? -a / 2 : a;
 
-            float b = _form.Canvas.Height / scaleFactor / 2;
-            b = _scaler.ZoomFactor > scaleFactor ? -b / 2 : b;
+            float b = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / 2;
+            b = _scaler.ScaleFactor > scaleFactor ? -b / 2 : b;
 
             float newHorizontalValue = _form.Horizontal.Value + a < 0 ? 0 : _form.Horizontal.Value + a;
             newHorizontalValue = newHorizontalValue + _form.Canvas.Width > _form.Horizontal.Maximum ?
-                _form.Horizontal.Maximum  : newHorizontalValue;
+                _form.Horizontal.Maximum : newHorizontalValue;
 
             float newVerticalValue = _form.Vertical.Value + b < 0 ? 0 : _form.Vertical.Value + b;
             newVerticalValue = newVerticalValue + _form.Canvas.Height > _form.Vertical.Maximum ?
@@ -449,7 +448,7 @@ namespace RlViewer.Facades
             _form.Horizontal.Value = (int)newHorizontalValue;
             _form.Vertical.Value = (int)newVerticalValue;
 
-            _scaler = new Behaviors.Scaling.Scaler((float)Math.Pow(2, value));
+            _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
             _drag = new Behaviors.DragController(_scaler);
             InitDrawImage();
         }
@@ -461,6 +460,10 @@ namespace RlViewer.Facades
             _form.Canvas.Image = null;
             _form.Horizontal.Visible = false;
             _form.Vertical.Visible = false;
+            _form.Vertical.SmallChange = 1;
+            _form.Vertical.LargeChange = 1;
+            _form.Horizontal.SmallChange = 1;
+            _form.Horizontal.LargeChange = 1;
 
             _form.FilterTrackBar.SmallChange = 1;
             _form.FilterTrackBar.LargeChange = 1;
@@ -485,8 +488,8 @@ namespace RlViewer.Facades
         {
             var f = _file as RlViewer.Files.LocatorFile;
 
-            var horMax = (int)((f.Width  - _form.Canvas.Size.Width  / scaleFactor));
-            var verMax = (int)((f.Height - _form.Canvas.Size.Height / scaleFactor));
+            var horMax = (int)(f.Width - Math.Ceiling(_form.Canvas.Size.Width / scaleFactor));
+            var verMax = (int)(f.Height - Math.Ceiling(_form.Canvas.Size.Height / scaleFactor));
             _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
@@ -514,12 +517,12 @@ namespace RlViewer.Facades
             //   e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
             if (_file != null && !_loaderWorker.IsBusy)
             {
-                if (e.Y / _scaler.ZoomFactor + _form.Vertical.Value > 0 &&
-                    e.Y / _scaler.ZoomFactor + _form.Vertical.Value < _file.Height
-                    && e.X > 0 && e.X / _scaler.ZoomFactor < _file.Width)
+                if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 &&
+                    e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
+                    && e.X > 0 && e.X / _scaler.ScaleFactor < _file.Width)
                 {
                     return string.Format("X:{0} Y:{1}",
-                        (int)(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value, (int)(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value);
+                        (int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
                 }
             }
             return string.Empty;
@@ -531,22 +534,25 @@ namespace RlViewer.Facades
         {
             if (_file != null && !_loaderWorker.IsBusy)
             {
-                if (e.Y / _scaler.ZoomFactor + _form.Vertical.Value > 0 &&
-                    e.Y / _scaler.ZoomFactor + _form.Vertical.Value < _file.Height && e.X > 0 && e.X / _scaler.ZoomFactor < _file.Width)
-                {
 
-                    if (_form.NavigationCb.Checked && _file.Navigation != null)
-                    {
+                if (_form.NavigationCb.Checked && _file.Navigation != null)
+                {
+                        if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 
+                            && e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
+                            && e.X > 0 && e.X / _scaler.ScaleFactor < _file.Width)
+                        {
+
                         _form.NavigationDgv.Rows.Clear();
 
 
-                        foreach (var i in _file.Navigation[(int)(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value,
-                            (int)(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value])
+                        foreach (var i in _file.Navigation[(int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value, 0])//,
+                            //(int)(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value])
                         {
                             _form.NavigationDgv.Rows.Add(i.Item1, i.Item2);
                         }
                     }
                 }
+               
                 else
                 {
                     _form.NavigationDgv.Rows.Clear();
@@ -572,15 +578,14 @@ namespace RlViewer.Facades
                     else if (_form.MarkAreaRb.Checked)
                     {
                         _areaSelector.ResetArea();
-                        _areaSelector.StartArea(new Point((int)Math.Ceiling(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value,
-                            (int)Math.Ceiling(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value),
+                        _areaSelector.StartArea(new Point((int)Math.Ceiling(e.X / _scaler.ScaleFactor), (int)Math.Ceiling(e.Y / _scaler.ScaleFactor)),
                             new Point((int)(_form.Horizontal.Value), (int)(_form.Vertical.Value)));
                     }
                     else if (_form.MarkPointRb.Checked)
                     {
                         _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
-                            new System.Drawing.Point((int)(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value));
+                            new System.Drawing.Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
                 }
                 else if (e.Button == MouseButtons.Right)
@@ -611,8 +616,8 @@ namespace RlViewer.Facades
                 }
                 else if (_areaSelector != null && _form.MarkAreaRb.Checked)
                 {
-                    if (_areaSelector.ResizeArea(new System.Drawing.Point((int)(e.X / _scaler.ZoomFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ZoomFactor) + _form.Vertical.Value), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
+                    if (_areaSelector.ResizeArea(new System.Drawing.Point((int)(e.X / _scaler.ScaleFactor),
+                                (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
                     {
                         DrawItems();
                     }

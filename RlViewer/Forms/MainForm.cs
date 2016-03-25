@@ -257,11 +257,6 @@ namespace RlViewer.Forms
             guiFacade.OpenWithDoubleClick();
         }
 
-        private void trackBar2_Scroll(object sender, EventArgs e)
-        {
-            //guiFacade.ChangeScaleFactor();
-        }
-
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
             ((PictureBox)sender).Focus();
