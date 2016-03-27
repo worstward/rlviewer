@@ -11,19 +11,20 @@ using System.Windows.Forms;
 
 namespace RlViewer.Forms
 {
-    public partial class MainForm : Form, RlViewer.Facades.ISuitableForm
+    public partial class MainForm : Form, RlViewer.UI.ISuitableForm
     {
 
         public MainForm()
         {
+            this.DoubleBuffered = true;
             InitializeComponent();
-            guiFacade = new Facades.GuiFacade(this);
+            guiFacade = new UI.GuiFacade(this);
             Text = string.Empty;
             checkBox1.Checked = false;
         }
 
 
-        Facades.GuiFacade guiFacade;
+        UI.GuiFacade guiFacade;
 
         #region ISuitableForm controls
         public PictureBox Canvas
@@ -107,6 +108,15 @@ namespace RlViewer.Forms
                 return markAreaRb;
             }
         }
+
+        public RadioButton AnalyzePointRb
+        {
+            get
+            {
+                return analyzeRb;
+            }
+        }
+
 
         public CheckBox NavigationCb
         {

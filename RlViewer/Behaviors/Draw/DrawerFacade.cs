@@ -10,7 +10,7 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Behaviors.TileCreator;
 
 
-namespace RlViewer.Facades
+namespace RlViewer.Behaviors.Draw
 {
     class DrawerFacade
     {

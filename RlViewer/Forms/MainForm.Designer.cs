@@ -59,6 +59,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.mouseCoordLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.analyzeRb = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -117,12 +118,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.analyzeRb);
             this.groupBox1.Controls.Add(this.markAreaRb);
             this.groupBox1.Controls.Add(this.dragRb);
             this.groupBox1.Controls.Add(this.markPointRb);
             this.groupBox1.Location = new System.Drawing.Point(12, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(177, 58);
+            this.groupBox1.Size = new System.Drawing.Size(232, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             // 
@@ -162,14 +164,14 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
@@ -208,7 +210,7 @@
             this.groupBox2.Controls.Add(this.gammaCorrRb);
             this.groupBox2.Controls.Add(this.contrastRb);
             this.groupBox2.Controls.Add(this.brightnessRb);
-            this.groupBox2.Location = new System.Drawing.Point(195, 29);
+            this.groupBox2.Location = new System.Drawing.Point(250, 29);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(276, 58);
             this.groupBox2.TabIndex = 9;
@@ -254,7 +256,7 @@
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(471, 38);
+            this.trackBar1.Location = new System.Drawing.Point(526, 29);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(212, 45);
             this.trackBar1.TabIndex = 10;
@@ -263,7 +265,7 @@
             // filterLbl
             // 
             this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(477, 70);
+            this.filterLbl.Location = new System.Drawing.Point(532, 69);
             this.filterLbl.Name = "filterLbl";
             this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
@@ -401,6 +403,18 @@
             this.statusLabel.TabIndex = 4;
             this.statusLabel.Text = "status";
             // 
+            // analyzeRb
+            // 
+            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.analyzeRb.AutoSize = true;
+            this.analyzeRb.Location = new System.Drawing.Point(173, 19);
+            this.analyzeRb.Name = "analyzeRb";
+            this.analyzeRb.Size = new System.Drawing.Size(54, 23);
+            this.analyzeRb.TabIndex = 8;
+            this.analyzeRb.TabStop = true;
+            this.analyzeRb.Text = "Анализ";
+            this.analyzeRb.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -478,6 +492,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
         private System.Windows.Forms.Label mouseCoordLabel;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.RadioButton analyzeRb;
     }
 }
 

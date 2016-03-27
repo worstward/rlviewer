@@ -123,7 +123,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 {
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
                     tiles.AddRange(SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize));
-                    
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
                     {

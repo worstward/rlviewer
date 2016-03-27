@@ -18,7 +18,8 @@ namespace RlViewer.Behaviors.Navigation
         private double _step;
 
 
-        public Tuple<double, double> Interpolate(int sampleNum, double aircraftLongitude, double aircraftLatitude, double aircraftHeight, double track, byte board)
+        public Tuple<double, double> Interpolate(int sampleNum, double aircraftLongitude,
+            double aircraftLatitude, double aircraftHeight, double track, byte board)
         {
             var alpha = Alpha(_initialRange, _step, sampleNum, aircraftHeight);
 

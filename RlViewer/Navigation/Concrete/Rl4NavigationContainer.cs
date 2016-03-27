@@ -80,7 +80,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return _naviStrings[stringNumber].NaviInfo();   //.NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
+                return _naviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
             }
         }  
 

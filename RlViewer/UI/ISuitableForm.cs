@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RlViewer.Facades
+namespace RlViewer.UI
 {
     public interface ISuitableForm
     {
@@ -20,6 +20,7 @@ namespace RlViewer.Facades
         RadioButton DragRb { get; }
         RadioButton MarkPointRb { get; }
         RadioButton MarkAreaRb { get; }
+        RadioButton AnalyzePointRb { get; }
         CheckBox NavigationCb { get; }
         DataGridView NavigationDgv { get; }
         SplitContainer WorkingAreaSplitter { get; }

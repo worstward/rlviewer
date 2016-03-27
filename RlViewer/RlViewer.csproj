@@ -52,6 +52,7 @@
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
+    <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
     <Compile Include="Behaviors\Scaling\Scaler.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Behaviors\Saving\Concrete\Brl4Saver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl4Saver.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Brl4TileCreator.cs" />
-    <Compile Include="Facades\DrawerFacade.cs" />
+    <Compile Include="Behaviors\Draw\DrawerFacade.cs" />
     <Compile Include="Behaviors\Draw\ImageDrawer.cs" />
     <Compile Include="Behaviors\Draw\ItemDrawer.cs" />
     <Compile Include="Behaviors\Draw\TileDrawer.cs" />
@@ -114,10 +115,10 @@
     <Compile Include="Factories\TileCreator\Concrete\RawTileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl4TileCreatorFactory.cs" />
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
-    <Compile Include="Facades\GuiFacade.cs" />
-    <Compile Include="Facades\ImageFilterFacade.cs" />
-    <Compile Include="Facades\ISuitableForm.cs" />
-    <Compile Include="Facades\KeyboardFacade.cs" />
+    <Compile Include="UI\GuiFacade.cs" />
+    <Compile Include="Behaviors\Filters\ImageFilterFacade.cs" />
+    <Compile Include="UI\ISuitableForm.cs" />
+    <Compile Include="UI\KeyboardFacade.cs" />
     <Compile Include="Forms\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>

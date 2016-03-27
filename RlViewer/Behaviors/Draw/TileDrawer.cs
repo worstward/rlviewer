@@ -29,9 +29,36 @@ namespace RlViewer.Behaviors.Draw
         private object _tileLocker = new object();
         private object _itemLocker = new object();
 
-        private Image ScaleDown()
+        private Image ScaleDown(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            return null;
+            int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
+            int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
+
+            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+                scaledScreenX, scaledScreenY));
+            int scale = (int)(1 / Scaler.ScaleFactor);
+
+
+            lock (_tileLocker)
+            {
+                using (var g = Graphics.FromImage(canvas))
+                {
+                    foreach (var tile in visibleTiles)
+                    {
+                        //var tileData = Tile.ReadData(tile.FilePath).Where((x, i) => i % (scale * scale) == 0).ToArray();
+                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)),
+                            tile.Size.Width, tile.Size.Height, Palette))
+                        using (Bitmap resized = Resize(tileImg,
+                            new Size(tile.Size.Width / scale, tile.Size.Height / scale), System.Drawing.Drawing2D.InterpolationMode.High))
+                        {
+                            g.DrawImage(resized, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
+                                (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
+                        }
+
+                    }
+                }
+            }
+            return canvas;
         }
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
@@ -88,7 +115,7 @@ namespace RlViewer.Behaviors.Draw
                     {
                         using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
                         using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
-                        using (Bitmap resized = Resize(cropped, resizedCanvasSize))
+                        using (Bitmap resized = Resize(cropped, resizedCanvasSize, System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor))
                         {
 
                             g.DrawImage(resized, pointToDraw);                       
@@ -101,8 +128,6 @@ namespace RlViewer.Behaviors.Draw
         }
 
       
-
-
         private Image ScaleNormal(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
@@ -119,7 +144,7 @@ namespace RlViewer.Behaviors.Draw
 
                                 g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
                                     (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
-                            }
+                        }
                     
                     }
                 }
@@ -150,7 +175,7 @@ namespace RlViewer.Behaviors.Draw
             }
             else
             {
-                return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
+                return ScaleDown(canvas, tiles, leftTopPointOfView, screenSize);
             }
             
         }
@@ -161,7 +186,7 @@ namespace RlViewer.Behaviors.Draw
             return bmp.Clone(rect, bmp.PixelFormat);
         }
 
-        private Bitmap Resize(Bitmap bmp, Size newSize)
+        private Bitmap Resize(Bitmap bmp, Size newSize, System.Drawing.Drawing2D.InterpolationMode mode)
         {
             Bitmap newBmp = new Bitmap(newSize.Width, newSize.Height);
             lock (_itemLocker)
@@ -169,7 +194,7 @@ namespace RlViewer.Behaviors.Draw
                 using (var g = Graphics.FromImage(newBmp))
                 {
                     g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    g.InterpolationMode = mode;
 
                     g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);
              

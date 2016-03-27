@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Drawing;
 using RlViewer.Behaviors.Draw;
 using RlViewer.Files;
 
@@ -174,12 +175,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-        protected virtual IEnumerable<Tile> SaveTiles(string folderPath, byte[] line, int linePixelWidth, int lineNumber, System.Drawing.Size TileSize)
+        protected virtual IEnumerable<Tile> SaveTiles(string folderPath, byte[] line, int linePixelWidth,
+            int lineNumber, System.Drawing.Size tileSize)
         {
-            byte[] tileData = new byte[TileSize.Width * TileSize.Height];
+            byte[] tileData = new byte[tileSize.Width * tileSize.Height];
             List<Tile> tiles = new List<Tile>();
 
             int bytesToRead = 0;
+
+
             using (var ms = new MemoryStream(line))
             {
                 for (int i = 0; i < Math.Ceiling((double)line.Length / tileData.Length); i++)
@@ -187,21 +191,23 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     Array.Clear(tileData, 0, tileData.Length);
                     ms.Seek(i * TileSize.Width, SeekOrigin.Begin);
 
-                    bytesToRead = Math.Min(TileSize.Width, linePixelWidth - i * TileSize.Width);
+                    bytesToRead = Math.Min(tileSize.Width, linePixelWidth - i * tileSize.Width);
 
-                    for (int j = 0; j < TileSize.Height; j++)
+                    for (int j = 0; j < tileSize.Height; j++)
                     {
-                        ms.Read(tileData, j * TileSize.Width, bytesToRead);
+                        ms.Read(tileData, j * tileSize.Width, bytesToRead);
                         ms.Seek(Math.Max(linePixelWidth - bytesToRead, 0), SeekOrigin.Current);
                     }
                   
                     tiles.Add(new Tile(SaveTile(Path.Combine(folderPath, i + "-" + lineNumber), tileData),
-                                       new System.Drawing.Point(i * TileSize.Width, lineNumber * TileSize.Height), TileSize));
+                                       new System.Drawing.Point(i * tileSize.Width, lineNumber * tileSize.Height), tileSize));
                     
                 }
             }
             return tiles;
         }
+
+
 
         protected virtual string SaveTile(string path, byte[] tileData)
         {
@@ -256,10 +262,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Path.GetExtension(filePath), "x0.25"));
             paths.Add(1, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
                 Path.GetExtension(filePath), "x1"));
-            paths.Add(2, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath), "x4"));
-            paths.Add(4, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath), "x16"));
 
             foreach (var path in paths)
             {

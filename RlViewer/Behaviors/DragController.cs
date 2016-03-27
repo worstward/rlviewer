@@ -18,40 +18,40 @@ namespace RlViewer.Behaviors
 
 
         private Scaling.Scaler _scaler;
-        private bool isMouseDown;
+        private bool _isMouseDown;
 
-        private Point previousMouseLocation;
+        private Point _previousMouseLocation;
 
-        private Point delta;
+        private Point _delta;
 
         public Point Delta
         {
           get
           {
-              return delta;
+              return _delta;
           }
         }
 
         public void StartTracing(Point location, bool canDrag)
         {
-            isMouseDown = canDrag;
-            previousMouseLocation = location;
+            _isMouseDown = canDrag;
+            _previousMouseLocation = location;
         }
 
         public void StopTracing()
         {
-            isMouseDown = false;
+            _isMouseDown = false;
         }
 
         public bool Trace(Point location)
         {
-            if (isMouseDown)
+            if (_isMouseDown)
             {
-                delta = new Point((int)((location.X - previousMouseLocation.X) / Math.Sqrt(_scaler.ScaleFactor)),
-                    (int)((location.Y - previousMouseLocation.Y) / Math.Sqrt(_scaler.ScaleFactor)));
-                previousMouseLocation = location;
+                _delta = new Point((int)((location.X - _previousMouseLocation.X) / Math.Sqrt(_scaler.ScaleFactor)),
+                    (int)((location.Y - _previousMouseLocation.Y) / Math.Sqrt(_scaler.ScaleFactor)));
+                _previousMouseLocation = location;
             }
-            return isMouseDown;
+            return _isMouseDown;
         }
 
     }
