@@ -14,7 +14,7 @@ namespace RlViewer.Forms
 {
     public partial class SectionGraphForm : Form
     {
-        public SectionGraphForm(IEnumerable<Tuple<float, float>> points, float initialPointMark)
+        public SectionGraphForm(IEnumerable<PointF> points, float initialPointMark, string caption = "")
         {
             _points = points;
             _initialPointMark = initialPointMark;
@@ -26,10 +26,12 @@ namespace RlViewer.Forms
             _zedGraph.IsAutoScrollRange = true;
             this.Controls.Add(_zedGraph);
             InitializeComponent();
+
+            this.Text = caption;
             BuildGraph();
         }
 
-        private IEnumerable<Tuple<float, float>> _points;
+        private IEnumerable<PointF> _points;
         private ZedGraphControl _zedGraph;
         private float _initialPointMark;
 
@@ -46,9 +48,9 @@ namespace RlViewer.Forms
 
             PointPairList list = new PointPairList();
 
-            foreach(var pair in _points)
+            foreach(var point in _points)
             {
-                list.Add(pair.Item1, pair.Item2);
+                list.Add(point.X, point.Y);
             }
 
             //add vertical line to mark clicked point
@@ -72,11 +74,8 @@ namespace RlViewer.Forms
 
         private void SectionGraphForm_KeyDown(object sender, KeyEventArgs e)
         {
-
-            //FIX objectdisposedexception
             if (e.KeyCode == Keys.Escape)
             {
-                _zedGraph.Dispose();
                 this.Close();
             }
         }

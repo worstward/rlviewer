@@ -9,7 +9,8 @@ namespace RlViewer.Behaviors.Draw
 {
     public class ItemDrawer : ImageDrawer
     {
-        public ItemDrawer(PointSelector.PointSelector pointSelector, AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
+        public ItemDrawer(PointSelector.PointSelector pointSelector,
+            AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
         {
             _pointSelector = pointSelector;
             _areaSelector = areaSelector;
@@ -61,6 +62,49 @@ namespace RlViewer.Behaviors.Draw
                     _areaSelector.Area.Width * Scaler.ScaleFactor, _areaSelector.Area.Height * Scaler.ScaleFactor);
             }
         }
-       
+
+        public Image DrawHorizontalSection(Image canvas, Point currentPoint, int sectionSize)
+        {
+            Image img;
+            lock (_locker)
+            {
+                img = (Image)canvas.Clone();
+                using (var g = Graphics.FromImage(img))
+                {
+                   using (var pen = new Pen(Palette.Entries[240]))
+                    {
+                        g.DrawLine(pen, new Point(currentPoint.X - sectionSize/2, currentPoint.Y),
+                            new Point(currentPoint.X + sectionSize/2, currentPoint.Y));
+                    }           
+                }
+            }
+            return img;
+        }
+
+        public Image DrawVerticalSection(Image canvas, Point currentPoint, int sectionSize)
+        {
+            Image img;
+            lock (_locker)
+            {
+                img = (Image)canvas.Clone();
+                using (var g = Graphics.FromImage(img))
+                {
+                    using (var pen = new Pen(Palette.Entries[240]))
+                    {
+                        g.DrawLine(pen, new Point(currentPoint.X, currentPoint.Y - sectionSize / 2),
+                            new Point(currentPoint.X, currentPoint.Y + sectionSize / 2));
+                    }
+                }
+            }
+            return img;
+        }
+
+
+
+
+            
+        
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace RlViewer.Behaviors.Sections
 {
@@ -25,6 +26,6 @@ namespace RlViewer.Behaviors.Sections
             protected set;
         }
 
-        public abstract IEnumerable<Tuple<float, float>> GetValues(RlViewer.Files.LocatorFile file, System.Drawing.Point p);
+        public abstract IEnumerable<PointF> GetValues(RlViewer.Files.LocatorFile file, Point p);
     }
 }

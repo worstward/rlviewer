@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace RlViewer.Behaviors.Sections
 {
@@ -12,17 +13,17 @@ namespace RlViewer.Behaviors.Sections
         {
         }
 
-        public override IEnumerable<Tuple<float, float>> GetValues(RlViewer.Files.LocatorFile file, System.Drawing.Point p)
+        public override IEnumerable<PointF> GetValues(RlViewer.Files.LocatorFile file, Point p)
         {
             InitialPointMark = p.Y;
 
-            var coordPairList = new List<Tuple<float, float>>();
+            var coordPairList = new List<PointF>();
 
             for (int i = p.Y - SectionLength / 2; i < p.Y + SectionLength / 2; i++)
             {
                 if (i < 0 || i > file.Height) continue;
 
-                coordPairList.Add(new Tuple<float, float>(i, GetValue(file, new System.Drawing.Point(p.X, i))));
+                coordPairList.Add(new PointF(i, GetValue(file, new Point(p.X, i))));
             }
 
             return coordPairList;

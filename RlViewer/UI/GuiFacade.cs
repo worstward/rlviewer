@@ -559,8 +559,11 @@ namespace RlViewer.UI
             
             var points = section.GetValues(_file, p);
             var mark = section.InitialPointMark;
+            var caption = section.GetType() == typeof(Behaviors.Sections.HorizontalSection)
+                ? "Горизонтальное сечение" : "Вертикальное сечение";
 
-            using (var sectionForm = new Forms.SectionGraphForm(points, mark))
+
+            using (var sectionForm = new Forms.SectionGraphForm(points, mark, caption))
             { 
                 sectionForm.ShowDialog();
             }
@@ -717,10 +720,15 @@ namespace RlViewer.UI
                     {
                         ErrorGuiMessage("Невозможно проанализировать точку");
                     }
-
-                    
                 }
-                
+                else if (_form.VerticalSectionRb.Checked && _drawer != null)
+                {
+                    _form.Canvas.Image = _drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+                }
+                else if (_form.HorizontalSectionRb.Checked && _drawer != null)
+                {
+                    _form.Canvas.Image = _drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+                }
             }         
         }
 
