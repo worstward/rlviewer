@@ -69,23 +69,6 @@ namespace RlViewer.Behaviors.Filters.Concrete
             return table;
         }
 
-        public byte[] InitLut(byte[] table, int step)
-        {
-            double value = 0;
-
-            double contrast = (100f + step) / 100f;
-
-            for (int i = 0; i < 256; i++)
-            {
-                value = ((((table[i] / 255f) - 0.5) * contrast) + 0.5) * 255f;
-
-                if (value > 255) value = 255;
-                else if (value < 0) value = 0;
-                table[i] = (byte)value;
-            }
-            return table;
-        }
-
 
     }
 }

@@ -48,15 +48,6 @@ namespace RlViewer.Behaviors.PointSelector
             selectedPoints.Add(selectedPoint);
         }
 
-        //public void AddFileVal(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
-        //{
-        //    //if we hit the image
-        //    if (location.X > 0 && location.X < file.Width && location.Y > 0 && location.Y < file.Height)
-        //    {
-        //        selectedPoints.Add(new SelectedPoint(file, location));
-        //    }
-        //}
-
         public void RemoveLast()
         {
             if (selectedPoints.Count > 0)

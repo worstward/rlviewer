@@ -21,6 +21,8 @@ namespace RlViewer.UI
         RadioButton MarkPointRb { get; }
         RadioButton MarkAreaRb { get; }
         RadioButton AnalyzePointRb { get; }
+        RadioButton VerticalSectionRb { get; }
+        RadioButton HorizontalSectionRb { get; }
         CheckBox NavigationCb { get; }
         DataGridView NavigationDgv { get; }
         SplitContainer WorkingAreaSplitter { get; }

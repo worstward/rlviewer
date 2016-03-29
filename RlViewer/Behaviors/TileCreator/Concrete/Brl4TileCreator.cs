@@ -40,12 +40,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_tiles == null)
                         {
                             _tiles = GetTiles(_rli.Properties.FilePath);
-
-                            //var tileFilesNum = Directory.GetFiles(pathCollection[1]).Length;
-                            //if (tileFilesNum < _tiles.Length)
-                            //{
-                            //    Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("{0} tiles missing", _tiles.Length - tileFilesNum));
-                            //}
                         }
                     }
                 }

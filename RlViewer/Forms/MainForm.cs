@@ -116,7 +116,20 @@ namespace RlViewer.Forms
                 return analyzeRb;
             }
         }
-
+        public RadioButton VerticalSectionRb
+        {
+            get
+            {
+                return verSection;
+            }
+        }
+        public RadioButton HorizontalSectionRb
+        {
+            get
+            {
+                return horSection;
+            }
+        }
 
         public CheckBox NavigationCb
         {
@@ -270,6 +283,11 @@ namespace RlViewer.Forms
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
             ((PictureBox)sender).Focus();
+        }
+
+        private void horSection_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
 

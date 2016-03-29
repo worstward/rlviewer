@@ -39,6 +39,15 @@ namespace RlViewer.Settings
             set { _isPaletteReversed = value; }
         }
 
+        private int _sectionSize = 500;
+
+        public int SectionSize
+        {
+            get { return _sectionSize; }
+            set { _sectionSize = value; }
+        }
+
+
 
     }
 }

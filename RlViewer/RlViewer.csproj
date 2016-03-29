@@ -43,6 +43,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
@@ -53,9 +57,13 @@
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
+    <Compile Include="Behaviors\PointReader.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
     <Compile Include="Behaviors\Scaling\Scaler.cs" />
+    <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
+    <Compile Include="Behaviors\Sections\Section.cs" />
+    <Compile Include="Behaviors\Sections\VerticalSection.cs" />
     <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RawHeaderFactory.cs" />
@@ -66,6 +74,12 @@
     <Compile Include="Factories\NavigationContainer\Concrete\RawNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\RhgKNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Rl4NavigationContainerFactory.cs" />
+    <Compile Include="Forms\SectionGraphForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SectionGraphForm.Designer.cs">
+      <DependentUpon>SectionGraphForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
@@ -213,6 +227,9 @@
     <EmbeddedResource Include="Forms\SaveSizeForm.resx">
       <DependentUpon>SaveSizeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SectionGraphForm.resx">
+      <DependentUpon>SectionGraphForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -236,6 +253,7 @@
     <EmbeddedResource Include="bin\Debug\EmptyTile.tl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -249,7 +267,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

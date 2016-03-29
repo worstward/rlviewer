@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Analyzing
 {
-    class PointAnalyzer
+    class PointAnalyzer : PointReader
     {
 
         private bool _isMouseDown;
@@ -25,10 +25,16 @@ namespace RlViewer.Behaviors.Analyzing
             _isMouseDown = false;
         }
 
-
-
-        public float Analyze(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        public float Amplitude
         {
+            get;
+            private set;
+        }
+  
+
+        public bool Analyze(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        {
+            bool hasLocationChanged = false;
             if (_isMouseDown)
             {
                 if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
@@ -36,26 +42,22 @@ namespace RlViewer.Behaviors.Analyzing
                     if (currentLocation != location)
                     {
                         currentLocation = location;
-                        return GetValue(file, location);
+                        hasLocationChanged = true;
+
+                        try
+                        {
+                            Amplitude = GetValue(file, location);
+                        }
+                        catch (Exception)
+                        {
+                            _isMouseDown = false;
+                            throw;
+                        }
                     }
                 }
             }
-            return float.NaN;
-            
-        }
-
-        private float GetValue(RlViewer.Files.LocatorFile file, Point p)
-        {
-            using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                //TODO: provide complex samples support (2 float = 8 bytes)
-                var offset = p.X * file.Header.BytesPerSample +
-                    p.Y * (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength) + file.Header.FileHeaderLength + file.Header.StrHeaderLength;
-                fs.Seek(offset, SeekOrigin.Begin);
-                var floatValue = new byte[file.Header.BytesPerSample];
-                fs.Read(floatValue, 0, floatValue.Length);
-                return BitConverter.ToSingle(floatValue, 0);
-            }
+            return hasLocationChanged;
+                     
         }
 
 

@@ -33,21 +33,26 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
+            this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
-            this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(13, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -108,6 +113,40 @@
             this.inverseCheckBox.UseVisualStyleBackColor = true;
             this.inverseCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.forceTileGenCheckBox);
+            this.tabPage2.Controls.Add(this.allowViewCheckBox);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(270, 150);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Подготовка вывода";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // forceTileGenCheckBox
+            // 
+            this.forceTileGenCheckBox.AutoSize = true;
+            this.forceTileGenCheckBox.Location = new System.Drawing.Point(6, 41);
+            this.forceTileGenCheckBox.Name = "forceTileGenCheckBox";
+            this.forceTileGenCheckBox.Size = new System.Drawing.Size(204, 17);
+            this.forceTileGenCheckBox.TabIndex = 1;
+            this.forceTileGenCheckBox.Text = "Принудительная генерация тайлов";
+            this.forceTileGenCheckBox.UseVisualStyleBackColor = true;
+            this.forceTileGenCheckBox.CheckedChanged += new System.EventHandler(this.forceTileGenCheckBox_CheckedChanged);
+            // 
+            // allowViewCheckBox
+            // 
+            this.allowViewCheckBox.AutoSize = true;
+            this.allowViewCheckBox.Location = new System.Drawing.Point(6, 18);
+            this.allowViewCheckBox.Name = "allowViewCheckBox";
+            this.allowViewCheckBox.Size = new System.Drawing.Size(247, 17);
+            this.allowViewCheckBox.TabIndex = 0;
+            this.allowViewCheckBox.Text = "Просмотр изображения во время загрузки";
+            this.allowViewCheckBox.UseVisualStyleBackColor = true;
+            this.allowViewCheckBox.CheckedChanged += new System.EventHandler(this.allowViewCheckBox_CheckedChanged);
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(17, 304);
@@ -128,39 +167,34 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // tabPage2
+            // tabPage3
             // 
-            this.tabPage2.Controls.Add(this.forceTileGenCheckBox);
-            this.tabPage2.Controls.Add(this.allowViewCheckBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(270, 150);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Подготовка вывода";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Controls.Add(this.sectionSizeTextBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(270, 150);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Инструменты";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // allowViewCheckBox
+            // sectionSizeTextBox
             // 
-            this.allowViewCheckBox.AutoSize = true;
-            this.allowViewCheckBox.Location = new System.Drawing.Point(6, 18);
-            this.allowViewCheckBox.Name = "allowViewCheckBox";
-            this.allowViewCheckBox.Size = new System.Drawing.Size(247, 17);
-            this.allowViewCheckBox.TabIndex = 0;
-            this.allowViewCheckBox.Text = "Просмотр изображения во время загрузки";
-            this.allowViewCheckBox.UseVisualStyleBackColor = true;
-            this.allowViewCheckBox.CheckedChanged += new System.EventHandler(this.allowViewCheckBox_CheckedChanged);
+            this.sectionSizeTextBox.Location = new System.Drawing.Point(9, 36);
+            this.sectionSizeTextBox.Mask = "0000";
+            this.sectionSizeTextBox.Name = "sectionSizeTextBox";
+            this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.sectionSizeTextBox.TabIndex = 0;
             // 
-            // forceTileGenCheckBox
+            // label1
             // 
-            this.forceTileGenCheckBox.AutoSize = true;
-            this.forceTileGenCheckBox.Location = new System.Drawing.Point(6, 41);
-            this.forceTileGenCheckBox.Name = "forceTileGenCheckBox";
-            this.forceTileGenCheckBox.Size = new System.Drawing.Size(204, 17);
-            this.forceTileGenCheckBox.TabIndex = 1;
-            this.forceTileGenCheckBox.Text = "Принудительная генерация тайлов";
-            this.forceTileGenCheckBox.UseVisualStyleBackColor = true;
-            this.forceTileGenCheckBox.CheckedChanged += new System.EventHandler(this.forceTileGenCheckBox_CheckedChanged);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Размер сечения";
             // 
             // SettingsForm
             // 
@@ -183,6 +217,8 @@
             this.groupBox3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -199,5 +235,8 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.CheckBox forceTileGenCheckBox;
         private System.Windows.Forms.CheckBox allowViewCheckBox;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.MaskedTextBox sectionSizeTextBox;
     }
 }

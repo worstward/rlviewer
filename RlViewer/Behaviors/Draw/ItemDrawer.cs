@@ -61,7 +61,6 @@ namespace RlViewer.Behaviors.Draw
                     _areaSelector.Area.Width * Scaler.ScaleFactor, _areaSelector.Area.Height * Scaler.ScaleFactor);
             }
         }
-
        
     }
 }

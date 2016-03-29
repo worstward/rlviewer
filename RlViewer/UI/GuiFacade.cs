@@ -25,13 +25,13 @@ namespace RlViewer.UI
             _analyzer = new Behaviors.Analyzing.PointAnalyzer();
             _drag = new Behaviors.DragController(_scaler);
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
-            InitControls();
+            InitializeWindow();
             _form.Canvas.MouseWheel += Canvas_MouseWheel;
             _win = _form.Canvas;
         }
 
 
-        private System.ComponentModel.BackgroundWorker _loaderWorker;
+        private System.ComponentModel.BackgroundWorker _worker;
         private Settings.Settings _settings;
         private TileCreator _creator;
         private Behaviors.Filters.ImageFilterFacade _filterFacade;
@@ -93,7 +93,7 @@ namespace RlViewer.UI
             
             string caption;
 
-            if (_loaderWorker != null && _loaderWorker.IsBusy)
+            if (_worker != null && _worker.IsBusy)
             {
                 CancelLoading();
             }
@@ -119,8 +119,8 @@ namespace RlViewer.UI
 
             _form.StatusLabel.Text = "Чтение навигации";
             InitProgressBar();
-            _loaderWorker = InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
-            _loaderWorker.RunWorkerAsync();
+            _worker = InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
+            _worker.RunWorkerAsync();
          
             return caption;
         }
@@ -154,28 +154,52 @@ namespace RlViewer.UI
             {
                 _form.StatusLabel.Text = "Генерация тайлов";
                 InitProgressBar();
-                _loaderWorker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
-                _loaderWorker.RunWorkerAsync();
+                _worker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                _worker.RunWorkerAsync();
             }
         }
 
         public void CancelLoading()
         {
-            if (_loaderWorker != null && !_loaderWorker.CancellationPending && _loaderWorker.IsBusy)
+            if (_worker != null)
             {
-                _loaderWorker.CancelAsync();
-                _loaderWorker.Dispose();
-                InitControls();
-
-                if (_file != null)
-                {
-                    ClearCancelledFileTiles();
-                    _file = null;
-                    _drawer = null;
-                    _pointSelector = null;
-                    _areaSelector = null;
-                }
+                _worker.CancelAsync();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposer">Action that clears all redundant data after task cancelling</param>
+        private void ClearWorkerData(Action disposer)
+        {
+            if (_worker != null && _file != null)
+            {
+                disposer(); 
+            }
+
+            _worker.Dispose();          
+        }
+
+
+
+
+        private void ClearCancelledFileTiles()
+        {
+            try
+            {
+                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
+                    Path.GetExtension(_file.Properties.FilePath));
+                File.SetAttributes(path, FileAttributes.Normal);
+                Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
+                ErrorGuiMessage(ex.Message);
+            }
+
+            InitializeWindow();   
         }
 
         private void loaderWorker_SaveFile(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -206,7 +230,7 @@ namespace RlViewer.UI
                 _saver = SaverFactory.GetFactory(_properties).Create(_file);   
 
                 _saver.Report += ProgressReporter;
-                _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+                _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
 
                 _saver.Save(path, Path.GetExtension(path).Replace(".", "")
                     .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
@@ -221,11 +245,12 @@ namespace RlViewer.UI
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _saver.Report -= ProgressReporter;
-            _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
             _form.ProgressBar.Visible = false;
             _form.ProgressLabel.Visible = false;
             _form.StatusLabel.Visible = false;
             _form.CancelButton.Visible = false;
+
         }
 
 
@@ -239,7 +264,7 @@ namespace RlViewer.UI
                 _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
                 _navi.Report += ProgressReporter;
-                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
                 _navi.GetNavigation();
 
                 _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
@@ -247,13 +272,13 @@ namespace RlViewer.UI
             catch (ArgumentNullException)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
-                InitControls();
+                InitializeWindow();
             }
             catch (Exception ex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", ex.Message));
                 ErrorGuiMessage("Невозможно открыть файл");
-                InitControls();
+                InitializeWindow();
             }
         }
 
@@ -261,7 +286,7 @@ namespace RlViewer.UI
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _navi.Report -= ProgressReporter;
-            _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
             GetImage();
         }
 
@@ -271,7 +296,7 @@ namespace RlViewer.UI
             _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
             _creator.Report += ProgressReporter;
-            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);          
         }
 
@@ -279,7 +304,7 @@ namespace RlViewer.UI
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _creator.Report -= ProgressReporter;
-            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _loaderWorker.CancellationPending;
+            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
 
             if (_tiles != null)
             {
@@ -291,6 +316,11 @@ namespace RlViewer.UI
                 _form.CancelButton.Visible = false;
                 InitDrawImage();
             }
+            else           
+            {
+                ClearWorkerData(() => ClearCancelledFileTiles());
+            }
+
         }
 
         private void Canvas_MouseWheel(object sender, MouseEventArgs e)
@@ -308,11 +338,11 @@ namespace RlViewer.UI
 
         private void ProgressReporter(int progress)
         {
-            _form.ProgressBar.Invoke((Action)delegate
+            _form.ProgressBar.Invoke(new Action(() =>
             {
                 _form.ProgressBar.Value = progress;
                 _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
-            });
+            }));
         }
 
         private void Undo()
@@ -415,8 +445,8 @@ namespace RlViewer.UI
                             {
                                 _form.StatusLabel.Text = "Сохранение файла";
                                 InitProgressBar();
-                                _loaderWorker = InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
-                                _loaderWorker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
+                                _worker = InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
+                                _worker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
                             }
                         }
                     }
@@ -462,8 +492,14 @@ namespace RlViewer.UI
 
 
 
-        private void InitControls()
+        private void InitializeWindow()
         {
+
+            _file = null;
+            _drawer = null;
+            _pointSelector = null;
+            _areaSelector = null;
+
             _form.Canvas.Image = null;
             _form.Horizontal.Visible = false;
             _form.Vertical.Visible = false;
@@ -516,13 +552,30 @@ namespace RlViewer.UI
             _form.FilterTrackBar.Value = _filterFacade.Filter.FilterValue >> filterDelta;
         }
 
+
+
+        private void ShowSection(Behaviors.Sections.Section section, Point p)
+        {
+            
+            var points = section.GetValues(_file, p);
+            var mark = section.InitialPointMark;
+
+            using (var sectionForm = new Forms.SectionGraphForm(points, mark))
+            { 
+                sectionForm.ShowDialog();
+            }
+        }
+
+
+
+
         #region MouseHandlers
 
         public string ShowMousePosition(MouseEventArgs e)
         {
             //return string.Format("X:{0} Y:{1}",
             //   e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
-            if (_file != null && !_loaderWorker.IsBusy)
+            if (_file != null && !_worker.IsBusy)
             {
                 if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 &&
                     e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
@@ -539,7 +592,7 @@ namespace RlViewer.UI
 
         public void ShowNavigation(MouseEventArgs e)
         {
-            if (_file != null && !_loaderWorker.IsBusy)
+            if (_file != null && !_worker.IsBusy)
             {
 
                 if (_form.NavigationCb.Checked && _file.Navigation != null)
@@ -576,7 +629,8 @@ namespace RlViewer.UI
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!_form.MarkPointRb.Checked && !_form.MarkAreaRb.Checked && !_form.AnalyzePointRb.Checked)
+                    if (!_form.MarkPointRb.Checked && !_form.MarkAreaRb.Checked && !_form.AnalyzePointRb.Checked &&
+                        !_form.VerticalSectionRb.Checked && !_form.HorizontalSectionRb.Checked)
                     {
                         _form.Canvas.Cursor = Cursors.SizeAll;
                         _drag.StartTracing(e.Location, !_form.MarkPointRb.Checked);
@@ -598,6 +652,16 @@ namespace RlViewer.UI
                     {
                         _analyzer.StartTracing();
                     }
+                    else if (_form.VerticalSectionRb.Checked)
+                    {
+                        ShowSection(new Behaviors.Sections.VerticalSection(_settings.SectionSize), new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
+                    }
+                    else if (_form.HorizontalSectionRb.Checked)
+                    {
+                        ShowSection(new Behaviors.Sections.HorizontalSection(_settings.SectionSize), new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
+                    }
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
@@ -606,8 +670,6 @@ namespace RlViewer.UI
                 }
             }
         }
-
-
 
         public void TraceMouseMovement(MouseEventArgs e)
         {
@@ -625,27 +687,38 @@ namespace RlViewer.UI
                     {
                         _form.Horizontal.Value -= _drag.Delta.X;
                     }
+
                     DrawImage();
                    
                 }
                 else if (_form.MarkAreaRb.Checked && _areaSelector != null)
                 {
+                   
                     if (_areaSelector.ResizeArea(new Point((int)(e.X / _scaler.ScaleFactor),
                                 (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
-                    {
+                    { 
                         DrawItems();
                     }
                 }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
-                   
-                    var amplitudeValue = _analyzer.Analyze(_file, new Point((int)(e.X / _scaler.ScaleFactor)
-                        + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-                    if (!float.IsNaN(amplitudeValue))
+
+                    try
                     {
-                        _toolTip.Show(string.Format("Амплитуда: {0}", amplitudeValue.ToString()),
-                                _win, new Point(e.Location.X, e.Location.Y - 20));
+                        if (_analyzer.Analyze(_file, new Point((int)(e.X / _scaler.ScaleFactor)
+                             + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value)))
+                        {
+                             _toolTip.Show(string.Format("Амплитуда: {0}", _analyzer.Amplitude.ToString()),
+                                    _win, new Point(e.Location.X, e.Location.Y - 20));
+                        }
+
                     }
+                    catch (Exception)
+                    {
+                        ErrorGuiMessage("Невозможно проанализировать точку");
+                    }
+
+                    
                 }
                 
             }         
@@ -689,23 +762,6 @@ namespace RlViewer.UI
         }
 
 
-        private void ClearCancelledFileTiles()
-        {
-            try
-            {          
-                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath), 
-                    Path.GetExtension(_file.Properties.FilePath));
-                File.SetAttributes(path, FileAttributes.Normal);
-                System.Threading.Thread.Sleep(3000);
-                Directory.Delete(path, true);
-            }
-            catch(Exception ex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
-                ErrorGuiMessage(ex.Message);
-            }
-        }
-
         private System.ComponentModel.BackgroundWorker InitWorker(System.ComponentModel.DoWorkEventHandler doWork,
             System.ComponentModel.RunWorkerCompletedEventHandler completed)
         {
@@ -713,7 +769,7 @@ namespace RlViewer.UI
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += doWork;
-            //worker.ProgressChanged += _loaderWorker_ProgressChanged;
+            //worker.ProgressChanged += _worker_ProgressChanged;
             worker.RunWorkerCompleted += completed;
 
             return worker;

@@ -21,6 +21,8 @@ namespace RlViewer.Forms
             inverseCheckBox.Checked = _settings.IsPaletteReversed;
             allowViewCheckBox.Checked = _settings.AllowViewWhileLoading;
             forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
+            sectionSizeTextBox.Text = _settings.SectionSize.ToString();
+            sectionSizeTextBox.PromptChar = ' ';
         }
 
         private Settings.Settings _settings;
@@ -62,10 +64,17 @@ namespace RlViewer.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            int sectionSize;
+            if (Int32.TryParse(sectionSizeTextBox.Text, out sectionSize))
+            {
+                _settings.SectionSize = sectionSize;
+            }
+            else return;
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
             _settings.ForceTileGeneration = _forceTileGen;
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
