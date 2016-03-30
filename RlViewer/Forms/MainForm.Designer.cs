@@ -33,6 +33,7 @@
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.verSection = new System.Windows.Forms.RadioButton();
             this.horSection = new System.Windows.Forms.RadioButton();
             this.analyzeRb = new System.Windows.Forms.RadioButton();
             this.markAreaRb = new System.Windows.Forms.RadioButton();
@@ -61,7 +62,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.mouseCoordLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
-            this.verSection = new System.Windows.Forms.RadioButton();
+            this.scaleLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -132,6 +133,18 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             // 
+            // verSection
+            // 
+            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.verSection.AutoSize = true;
+            this.verSection.Location = new System.Drawing.Point(262, 19);
+            this.verSection.Name = "verSection";
+            this.verSection.Size = new System.Drawing.Size(24, 23);
+            this.verSection.TabIndex = 10;
+            this.verSection.TabStop = true;
+            this.verSection.Text = "В";
+            this.verSection.UseVisualStyleBackColor = true;
+            // 
             // horSection
             // 
             this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
@@ -143,7 +156,6 @@
             this.horSection.TabStop = true;
             this.horSection.Text = "Г";
             this.horSection.UseVisualStyleBackColor = true;
-            this.horSection.CheckedChanged += new System.EventHandler(this.horSection_CheckedChanged);
             // 
             // analyzeRb
             // 
@@ -223,14 +235,14 @@
             // оФайлеToolStripMenuItem
             // 
             this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.оФайлеToolStripMenuItem.Text = "О файле";
             this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
             // 
             // логToolStripMenuItem1
             // 
             this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.логToolStripMenuItem1.Text = "Лог";
             this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
@@ -406,7 +418,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(820, 64);
+            this.checkBox1.Location = new System.Drawing.Point(811, 64);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(72, 23);
             this.checkBox1.TabIndex = 20;
@@ -432,23 +444,21 @@
             this.statusLabel.TabIndex = 4;
             this.statusLabel.Text = "status";
             // 
-            // verSection
+            // scaleLabel
             // 
-            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.verSection.AutoSize = true;
-            this.verSection.Location = new System.Drawing.Point(262, 19);
-            this.verSection.Name = "verSection";
-            this.verSection.Size = new System.Drawing.Size(24, 23);
-            this.verSection.TabIndex = 10;
-            this.verSection.TabStop = true;
-            this.verSection.Text = "В";
-            this.verSection.UseVisualStyleBackColor = true;
+            this.scaleLabel.AutoSize = true;
+            this.scaleLabel.Location = new System.Drawing.Point(808, 29);
+            this.scaleLabel.Name = "scaleLabel";
+            this.scaleLabel.Size = new System.Drawing.Size(85, 13);
+            this.scaleLabel.TabIndex = 22;
+            this.scaleLabel.Text = "Масштаб: 100%";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.scaleLabel);
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.progressBar1);
@@ -524,6 +534,7 @@
         private System.Windows.Forms.RadioButton analyzeRb;
         private System.Windows.Forms.RadioButton horSection;
         private System.Windows.Forms.RadioButton verSection;
+        private System.Windows.Forms.Label scaleLabel;
     }
 }
 

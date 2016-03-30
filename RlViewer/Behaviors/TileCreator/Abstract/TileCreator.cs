@@ -13,7 +13,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class TileCreator : WorkerEventController
     {
-        private System.Drawing.Size tileSize = new System.Drawing.Size(512, 512);
+        private System.Drawing.Size tileSize = new System.Drawing.Size(1024, 1024);
         protected System.Drawing.Size TileSize
         {
             get
@@ -50,7 +50,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             if (Directory.Exists(path))
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
-                tiles = GetTilesFromTl(Path.Combine(path, "x1"));
+                tiles = GetTilesFromTl(Path.Combine(path));
             }
             else
             {
@@ -251,23 +251,16 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
 
-        protected virtual Dictionary<float, string> InitTilePath(string filePath)
+        protected virtual string InitTilePath(string filePath)
         {
-            Dictionary<float, string> paths = new Dictionary<float, string>();
+            string path =  Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
+                Path.GetExtension(filePath));
 
-            paths = new Dictionary<float, string>();
-            paths.Add(0.25f, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath), "x0.0625"));
-            paths.Add(0.5f, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath), "x0.25"));
-            paths.Add(1, Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath), "x1"));
-
-            foreach (var path in paths)
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path.Value);
+                Directory.CreateDirectory(path);
             }
-            return paths;
+            return path;
         }
     }
 }

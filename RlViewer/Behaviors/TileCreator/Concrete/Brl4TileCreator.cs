@@ -20,13 +20,12 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             _rli = rli;
         }
 
-        private Dictionary<float, string> pathCollection;
+        private string tileFolder;
 
         private LocatorFile _rli;
         private float _normalFactor;
 
         private Tile[] _tiles;
-        private Dictionary<float, Tile[]> tileSets = new Dictionary<float, Tile[]>();
 
         private object _tileLocker = new object();
         public override Tile[] Tiles
@@ -104,7 +103,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFile(string filePath)
         {
-            pathCollection = InitTilePath(filePath);
+            tileFolder = InitTilePath(filePath);
             
             List<Tile> tiles = new List<Tile>();
             byte[] tileLine;
@@ -119,7 +118,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 for (int i = 0; i < totalLines; i++)
                 {
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
-                    tiles.AddRange(SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize));
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, _rli.Width, i, TileSize));
 
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
@@ -138,9 +137,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFileAsync(string filePath)
         {
-            pathCollection = InitTilePath(filePath);
-            var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath), "x1");
-           
+            tileFolder = InitTilePath(filePath);
+
             Task.Run(() =>
                 {
                     List<Tile> tiles = new List<Tile>();
@@ -156,11 +154,11 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         for (int i = 0; i < totalLines; i++)
                         {
                             tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
-                            SaveTiles(pathCollection[1], tileLine, _rli.Width, i, TileSize);
+                            SaveTiles(tileFolder, tileLine, _rli.Width, i, TileSize);
                         }
                     }
                 });
-            return GetTilesFromTl(path);
+            return GetTilesFromTl(tileFolder);
 
             //return tiles.ToArray();
         }

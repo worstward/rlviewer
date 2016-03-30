@@ -79,6 +79,15 @@ namespace RlViewer.Forms
             }
         }
 
+        public Label ScaleLabel
+        {
+            get
+            {
+                return scaleLabel;
+            }
+        }
+
+
         public new Button CancelButton
         {
             get
@@ -283,11 +292,6 @@ namespace RlViewer.Forms
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
             ((PictureBox)sender).Focus();
-        }
-
-        private void horSection_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
 

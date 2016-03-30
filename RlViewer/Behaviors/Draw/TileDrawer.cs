@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.IO;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using RlViewer.Behaviors.TileCreator;
 using RlViewer.Files.Rli.Abstract;
@@ -29,6 +30,7 @@ namespace RlViewer.Behaviors.Draw
         private object _tileLocker = new object();
         private object _itemLocker = new object();
 
+
         private Image ScaleDown(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
@@ -37,6 +39,7 @@ namespace RlViewer.Behaviors.Draw
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 scaledScreenX, scaledScreenY));
             int scale = (int)(1 / Scaler.ScaleFactor);
+            int scalePower = (int)Math.Log(scale, 2);
 
 
             lock (_tileLocker)
@@ -45,13 +48,52 @@ namespace RlViewer.Behaviors.Draw
                 {
                     foreach (var tile in visibleTiles)
                     {
-                        //var tileData = Tile.ReadData(tile.FilePath).Where((x, i) => i % (scale * scale) == 0).ToArray();
-                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)),
-                            tile.Size.Width, tile.Size.Height, Palette))
-                        using (Bitmap resized = Resize(tileImg,
-                            new Size(tile.Size.Width / scale, tile.Size.Height / scale), System.Drawing.Drawing2D.InterpolationMode.High))
+                        byte[] imgData = Tile.ReadData(tile.FilePath);
+                        byte[] sievedImage = new byte[imgData.Length >> scalePower >> scalePower];
+
+                        //int index = 0;
+
+                        //for (int i = 0; i < tile.Size.Height * tile.Size.Width - tile.Size.Width; i += scale * tile.Size.Width)
+                        //{
+                        //    for (int j = i; j < i + tile.Size.Width; j += scale)
+                        //    {
+                        //        float cumulative = 0;
+                        //        for (int k = j; k < j + scale; k++)
+                        //        {
+                        //            cumulative += imgData[k];
+                        //        }
+
+                        //        sievedImage[index] = (byte)(cumulative / scale);
+                        //        index++;
+                        //        cumulative = 0;
+                        //    }
+                        //}
+
+                        Parallel.For(0, tile.Size.Height / scale, (i) =>
                         {
-                            g.DrawImage(resized, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
+                            var localIndex = tile.Size.Width * i << scalePower;
+
+                            for (int j = localIndex; j < localIndex + tile.Size.Width; j += scale)
+                            {
+                                float cumulative = 0;
+                                for (int k = j; k < j + scale; k++)
+                                {
+                                    cumulative += imgData[k];
+                                }
+
+                                //(j & tile.Size.Width - 1) equals j % tile.Size.Width for powers of two (since tile.Size is power of 2 it's ok)
+                                //bitwise version performs better
+                                int index = i * (tile.Size.Width >> scalePower) + (j & tile.Size.Width - 1) / scale;
+                                sievedImage[index] = (byte)(cumulative / scale);
+                                cumulative = 0;
+                            }
+                        });
+
+                        byte[] filteredData = _filter.ApplyFilters(sievedImage);
+
+                        using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width / scale, tile.Size.Height / scale, Palette))
+                        {
+                            g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
                                 (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
                         }
 
@@ -60,6 +102,40 @@ namespace RlViewer.Behaviors.Draw
             }
             return canvas;
         }
+
+
+        //private Image ScaleDown(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        //{
+        //    int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
+        //    int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
+
+        //    var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+        //        scaledScreenX, scaledScreenY));
+        //    int scale = (int)(1 / Scaler.ScaleFactor);
+
+
+        //    lock (_tileLocker)
+        //    {
+        //        using (var g = Graphics.FromImage(canvas))
+        //        {
+        //            foreach (var tile in visibleTiles)
+        //            {
+        //                byte[] imgData = Tile.ReadData(tile.FilePath);
+        //                byte[] filteredData = _filter.ApplyFilters(imgData);
+        //                Size scaledSize = new Size(tile.Size.Width / scale, tile.Size.Height / scale);
+
+        //                using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width, tile.Size.Height, Palette))
+        //                using (Bitmap resized = Resize(tileImg, scaledSize, InterpolationMode.High))
+        //                {
+        //                    g.DrawImage(resized, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
+        //                        (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
+        //                }
+
+        //            }
+        //        }
+        //    }
+        //    return canvas;
+        //}
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
@@ -113,11 +189,13 @@ namespace RlViewer.Behaviors.Draw
                 {
                     using (var g = Graphics.FromImage(canvas))
                     {
-                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
-                        using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
-                        using (Bitmap resized = Resize(cropped, resizedCanvasSize, System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor))
-                        {
+                        byte[] imgData = Tile.ReadData(tile.FilePath);
+                        byte[] filteredData = _filter.ApplyFilters(imgData);
 
+                        using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width, tile.Size.Height, Palette))
+                        using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
+                        using (Bitmap resized = Resize(cropped, resizedCanvasSize, InterpolationMode.NearestNeighbor))
+                        {
                             g.DrawImage(resized, pointToDraw);                       
                         }
 
@@ -141,9 +219,9 @@ namespace RlViewer.Behaviors.Draw
                     {
                         using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
                         {
-
-                                g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X)),
-                                    (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y))));
+                            int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
+                            int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
+                            g.DrawImage(tileImg, new Point(xToScreen, yToScreen));
                         }
                     
                     }
@@ -163,8 +241,6 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>       
         public Image DrawImage(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-            if (screenSize.Width <= 0 || screenSize.Height <= 0) return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize); 
-
             if (Scaler.ScaleFactor == 1)
             {
                 return ScaleNormal(canvas, tiles, leftTopPointOfView, screenSize);
@@ -186,16 +262,15 @@ namespace RlViewer.Behaviors.Draw
             return bmp.Clone(rect, bmp.PixelFormat);
         }
 
-        private Bitmap Resize(Bitmap bmp, Size newSize, System.Drawing.Drawing2D.InterpolationMode mode)
+        private Bitmap Resize(Bitmap bmp, Size newSize, InterpolationMode mode)
         {
             Bitmap newBmp = new Bitmap(newSize.Width, newSize.Height);
             lock (_itemLocker)
             {
                 using (var g = Graphics.FromImage(newBmp))
                 {
-                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                    g.PixelOffsetMode = PixelOffsetMode.Half;
                     g.InterpolationMode = mode;
-
                     g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);
              
                 }

@@ -37,6 +37,7 @@
             this.ClientSize = new System.Drawing.Size(723, 492);
             this.KeyPreview = true;
             this.Name = "SectionGraphForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SectionGraphForm";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SectionGraphForm_KeyDown);
             this.ResumeLayout(false);

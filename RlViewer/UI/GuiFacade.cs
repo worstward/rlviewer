@@ -287,7 +287,15 @@ namespace RlViewer.UI
         {
             _navi.Report -= ProgressReporter;
             _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-            GetImage();
+
+            if (e.Cancelled || e.Error != null)
+            {
+                InitializeWindow();
+            }
+            else
+            {
+                GetImage();
+            }             
         }
 
 
@@ -325,13 +333,16 @@ namespace RlViewer.UI
 
         private void Canvas_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta > 0)
+            if (_file != null)
             {
-                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
-            }
-            else
-            {
-                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
+                if (e.Delta > 0)
+                {
+                    ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
+                }
+                else
+                {
+                    ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
+                }
             }
         }
 
@@ -381,8 +392,6 @@ namespace RlViewer.UI
             {
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
-                //_form.Canvas.Image = _drawer.Draw(_tiles,
-                //        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -394,8 +403,6 @@ namespace RlViewer.UI
             {
                 Task.Run(()=> _form.Canvas.Image = _drawer.Draw(
                     new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
-                //_form.Canvas.Image = _drawer.Draw(
-                //    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -459,8 +466,13 @@ namespace RlViewer.UI
         public void ChangeScaleFactor(float value)
         {
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;
+            
+            
+            
             float scaleFactor = (float)Math.Pow(2, value);
 
+            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
+            
             #region centerPointOfView
             InitScrollBars(scaleFactor);
 
@@ -607,7 +619,6 @@ namespace RlViewer.UI
 
                         _form.NavigationDgv.Rows.Clear();
 
-
                         foreach (var i in _file.Navigation[(int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value,
                             (int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value])
                         {
@@ -680,17 +691,17 @@ namespace RlViewer.UI
             {
                 if (_drag.Trace(e.Location))
                 {
-                    if ((_form.Vertical.Value - _drag.Delta.Y) >= 0 &&
-                        (_form.Vertical.Value - _drag.Delta.Y) < _form.Vertical.Maximum)
-                    {
-                        _form.Vertical.Value -= _drag.Delta.Y;
-                    }
-                    if ((_form.Horizontal.Value - _drag.Delta.X) >= 0 &&
-                        (_form.Horizontal.Value - _drag.Delta.X) < _form.Horizontal.Maximum)
-                    {
-                        _form.Horizontal.Value -= _drag.Delta.X;
-                    }
+                    var newHor = _form.Horizontal.Value - _drag.Delta.X;
+                    var newVert = _form.Vertical.Value - _drag.Delta.Y;
 
+                    newVert = newVert < 0 ? 0 : newVert;
+                    newVert = newVert > _form.Vertical.Maximum ? _form.Vertical.Maximum : newVert;
+                    _form.Vertical.Value = newVert;
+
+                    newHor = newHor < 0 ? 0 : newHor;
+                    newHor = newHor > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : newHor;
+                    _form.Horizontal.Value = newHor;
+                 
                     DrawImage();
                    
                 }

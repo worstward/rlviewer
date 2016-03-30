@@ -16,6 +16,7 @@ namespace RlViewer.UI
         ProgressBar ProgressBar { get; }
         Label ProgressLabel { get; }
         Label StatusLabel { get; }
+        Label ScaleLabel { get; }
         Button CancelButton { get; }
         RadioButton DragRb { get; }
         RadioButton MarkPointRb { get; }

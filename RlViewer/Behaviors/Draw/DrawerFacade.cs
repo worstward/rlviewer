@@ -47,12 +47,14 @@ namespace RlViewer.Behaviors.Draw
 
         public Image DrawHorizontalSection(Point current, int size)
         {
-            return _iDrawer.DrawHorizontalSection(_canvas, current, size); 
+            return _iDrawer.DrawSection(_canvas, new Point(current.X - size / 2, current.Y),
+                            new Point(current.X + size / 2, current.Y)); 
         }
 
         public Image DrawVerticalSection(Point current, int size)
         {
-            return _iDrawer.DrawVerticalSection(_canvas, current, size);
+            return _iDrawer.DrawSection(_canvas, new Point(current.X, current.Y - size / 2),
+                            new Point(current.X, current.Y + size / 2));
         }
 
 

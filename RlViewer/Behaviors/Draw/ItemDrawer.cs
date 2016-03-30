@@ -47,7 +47,7 @@ namespace RlViewer.Behaviors.Draw
                 if (screen.Contains(point.Location))
                 {
                     g.FillRectangle(Brushes.Red, (int)((point.Location.X - screen.X) * Scaler.ScaleFactor),
-                        (int)((point.Location.Y - screen.Y) * Scaler.ScaleFactor), (int)Scaler.ScaleFactor, (int)Scaler.ScaleFactor);
+                        (int)((point.Location.Y - screen.Y) * Scaler.ScaleFactor), 5,  5);
                     
                 }
             }
@@ -63,7 +63,7 @@ namespace RlViewer.Behaviors.Draw
             }
         }
 
-        public Image DrawHorizontalSection(Image canvas, Point currentPoint, int sectionSize)
+        public Image DrawSection(Image canvas, Point pt1, Point pt2)
         {
             Image img;
             lock (_locker)
@@ -73,36 +73,13 @@ namespace RlViewer.Behaviors.Draw
                 {
                    using (var pen = new Pen(Palette.Entries[240]))
                     {
-                        g.DrawLine(pen, new Point(currentPoint.X - sectionSize/2, currentPoint.Y),
-                            new Point(currentPoint.X + sectionSize/2, currentPoint.Y));
+                        g.DrawLine(pen, pt1, pt2);
                     }           
                 }
             }
             return img;
         }
-
-        public Image DrawVerticalSection(Image canvas, Point currentPoint, int sectionSize)
-        {
-            Image img;
-            lock (_locker)
-            {
-                img = (Image)canvas.Clone();
-                using (var g = Graphics.FromImage(img))
-                {
-                    using (var pen = new Pen(Palette.Entries[240]))
-                    {
-                        g.DrawLine(pen, new Point(currentPoint.X, currentPoint.Y - sectionSize / 2),
-                            new Point(currentPoint.X, currentPoint.Y + sectionSize / 2));
-                    }
-                }
-            }
-            return img;
-        }
-
-
-
-
-            
+         
         
 
 
