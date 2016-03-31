@@ -14,7 +14,14 @@ namespace RlViewer.Behaviors.TileCreator
             _filePath = filePath;
             _leftTopCoord = leftTopCoord;
             _size = tileSize;
+
+            if (_emptyTile == null)
+            {
+                _emptyTile = new byte[tileSize.Width * tileSize.Height];
+            }
         }
+
+        private static byte[] _emptyTile;
 
         private string _filePath;
         public string FilePath
@@ -35,10 +42,6 @@ namespace RlViewer.Behaviors.TileCreator
         }
 
         private bool _isVisible;
-        public bool IsVisible
-        {
-            get { return _isVisible; }
-        }
 
         public bool CheckVisibility(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
@@ -73,12 +76,12 @@ namespace RlViewer.Behaviors.TileCreator
                 }
                 catch (System.IO.IOException)
                 {
-                    tile = Resources.EmptyTile;
+                    tile = _emptyTile;
                 }
             }
             else
             {
-                tile = Resources.EmptyTile;
+                tile = _emptyTile;
             }
 
             //if tile doesn't exist, return empty tile

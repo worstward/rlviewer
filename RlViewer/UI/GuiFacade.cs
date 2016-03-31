@@ -23,8 +23,8 @@ namespace RlViewer.UI
             _filterFacade = new Behaviors.Filters.ImageFilterFacade();
             _scaler = new Behaviors.Scaling.Scaler();
             _analyzer = new Behaviors.Analyzing.PointAnalyzer();
-            _drag = new Behaviors.DragController(_scaler);
-            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile());
+            _drag = new Behaviors.DragController();
+            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(), () => Save(), () => ShowFileInfo());
             InitializeWindow();
             _form.Canvas.MouseWheel += Canvas_MouseWheel;
             _win = _form.Canvas;
@@ -90,7 +90,7 @@ namespace RlViewer.UI
 
         public string OpenFile(string fileName)
         {
-            
+
             string caption;
 
             if (_worker != null && _worker.IsBusy)
@@ -465,9 +465,7 @@ namespace RlViewer.UI
 
         public void ChangeScaleFactor(float value)
         {
-            if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;
-            
-            
+            if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;                
             
             float scaleFactor = (float)Math.Pow(2, value);
 
@@ -484,21 +482,21 @@ namespace RlViewer.UI
 
             float newHorizontalValue = _form.Horizontal.Value + a < 0 ? 0 : _form.Horizontal.Value + a;
             newHorizontalValue = newHorizontalValue + _form.Canvas.Width /
-                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _form.Horizontal.Maximum ?
+                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Width ?
                 _form.Horizontal.Maximum : newHorizontalValue;
 
             float newVerticalValue = _form.Vertical.Value + b < 0 ? 0 : _form.Vertical.Value + b;
             newVerticalValue = newVerticalValue + _form.Canvas.Height /
-                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _form.Vertical.Maximum ?
+                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Height ?
                 _form.Vertical.Maximum : newVerticalValue;
 
 
             _form.Horizontal.Value = (int)newHorizontalValue;
             _form.Vertical.Value = (int)newVerticalValue;
+
             #endregion
 
             _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
-            _drag = new Behaviors.DragController(_scaler);
             InitDrawImage();
         }
 
@@ -549,6 +547,7 @@ namespace RlViewer.UI
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
             _form.Vertical.Visible = _form.Vertical.Maximum > 0 ? true : false;
+
         }
 
 
@@ -588,8 +587,6 @@ namespace RlViewer.UI
 
         public string ShowMousePosition(MouseEventArgs e)
         {
-            //return string.Format("X:{0} Y:{1}",
-            //   e.X + _form.Horizontal.Value, e.Y + _form.Vertical.Value);
             if (_file != null && !_worker.IsBusy)
             {
                 if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 &&
@@ -647,7 +644,7 @@ namespace RlViewer.UI
                         !_form.VerticalSectionRb.Checked && !_form.HorizontalSectionRb.Checked)
                     {
                         _form.Canvas.Cursor = Cursors.SizeAll;
-                        _drag.StartTracing(e.Location, !_form.MarkPointRb.Checked);
+                        _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), !_form.MarkPointRb.Checked);
                         return;
                     }
                     else if (_form.MarkAreaRb.Checked)
@@ -680,7 +677,7 @@ namespace RlViewer.UI
                 else if (e.Button == MouseButtons.Right)
                 {
                     _form.Canvas.Cursor = Cursors.SizeAll;
-                    _drag.StartTracing(e.Location, true);
+                    _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), true);
                 }
             }
         }
@@ -689,7 +686,7 @@ namespace RlViewer.UI
         {
             if (_file != null)
             {
-                if (_drag.Trace(e.Location))
+                if (_drag.Trace(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor))))
                 {
                     var newHor = _form.Horizontal.Value - _drag.Delta.X;
                     var newVert = _form.Vertical.Value - _drag.Delta.Y;

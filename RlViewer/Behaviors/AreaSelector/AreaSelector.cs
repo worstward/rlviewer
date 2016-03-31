@@ -23,38 +23,40 @@ namespace RlViewer.Behaviors.AreaSelector
         {
             if (_canResize)
             {
-
                 int width = mouseLocation.X + pointOfView.X - _initialLocation.X;
                 int height = mouseLocation.Y + pointOfView.Y - _initialLocation.Y;
 
-
-                if (height > 0 && width > 0)
+                if (height > 0)
                 {
-                    Area.Location = _initialLocation;
+                    if (width > 0)
+                    {
+                        Area.Location = _initialLocation;
+                    }
+                    else
+                    {
+                        Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y);
+                        width = -width;
+                    }
                 }
-                else if (height < 0 && width > 0)
+                else
                 {
-                    Area.Location = new Point(_initialLocation.X, _initialLocation.Y + height);
-                    height = -height;
+                    if (width > 0)
+                    {
+                        Area.Location = new Point(_initialLocation.X, _initialLocation.Y + height);
+                        height = -height;
+                    }
+                    else
+                    {
+                        Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y + height);
+                        width = -width;
+                        height = -height;
+                    }
                 }
-                else if (height > 0 && width < 0)
-                {
-                    Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y);
-                    width = -width;
-                }
-                else if (width < 0 && height < 0)
-                {
-                    Area.Location = new Point(_initialLocation.X + width, _initialLocation.Y + height);
-                    width = -width;
-                    height = -height;
-                }
-
 
                 Area.Width = width;
                 Area.Height = height;
             }
             return _canResize;
-            // _bytesPerAreaLine = _area.Width * _loc.Header.BytesPerSample;
         }
 
         public void ResetArea()

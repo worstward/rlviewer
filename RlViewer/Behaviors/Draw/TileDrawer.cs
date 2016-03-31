@@ -69,7 +69,7 @@ namespace RlViewer.Behaviors.Draw
                         //    }
                         //}
 
-                        Parallel.For(0, tile.Size.Height / scale, (i) =>
+                        Parallel.For(0, tile.Size.Height >> scalePower, (i) =>
                         {
                             var localIndex = tile.Size.Width * i << scalePower;
 

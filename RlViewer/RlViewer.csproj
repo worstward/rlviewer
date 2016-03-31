@@ -240,6 +240,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -251,9 +252,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RawSizeForm.resx">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="bin\Debug\EmptyTile.tl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -268,6 +266,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Drag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Analzyze.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Brightness.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Contrast.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gamma.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

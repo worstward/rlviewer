@@ -98,18 +98,18 @@ namespace RlViewer.Forms
         {
             if (radioButton1.Checked)
             {
-                ControlEnabler(panel2, false);
-                ControlEnabler(panel3, false);
+                ControlSwitch(panel2, false);
+                ControlSwitch(panel3, false);
             }
             else if (radioButton2.Checked)
             {
-                ControlEnabler(panel2, true);
-                ControlEnabler(panel3, false);
+                ControlSwitch(panel2, true);
+                ControlSwitch(panel3, false);
             }
             else if(radioButton3.Checked)
             {
-                ControlEnabler(panel2, false);
-                ControlEnabler(panel3, true);
+                ControlSwitch(panel2, false);
+                ControlSwitch(panel3, true);
             }
 
 
@@ -140,11 +140,11 @@ namespace RlViewer.Forms
 
         }
 
-        private void ControlEnabler(Panel p, bool enable)
+        private void ControlSwitch(Control controlContainer, bool enable)
         {
-            foreach (Control c in p.Controls)
+            foreach (Control control in controlContainer.Controls)
             {
-                c.Enabled = enable;
+                control.Enabled = enable;
             }
         }
 

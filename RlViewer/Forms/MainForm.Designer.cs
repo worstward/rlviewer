@@ -28,15 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
-            this.dragRb = new System.Windows.Forms.RadioButton();
-            this.markPointRb = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.verSection = new System.Windows.Forms.RadioButton();
-            this.horSection = new System.Windows.Forms.RadioButton();
-            this.analyzeRb = new System.Windows.Forms.RadioButton();
-            this.markAreaRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,16 +41,12 @@
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.логToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
-            this.contrastRb = new System.Windows.Forms.RadioButton();
-            this.brightnessRb = new System.Windows.Forms.RadioButton();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.filterLbl = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadCancelBtn = new System.Windows.Forms.Button();
             this.percentageLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -63,6 +54,16 @@
             this.mouseCoordLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.scaleLabel = new System.Windows.Forms.Label();
+            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
+            this.contrastRb = new System.Windows.Forms.RadioButton();
+            this.brightnessRb = new System.Windows.Forms.RadioButton();
+            this.verSection = new System.Windows.Forms.RadioButton();
+            this.horSection = new System.Windows.Forms.RadioButton();
+            this.analyzeRb = new System.Windows.Forms.RadioButton();
+            this.markAreaRb = new System.Windows.Forms.RadioButton();
+            this.dragRb = new System.Windows.Forms.RadioButton();
+            this.markPointRb = new System.Windows.Forms.RadioButton();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -71,17 +72,17 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // hScrollBar1
             // 
             this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(12, 506);
+            this.hScrollBar1.Location = new System.Drawing.Point(20, 506);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(874, 17);
+            this.hScrollBar1.Size = new System.Drawing.Size(866, 17);
             this.hScrollBar1.TabIndex = 3;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
@@ -91,33 +92,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vScrollBar1.Location = new System.Drawing.Point(889, 93);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 410);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 414);
             this.vScrollBar1.TabIndex = 4;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
-            // 
-            // dragRb
-            // 
-            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.dragRb.AutoSize = true;
-            this.dragRb.Location = new System.Drawing.Point(6, 19);
-            this.dragRb.Name = "dragRb";
-            this.dragRb.Size = new System.Drawing.Size(40, 23);
-            this.dragRb.TabIndex = 5;
-            this.dragRb.TabStop = true;
-            this.dragRb.Text = "Drag";
-            this.dragRb.UseVisualStyleBackColor = true;
-            // 
-            // markPointRb
-            // 
-            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markPointRb.AutoSize = true;
-            this.markPointRb.Location = new System.Drawing.Point(52, 19);
-            this.markPointRb.Name = "markPointRb";
-            this.markPointRb.Size = new System.Drawing.Size(49, 23);
-            this.markPointRb.TabIndex = 6;
-            this.markPointRb.TabStop = true;
-            this.markPointRb.Text = "Метка";
-            this.markPointRb.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -127,59 +104,12 @@
             this.groupBox1.Controls.Add(this.markAreaRb);
             this.groupBox1.Controls.Add(this.dragRb);
             this.groupBox1.Controls.Add(this.markPointRb);
-            this.groupBox1.Location = new System.Drawing.Point(12, 29);
+            this.groupBox1.Location = new System.Drawing.Point(20, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(301, 58);
+            this.groupBox1.Size = new System.Drawing.Size(219, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
-            // 
-            // verSection
-            // 
-            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.verSection.AutoSize = true;
-            this.verSection.Location = new System.Drawing.Point(262, 19);
-            this.verSection.Name = "verSection";
-            this.verSection.Size = new System.Drawing.Size(24, 23);
-            this.verSection.TabIndex = 10;
-            this.verSection.TabStop = true;
-            this.verSection.Text = "В";
-            this.verSection.UseVisualStyleBackColor = true;
-            // 
-            // horSection
-            // 
-            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.horSection.AutoSize = true;
-            this.horSection.Location = new System.Drawing.Point(233, 19);
-            this.horSection.Name = "horSection";
-            this.horSection.Size = new System.Drawing.Size(23, 23);
-            this.horSection.TabIndex = 9;
-            this.horSection.TabStop = true;
-            this.horSection.Text = "Г";
-            this.horSection.UseVisualStyleBackColor = true;
-            // 
-            // analyzeRb
-            // 
-            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.analyzeRb.AutoSize = true;
-            this.analyzeRb.Location = new System.Drawing.Point(173, 19);
-            this.analyzeRb.Name = "analyzeRb";
-            this.analyzeRb.Size = new System.Drawing.Size(54, 23);
-            this.analyzeRb.TabIndex = 8;
-            this.analyzeRb.TabStop = true;
-            this.analyzeRb.Text = "Анализ";
-            this.analyzeRb.UseVisualStyleBackColor = true;
-            // 
-            // markAreaRb
-            // 
-            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markAreaRb.AutoSize = true;
-            this.markAreaRb.Location = new System.Drawing.Point(107, 19);
-            this.markAreaRb.Name = "markAreaRb";
-            this.markAreaRb.Size = new System.Drawing.Size(60, 23);
-            this.markAreaRb.TabIndex = 7;
-            this.markAreaRb.TabStop = true;
-            this.markAreaRb.Text = "Область";
-            this.markAreaRb.UseVisualStyleBackColor = true;
+            this.groupBox1.Text = "Инструменты";
             // 
             // menuStrip1
             // 
@@ -235,14 +165,14 @@
             // оФайлеToolStripMenuItem
             // 
             this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.оФайлеToolStripMenuItem.Text = "О файле";
             this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
             // 
             // логToolStripMenuItem1
             // 
             this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.логToolStripMenuItem1.Text = "Лог";
             this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
@@ -251,62 +181,26 @@
             this.groupBox2.Controls.Add(this.gammaCorrRb);
             this.groupBox2.Controls.Add(this.contrastRb);
             this.groupBox2.Controls.Add(this.brightnessRb);
-            this.groupBox2.Location = new System.Drawing.Point(319, 29);
+            this.groupBox2.Location = new System.Drawing.Point(244, 29);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(263, 58);
+            this.groupBox2.Size = new System.Drawing.Size(120, 58);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Фильтр";
             // 
-            // gammaCorrRb
-            // 
-            this.gammaCorrRb.AutoSize = true;
-            this.gammaCorrRb.Location = new System.Drawing.Point(150, 20);
-            this.gammaCorrRb.Name = "gammaCorrRb";
-            this.gammaCorrRb.Size = new System.Drawing.Size(116, 17);
-            this.gammaCorrRb.TabIndex = 2;
-            this.gammaCorrRb.TabStop = true;
-            this.gammaCorrRb.Text = "Гамма коррекция";
-            this.gammaCorrRb.UseVisualStyleBackColor = true;
-            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
-            // 
-            // contrastRb
-            // 
-            this.contrastRb.AutoSize = true;
-            this.contrastRb.Location = new System.Drawing.Point(74, 20);
-            this.contrastRb.Name = "contrastRb";
-            this.contrastRb.Size = new System.Drawing.Size(72, 17);
-            this.contrastRb.TabIndex = 1;
-            this.contrastRb.TabStop = true;
-            this.contrastRb.Text = "Контраст";
-            this.contrastRb.UseVisualStyleBackColor = true;
-            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
-            // 
-            // brightnessRb
-            // 
-            this.brightnessRb.AutoSize = true;
-            this.brightnessRb.Checked = true;
-            this.brightnessRb.Location = new System.Drawing.Point(7, 20);
-            this.brightnessRb.Name = "brightnessRb";
-            this.brightnessRb.Size = new System.Drawing.Size(68, 17);
-            this.brightnessRb.TabIndex = 0;
-            this.brightnessRb.TabStop = true;
-            this.brightnessRb.Text = "Яркость";
-            this.brightnessRb.UseVisualStyleBackColor = true;
-            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
-            // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(588, 29);
+            this.trackBar1.Location = new System.Drawing.Point(364, 33);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(212, 45);
+            this.trackBar1.Size = new System.Drawing.Size(121, 45);
             this.trackBar1.TabIndex = 10;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // filterLbl
             // 
             this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(585, 69);
+            this.filterLbl.Location = new System.Drawing.Point(370, 63);
             this.filterLbl.Name = "filterLbl";
             this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
@@ -348,7 +242,7 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(18, 89);
+            this.splitContainer1.Location = new System.Drawing.Point(17, 89);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -358,25 +252,10 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(868, 408);
-            this.splitContainer1.SplitterDistance = 666;
+            this.splitContainer1.Size = new System.Drawing.Size(875, 418);
+            this.splitContainer1.SplitterDistance = 671;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(3, 4);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(660, 401);
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
-            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
-            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
-            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
             // dataGridView1
             // 
@@ -395,7 +274,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(189, 404);
+            this.dataGridView1.Size = new System.Drawing.Size(191, 414);
             this.dataGridView1.TabIndex = 0;
             // 
             // paramColumn
@@ -429,7 +308,7 @@
             // mouseCoordLabel
             // 
             this.mouseCoordLabel.AutoSize = true;
-            this.mouseCoordLabel.Location = new System.Drawing.Point(691, 48);
+            this.mouseCoordLabel.Location = new System.Drawing.Point(479, 44);
             this.mouseCoordLabel.Name = "mouseCoordLabel";
             this.mouseCoordLabel.Size = new System.Drawing.Size(0, 13);
             this.mouseCoordLabel.TabIndex = 21;
@@ -452,6 +331,176 @@
             this.scaleLabel.Size = new System.Drawing.Size(85, 13);
             this.scaleLabel.TabIndex = 22;
             this.scaleLabel.Text = "Масштаб: 100%";
+            // 
+            // gammaCorrRb
+            // 
+            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
+            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
+            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gammaCorrRb.Location = new System.Drawing.Point(78, 15);
+            this.gammaCorrRb.Name = "gammaCorrRb";
+            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
+            this.gammaCorrRb.TabIndex = 2;
+            this.gammaCorrRb.TabStop = true;
+            this.gammaCorrRb.UseVisualStyleBackColor = true;
+            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
+            // 
+            // contrastRb
+            // 
+            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
+            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.contrastRb.FlatAppearance.BorderSize = 0;
+            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.contrastRb.Location = new System.Drawing.Point(45, 15);
+            this.contrastRb.Name = "contrastRb";
+            this.contrastRb.Size = new System.Drawing.Size(30, 30);
+            this.contrastRb.TabIndex = 1;
+            this.contrastRb.TabStop = true;
+            this.contrastRb.UseVisualStyleBackColor = true;
+            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
+            // 
+            // brightnessRb
+            // 
+            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
+            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.brightnessRb.Checked = true;
+            this.brightnessRb.FlatAppearance.BorderSize = 0;
+            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.brightnessRb.Location = new System.Drawing.Point(12, 15);
+            this.brightnessRb.Name = "brightnessRb";
+            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
+            this.brightnessRb.TabIndex = 0;
+            this.brightnessRb.TabStop = true;
+            this.brightnessRb.UseVisualStyleBackColor = true;
+            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
+            // 
+            // verSection
+            // 
+            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.verSection.BackColor = System.Drawing.Color.Transparent;
+            this.verSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("verSection.BackgroundImage")));
+            this.verSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.verSection.FlatAppearance.BorderSize = 0;
+            this.verSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.verSection.Location = new System.Drawing.Point(176, 15);
+            this.verSection.Name = "verSection";
+            this.verSection.Size = new System.Drawing.Size(30, 30);
+            this.verSection.TabIndex = 10;
+            this.verSection.TabStop = true;
+            this.verSection.UseVisualStyleBackColor = false;
+            // 
+            // horSection
+            // 
+            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.horSection.BackColor = System.Drawing.Color.Transparent;
+            this.horSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("horSection.BackgroundImage")));
+            this.horSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.horSection.FlatAppearance.BorderSize = 0;
+            this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.horSection.Location = new System.Drawing.Point(143, 15);
+            this.horSection.Name = "horSection";
+            this.horSection.Size = new System.Drawing.Size(30, 30);
+            this.horSection.TabIndex = 9;
+            this.horSection.TabStop = true;
+            this.horSection.UseVisualStyleBackColor = false;
+            // 
+            // analyzeRb
+            // 
+            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.analyzeRb.BackColor = System.Drawing.Color.Transparent;
+            this.analyzeRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("analyzeRb.BackgroundImage")));
+            this.analyzeRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.analyzeRb.FlatAppearance.BorderSize = 0;
+            this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.analyzeRb.Location = new System.Drawing.Point(110, 15);
+            this.analyzeRb.Name = "analyzeRb";
+            this.analyzeRb.Size = new System.Drawing.Size(30, 30);
+            this.analyzeRb.TabIndex = 8;
+            this.analyzeRb.TabStop = true;
+            this.analyzeRb.UseVisualStyleBackColor = false;
+            // 
+            // markAreaRb
+            // 
+            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.markAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markAreaRb.FlatAppearance.BorderSize = 0;
+            this.markAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
+            this.markAreaRb.Location = new System.Drawing.Point(77, 15);
+            this.markAreaRb.Name = "markAreaRb";
+            this.markAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.markAreaRb.TabIndex = 7;
+            this.markAreaRb.TabStop = true;
+            this.markAreaRb.UseVisualStyleBackColor = false;
+            // 
+            // dragRb
+            // 
+            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.dragRb.BackColor = System.Drawing.Color.Transparent;
+            this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
+            this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.dragRb.FlatAppearance.BorderSize = 0;
+            this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dragRb.Location = new System.Drawing.Point(11, 15);
+            this.dragRb.Name = "dragRb";
+            this.dragRb.Size = new System.Drawing.Size(30, 30);
+            this.dragRb.TabIndex = 5;
+            this.dragRb.TabStop = true;
+            this.dragRb.UseVisualStyleBackColor = false;
+            // 
+            // markPointRb
+            // 
+            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markPointRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markPointRb.FlatAppearance.BorderSize = 0;
+            this.markPointRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markPointRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.markPointRb.Image = ((System.Drawing.Image)(resources.GetObject("markPointRb.Image")));
+            this.markPointRb.Location = new System.Drawing.Point(44, 15);
+            this.markPointRb.Name = "markPointRb";
+            this.markPointRb.Size = new System.Drawing.Size(30, 30);
+            this.markPointRb.TabIndex = 6;
+            this.markPointRb.TabStop = true;
+            this.markPointRb.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Location = new System.Drawing.Point(3, 4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(665, 414);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
+            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
             // MainForm
             // 
@@ -481,18 +530,16 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

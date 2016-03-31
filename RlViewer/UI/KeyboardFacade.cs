@@ -3,30 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RlViewer.UI
 {
     class KeyboardFacade
     {
-        public KeyboardFacade(Action undo, Action openFile)
+        public KeyboardFacade(Action undo, Action openFile, Action saveFile, Action fileInfo)
         {
             Undo = undo;
             OpenFile = openFile;
+            SaveFile = saveFile;
+            FileInfo = fileInfo;
         }
 
         Action Undo;
         Action OpenFile;
+        Action SaveFile;
+        Action FileInfo;
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
         {
-            if (kEvent.Control && kEvent.KeyCode == System.Windows.Forms.Keys.Z 
-                || kEvent.KeyCode == System.Windows.Forms.Keys.Escape)
+            if (kEvent.Control)
             {
-                Undo();
-            }
-            else if (kEvent.Control && kEvent.KeyCode == System.Windows.Forms.Keys.O)
-            {
-                OpenFile();
+
+                switch (kEvent.KeyCode)
+                {
+                    case Keys.Z:
+                    case Keys.Escape:
+                        Undo();
+                        break;
+                    case Keys.O:
+                        OpenFile();
+                        break;
+                    case Keys.S:
+                        SaveFile();
+                        break;
+                    case Keys.I:
+                        FileInfo();
+                        break;
+                    default:
+                        break;
+                }
             }
 
         }

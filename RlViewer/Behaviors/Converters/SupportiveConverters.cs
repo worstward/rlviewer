@@ -104,39 +104,39 @@ namespace RlViewer
         public static string ToReadableFileSize(this long value)
         {
             if (value < 0) throw new ArgumentException("File size can not be less than 0");
+
             // Determine the suffix and readable value
             string sizeSuffix;
-            double readable;
-            const int kb = 1024;
-            const int mb = 1048576;
-            const int gb = 1073741824;
+            float readable;
+
+            const float kb = 1024f;
+            const float mb = 1048576f;
+            const float gb = 1073741824f;
 
 
-            if (value >= gb)
+            if (value >= 1073741824)
             {
                 sizeSuffix = "Gb";
-                readable = (value >> 20);
+                readable = value / gb;
             }
-            else if (value >= mb)
+            else if (value >= 1048576)
             {
                 sizeSuffix = "Mb";
-                readable = (value >> 10);
+                readable = value / mb;
             }
-            else if (value >= kb)
+            else if (value >= 1024)
             {
                 sizeSuffix = "Kb";
-                readable = value;
+                readable = value / kb;
             }
             else
             {
-                return value.ToString("0 b");
+                sizeSuffix = "b";
+                readable = 0;
             }
 
-            readable /= 1024;
-            return readable.ToString("0.## ") + sizeSuffix;
+            return string.Format("{0}{1}", readable.ToString("0.## "), sizeSuffix);
         }
-
-
 
     }
 }

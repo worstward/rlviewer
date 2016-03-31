@@ -61,16 +61,6 @@ namespace RlViewer {
         }
         
         /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
-        internal static byte[] EmptyTile {
-            get {
-                object obj = ResourceManager.GetObject("EmptyTile", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Локационные файлы |*.k;*.rl4;*.brl4;*.raw|Файлы голограмм (*.k)|*.k|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw.
         /// </summary>
         internal static string OpenFilter {
