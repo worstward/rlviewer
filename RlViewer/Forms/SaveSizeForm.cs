@@ -112,11 +112,13 @@ namespace RlViewer.Forms
                 ControlSwitch(panel3, true);
             }
 
+            width = x < 0 ? x + width : width;
+            height = y < 0 ? y + height : height;
 
-            x = x > 0 ? x : 0;
-            y = y > 0 ? y : 0;
-            x = x < _fileWidth ? x : 0;
-            y = y < _fileHeight ? y : 0;
+            x = x < 0 ? 0 : x;
+            y = y < 0 ? 0 : y;
+            x = x >_fileWidth ? 0 : x;
+            y = y > _fileHeight ? 0 : y;
 
 
             x1CoordTextBox.Text = x.ToString();

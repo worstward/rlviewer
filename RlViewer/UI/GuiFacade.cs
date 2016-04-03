@@ -27,6 +27,7 @@ namespace RlViewer.UI
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(), () => Save(), () => ShowFileInfo());
             InitializeWindow();
             _form.Canvas.MouseWheel += Canvas_MouseWheel;
+            _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
             _win = _form.Canvas;
         }
 
@@ -39,6 +40,7 @@ namespace RlViewer.UI
         private Behaviors.Saving.Abstract.Saver _saver;
         private RlViewer.Behaviors.Scaling.Scaler _scaler;
         private RlViewer.Behaviors.Analyzing.PointAnalyzer _analyzer;
+        private RlViewer.Behaviors.Ruler.RulerFacade _ruler;
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
@@ -268,6 +270,7 @@ namespace RlViewer.UI
                 _navi.GetNavigation();
 
                 _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+                _ruler = new Behaviors.Ruler.RulerFacade(_file);
             }
             catch (ArgumentNullException)
             {
@@ -349,7 +352,7 @@ namespace RlViewer.UI
 
         private void ProgressReporter(int progress)
         {
-            _form.ProgressBar.Invoke(new Action(() =>
+            _form.ProgressBar.GetCurrentParent().Invoke(new Action(() =>
             {
                 _form.ProgressBar.Value = progress;
                 _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
@@ -363,6 +366,7 @@ namespace RlViewer.UI
                 if (_form.MarkPointRb.Checked)
                 {
                     _pointSelector.RemoveLast();
+                    _form.AlignBtn.Enabled = false;
                 }
                 else if (_form.MarkAreaRb.Checked)
                 {
@@ -530,6 +534,7 @@ namespace RlViewer.UI
             _form.ProgressLabel.Visible = false;
             _form.StatusLabel.Visible = false;
             _form.CancelButton.Visible = false;
+            _form.AlignBtn.Enabled = false;
         }
 
         private void ErrorGuiMessage(string message)
@@ -585,19 +590,20 @@ namespace RlViewer.UI
 
         #region MouseHandlers
 
-        public string ShowMousePosition(MouseEventArgs e)
+        public void ShowMousePosition(MouseEventArgs e)
         {
+            string pos = string.Empty;
             if (_file != null && !_worker.IsBusy)
             {
                 if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 &&
                     e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
                     && e.X > 0 && e.X / _scaler.ScaleFactor < _file.Width)
                 {
-                    return string.Format("X:{0} Y:{1}",
+                    pos = string.Format("X:{0} Y:{1}",
                         (int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
                 }
             }
-            return string.Empty;
+            _form.CoordinatesLabel.Text = pos;
         }
 
 
@@ -641,7 +647,7 @@ namespace RlViewer.UI
                 if (e.Button == MouseButtons.Left)
                 {
                     if (!_form.MarkPointRb.Checked && !_form.MarkAreaRb.Checked && !_form.AnalyzePointRb.Checked &&
-                        !_form.VerticalSectionRb.Checked && !_form.HorizontalSectionRb.Checked)
+                        !_form.VerticalSectionRb.Checked && !_form.HorizontalSectionRb.Checked && !_form.RulerRb.Checked)
                     {
                         _form.Canvas.Cursor = Cursors.SizeAll;
                         _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), !_form.MarkPointRb.Checked);
@@ -658,6 +664,11 @@ namespace RlViewer.UI
                         _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
                             new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
+
+                        if (_pointSelector.Count() == 16)
+                        {
+                            _form.AlignBtn.Enabled = true;
+                        }
                     }
                     else if (_form.AnalyzePointRb.Checked)
                     {
@@ -673,6 +684,20 @@ namespace RlViewer.UI
                         ShowSection(new Behaviors.Sections.HorizontalSection(_settings.SectionSize), new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
+                    else if (_form.RulerRb.Checked)
+                    {
+                        if (!_ruler.Pt1Fixed)
+                        {
+                            _ruler.Pt1 = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                    (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
+                        }
+                        else if(!_ruler.Pt2Fixed)
+                        {
+                            _ruler.Pt2 = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                                               (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
+                        }
+                    }
+
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
@@ -737,8 +762,25 @@ namespace RlViewer.UI
                 {
                     _form.Canvas.Image = _drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
                 }
+                else if(_form.RulerRb.Checked && _drawer != null)
+                {
+                    if (_ruler.Pt1Fixed || _ruler.Pt2Fixed)
+                    {
+                        var endPoint = _ruler.Pt2Fixed ? _ruler.Pt2 : new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                                               (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
+
+                        _form.Canvas.Image = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
+                            (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor))
+                            , new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
+                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
+
+                        _form.DistanceLabel.Text = _ruler.GetDistance(endPoint);
+                    }
+                }
             }         
         }
+
+        
 
         public void ClickFinished(MouseEventArgs e)
         {
@@ -799,5 +841,16 @@ namespace RlViewer.UI
             }
         }
 
+        public void AlignImage()
+        {
+            var aligner = new Behaviors.ImageAligning.Aligning(_pointSelector);
+        }
+
+
+        private void RulerRb_CheckedChanged(object sender, EventArgs e)
+        {
+            _ruler.ResetRuler();
+            _form.DistanceLabel.Text = string.Empty;
+        }
     }
 }

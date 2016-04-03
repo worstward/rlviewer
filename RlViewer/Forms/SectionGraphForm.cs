@@ -27,11 +27,11 @@ namespace RlViewer.Forms
             _zedGraph.IsAutoScrollRange = true;
             this.Controls.Add(_zedGraph);
 
-            
+            _zedGraph.MouseHover += _zedGraph_MouseHover;
             InitializeComponent();
 
             //uncomment for logarithm graph choser
-            groupBox1.Height = 0;
+            //groupBox1.Height = 0;
 
             _zedGraph.Anchor = (AnchorStyles)(AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom);
             _zedGraph.Size = new System.Drawing.Size(this.Width, this.Height - (this.Height - groupBox1.Location.Y));
@@ -39,9 +39,16 @@ namespace RlViewer.Forms
             amplitudeRb.Checked = true;
         }
 
+        void _zedGraph_MouseHover(object sender, EventArgs e)
+        {
+            _zedGraph.Focus();
+        }
+
         private IEnumerable<PointF> _points;
         private ZedGraphControl _zedGraph;
         private float _initialPointMark;
+        private int _axisIndex = 0;
+
 
         private void BuildGraph(IEnumerable<PointF> points, string yAxisName)
         {
@@ -61,15 +68,20 @@ namespace RlViewer.Forms
                 list.Add(point.X, point.Y);
             }
 
+            if (_axisIndex != 0)
+            {
+                pane.YAxisList.RemoveAt(_axisIndex);
+            }
+
             //add vertical line to mark clicked point
-            int i = pane.AddYAxis("");
-            pane.YAxisList[i].Scale.MagAuto = false;
-            pane.YAxisList[i].Scale.IsVisible = false;
-            pane.YAxisList[i].Color = Color.Red;
-            pane.YAxisList[i].Scale.IsVisible = false;
-            pane.YAxisList[i].MajorTic.IsAllTics = false;
-            pane.YAxisList[i].MinorTic.IsAllTics = false;
-            pane.YAxisList[i].Cross = _initialPointMark;
+            _axisIndex = pane.AddYAxis("");
+            pane.YAxisList[_axisIndex].Scale.MagAuto = false;
+            pane.YAxisList[_axisIndex].Scale.IsVisible = false;
+            pane.YAxisList[_axisIndex].Color = Color.Red;
+            pane.YAxisList[_axisIndex].Scale.IsVisible = false;
+            pane.YAxisList[_axisIndex].MajorTic.IsAllTics = false;
+            pane.YAxisList[_axisIndex].MinorTic.IsAllTics = false;
+            pane.YAxisList[_axisIndex].Cross = _initialPointMark;
 
 
             LineItem myCurve = pane.AddCurve("", list, Color.Blue, SymbolType.Diamond);
@@ -100,7 +112,8 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                BuildGraph(_points.Select(x => new PointF(x.X, 10 * (float)Math.Log10(x.Y))), "Дб");
+                BuildGraph(_points.Select(x =>
+                    new PointF(x.X, 20 * (float)Math.Log10(x.Y / _points.Max(y => y.Y)))), "Дб");
             }
         }
 

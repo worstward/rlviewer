@@ -16,15 +16,15 @@ namespace RlViewer.Forms
 
         public MainForm()
         {
-            this.DoubleBuffered = true;
+            //this.DoubleBuffered = true;
             InitializeComponent();
-            guiFacade = new UI.GuiFacade(this);
+            _guiFacade = new UI.GuiFacade(this);
             Text = string.Empty;
             checkBox1.Checked = false;
         }
 
 
-        UI.GuiFacade guiFacade;
+        UI.GuiFacade _guiFacade;
 
         #region ISuitableForm controls
         public PictureBox Canvas
@@ -56,26 +56,26 @@ namespace RlViewer.Forms
                 return trackBar1;
             }
         }
-        public ProgressBar ProgressBar
+        public ToolStripProgressBar ProgressBar
         {
             get
             {
-                return progressBar1;
+                return toolStripProgressBar1;
             }
         }
-        public Label ProgressLabel 
+        public ToolStripStatusLabel ProgressLabel 
         {
             get
             {
-                return percentageLabel;
+                return toolStripStatusLabel1;
             }
         }
 
-        public Label StatusLabel
+        public ToolStripStatusLabel StatusLabel
         {
             get
             {
-                return statusLabel;
+                return toolStripStatusLabel2;
             }
         }
 
@@ -87,12 +87,19 @@ namespace RlViewer.Forms
             }
         }
 
-
-        public new Button CancelButton
+        public new ToolStripDropDownButton  CancelButton
         {
             get
             {
-                return loadCancelBtn;
+                return toolStripDropDownButton1;
+            }
+        }
+
+        public Button AlignBtn
+        {
+            get
+            {
+                return alignBtn;
             }
         }
 
@@ -140,6 +147,14 @@ namespace RlViewer.Forms
             }
         }
 
+        public RadioButton RulerRb
+        {
+            get
+            {
+                return rulerRb;
+            }
+        }
+        
         public CheckBox NavigationCb
         {
             get
@@ -164,50 +179,68 @@ namespace RlViewer.Forms
             }
         }
 
+        public ToolStripStatusLabel CoordinatesLabel
+        {
+            get
+            {
+                return toolStripStatusLabel4;
+            }
+        }
+
+
+        public ToolStripStatusLabel DistanceLabel
+        {
+            get
+            {
+                return toolStripStatusLabel5;
+            }
+        }
+
+
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Text = guiFacade.OpenFile();
+            Text = _guiFacade.OpenFile();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            guiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            guiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            guiFacade.InitDrawImage();
+            _guiFacade.InitDrawImage();
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            guiFacade.TraceMouseMovement(e);
-            mouseCoordLabel.Text = guiFacade.ShowMousePosition(e);
-            guiFacade.ShowNavigation(e);
+            _guiFacade.TraceMouseMovement(e);
+            _guiFacade.ShowMousePosition(e);
+            _guiFacade.ShowNavigation(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            guiFacade.ClickStarted(e);
+            _guiFacade.ClickStarted(e);
             
-            guiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            guiFacade.ClickFinished(e);
+            _guiFacade.ClickFinished(e);
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            guiFacade.ChangeFilterValue();
+            _guiFacade.ChangeFilterValue();
             filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
@@ -215,7 +248,7 @@ namespace RlViewer.Forms
          {
             if(((RadioButton)sender).Checked)
             {
-                guiFacade.GetFilter("Contrast", 4);
+                _guiFacade.GetFilter("Contrast", 4);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
@@ -224,7 +257,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                guiFacade.GetFilter("Gamma Correction", 0);
+                _guiFacade.GetFilter("Gamma Correction", 0);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
@@ -233,65 +266,75 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                guiFacade.GetFilter("Brightness", 4);
+                _guiFacade.GetFilter("Brightness", 4);
                 filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
         private void loadCancelBtn_Click(object sender, EventArgs e)
         {
-            Text = string.Empty;
-            guiFacade.CancelLoading();
+           
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            guiFacade.ShowSettings();
+            _guiFacade.ShowSettings();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            guiFacade.CancelLoading();
+            _guiFacade.CancelLoading();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            guiFacade.ProceedKeyPress(e);
+            _guiFacade.ProceedKeyPress(e);
         }
 
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            guiFacade.ShowFileInfo();
+            _guiFacade.ShowFileInfo();
         }
 
         private void логToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            guiFacade.ShowLog();
+            _guiFacade.ShowLog();
         }
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            guiFacade.Save();
+            _guiFacade.Save();
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            guiFacade.InitDrawImage();
+            _guiFacade.InitDrawImage();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            guiFacade.ToggleNavigation();
+            _guiFacade.ToggleNavigation();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            guiFacade.OpenWithDoubleClick();
+            _guiFacade.OpenWithDoubleClick();
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
             ((PictureBox)sender).Focus();
+        }
+
+        private void alignBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.AlignImage();
+        }
+
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
+        {
+            Text = string.Empty;
+            _guiFacade.CancelLoading();
         }
 
 

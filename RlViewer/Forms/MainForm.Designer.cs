@@ -43,20 +43,25 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.filterLbl = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.loadCancelBtn = new System.Windows.Forms.Button();
             this.percentageLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.mouseCoordLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.scaleLabel = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.gammaCorrRb = new System.Windows.Forms.RadioButton();
             this.contrastRb = new System.Windows.Forms.RadioButton();
             this.brightnessRb = new System.Windows.Forms.RadioButton();
+            this.rulerRb = new System.Windows.Forms.RadioButton();
+            this.alignBtn = new System.Windows.Forms.Button();
             this.verSection = new System.Windows.Forms.RadioButton();
             this.horSection = new System.Windows.Forms.RadioButton();
             this.analyzeRb = new System.Windows.Forms.RadioButton();
@@ -64,6 +69,8 @@
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -73,6 +80,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,9 +88,9 @@
             // 
             this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(20, 506);
+            this.hScrollBar1.Location = new System.Drawing.Point(17, 493);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(866, 17);
+            this.hScrollBar1.Size = new System.Drawing.Size(872, 17);
             this.hScrollBar1.TabIndex = 3;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
@@ -92,12 +100,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vScrollBar1.Location = new System.Drawing.Point(889, 93);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 414);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 397);
             this.vScrollBar1.TabIndex = 4;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rulerRb);
+            this.groupBox1.Controls.Add(this.alignBtn);
             this.groupBox1.Controls.Add(this.verSection);
             this.groupBox1.Controls.Add(this.horSection);
             this.groupBox1.Controls.Add(this.analyzeRb);
@@ -106,7 +116,7 @@
             this.groupBox1.Controls.Add(this.markPointRb);
             this.groupBox1.Location = new System.Drawing.Point(20, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(219, 58);
+            this.groupBox1.Size = new System.Drawing.Size(287, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Инструменты";
@@ -181,7 +191,7 @@
             this.groupBox2.Controls.Add(this.gammaCorrRb);
             this.groupBox2.Controls.Add(this.contrastRb);
             this.groupBox2.Controls.Add(this.brightnessRb);
-            this.groupBox2.Location = new System.Drawing.Point(244, 29);
+            this.groupBox2.Location = new System.Drawing.Point(346, 29);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(120, 58);
             this.groupBox2.TabIndex = 9;
@@ -190,7 +200,7 @@
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(364, 33);
+            this.trackBar1.Location = new System.Drawing.Point(472, 29);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(121, 45);
             this.trackBar1.TabIndex = 10;
@@ -200,31 +210,11 @@
             // filterLbl
             // 
             this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(370, 63);
+            this.filterLbl.Location = new System.Drawing.Point(472, 62);
             this.filterLbl.Name = "filterLbl";
             this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
             this.filterLbl.Text = "Уровень фильтра: 0";
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(12, 479);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(829, 23);
-            this.progressBar1.TabIndex = 12;
-            // 
-            // loadCancelBtn
-            // 
-            this.loadCancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadCancelBtn.Location = new System.Drawing.Point(847, 479);
-            this.loadCancelBtn.Name = "loadCancelBtn";
-            this.loadCancelBtn.Size = new System.Drawing.Size(56, 23);
-            this.loadCancelBtn.TabIndex = 17;
-            this.loadCancelBtn.Text = "Отмена";
-            this.loadCancelBtn.UseVisualStyleBackColor = true;
-            this.loadCancelBtn.Click += new System.EventHandler(this.loadCancelBtn_Click);
             // 
             // percentageLabel
             // 
@@ -252,7 +242,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(875, 418);
+            this.splitContainer1.Size = new System.Drawing.Size(875, 401);
             this.splitContainer1.SplitterDistance = 671;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -274,7 +264,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(191, 414);
+            this.dataGridView1.Size = new System.Drawing.Size(191, 397);
             this.dataGridView1.TabIndex = 0;
             // 
             // paramColumn
@@ -305,14 +295,6 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // mouseCoordLabel
-            // 
-            this.mouseCoordLabel.AutoSize = true;
-            this.mouseCoordLabel.Location = new System.Drawing.Point(479, 44);
-            this.mouseCoordLabel.Name = "mouseCoordLabel";
-            this.mouseCoordLabel.Size = new System.Drawing.Size(0, 13);
-            this.mouseCoordLabel.TabIndex = 21;
-            // 
             // statusLabel
             // 
             this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -331,6 +313,55 @@
             this.scaleLabel.Size = new System.Drawing.Size(85, 13);
             this.scaleLabel.TabIndex = 22;
             this.scaleLabel.Text = "Масштаб: 100%";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel4,
+            this.toolStripStatusLabel5,
+            this.toolStripStatusLabel3,
+            this.toolStripProgressBar1,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripDropDownButton1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 510);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(915, 22);
+            this.statusStrip1.TabIndex = 23;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.ShowDropDownArrow = false;
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(47, 20);
+            this.toolStripDropDownButton1.Text = "Cancel";
+            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(720, 17);
+            this.toolStripStatusLabel3.Spring = true;
             // 
             // gammaCorrRb
             // 
@@ -384,6 +415,37 @@
             this.brightnessRb.UseVisualStyleBackColor = true;
             this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
+            // rulerRb
+            // 
+            this.rulerRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rulerRb.BackColor = System.Drawing.Color.Transparent;
+            this.rulerRb.BackgroundImage = global::RlViewer.Properties.Resources.Ruler;
+            this.rulerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.rulerRb.FlatAppearance.BorderSize = 0;
+            this.rulerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.rulerRb.Location = new System.Drawing.Point(242, 15);
+            this.rulerRb.Name = "rulerRb";
+            this.rulerRb.Size = new System.Drawing.Size(30, 30);
+            this.rulerRb.TabIndex = 12;
+            this.rulerRb.TabStop = true;
+            this.rulerRb.UseVisualStyleBackColor = false;
+            // 
+            // alignBtn
+            // 
+            this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
+            this.alignBtn.FlatAppearance.BorderSize = 0;
+            this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.alignBtn.Location = new System.Drawing.Point(77, 15);
+            this.alignBtn.Name = "alignBtn";
+            this.alignBtn.Size = new System.Drawing.Size(30, 30);
+            this.alignBtn.TabIndex = 11;
+            this.alignBtn.UseVisualStyleBackColor = true;
+            this.alignBtn.Click += new System.EventHandler(this.alignBtn_Click);
+            // 
             // verSection
             // 
             this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
@@ -395,7 +457,7 @@
             this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.verSection.Location = new System.Drawing.Point(176, 15);
+            this.verSection.Location = new System.Drawing.Point(209, 15);
             this.verSection.Name = "verSection";
             this.verSection.Size = new System.Drawing.Size(30, 30);
             this.verSection.TabIndex = 10;
@@ -412,7 +474,7 @@
             this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.horSection.Location = new System.Drawing.Point(143, 15);
+            this.horSection.Location = new System.Drawing.Point(176, 15);
             this.horSection.Name = "horSection";
             this.horSection.Size = new System.Drawing.Size(30, 30);
             this.horSection.TabIndex = 9;
@@ -429,7 +491,7 @@
             this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeRb.Location = new System.Drawing.Point(110, 15);
+            this.analyzeRb.Location = new System.Drawing.Point(143, 15);
             this.analyzeRb.Name = "analyzeRb";
             this.analyzeRb.Size = new System.Drawing.Size(30, 30);
             this.analyzeRb.TabIndex = 8;
@@ -446,7 +508,7 @@
             this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
-            this.markAreaRb.Location = new System.Drawing.Point(77, 15);
+            this.markAreaRb.Location = new System.Drawing.Point(110, 15);
             this.markAreaRb.Name = "markAreaRb";
             this.markAreaRb.Size = new System.Drawing.Size(30, 30);
             this.markAreaRb.TabIndex = 7;
@@ -494,7 +556,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(3, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(665, 414);
+            this.pictureBox1.Size = new System.Drawing.Size(665, 397);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -502,18 +564,26 @@
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel5
+            // 
+            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(0, 17);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.scaleLabel);
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.mouseCoordLabel);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.loadCancelBtn);
             this.Controls.Add(this.filterLbl);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox2);
@@ -539,6 +609,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -561,8 +633,6 @@
         private System.Windows.Forms.RadioButton brightnessRb;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label filterLbl;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Button loadCancelBtn;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem infoToolStripMenuItem;
         private System.Windows.Forms.Label percentageLabel;
@@ -576,12 +646,21 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn paramColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
-        private System.Windows.Forms.Label mouseCoordLabel;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.RadioButton analyzeRb;
         private System.Windows.Forms.RadioButton horSection;
         private System.Windows.Forms.RadioButton verSection;
         private System.Windows.Forms.Label scaleLabel;
+        private System.Windows.Forms.Button alignBtn;
+        private System.Windows.Forms.RadioButton rulerRb;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
     }
 }
 

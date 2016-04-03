@@ -13,17 +13,21 @@ namespace RlViewer.UI
         HScrollBar Horizontal { get; }
         VScrollBar Vertical { get; }
         TrackBar FilterTrackBar { get; }
-        ProgressBar ProgressBar { get; }
-        Label ProgressLabel { get; }
-        Label StatusLabel { get; }
+        ToolStripProgressBar ProgressBar { get; }
+        ToolStripStatusLabel ProgressLabel { get; }
+        ToolStripStatusLabel StatusLabel { get; }
         Label ScaleLabel { get; }
-        Button CancelButton { get; }
+        ToolStripStatusLabel CoordinatesLabel { get; }
+        ToolStripStatusLabel DistanceLabel { get; }
+        ToolStripDropDownButton CancelButton { get; }
         RadioButton DragRb { get; }
         RadioButton MarkPointRb { get; }
         RadioButton MarkAreaRb { get; }
         RadioButton AnalyzePointRb { get; }
         RadioButton VerticalSectionRb { get; }
         RadioButton HorizontalSectionRb { get; }
+        RadioButton RulerRb { get; }
+        Button AlignBtn { get; }
         CheckBox NavigationCb { get; }
         DataGridView NavigationDgv { get; }
         SplitContainer WorkingAreaSplitter { get; }

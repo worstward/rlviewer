@@ -57,6 +57,11 @@ namespace RlViewer.Behaviors.Draw
                             new Point(current.X, current.Y + size / 2));
         }
 
+        public Image DrawRuler(Point p1, Point p2)
+        {
+            return _iDrawer.DrawSection(_canvas, p1, p2);
+        }
+
 
        
     }

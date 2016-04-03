@@ -3,16 +3,137 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RlViewer;
+using RlViewer.Files;
+using RlViewer.Files.Rli.Concrete;
+using RlViewer.Headers.Concrete.Brl4;
+using RlViewer.Headers.Concrete.Rl4;
+using System.Drawing;
 
 namespace RlViewer.Behaviors.Ruler
 {
-    class RulerFacade
+    public class RulerFacade
     {
-        public RulerFacade(RlViewer.Files.LocatorFile file)
+
+        public RulerFacade(LocatorFile file)
+        {
+            _file = file;
+            ParseSteps(file);
+            _ruler = new Ruler();
+        }
+
+        private LocatorFile _file;
+        private Ruler _ruler;
+        private float _dx;
+        private float _dy;
+        private Point _pt1;
+        private Point _pt2;
+        private bool _pt1Fixed;
+        private bool _pt2Fixed;
+
+        public bool Pt1Fixed
+        {
+            get
+            {
+                return _pt1Fixed;
+            }
+        }
+
+        public bool Pt2Fixed
+        {
+            get
+            {
+                return _pt2Fixed;
+            }
+        }
+
+        public Point Pt1
+        {
+            get
+            {
+                return _pt1;
+            }
+            set
+            {
+                _pt1Fixed = true;
+                _pt2Fixed = false;
+                _pt1 = value;
+            }
+        }
+
+        public Point Pt2
+        {
+            get
+            {
+                return this._pt2;
+            }
+            set
+            {
+                _pt1Fixed = false;
+                _pt2Fixed = true;
+                _pt2 = value;
+            }
+        }
+
+        public string GetDistance(Point p2)
+        {
+            var x = p2.X > _file.Width ? _file.Width : p2.X;
+            x = x < 0 ? 0 : x;
+
+            var y = p2.Y > _file.Height ? _file.Height : p2.Y;
+            y = y < 0 ? 0 : y;
+
+            _pt2 = new Point(x, y);
+
+            return GetDistance();
+        }
+
+        public void ResetRuler()
+        {
+            _pt1Fixed = false;
+            _pt2Fixed = false;
+        }
+
+        public string GetDistance()
+        {
+            if (_dx == 0.0 || _dy == 0.0)
+            {
+                return string.Format("Расстояние: {0:0.##} пикселей", _ruler.GetDistance(_pt1, _pt2));
+            }
+            else
+            {
+                return string.Format("Расстояние: {0:0.##} метров", _ruler.GetDistance(_pt1, _pt2, _dx, _dy));
+            }
+        }
+
+        private void ParseSteps(LocatorFile file)
         {
             switch (file.Properties.Type)
             {
- 
+                case FileType.brl4:
+                    var brl4 = file as Brl4;
+                    if (brl4 != null)
+                    {
+                        var brl4Header = brl4.Header as Brl4Header;
+                        if (brl4Header != null)
+                        {
+                            _dx = brl4Header.HeaderStruct.rlParams.dx;
+                            _dy = brl4Header.HeaderStruct.rlParams.dy;
+                        }
+                    }
+                    break;
+                case FileType.rl4:
+                    var rl4 = file as Rl4;
+                    if (rl4 != null)
+                    {
+                        var rl4Header = rl4.Header as Rl4Header;
+                        if (rl4Header != null)
+                        {
+                            _dx = rl4Header.HeaderStruct.rlParams.dx;
+                            _dy = rl4Header.HeaderStruct.rlParams.dy;
+                        }
+                    }
+                    break;
             }
         }
     }

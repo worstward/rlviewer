@@ -37,7 +37,7 @@ namespace RlViewer.Forms
             if (!Int32.TryParse(maskedTextBox1.Text, out _eprValue))
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //DialogResult = DialogResult.Cancel;
+                maskedTextBox1.Text = string.Empty;
             }
             else
             {
@@ -51,6 +51,10 @@ namespace RlViewer.Forms
             if (e.KeyCode == Keys.Escape)
             {
                 Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                button1_Click(sender, null);
             }
         }
 
