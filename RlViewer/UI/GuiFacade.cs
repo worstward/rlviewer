@@ -32,7 +32,6 @@ namespace RlViewer.UI
         }
 
 
-        private System.ComponentModel.BackgroundWorker _worker;
         private Settings.Settings _settings;
         private TileCreator _creator;
         private Behaviors.Filters.ImageFilterFacade _filterFacade;
@@ -54,6 +53,7 @@ namespace RlViewer.UI
         private RlViewer.Behaviors.DragController _drag;
 
         private ISuitableForm _form;
+        private System.ComponentModel.BackgroundWorker _worker;
         private string _caption = string.Empty;
         private ToolTip _toolTip = new ToolTip();
         private IWin32Window _win;
@@ -399,8 +399,6 @@ namespace RlViewer.UI
             }
         }
 
-
-
         private void DrawItems()
         {
             if (_file != null && _drawer != null)
@@ -522,6 +520,8 @@ namespace RlViewer.UI
             _form.Horizontal.SmallChange = 1;
             _form.Horizontal.LargeChange = 1;
 
+            _form.NavigationDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             _form.FilterTrackBar.SmallChange = 1;
             _form.FilterTrackBar.LargeChange = 1;
             _form.FilterTrackBar.Minimum = -16;
@@ -584,8 +584,6 @@ namespace RlViewer.UI
                 sectionForm.ShowDialog();
             }
         }
-
-
 
 
         #region MouseHandlers

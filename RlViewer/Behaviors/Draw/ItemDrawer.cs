@@ -40,6 +40,25 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
+        private Image DrawMarker(Image canvas, Point point)
+        {
+            Image img;
+            lock (_locker)
+            {
+                img = (Image)canvas.Clone();
+                using (var g = Graphics.FromImage(img))
+                {
+                    using (var pen = new Pen(Palette.Entries[240]))
+                    {
+                        g.FillRectangle(Brushes.Red, point.X, point.Y, 5, 5);
+                    
+                    }
+                }
+            }
+            return img;
+        }
+
+
         private void DrawPoints(Graphics g, RectangleF screen)
         {
             foreach (var point in _pointSelector)

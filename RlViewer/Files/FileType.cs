@@ -21,6 +21,10 @@ namespace RlViewer
         /// </summary>
         raw,
         /// <summary>
+        /// Формат файла бортового РЛИ
+        /// </summary>
+        r,
+        /// <summary>
         /// Формат файла РГГ МРК2
         /// </summary>
         k,

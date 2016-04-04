@@ -11,15 +11,16 @@ using RlViewer.Files.Rli.Concrete;
 using RlViewer.Behaviors.Draw;
 using RlViewer.Behaviors.TileCreator.Abstract;
 
+
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
-
-    class Rl4TileCreator : TileCreator.Abstract.TileCreator, INormalizable
+    class RTileCreator: TileCreator.Abstract.TileCreator, INormalizable
     {
-        public Rl4TileCreator(LocatorFile rli)
+        public RTileCreator(LocatorFile rli)
         {
             _rli = rli;
         }
+
 
         private string tileFolder;
 
@@ -62,8 +63,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalFactor == 0)
                         {
                             _normalFactor = ComputeNormalizationFactor(_rli, _rli.Width * _rli.Header.BytesPerSample,
-                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct()),
-                            Math.Min(_rli.Height, (_rli.Header as RlViewer.Headers.Concrete.Rl4.Rl4Header).HeaderStruct.rlParams.cadrHeight));
+                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.R.RliLineHeader()),
+                            Math.Min(_rli.Height, (int)(_rli.Header as RlViewer.Headers.Concrete.R.RHeader).HeaderStruct.synthesisHeader.NShift));
                         }
                     }
                 }
@@ -71,7 +72,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
             }
         }
-
 
         /// <summary>
         /// Creates tile objects array from existing tile files
@@ -98,7 +98,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             return tiles.ToArray();
         }
 
-
         /// <summary>
         /// Saves tiles to local folder and creates tile objects array from Rl4 file.  Reports progress to backgroundworker object.
         /// </summary>
@@ -106,14 +105,14 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         protected override Tile[] GetTilesFromFile(string filePath)
         {
             tileFolder = InitTilePath(filePath);
-            
+
             List<Tile> tiles = new List<Tile>();
             byte[] tileLine;
             using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
                 int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(
-                    new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
+                    new RlViewer.Headers.Concrete.R.RliLineHeader());
                 int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
 
                 var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
@@ -138,30 +137,31 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         protected override Tile[] GetTilesFromFileAsync(string filePath)
         {
             tileFolder = InitTilePath(filePath);
-   
-            Task.Run(() =>
-                {
-                    List<Tile> tiles = new List<Tile>();
-                    byte[] tileLine;
-                    using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    {
-                        fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
-                        int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(
-                            new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
-                        int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
 
-                        var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
-                        for (int i = 0; i < totalLines; i++)
-                        {
-                            tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
-                            SaveTiles(tileFolder, tileLine, _rli.Width, i, TileSize);
-                        }
+            Task.Run(() =>
+            {
+                List<Tile> tiles = new List<Tile>();
+                byte[] tileLine;
+                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fs.Seek(_rli.Header.FileHeaderLength, SeekOrigin.Begin);
+                    int strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(
+                        new RlViewer.Headers.Concrete.R.RliLineHeader());
+                    int signalDataLength = _rli.Width * _rli.Header.BytesPerSample;
+
+                    var totalLines = Math.Ceiling((double)_rli.Height / (double)TileSize.Height);
+                    for (int i = 0; i < totalLines; i++)
+                    {
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
+                        SaveTiles(tileFolder, tileLine, _rli.Width, i, TileSize);
                     }
-                });
+                }
+            });
             return GetTilesFromTl(tileFolder);
 
         }
 
-    }
 
+
+    }
 }

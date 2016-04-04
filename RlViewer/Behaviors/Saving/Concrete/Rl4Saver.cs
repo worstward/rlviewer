@@ -145,8 +145,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         var brl4StrHead = Converters.FileHeaderConverters.ToBrl4StrHeader(strHeader);
                         fw.Write(brl4StrHead, 0, strHeaderSize);
 
-                        //fr.Seek(leftTop.X * )
-                        //read-write string data
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameData, 0, frameData.Length);
                         fw.Write(frameData, 0, frameData.Length);
@@ -187,12 +185,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         {
                             return;
                         }
-                        //fr.Seek(leftTop.X * )
-                        //read-write string data
+
                         fr.Seek(strHeaderSize, SeekOrigin.Current);
 
-                        //fr.Seek(leftTop.X * )
-                        //read-write string data
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);
                         fw.Write(frameStrData, 0, frameStrData.Length);

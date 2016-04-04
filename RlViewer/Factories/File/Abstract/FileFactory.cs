@@ -23,6 +23,8 @@ namespace RlViewer.Factories.File.Abstract
                     return new Rl4Factory();
                 case FileType.raw:
                     return new RawFactory();
+                case FileType.r:
+                    return new RFactory();
                 case FileType.k:
                     return new RhgKFactory();
                 default:

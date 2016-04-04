@@ -15,7 +15,7 @@ namespace RlViewer.Headers.Concrete.Rl4
     {
         public Rl4Header(string path)
         {
-            ReadHeader(path);
+            _headerStruct = ReadHeader<Rl4RliFileHeader>(path);
         }
 
         protected override byte[] Signature
@@ -72,21 +72,6 @@ namespace RlViewer.Headers.Concrete.Rl4
             get
             {
                 return _headerStruct;
-            }
-        }
-
-        private void ReadHeader(string path)
-        {
-            byte[] header = new byte[FileHeaderLength];
-
-            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                fs.Read(header, 0, header.Length);
-            }
-
-            using (var ms = new MemoryStream(header))
-            {
-                _headerStruct = LocatorFile.ReadStruct<Rl4RliFileHeader>(ms);
             }
         }
 

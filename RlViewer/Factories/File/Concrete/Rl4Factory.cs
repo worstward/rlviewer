@@ -11,7 +11,8 @@ namespace RlViewer.Factories.File.Concrete
 {
     class Rl4Factory : FileFactory
     {
-        public override LocatorFile Create(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+        public override LocatorFile Create(FileProperties properties, 
+            Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
         {
             return new Rl4(properties, header, navi);
         }

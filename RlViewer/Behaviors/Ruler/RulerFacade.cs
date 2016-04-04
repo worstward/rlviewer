@@ -8,6 +8,7 @@ using RlViewer.Files;
 using RlViewer.Files.Rli.Concrete;
 using RlViewer.Headers.Concrete.Brl4;
 using RlViewer.Headers.Concrete.Rl4;
+using RlViewer.Headers.Concrete.R;
 using System.Drawing;
 
 namespace RlViewer.Behaviors.Ruler
@@ -75,13 +76,39 @@ namespace RlViewer.Behaviors.Ruler
             }
         }
 
+
+        private static int GetY(Point point1, Point point2, float x)
+        {
+            float k = (point2.Y - point1.Y) / (float)(point2.X - point1.X);
+            float b = point1.Y - (k * point1.X);
+
+            return (int)(k * x + b);
+        }
+
+
         public string GetDistance(Point p2)
         {
-            var x = p2.X > _file.Width ? _file.Width : p2.X;
-            x = x < 0 ? 0 : x;
+            int x = p2.X;
+            int y = p2.Y;
 
-            var y = p2.Y > _file.Height ? _file.Height : p2.Y;
-            y = y < 0 ? 0 : y;
+            if (p2.X > _file.Width)
+            {
+                x = _file.Width;
+                y = GetY(Pt1, p2, _file.Width);
+            }
+            else if (x < 0)
+            {
+                x = 0;
+            }
+
+            if (y > _file.Height)
+            {
+                y = _file.Height;
+            }
+            else if (y < 0)
+            {
+                y = 0;
+            }
 
             _pt2 = new Point(x, y);
 
@@ -131,6 +158,18 @@ namespace RlViewer.Behaviors.Ruler
                         {
                             _dx = rl4Header.HeaderStruct.rlParams.dx;
                             _dy = rl4Header.HeaderStruct.rlParams.dy;
+                        }
+                    }
+                    break;
+                case FileType.r:
+                    var r = file as R;
+                    if (r != null)
+                    {
+                        var rHeader = r.Header as RHeader;
+                        if (rHeader != null)
+                        {
+                            _dx = rHeader.HeaderStruct.synthesisHeader.dx;
+                            _dy = rHeader.HeaderStruct.synthesisHeader.dy;
                         }
                     }
                     break;

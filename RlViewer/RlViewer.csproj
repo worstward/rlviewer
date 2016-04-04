@@ -72,9 +72,12 @@
     <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
     <Compile Include="Behaviors\Sections\Section.cs" />
     <Compile Include="Behaviors\Sections\VerticalSection.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\RTileCreator.cs" />
+    <Compile Include="Factories\File\Concrete\RFactory.cs" />
     <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RawHeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\RHeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RhgKHeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Rl4HeaderFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Abstract\NavigationContainerFactory.cs" />
@@ -82,12 +85,19 @@
     <Compile Include="Factories\NavigationContainer\Concrete\RawNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\RhgKNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Rl4NavigationContainerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\RNavigationContainerFactory.cs" />
+    <Compile Include="Factories\Saver\RSaverFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\RTileCreatorFactory.cs" />
+    <Compile Include="Files\Rli\Concrete\R.cs" />
     <Compile Include="Forms\SectionGraphForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SectionGraphForm.Designer.cs">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Headers\Concrete\R\RHeader.cs" />
+    <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
+    <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />

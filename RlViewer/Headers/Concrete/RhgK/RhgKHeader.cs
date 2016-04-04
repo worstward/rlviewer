@@ -14,7 +14,7 @@ namespace RlViewer.Headers.Concrete
     {
         public RhgKHeader(string path)
         {
-            ReadHeader(path);
+            _headerStruct = ReadHeader<Rl4RliFileHeader>(path);
         }
 
 
@@ -63,20 +63,6 @@ namespace RlViewer.Headers.Concrete
         private HeaderInfoOutput[] _headerInfo;
         private Rl4RliFileHeader _headerStruct;
 
-        private void ReadHeader(string path)
-        {
-            byte[] header = new byte[FileHeaderLength];
-
-            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                fs.Read(header, 0, header.Length);
-            }
-
-            using (var ms = new MemoryStream(header))
-            {
-                _headerStruct = new Rl4RliFileHeader();//RlViewer.Files.LocatorFile.ReadStruct<Brl4RliFileHeader>(ms);
-            }
-        }
 
         protected override HeaderInfoOutput[] GetHeaderInfo()
         {

@@ -23,7 +23,9 @@ namespace RlViewer.Factories.TileCreator.Abstract
                 case FileType.rl4:
                     return new Rl4TileCreatorFactory();
                 case FileType.raw:
-                    return new RawTileCreatorFactory() ;
+                    return new RawTileCreatorFactory();
+                case FileType.r:
+                    return new RTileCreatorFactory();
                 case FileType.k:
                     throw new NotSupportedException("Implement me");
                 default:
