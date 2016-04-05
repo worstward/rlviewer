@@ -125,11 +125,11 @@ namespace RlViewer.Behaviors.Ruler
         {
             if (_dx == 0.0 || _dy == 0.0)
             {
-                return string.Format("Расстояние: {0:0.##} пикселей", _ruler.GetDistance(_pt1, _pt2));
+                return string.Format("Расстояние: {0:0.##} пкс", _ruler.GetDistance(_pt1, _pt2));
             }
             else
             {
-                return string.Format("Расстояние: {0:0.##} метров", _ruler.GetDistance(_pt1, _pt2, _dx, _dy));
+                return string.Format("Расстояние: {0:0.##} м", _ruler.GetDistance(_pt1, _pt2, _dx, _dy));
             }
         }
 

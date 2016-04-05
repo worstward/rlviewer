@@ -841,7 +841,7 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            var aligner = new Behaviors.ImageAligning.Aligning(_pointSelector);
+            var aligner = new Behaviors.ImageAligning.Aligning(_pointSelector, _file);
         }
 
 

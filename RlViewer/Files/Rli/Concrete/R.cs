@@ -46,7 +46,7 @@ namespace RlViewer.Files.Rli.Concrete
             get
             {
                 //(file size - file header size) / (string header size + string data size) = string count
-                return _height == 0 ? (int)((new System.IO.FileInfo(Properties.FilePath).Length
+                return _height == 0 ? _height = (int)((new System.IO.FileInfo(Properties.FilePath).Length
                     - Marshal.SizeOf(new Headers.Concrete.R.RHeaderStruct())) 
                     / (_header.HeaderStruct.lineInfoHeader.lineLength * _header.BytesPerSample + 
                        Marshal.SizeOf(new RlViewer.Headers.Concrete.R.RliLineHeader())))

@@ -61,6 +61,8 @@ namespace RlViewer.Behaviors.Draw
 
         private void DrawPoints(Graphics g, RectangleF screen)
         {
+            screen = new RectangleF(screen.Location.X, screen.Location.Y,
+                screen.Width / Scaler.ScaleFactor, screen.Height / Scaler.ScaleFactor);
             foreach (var point in _pointSelector)
             {
                 if (screen.Contains(point.Location))
