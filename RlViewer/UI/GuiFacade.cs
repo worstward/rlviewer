@@ -40,6 +40,8 @@ namespace RlViewer.UI
         private RlViewer.Behaviors.Scaling.Scaler _scaler;
         private RlViewer.Behaviors.Analyzing.PointAnalyzer _analyzer;
         private RlViewer.Behaviors.Ruler.RulerFacade _ruler;
+        private RlViewer.Behaviors.ImageAligning.Aligning _aligner;
+
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
@@ -59,16 +61,50 @@ namespace RlViewer.UI
         private IWin32Window _win;
 
 
-        public void OpenWithDoubleClick()
+        public string OpenWithDoubleClick()
         {
             foreach (var path in System.Environment.GetCommandLineArgs())
             {
                 if (!path.EndsWith(".exe"))
                 {
-                    OpenFile(path);
+                    return OpenFile(path);
                 }
             }
+            return string.Empty;
         }
+
+        public string OpenFileDragDrop(DragEventArgs e)
+        {
+            if (MoveFileDragDrop(e))
+            {
+                var fileName = ((string[])e.Data.GetData(DataFormats.FileDrop)).FirstOrDefault();
+                return OpenFile(fileName);
+            }
+            return string.Empty;
+        }
+
+
+        public bool MoveFileDragDrop(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var ext = System.IO.Path.GetExtension(((string[])e.Data.GetData(DataFormats.FileDrop)).FirstOrDefault());
+                try
+                {
+                    ext.Replace(".", "").ToEnum<FileType>();
+                    e.Effect = DragDropEffects.Copy;
+                    return true;
+                }
+                catch
+                {
+                    e.Effect = DragDropEffects.None;
+                    return false;
+                }
+
+            }
+            return false;
+        }
+
 
         public string OpenFile()
         {
@@ -101,6 +137,7 @@ namespace RlViewer.UI
             }
 
             _file = null;
+            _tiles = null;
             _drawer = null;
             _form.Canvas.Image = null;
             _form.NavigationDgv.Rows.Clear();
@@ -119,9 +156,8 @@ namespace RlViewer.UI
 
             caption = _caption = _properties.FilePath;
 
-            _form.StatusLabel.Text = "Чтение навигации";
-            InitProgressBar();
-            _worker = InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
+            InitProgressControls(true, "Чтение навигации");
+            _worker = ThreadHelpers.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
             _worker.RunWorkerAsync();
          
             return caption;
@@ -138,25 +174,13 @@ namespace RlViewer.UI
             }
         }
 
-        private void InitProgressBar()
-        {
-            _form.ProgressBar.Value = 0;
-            _form.ProgressBar.Visible = true;
-            _form.ProgressLabel.Visible = true;
-            _form.ProgressLabel.Text = "0 %";
-            _form.StatusLabel.Visible = true;
-            _form.CancelButton.Visible = true;
-            _form.Horizontal.Visible = false;
-            _form.Vertical.Visible = false;
-        }
-
+     
         public void GetImage()
         {
             if (_file != null)
             {
-                _form.StatusLabel.Text = "Генерация тайлов";
-                InitProgressBar();
-                _worker = InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                InitProgressControls(true, "Генерация тайлов");
+                _worker = ThreadHelpers.InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
                 _worker.RunWorkerAsync();
             }
         }
@@ -190,7 +214,8 @@ namespace RlViewer.UI
         {
             try
             {
-                var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
+                var path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                    "tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
                     Path.GetExtension(_file.Properties.FilePath));
                 File.SetAttributes(path, FileAttributes.Normal);
                 Directory.Delete(path, true);
@@ -203,6 +228,8 @@ namespace RlViewer.UI
 
             InitializeWindow();   
         }
+
+
 
         private void loaderWorker_SaveFile(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
@@ -225,11 +252,10 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Internal, "Invalid saver params");
                 throw;
             }
-           
 
             try
             {
-                _saver = SaverFactory.GetFactory(_properties).Create(_file);   
+                _saver = SaverFactory.GetFactory(_properties).Create(_file);
 
                 _saver.Report += ProgressReporter;
                 _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
@@ -237,27 +263,84 @@ namespace RlViewer.UI
                 _saver.Save(path, Path.GetExtension(path).Replace(".", "")
                     .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
             }
-            catch (ArgumentException aex)
+            catch (OperationCanceledException)
             {
-                ErrorGuiMessage(string.Format("Unable to save file: {0}", path));
-                Logging.Logger.Log(Logging.SeverityGrades.Error, aex.Message);
-            }  
+                e.Cancel = true;
+            }
+            finally
+            {
+                e.Result = path;
+            }
         }
 
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _saver.Report -= ProgressReporter;
             _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-            _form.ProgressBar.Visible = false;
-            _form.ProgressLabel.Visible = false;
-            _form.StatusLabel.Visible = false;
-            _form.CancelButton.Visible = false;
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, "Saving cancelled");
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error saving image: {0}", e.Error.Message));
+                ErrorGuiMessage("Unable to save image");
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Saving completed: {0}", (string)e.Result));
+            }
 
+            InitProgressControls(false);
         }
 
+        private void loaderWorker_AlignImage(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            _aligner.Report += ProgressReporter;
+            _aligner.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            string fileName = "placeholder.raw";
+            try
+            {
+                _aligner.Resample(_pointSelector, fileName);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
+            catch (AggregateException aggex)
+            {
+                if (aggex.InnerException.GetType() == typeof(OperationCanceledException))
+                {
+                    e.Cancel = true;
+                }
+                else throw;
+            }
+            finally
+            {
+                e.Result = fileName;
+            }
+        }
 
-
-
+        private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            _aligner.Report -= ProgressReporter;
+            _aligner.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, "Image aligning cancelled");
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error aligning image: {0}", e.Error.Message));
+                ErrorGuiMessage("Unable to align image");
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, 
+                    string.Format("Image aligning completed, new file saved at: {0}", Path.GetFullPath((string)e.Result)));
+            }
+            InitProgressControls(false);
+        }
 
         private void loaderWorker_InitFile(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
@@ -270,18 +353,12 @@ namespace RlViewer.UI
                 _navi.GetNavigation();
 
                 _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+                _aligner = new Behaviors.ImageAligning.Aligning(_file);
                 _ruler = new Behaviors.Ruler.RulerFacade(_file);
             }
-            catch (ArgumentNullException)
+            catch (OperationCanceledException)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
-                InitializeWindow();
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file {0}", ex.Message));
-                ErrorGuiMessage("Невозможно открыть файл");
-                InitializeWindow();
+                e.Cancel = true;
             }
         }
 
@@ -291,8 +368,15 @@ namespace RlViewer.UI
             _navi.Report -= ProgressReporter;
             _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
 
-            if (e.Cancelled || e.Error != null)
+            if (e.Cancelled)
             {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
+                InitializeWindow();
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file: {0}", e.Error.Message));
+                ErrorGuiMessage("Unable to open file");
                 InitializeWindow();
             }
             else
@@ -304,11 +388,18 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
+            try
+            {
+                _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
-            _creator.Report += ProgressReporter;
-            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);          
+                _creator.Report += ProgressReporter;
+                _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+                _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;   
+            }
         }
 
 
@@ -317,21 +408,27 @@ namespace RlViewer.UI
             _creator.Report -= ProgressReporter;
             _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
 
-            if (_tiles != null)
+            if (e.Cancelled)
             {
-                _pointSelector = new Behaviors.PointSelector.PointSelector();
-                _areaSelector = new Behaviors.AreaSelector.AreaSelector();
-                _form.ProgressBar.Visible = false;
-                _form.ProgressLabel.Visible = false;
-                _form.StatusLabel.Visible = false;
-                _form.CancelButton.Visible = false;
-                InitDrawImage();
+                ClearWorkerData(() => ClearCancelledFileTiles());
+                Logging.Logger.Log(Logging.SeverityGrades.Info, "Tile creation operation cancelled");
+                InitializeWindow();
+            }
+            else if (e.Error != null)
+            {
+                ClearWorkerData(() => ClearCancelledFileTiles());
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}", e.Error.Message));
+                ErrorGuiMessage("Unable to create tiles");
+                InitializeWindow();
             }
             else           
             {
-                ClearWorkerData(() => ClearCancelledFileTiles());
+                _pointSelector = new Behaviors.PointSelector.PointSelector();
+                _areaSelector = new Behaviors.AreaSelector.AreaSelector();
+                InitProgressControls(false);
+                InitDrawImage();              
             }
-
+            
         }
 
         private void Canvas_MouseWheel(object sender, MouseEventArgs e)
@@ -352,11 +449,9 @@ namespace RlViewer.UI
 
         private void ProgressReporter(int progress)
         {
-            _form.ProgressBar.GetCurrentParent().Invoke(new Action(() =>
-            {
-                _form.ProgressBar.Value = progress;
-                _form.ProgressLabel.Text = string.Format("{0} %", progress.ToString());
-            }));
+            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = progress; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl =>
+                        { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
 
         private void Undo()
@@ -452,9 +547,8 @@ namespace RlViewer.UI
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                _form.StatusLabel.Text = "Сохранение файла";
-                                InitProgressBar();
-                                _worker = InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
+                                InitProgressControls(true, "Сохранение");
+                                _worker = ThreadHelpers.InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
                                 _worker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
                             }
                         }
@@ -468,26 +562,35 @@ namespace RlViewer.UI
         public void ChangeScaleFactor(float value)
         {
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;                
-            
+  
             float scaleFactor = (float)Math.Pow(2, value);
-
             _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
-            
-            #region centerPointOfView
+
+            CenterPointOfView(scaleFactor);
+
+            _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
+            InitDrawImage();
+        }
+
+
+        private void CenterPointOfView(float scaleFactor)
+        {
             InitScrollBars(scaleFactor);
 
-            float a = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / 2;
-            a = _scaler.ScaleFactor > scaleFactor ? -a / 2 : a;
+            float visibleImageWidthHalf = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / 2;
+            visibleImageWidthHalf = _scaler.ScaleFactor > scaleFactor ? -visibleImageWidthHalf / 2 : visibleImageWidthHalf;
 
-            float b = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / 2;
-            b = _scaler.ScaleFactor > scaleFactor ? -b / 2 : b;
+            float visibleImageHeightHalf = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / 2;
+            visibleImageHeightHalf = _scaler.ScaleFactor > scaleFactor ? -visibleImageHeightHalf / 2 : visibleImageHeightHalf;
 
-            float newHorizontalValue = _form.Horizontal.Value + a < 0 ? 0 : _form.Horizontal.Value + a;
+            float newHorizontalValue = _form.Horizontal.Value + visibleImageWidthHalf < 0 ? 0 :
+                _form.Horizontal.Value + visibleImageWidthHalf;
             newHorizontalValue = newHorizontalValue + _form.Canvas.Width /
                 (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Width ?
                 _form.Horizontal.Maximum : newHorizontalValue;
 
-            float newVerticalValue = _form.Vertical.Value + b < 0 ? 0 : _form.Vertical.Value + b;
+            float newVerticalValue = _form.Vertical.Value + visibleImageHeightHalf < 0 ? 0 
+                : _form.Vertical.Value + visibleImageHeightHalf;
             newVerticalValue = newVerticalValue + _form.Canvas.Height /
                 (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Height ?
                 _form.Vertical.Maximum : newVerticalValue;
@@ -496,45 +599,44 @@ namespace RlViewer.UI
             _form.Horizontal.Value = (int)newHorizontalValue;
             _form.Vertical.Value = (int)newVerticalValue;
 
-            #endregion
-
-            _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
-            InitDrawImage();
         }
 
+
+        private void InitProgressControls(bool isVisible, string caption = "")
+        {
+            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });    
+            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
+            ThreadHelpers.ThreadSafeUpdate<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
+        }
 
 
         private void InitializeWindow()
         {
-
             _file = null;
             _drawer = null;
             _pointSelector = null;
             _areaSelector = null;
 
-            _form.Canvas.Image = null;
-            _form.Horizontal.Visible = false;
-            _form.Vertical.Visible = false;
-            _form.Vertical.SmallChange = 1;
-            _form.Vertical.LargeChange = 1;
-            _form.Horizontal.SmallChange = 1;
-            _form.Horizontal.LargeChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
+            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
+            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).SmallChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).LargeChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).Visible = false;
+            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).SmallChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).LargeChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).SmallChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).LargeChange = 1;
+            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
+            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
+            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
+            ThreadHelpers.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ThreadHelpers.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
 
-            _form.NavigationDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            _form.FilterTrackBar.SmallChange = 1;
-            _form.FilterTrackBar.LargeChange = 1;
-            _form.FilterTrackBar.Minimum = -16;
-            _form.FilterTrackBar.Maximum = 16;
-            _form.FilterTrackBar.Value = 0;
-
-            _form.ProgressBar.Minimum = 0;
-            _form.ProgressBar.Maximum = 100;
-            _form.ProgressBar.Visible = false;
-            _form.ProgressLabel.Visible = false;
-            _form.StatusLabel.Visible = false;
-            _form.CancelButton.Visible = false;
-            _form.AlignBtn.Enabled = false;
+            InitProgressControls(false);
         }
 
         private void ErrorGuiMessage(string message)
@@ -559,6 +661,7 @@ namespace RlViewer.UI
         public void ChangeFilterValue()
         {
             _filterFacade.ChangeFilterValue(_form.FilterTrackBar.Value);
+            _form.FilterValueLabel.Text = string.Format("Уровень фильтра: {0}", _form.FilterTrackBar.Value);
             DrawImage();
         }
 
@@ -568,7 +671,11 @@ namespace RlViewer.UI
             _form.FilterTrackBar.Value = _filterFacade.Filter.FilterValue >> filterDelta;
         }
 
-
+        public void ResetFilter()
+        {
+            _filterFacade.ResetFilters();
+            _form.FilterTrackBar.Value = 0;
+        }
 
         private void ShowSection(Behaviors.Sections.Section section, Point p)
         {
@@ -644,8 +751,7 @@ namespace RlViewer.UI
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!_form.MarkPointRb.Checked && !_form.MarkAreaRb.Checked && !_form.AnalyzePointRb.Checked &&
-                        !_form.VerticalSectionRb.Checked && !_form.HorizontalSectionRb.Checked && !_form.RulerRb.Checked)
+                    if (_form.DragRb.Checked)
                     {
                         _form.Canvas.Cursor = Cursors.SizeAll;
                         _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), !_form.MarkPointRb.Checked);
@@ -818,18 +924,7 @@ namespace RlViewer.UI
         }
 
 
-        private System.ComponentModel.BackgroundWorker InitWorker(System.ComponentModel.DoWorkEventHandler doWork,
-            System.ComponentModel.RunWorkerCompletedEventHandler completed)
-        {
-            System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-            worker.DoWork += doWork;
-            //worker.ProgressChanged += _worker_ProgressChanged;
-            worker.RunWorkerCompleted += completed;
-
-            return worker;
-        }
+        
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs e)
         {
@@ -841,14 +936,21 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            var aligner = new Behaviors.ImageAligning.Aligning(_pointSelector, _file);
+            _form.StatusLabel.Text = "Чтение навигации";
+            InitProgressControls(true, "Выравнивание изображения");
+            _worker = ThreadHelpers.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
+
+            _worker.RunWorkerAsync();
         }
 
 
         private void RulerRb_CheckedChanged(object sender, EventArgs e)
         {
-            _ruler.ResetRuler();
-            _form.DistanceLabel.Text = string.Empty;
+            if (_ruler != null)
+            {
+                _ruler.ResetRuler();
+                _form.DistanceLabel.Text = string.Empty;
+            }
         }
     }
 }

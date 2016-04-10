@@ -23,7 +23,7 @@ namespace RlViewer.Behaviors.Sections
             {
                 if (i < 0 || i > file.Width) continue;
 
-                coordPairList.Add(new PointF(i, GetValue(file, new Point(i, p.Y))));
+                coordPairList.Add(new PointF(i, FileReader.GetSample(file, new Point(i, p.Y))));
             }
 
             return coordPairList;

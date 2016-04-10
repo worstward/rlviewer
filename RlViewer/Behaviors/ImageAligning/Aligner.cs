@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.ImageAligning
 {
-    class Aligning : PointReader
+    class Aligning : WorkerEventController
     {
-        public Aligning(PointSelector.PointSelector selector, Files.LocatorFile file)
+        public Aligning(Files.LocatorFile file)
         {
-            _file = file;
+            _file = file;         
+        }
 
+
+        public void Resample(PointSelector.PointSelector selector, string fileName)
+        {
             for (int i = 0; i < 4; i++)
             {
                 _zCoefficients[i] = new LinearEquation(
@@ -25,9 +29,12 @@ namespace RlViewer.Behaviors.ImageAligning
                     .Solution;
 
             }
-
-            ResampleImage();
+   
+            _areaBorders = GetArea(selector);
+   
+            System.IO.File.WriteAllBytes(fileName, ResampleImage());
         }
+
 
         /// <summary>
         /// Contains x-z linear equation coefficients (A*x^3 + B*x^2 + C*x + D = z)
@@ -39,37 +46,86 @@ namespace RlViewer.Behaviors.ImageAligning
         /// </summary>
         private float[][] _yCoefficients = new float[4][];
         private Files.LocatorFile _file;
+        private System.Drawing.Rectangle _areaBorders;
 
-        public void ResampleImage()
+
+        private System.Drawing.Rectangle GetArea(PointSelector.PointSelector selector)
         {
-            float[] image = new float[_file.Width * _file.Height];
+
+            var minX = selector.Min(p => p.Location.X);
+            var maxX = selector.Max(p => p.Location.X);
+            var minY = selector.Min(p => p.Location.Y);
+            var maxY = selector.Max(p => p.Location.Y);
+
+            int areaWidth = maxX - minX;
+            int areaHeight = maxY - minY;
+
+
+            if (areaWidth < 4000)
+            {
+                minX = minX - (4000 - areaWidth) / 2;
+                minX = minX < 0 ? 0 : minX;
+                areaWidth = 4000;
+            }
+
+            if (areaHeight < 4000)
+            {
+                minY = minY - (4000 - areaHeight) / 2;
+                minY = minY < 0 ? 0 : minY;
+                areaHeight = 4000;
+            }
+
+            return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
+
+        }
+
+
+        private byte[] ResampleImage()
+        {
+            float[] image = new float[_areaBorders.Width * _areaBorders.Height];
             byte[] imageB = new byte[image.Length * 4];
 
             //iterate over X axis
-            Parallel.For(0, _file.Width, (i) =>
-            {
 
+            int toInclusiveX = _areaBorders.Location.X + _areaBorders.Width;
+            toInclusiveX = toInclusiveX > _file.Width ? _file.Width : toInclusiveX;
+
+            int toInclusiveY = _areaBorders.Location.Y + _areaBorders.Height;
+            toInclusiveY = toInclusiveY > _file.Height ? _file.Height : toInclusiveY;
+            int counter = 0;
+
+
+            float[] imageArea = Behaviors.FileReader.GetArea(_file, _areaBorders);
+
+            Parallel.For(_areaBorders.Location.X, toInclusiveX, (i) =>
+            {
                 var zValues = _zCoefficients.Select(x => Extrapolate(i, x)).ToArray();
                 var yValues = _yCoefficients.Select(x => Extrapolate(i, x)).ToArray();
                 var _zCoefs = new LinearEquation(yValues, zValues).Solution;
-             
-                for (int j = 0; j < _file.Height; j++)
+
+                for (int j = _areaBorders.Location.Y; j < toInclusiveY; j++)
                 {
+                    var oldVal = imageArea[(j - _areaBorders.Location.Y) 
+                        * _areaBorders.Width + (i - _areaBorders.Location.X)];
+                    var newVal = Extrapolate(j, _zCoefs);
 
-                    
-                        var oldVal = GetValue(_file, new System.Drawing.Point(i, j));
-                        var newVal = Extrapolate(j, _zCoefs);
+                    var diff = oldVal / newVal;
+                    image[(j - _areaBorders.Location.Y) * _areaBorders.Width + (i - _areaBorders.Location.X)] = diff;
+                    diff = diff < 0 ? 0 : diff;
+                }
 
-                        var diff = oldVal / newVal;
-                        diff = diff < 0 ? 0 : diff;
-                        image[j * _file.Width + i] = diff;
+                System.Threading.Interlocked.Increment(ref counter);
+                OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - _areaBorders.Location.X)) * 100));
+                if (OnCancelWorker())
+                {
+                    throw new OperationCanceledException();
                 }
 
             });
 
             Buffer.BlockCopy(image, 0, imageB, 0, imageB.Length);
 
-            System.IO.File.WriteAllBytes("img.raw", imageB);
+            return imageB;
         }
 
 
@@ -84,7 +140,7 @@ namespace RlViewer.Behaviors.ImageAligning
             //(A*x^3 + B*x^2 + C*x + D = z) to find z with provided x sample and ABCD coef in solution[]
             float extrapolatedValue = 0;
 
-            for(int j = 3; j >= 0; j--)
+            for (int j = 3; j >= 0; j--)
             {
                 extrapolatedValue += (float)Math.Pow(sample, 3 - j) * solution[j];
             }

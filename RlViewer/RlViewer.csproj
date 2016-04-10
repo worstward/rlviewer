@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Untitled-28-64.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
@@ -63,7 +66,7 @@
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
-    <Compile Include="Behaviors\PointReader.cs" />
+    <Compile Include="Behaviors\FileReader.cs" />
     <Compile Include="Behaviors\Ruler\Ruler.cs" />
     <Compile Include="Behaviors\Ruler\RulerFacade.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
@@ -95,9 +98,16 @@
     <Compile Include="Forms\SectionGraphForm.Designer.cs">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Headers\Abstract\IStrHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
     <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadHelpers.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
@@ -250,14 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -312,6 +317,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Ruler.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Navigation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Untitled-28-32.ico" />
+    <Content Include="Untitled-28-64.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -64,7 +64,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 283);
+            this.ClientSize = new System.Drawing.Size(607, 278);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
@@ -74,6 +74,7 @@
             this.Name = "LogForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "События";
+            this.Shown += new System.EventHandler(this.LogForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LogForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -55,6 +55,9 @@ namespace RlViewer.Behaviors.Navigation
 
         private double Alpha(double initialRange, double step, int sampleNum, double aircraftHeight, double earthRadius = 6372795)
         {
+            double range = Math.Sqrt((initialRange * initialRange) - (aircraftHeight * aircraftHeight));
+
+            //(initialRange / range) * 
             double Lpoint = initialRange + step * sampleNum;
             double R2 = 2 * earthRadius * (earthRadius + aircraftHeight);
             double H2 = aircraftHeight * aircraftHeight;
@@ -72,33 +75,15 @@ namespace RlViewer.Behaviors.Navigation
 
         private double GetSampleLongtitude(double aircraftLon, double aircraftLat, double track, double alpha, byte board)
         {
-            //board == 0 ? left : right
-            double dp;
-            if (board == 0)
-            {
-                dp = aircraftLon - alpha * Math.Cos(track) / Math.Cos(aircraftLat);
-            }
-            else 
-            {
-                dp = aircraftLon + alpha * Math.Cos(track) / Math.Cos(aircraftLat);
-            }
-            return dp;
+            return board == 0 ? aircraftLon - alpha * Math.Cos(track) / Math.Cos(aircraftLat) :
+                                aircraftLon + alpha * Math.Cos(track) / Math.Cos(aircraftLat);
         }
 
 
         private double GetSampleLatitude(double aircraftLat, double track, double alpha, byte board)
         {
-            double dp;
-            if (board == 0)
-            {
-                dp = aircraftLat + alpha * Math.Sin(track);
-            }
-            else
-            {
-                dp = aircraftLat - alpha * Math.Sin(track);
-            }
-            return dp;
+            return board == 0 ? aircraftLat + alpha * Math.Sin(track) :
+                                aircraftLat - alpha * Math.Sin(track);
         }
-
     }
 }

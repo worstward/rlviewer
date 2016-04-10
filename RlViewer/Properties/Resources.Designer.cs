@@ -153,6 +153,16 @@ namespace RlViewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Navigation {
+            get {
+                object obj = ResourceManager.GetObject("Navigation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ruler {
             get {
                 object obj = ResourceManager.GetObject("Ruler", resourceCulture);

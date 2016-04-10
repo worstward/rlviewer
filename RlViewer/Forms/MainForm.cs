@@ -16,7 +16,6 @@ namespace RlViewer.Forms
 
         public MainForm()
         {
-            //this.DoubleBuffered = true;
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(this);
             Text = string.Empty;
@@ -56,6 +55,14 @@ namespace RlViewer.Forms
                 return trackBar1;
             }
         }
+        public Label FilterValueLabel
+        {
+            get
+            {
+                return filterLbl;
+            }
+        }
+
         public ToolStripProgressBar ProgressBar
         {
             get
@@ -238,10 +245,10 @@ namespace RlViewer.Forms
             _guiFacade.ClickFinished(e);
         }
 
-        private void trackBar1_Scroll(object sender, EventArgs e)
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
             _guiFacade.ChangeFilterValue();
-            filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
         private void contrastRb_CheckedChanged(object sender, EventArgs e)
@@ -249,7 +256,6 @@ namespace RlViewer.Forms
             if(((RadioButton)sender).Checked)
             {
                 _guiFacade.GetFilter("Contrast", 4);
-                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
@@ -258,7 +264,6 @@ namespace RlViewer.Forms
             if (((RadioButton)sender).Checked)
             {
                 _guiFacade.GetFilter("Gamma Correction", 0);
-                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
         }
 
@@ -267,13 +272,7 @@ namespace RlViewer.Forms
             if (((RadioButton)sender).Checked)
             {
                 _guiFacade.GetFilter("Brightness", 4);
-                filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
             }
-        }
-
-        private void loadCancelBtn_Click(object sender, EventArgs e)
-        {
-           
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -318,7 +317,7 @@ namespace RlViewer.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            _guiFacade.OpenWithDoubleClick();
+            Text = _guiFacade.OpenWithDoubleClick();
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
@@ -337,6 +336,20 @@ namespace RlViewer.Forms
             _guiFacade.CancelLoading();
         }
 
+        private void resetFilterBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.ResetFilter();
+        }
+
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
+        {
+            _guiFacade.MoveFileDragDrop(e);
+        }
+
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            Text = _guiFacade.OpenFileDragDrop(e);
+        }
 
     }
 }

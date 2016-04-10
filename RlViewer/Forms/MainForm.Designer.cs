@@ -32,14 +32,6 @@
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rulerRb = new System.Windows.Forms.RadioButton();
-            this.alignBtn = new System.Windows.Forms.Button();
-            this.verSection = new System.Windows.Forms.RadioButton();
-            this.horSection = new System.Windows.Forms.RadioButton();
-            this.analyzeRb = new System.Windows.Forms.RadioButton();
-            this.markAreaRb = new System.Windows.Forms.RadioButton();
-            this.dragRb = new System.Windows.Forms.RadioButton();
-            this.markPointRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,17 +40,16 @@
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.логToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
-            this.contrastRb = new System.Windows.Forms.RadioButton();
-            this.brightnessRb = new System.Windows.Forms.RadioButton();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.filterLbl = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.percentageLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusLabel = new System.Windows.Forms.Label();
             this.scaleLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -69,8 +60,20 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.resetFilterBtn = new System.Windows.Forms.Button();
+            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
+            this.contrastRb = new System.Windows.Forms.RadioButton();
+            this.brightnessRb = new System.Windows.Forms.RadioButton();
+            this.rulerRb = new System.Windows.Forms.RadioButton();
+            this.alignBtn = new System.Windows.Forms.Button();
+            this.verSection = new System.Windows.Forms.RadioButton();
+            this.horSection = new System.Windows.Forms.RadioButton();
+            this.analyzeRb = new System.Windows.Forms.RadioButton();
+            this.markAreaRb = new System.Windows.Forms.RadioButton();
+            this.dragRb = new System.Windows.Forms.RadioButton();
+            this.markPointRb = new System.Windows.Forms.RadioButton();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,9 +82,9 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // hScrollBar1
@@ -120,6 +123,348 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Инструменты";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.settingsToolStripMenuItem,
+            this.infoToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(915, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.сохранитьToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.fileToolStripMenuItem.Text = "Файл";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.openToolStripMenuItem.Text = "Открыть";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // сохранитьToolStripMenuItem
+            // 
+            this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.сохранитьToolStripMenuItem.Text = "Сохранить";
+            this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.settingsToolStripMenuItem.Text = "Настройки";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // infoToolStripMenuItem
+            // 
+            this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.оФайлеToolStripMenuItem,
+            this.логToolStripMenuItem1,
+            this.toolStripSeparator1,
+            this.оПрограммеToolStripMenuItem});
+            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.infoToolStripMenuItem.Text = "Инфо";
+            // 
+            // оФайлеToolStripMenuItem
+            // 
+            this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.оФайлеToolStripMenuItem.Text = "О файле";
+            this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
+            // 
+            // логToolStripMenuItem1
+            // 
+            this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
+            this.логToolStripMenuItem1.Text = "Лог";
+            this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            // 
+            // оПрограммеToolStripMenuItem
+            // 
+            this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.оПрограммеToolStripMenuItem.Text = "О программе";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.resetFilterBtn);
+            this.groupBox2.Controls.Add(this.gammaCorrRb);
+            this.groupBox2.Controls.Add(this.contrastRb);
+            this.groupBox2.Controls.Add(this.brightnessRb);
+            this.groupBox2.Controls.Add(this.filterLbl);
+            this.groupBox2.Controls.Add(this.trackBar1);
+            this.groupBox2.Location = new System.Drawing.Point(346, 29);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(313, 58);
+            this.groupBox2.TabIndex = 9;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Фильтр";
+            // 
+            // filterLbl
+            // 
+            this.filterLbl.AutoSize = true;
+            this.filterLbl.Location = new System.Drawing.Point(143, 35);
+            this.filterLbl.Name = "filterLbl";
+            this.filterLbl.Size = new System.Drawing.Size(109, 13);
+            this.filterLbl.TabIndex = 11;
+            this.filterLbl.Text = "Уровень фильтра: 0";
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.AutoSize = false;
+            this.trackBar1.Location = new System.Drawing.Point(114, 13);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(155, 32);
+            this.trackBar1.TabIndex = 10;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            // 
+            // percentageLabel
+            // 
+            this.percentageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.percentageLabel.AutoSize = true;
+            this.percentageLabel.BackColor = System.Drawing.Color.Transparent;
+            this.percentageLabel.Location = new System.Drawing.Point(691, 510);
+            this.percentageLabel.Name = "percentageLabel";
+            this.percentageLabel.Size = new System.Drawing.Size(24, 13);
+            this.percentageLabel.TabIndex = 18;
+            this.percentageLabel.Text = "0 %";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(17, 89);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer1.Size = new System.Drawing.Size(875, 401);
+            this.splitContainer1.SplitterDistance = 671;
+            this.splitContainer1.TabIndex = 19;
+            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.paramColumn,
+            this.valueColumn});
+            this.dataGridView1.Location = new System.Drawing.Point(6, 4);
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(191, 397);
+            this.dataGridView1.TabIndex = 0;
+            // 
+            // paramColumn
+            // 
+            this.paramColumn.HeaderText = "Параметр";
+            this.paramColumn.Name = "paramColumn";
+            this.paramColumn.ReadOnly = true;
+            this.paramColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // valueColumn
+            // 
+            this.valueColumn.HeaderText = "Значение";
+            this.valueColumn.Name = "valueColumn";
+            this.valueColumn.ReadOnly = true;
+            this.valueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(721, 510);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(35, 13);
+            this.statusLabel.TabIndex = 4;
+            this.statusLabel.Text = "status";
+            // 
+            // scaleLabel
+            // 
+            this.scaleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scaleLabel.AutoSize = true;
+            this.scaleLabel.Location = new System.Drawing.Point(808, 29);
+            this.scaleLabel.Name = "scaleLabel";
+            this.scaleLabel.Size = new System.Drawing.Size(85, 13);
+            this.scaleLabel.TabIndex = 22;
+            this.scaleLabel.Text = "Масштаб: 100%";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel4,
+            this.toolStripStatusLabel5,
+            this.toolStripStatusLabel3,
+            this.toolStripProgressBar1,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripDropDownButton1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 510);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(915, 22);
+            this.statusStrip1.TabIndex = 23;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel5
+            // 
+            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(751, 17);
+            this.toolStripStatusLabel3.Spring = true;
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.ShowDropDownArrow = false;
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(47, 20);
+            this.toolStripDropDownButton1.Text = "Cancel";
+            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
+            this.checkBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.FlatAppearance.BorderSize = 0;
+            this.checkBox1.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.checkBox1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox1.Location = new System.Drawing.Point(859, 47);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(30, 30);
+            this.checkBox1.TabIndex = 20;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // resetFilterBtn
+            // 
+            this.resetFilterBtn.BackColor = System.Drawing.Color.Transparent;
+            this.resetFilterBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetFilterBtn.BackgroundImage")));
+            this.resetFilterBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.resetFilterBtn.FlatAppearance.BorderSize = 0;
+            this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resetFilterBtn.Location = new System.Drawing.Point(275, 15);
+            this.resetFilterBtn.Name = "resetFilterBtn";
+            this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
+            this.resetFilterBtn.TabIndex = 13;
+            this.resetFilterBtn.UseVisualStyleBackColor = false;
+            this.resetFilterBtn.Click += new System.EventHandler(this.resetFilterBtn_Click);
+            // 
+            // gammaCorrRb
+            // 
+            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
+            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
+            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gammaCorrRb.Location = new System.Drawing.Point(78, 15);
+            this.gammaCorrRb.Name = "gammaCorrRb";
+            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
+            this.gammaCorrRb.TabIndex = 2;
+            this.gammaCorrRb.TabStop = true;
+            this.gammaCorrRb.UseVisualStyleBackColor = true;
+            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
+            // 
+            // contrastRb
+            // 
+            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
+            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.contrastRb.FlatAppearance.BorderSize = 0;
+            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.contrastRb.Location = new System.Drawing.Point(45, 15);
+            this.contrastRb.Name = "contrastRb";
+            this.contrastRb.Size = new System.Drawing.Size(30, 30);
+            this.contrastRb.TabIndex = 1;
+            this.contrastRb.TabStop = true;
+            this.contrastRb.UseVisualStyleBackColor = true;
+            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
+            // 
+            // brightnessRb
+            // 
+            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
+            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.brightnessRb.Checked = true;
+            this.brightnessRb.FlatAppearance.BorderSize = 0;
+            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.brightnessRb.Location = new System.Drawing.Point(12, 15);
+            this.brightnessRb.Name = "brightnessRb";
+            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
+            this.brightnessRb.TabIndex = 0;
+            this.brightnessRb.TabStop = true;
+            this.brightnessRb.UseVisualStyleBackColor = true;
+            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
             // rulerRb
             // 
@@ -255,184 +600,6 @@
             this.markPointRb.TabStop = true;
             this.markPointRb.UseVisualStyleBackColor = true;
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.settingsToolStripMenuItem,
-            this.infoToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(915, 24);
-            this.menuStrip1.TabIndex = 8;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.сохранитьToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.fileToolStripMenuItem.Text = "Файл";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
-            this.openToolStripMenuItem.Text = "Открыть";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
-            // 
-            // сохранитьToolStripMenuItem
-            // 
-            this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
-            this.сохранитьToolStripMenuItem.Text = "Сохранить";
-            this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
-            this.settingsToolStripMenuItem.Text = "Настройки";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
-            // 
-            // infoToolStripMenuItem
-            // 
-            this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.оФайлеToolStripMenuItem,
-            this.логToolStripMenuItem1});
-            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            this.infoToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
-            this.infoToolStripMenuItem.Text = "Инфо";
-            // 
-            // оФайлеToolStripMenuItem
-            // 
-            this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.оФайлеToolStripMenuItem.Text = "О файле";
-            this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
-            // 
-            // логToolStripMenuItem1
-            // 
-            this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
-            this.логToolStripMenuItem1.Text = "Лог";
-            this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.gammaCorrRb);
-            this.groupBox2.Controls.Add(this.contrastRb);
-            this.groupBox2.Controls.Add(this.brightnessRb);
-            this.groupBox2.Location = new System.Drawing.Point(346, 29);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(120, 58);
-            this.groupBox2.TabIndex = 9;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Фильтр";
-            // 
-            // gammaCorrRb
-            // 
-            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
-            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
-            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gammaCorrRb.Location = new System.Drawing.Point(78, 15);
-            this.gammaCorrRb.Name = "gammaCorrRb";
-            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
-            this.gammaCorrRb.TabIndex = 2;
-            this.gammaCorrRb.TabStop = true;
-            this.gammaCorrRb.UseVisualStyleBackColor = true;
-            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
-            // 
-            // contrastRb
-            // 
-            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
-            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.contrastRb.FlatAppearance.BorderSize = 0;
-            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.contrastRb.Location = new System.Drawing.Point(45, 15);
-            this.contrastRb.Name = "contrastRb";
-            this.contrastRb.Size = new System.Drawing.Size(30, 30);
-            this.contrastRb.TabIndex = 1;
-            this.contrastRb.TabStop = true;
-            this.contrastRb.UseVisualStyleBackColor = true;
-            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
-            // 
-            // brightnessRb
-            // 
-            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
-            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.brightnessRb.Checked = true;
-            this.brightnessRb.FlatAppearance.BorderSize = 0;
-            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.brightnessRb.Location = new System.Drawing.Point(12, 15);
-            this.brightnessRb.Name = "brightnessRb";
-            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
-            this.brightnessRb.TabIndex = 0;
-            this.brightnessRb.TabStop = true;
-            this.brightnessRb.UseVisualStyleBackColor = true;
-            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Location = new System.Drawing.Point(472, 29);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(121, 45);
-            this.trackBar1.TabIndex = 10;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
-            // 
-            // filterLbl
-            // 
-            this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(472, 62);
-            this.filterLbl.Name = "filterLbl";
-            this.filterLbl.Size = new System.Drawing.Size(109, 13);
-            this.filterLbl.TabIndex = 11;
-            this.filterLbl.Text = "Уровень фильтра: 0";
-            // 
-            // percentageLabel
-            // 
-            this.percentageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.percentageLabel.AutoSize = true;
-            this.percentageLabel.BackColor = System.Drawing.Color.Transparent;
-            this.percentageLabel.Location = new System.Drawing.Point(691, 510);
-            this.percentageLabel.Name = "percentageLabel";
-            this.percentageLabel.Size = new System.Drawing.Size(24, 13);
-            this.percentageLabel.TabIndex = 18;
-            this.percentageLabel.Text = "0 %";
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(17, 89);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(875, 401);
-            this.splitContainer1.SplitterDistance = 671;
-            this.splitContainer1.TabIndex = 19;
-            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -448,134 +615,9 @@
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.paramColumn,
-            this.valueColumn});
-            this.dataGridView1.Location = new System.Drawing.Point(6, 4);
-            this.dataGridView1.MultiSelect = false;
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(191, 397);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(811, 64);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(72, 23);
-            this.checkBox1.TabIndex = 20;
-            this.checkBox1.Text = "Навигация";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(721, 510);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(35, 13);
-            this.statusLabel.TabIndex = 4;
-            this.statusLabel.Text = "status";
-            // 
-            // scaleLabel
-            // 
-            this.scaleLabel.AutoSize = true;
-            this.scaleLabel.Location = new System.Drawing.Point(808, 29);
-            this.scaleLabel.Name = "scaleLabel";
-            this.scaleLabel.Size = new System.Drawing.Size(85, 13);
-            this.scaleLabel.TabIndex = 22;
-            this.scaleLabel.Text = "Масштаб: 100%";
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel4,
-            this.toolStripStatusLabel5,
-            this.toolStripStatusLabel3,
-            this.toolStripProgressBar1,
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2,
-            this.toolStripDropDownButton1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 510);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(915, 22);
-            this.statusStrip1.TabIndex = 23;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel4
-            // 
-            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-            this.toolStripStatusLabel4.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel5
-            // 
-            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel3
-            // 
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(751, 17);
-            this.toolStripStatusLabel3.Spring = true;
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.ShowDropDownArrow = false;
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(47, 20);
-            this.toolStripDropDownButton1.Text = "Cancel";
-            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
-            // 
-            // paramColumn
-            // 
-            this.paramColumn.HeaderText = "Параметр";
-            this.paramColumn.Name = "paramColumn";
-            this.paramColumn.ReadOnly = true;
-            this.paramColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // valueColumn
-            // 
-            this.valueColumn.HeaderText = "Значение";
-            this.valueColumn.Name = "valueColumn";
-            this.valueColumn.ReadOnly = true;
-            this.valueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
@@ -584,34 +626,36 @@
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.filterLbl);
-            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.groupBox1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -661,6 +705,9 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.DataGridViewTextBoxColumn paramColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
+        private System.Windows.Forms.Button resetFilterBtn;
     }
 }
 

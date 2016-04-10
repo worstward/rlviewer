@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Rl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Rl4StrHeaderStruct
+    public struct Rl4StrHeaderStruct : Abstract.IStrHeader
     {
         [MarshalAs(UnmanagedType.I1)]
 	    public bool isNavigation;

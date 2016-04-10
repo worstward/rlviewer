@@ -39,7 +39,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
-            var path = Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
+            var path = Path.Combine(Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles",
+                Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
             Tile[] tiles;
 
             if (forceTileGeneration && Directory.Exists(path))
@@ -82,6 +84,101 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
 
+
+
+        protected Tile[] GetTilesFromFile(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader)
+        {
+            var tileFolder = InitTilePath(filePath);
+
+            List<Tile> tiles = new List<Tile>();
+            byte[] tileLine;
+            using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+                int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                int strHeaderLength = 0;
+                if (strHeader != null)
+                {
+                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                }
+
+                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                for (int i = 0; i < totalLines; i++)
+                {
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
+                    OnProgressReport((int)(i / totalLines * 100));
+                    if (OnCancelWorker())
+                    {
+                        throw new OperationCanceledException();
+                    }
+                }
+            }
+            return tiles.ToArray();
+        }
+
+        /// <summary>
+        /// Creates tile objects array from existing tile files
+        /// </summary>
+        /// <param name="directoryPath">Directory with tiles</param>
+        /// <returns></returns>
+        protected virtual Tile[] GetTilesFromTl(string directoryPath, LocatorFile file)
+        {
+            List<Tile> tiles = new List<Tile>();
+
+            for (int i = 0; i < file.Width; i += TileSize.Width)
+            {
+                for (int j = 0; j < file.Height; j += TileSize.Height)
+                {
+
+                    tiles.Add(new Tile(
+                                Path.Combine(
+                                directoryPath, (Math.Ceiling(i / (double)TileSize.Width)).ToString() +
+                                "-" + Math.Ceiling(j / (double)TileSize.Height).ToString() + TileFileExtension),
+                            new Point(i, j), TileSize));
+                }
+            }
+
+            return tiles.ToArray();
+        }
+
+
+        protected virtual Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader)
+        {
+            var tileFolder = InitTilePath(filePath);
+
+            Task.Run(() =>
+            {
+                List<Tile> tiles = new List<Tile>();
+                byte[] tileLine;
+                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+
+                    int strHeaderLength = 0;
+                    if (strHeader != null)
+                    {
+                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                    }
+
+                    int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                    for (int i = 0; i < totalLines; i++)
+                    {
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
+                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
+                    }
+                }
+            });
+            return GetTilesFromTl(tileFolder);
+        }
+
+
+
         protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
             byte[] arr = new byte[strDataLen + strHeadLen];
@@ -95,7 +192,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             {
                 s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
 
-
                 while (s.Position != frameLength && s.Position != s.Length)
                 {
 
@@ -103,16 +199,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
                     var localMax = floatArr.Max();
                     maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
-
                 }
             }
 
-
-
             float histogramStep = maxSampleValue / 1000f;
-
             var histogram = new List<int>();
-
 
             for (int i = 0; i < histogramStep; i++)
             {
@@ -132,7 +223,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                     s.Read(arr, 0, arr.Length);
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
-                    avg += floatArr.Average();
+                    avg += floatArr.Where(x => !float.IsNaN(x)).Average();
 
                     //fill histogram:
                     //count distinct float values, eg:
@@ -142,7 +233,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     for (int i = 0; i < floatArr.Length; i++)
                     {
                         int index = (int)(floatArr[i] / histogramStep);
-   
+                        if(index < 0) continue;
 
                         if (index >= histogram.Count)
                             histogram[histogram.Count - 1]++;
@@ -170,7 +261,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
 
-                if (normal == 0) normal = histogramStep;
+                if ((int)normal == 0) normal = histogramStep;
                 return 255f / normal;
             }
         }
@@ -182,7 +273,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             List<Tile> tiles = new List<Tile>();
 
             int bytesToRead = 0;
-
 
             using (var ms = new MemoryStream(line))
             {
@@ -253,7 +343,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected virtual string InitTilePath(string filePath)
         {
-            string path =  Path.Combine("tiles", Path.GetFileNameWithoutExtension(filePath),
+            string path =  Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                "tiles", Path.GetFileNameWithoutExtension(filePath),
                 Path.GetExtension(filePath));
 
             if (!Directory.Exists(path))

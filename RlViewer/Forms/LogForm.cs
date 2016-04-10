@@ -15,12 +15,10 @@ namespace RlViewer.Forms
         public LogForm()
         {
             InitializeComponent();
+            
             MaximumSize = Size;
             _dgv = GetDataGrid();
             panel1.Controls.Add(_dgv);
-            InitComboBox(comboBox1);
-
-           
         }
 
         DataGridView _dgv;
@@ -37,6 +35,7 @@ namespace RlViewer.Forms
                 AllowUserToResizeColumns = false,
                 AllowUserToAddRows = false,
                 AllowUserToResizeRows = false,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
 
             };
@@ -61,6 +60,7 @@ namespace RlViewer.Forms
                     dgv.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
             }
+
             //dgv.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
 
             return dgv;
@@ -70,11 +70,9 @@ namespace RlViewer.Forms
         private Size SetDgvSize()
         {
             int height = 0;
-            //some magic numbers to set proper offsets and make each row appear correctly
-                 
+            
             foreach (DataGridViewRow row in _dgv.Rows)
             {
-                row.MinimumHeight = 25;
                 height += row.Height;
             }
             height += _dgv.ColumnHeadersHeight;
@@ -122,7 +120,7 @@ namespace RlViewer.Forms
             {
                 cb.Items.Add(item);
             }
-            cb.SelectedIndex = 0;
+            comboBox1.SelectedIndex = 0;
         }
 
 
@@ -139,7 +137,13 @@ namespace RlViewer.Forms
                 LoadData();
             }
             _dgv.Size = SetDgvSize();
+            
+        }
 
+        private void LogForm_Shown(object sender, EventArgs e)
+        {
+            InitComboBox(comboBox1);
+            _dgv.Size = SetDgvSize();
         }
 
 

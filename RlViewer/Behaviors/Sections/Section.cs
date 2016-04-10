@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Sections
 {
-    public abstract class Section : PointReader
+    public abstract class Section
     {
         public Section(int sectionLength)
         {

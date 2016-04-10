@@ -36,9 +36,14 @@ namespace RlViewer
 
     public static class EnumExt
     {
-        public static T ToEnum<T>(this string value)
+        public static T ToEnum<T>(this string value) where T : struct
         {
-            return (T)Enum.Parse(typeof(T), value, true);
+            T res;
+            if(Enum.TryParse<T>(value, true, out res))
+            {
+                return res;
+            }
+            throw new NotSupportedException("attempt to cast from unsupported type");
         }
     }
 }

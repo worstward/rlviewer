@@ -18,44 +18,75 @@ namespace RlViewer.Forms
             maskedTextBox1.PromptChar = ' ';
         }
 
-        private int _eprValue;
 
-        public int EprValue
+
+        /// <summary>
+        /// Pressed keys (0-9). 1st char after empty input are disappearing for some reason,
+        /// so now all pressed digit keys are stored while maskedTextbox is focused.
+        /// Then maskedTextBox.Text property is set to all pressed keys value
+        /// REFACTOR ASAP
+        /// </summary>
+        string _keys = string.Empty;
+
+        private float _eprValue;
+
+        public float EprValue
         {
             get
             {
-                //if (!string.IsNullOrWhiteSpace(maskedTextBox1.Text))
-                //    return Convert.ToInt32(maskedTextBox1.Text);
-
-                //return 0;
                 return _eprValue;
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SubmitEprValue()
         {
-            if (!Int32.TryParse(maskedTextBox1.Text, out _eprValue))
+            
+            if (!Single.TryParse(_keys, out _eprValue))
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                maskedTextBox1.Text = string.Empty;
+                maskedTextBox1.Focus();
+                return;
             }
-            else
-            {
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            
+
+            
+            DialogResult = DialogResult.OK;
+            Close();
+            
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SubmitEprValue();
         }
 
         private void EprInputForm_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Back && _keys.Length > 0)
+            {
+
+                _keys = _keys.Substring(0, _keys.Length - 1);
+            }
+
             if (e.KeyCode == Keys.Escape)
             {
                 Close();
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                button1_Click(sender, null);
+                SubmitEprValue();
             }
+        }
+
+        private void EprInputForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsDigit(e.KeyChar))
+            {
+                maskedTextBox1.Text = _keys;
+                _keys += e.KeyChar;
+            }
+            
         }
 
     }

@@ -33,6 +33,15 @@ namespace RlViewer.Behaviors.Filters
 
         }
 
+        public void ResetFilters()
+        {
+            foreach (var filter in RlViewer.Behaviors.Filters.Abstract.ImageFiltering.Filters)
+            {
+                filter.Value.FilterValue = 0;
+            }
+        }
+
+
         public void ChangeFilterValue(int value)
         {
             _filter.FilterValue = value << _filterDelta;

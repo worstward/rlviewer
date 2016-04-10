@@ -8,7 +8,8 @@ namespace RlViewer.Navigation.Concrete
 {
     class Rl4NavigationContainer : NavigationContainer
     {
-        public Rl4NavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
+        public Rl4NavigationContainer(string path, float initialRange, float step, byte board,
+            int headerLength, int dataLength, int sx, int sy)
         {
             _path = path;
             _initialRange = initialRange;
@@ -16,6 +17,7 @@ namespace RlViewer.Navigation.Concrete
             _board = board;
             _headerLength = headerLength;
             _dataLength = dataLength;
+            _sx = sx;
         }
 
         private string _path;
@@ -24,7 +26,7 @@ namespace RlViewer.Navigation.Concrete
         private byte _board;
         private int _headerLength;
         private int _dataLength;
-
+        private int _sx;
 
 
         private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
@@ -80,7 +82,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return _naviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
+                return _naviStrings[stringNumber].NaviInfo((sampleNumber + _sx), _computer);    //.NaviInfo();          
             }
         }  
 

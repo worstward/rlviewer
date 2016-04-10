@@ -61,7 +61,7 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         private int _bytesPerSample = 4;
         private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Rl4StrHeaderStruct());
-        private const int _headerLength = 16384;
+        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(new Rl4RliFileHeader());
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
         private Rl4RliFileHeader _headerStruct;
         private HeaderInfoOutput[] _headerInfo;
@@ -130,6 +130,10 @@ namespace RlViewer.Headers.Concrete.Rl4
             rliHeader.Add(new Tuple<string, string>("Тип дальности",                     headerStruct.rlParams.rangeType == 0 ? "Наклонная" : "Не определено"));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м",    headerStruct.rlParams.dx.ToString()));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",      headerStruct.rlParams.dy.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по X, пикс",    headerStruct.rlParams.sx.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по Y, пикс",    headerStruct.rlParams.sy.ToString()));
+
+
 
             var synthHeader = new List<Tuple<string, string>>();
             synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthParams.processAlgorithm == 18 ? "Омега-К" : "Не определено"));           

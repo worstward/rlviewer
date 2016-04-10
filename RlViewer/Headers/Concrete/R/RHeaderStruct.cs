@@ -211,7 +211,7 @@ namespace RlViewer.Headers.Concrete.R
     #endregion
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct RliLineHeader
+    public struct RliLineHeader : Abstract.IStrHeader
     {
         public SignatureHeader signatureHeader; 				// сигнатура заголовка
         public NavigationHeader navigationHeader;				// параметры навигации

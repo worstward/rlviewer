@@ -52,7 +52,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader()), SeekOrigin.Begin);
 
-                    var rlSubHeader = _head.HeaderStruct.ChangeImgDimensions(areaSize.Width, areaSize.Height);
+                    var rlSubHeader = _head.HeaderStruct.rlParams
+                        .ChangeImgDimensions(areaSize.Width, areaSize.Height)
+                        .ChangeFragmentShift(leftTop.X, leftTop.Y);
 
                     RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader brl4Header =
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
@@ -80,7 +82,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
 
@@ -110,7 +112,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
 
-                    var rlSubHeader = _head.HeaderStruct.ChangeImgDimensions(areaSize.Width, areaSize.Height);
+                    var rlSubHeader = _head.HeaderStruct.rlParams
+                        .ChangeImgDimensions(areaSize.Width, areaSize.Height)
+                        .ChangeFragmentShift(leftTop.X, leftTop.Y);
 
                     RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader rl4Header =
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
@@ -136,7 +140,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
 
@@ -180,7 +184,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
                         //fr.Seek(leftTop.X * )
@@ -257,7 +261,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
                         fr.Seek(strHeaderSize, SeekOrigin.Current);
@@ -276,11 +280,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
             }
         }
-
-
-
-
-
 
     }
 }

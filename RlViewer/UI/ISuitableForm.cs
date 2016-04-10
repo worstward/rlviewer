@@ -13,6 +13,7 @@ namespace RlViewer.UI
         HScrollBar Horizontal { get; }
         VScrollBar Vertical { get; }
         TrackBar FilterTrackBar { get; }
+        Label FilterValueLabel { get; }
         ToolStripProgressBar ProgressBar { get; }
         ToolStripStatusLabel ProgressLabel { get; }
         ToolStripStatusLabel StatusLabel { get; }

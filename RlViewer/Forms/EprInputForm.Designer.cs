@@ -37,6 +37,8 @@
             this.maskedTextBox1.Location = new System.Drawing.Point(12, 12);
             this.maskedTextBox1.Mask = "000000000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.ResetOnPrompt = false;
+            this.maskedTextBox1.ResetOnSpace = false;
             this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);
             this.maskedTextBox1.TabIndex = 1;
             // 
@@ -54,7 +56,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(225, 45);
+            this.ClientSize = new System.Drawing.Size(225, 40);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.maskedTextBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -64,6 +66,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ЭПР в точке";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EprInputForm_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EprInputForm_KeyPress);
             this.ResumeLayout(false);
             this.PerformLayout();
 

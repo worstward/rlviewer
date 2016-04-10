@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Brl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Brl4StrHeaderStruct
+    public struct Brl4StrHeaderStruct : Abstract.IStrHeader
     {
         [MarshalAs(UnmanagedType.I1)]
         public bool isNavigation;

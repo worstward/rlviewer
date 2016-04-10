@@ -9,7 +9,8 @@ namespace RlViewer.Logging
 {
     public static class Logger
     {
-        private static string _logFileName = "log.txt";
+        private static string _logFileName = Path.Combine(
+            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "log.txt");
 
         private static List<LogEntry> _logs = new List<LogEntry>();
         public static List<LogEntry> Logs
@@ -33,9 +34,22 @@ namespace RlViewer.Logging
         {
             lock (saveLocker)
             {
-                using (var stream = new StreamWriter(_logFileName, true))
+                StreamWriter stream = null;
+                try
                 {
+                    stream = new StreamWriter(_logFileName, true);
                     stream.WriteLine(entry.ToString());
+                }
+                catch
+                {
+                    return;
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        stream.Dispose();
+                    }
                 }
             }
         }

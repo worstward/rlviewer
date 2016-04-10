@@ -8,19 +8,19 @@ using System.IO;
 
 namespace RlViewer.Behaviors.PointSelector
 {
-    public class SelectedPoint : PointReader
+    public class SelectedPoint
     {
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location, float epr)
         {
             _location = location;
-            _value = GetValue(file, location);
+            _value = FileReader.GetSample(file, location);
             _epr = epr;
         }
 
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location)
         {
             _location = location;
-            _value = GetValue(file, location);
+            _value = FileReader.GetSample(file, location);
         }
 
         private Point _location;

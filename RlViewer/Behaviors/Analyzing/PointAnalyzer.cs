@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Analyzing
 {
-    class PointAnalyzer : PointReader
+    class PointAnalyzer
     {
 
         private bool _isMouseDown;
@@ -46,7 +46,7 @@ namespace RlViewer.Behaviors.Analyzing
 
                         try
                         {
-                            Amplitude = GetValue(file, location);
+                            Amplitude = FileReader.GetSample(file, location);
                         }
                         catch (Exception)
                         {

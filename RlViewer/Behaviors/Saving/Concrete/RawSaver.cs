@@ -57,7 +57,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
 
@@ -128,7 +128,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            return;
+                            throw new OperationCanceledException();
                         }
 
 
