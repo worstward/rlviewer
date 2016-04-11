@@ -66,15 +66,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     tiles = GetTilesFromFile(filePath);
                 }
             }
-            if (tiles != null)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Info,
-                    string.Format("Tile creation process succeed. {0} {1} generated", tiles.Length, tiles.Length == 1 ? "tile" : "tiles"));
-            }
-            else
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Tile creation process cancelled");
-            }
+
             return tiles;
         }
 
@@ -112,7 +104,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
                     {
-                        throw new OperationCanceledException();
+                        return null;
                     }
                 }
             }

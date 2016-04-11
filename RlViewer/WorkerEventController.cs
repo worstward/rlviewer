@@ -13,6 +13,15 @@ namespace RlViewer
 
         public event ReportProgress Report;
 
+        private bool _cancelled = false;
+
+        public bool Cancelled
+        {
+            get { return _cancelled; }
+        }
+
+
+
         protected virtual void OnProgressReport(int percentage)
         {
             if (Report != null)
@@ -31,7 +40,7 @@ namespace RlViewer
             {
                 var e = new CancelEventArgs();
                 handler(null, e);
-
+                _cancelled = e.Cancel;
                 return e.Cancel;
             }
             return false;

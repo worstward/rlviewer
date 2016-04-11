@@ -34,7 +34,7 @@ namespace RlViewer.Navigation
                     OnProgressReport((int)((float)fs.Position / (float)fs.Length * 100));
                     if (OnCancelWorker())
                     {
-                        throw new OperationCanceledException();
+                        return null;
                     }
                 }
             }

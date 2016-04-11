@@ -61,6 +61,7 @@ namespace RlViewer.UI
         private IWin32Window _win;
 
 
+        #region OpenFile
         public string OpenWithDoubleClick()
         {
             foreach (var path in System.Environment.GetCommandLineArgs())
@@ -124,8 +125,6 @@ namespace RlViewer.UI
             }
         }
 
-
-
         public string OpenFile(string fileName)
         {
 
@@ -162,6 +161,8 @@ namespace RlViewer.UI
          
             return caption;
         }
+        #endregion
+
 
         public void ShowFileInfo()
         {
@@ -174,7 +175,7 @@ namespace RlViewer.UI
             }
         }
 
-     
+    
         public void GetImage()
         {
             if (_file != null)
@@ -207,14 +208,11 @@ namespace RlViewer.UI
             _worker.Dispose();          
         }
 
-
-
-
         private void ClearCancelledFileTiles()
         {
             try
             {
-                var path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                     "tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
                     Path.GetExtension(_file.Properties.FilePath));
                 File.SetAttributes(path, FileAttributes.Normal);
@@ -228,6 +226,21 @@ namespace RlViewer.UI
 
             InitializeWindow();   
         }
+
+
+        private void ClearCancelledSaving(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, "Unable to delete saved file");
+                ErrorGuiMessage(ex.Message);
+            }
+        }
+
 
 
 
@@ -253,32 +266,32 @@ namespace RlViewer.UI
                 throw;
             }
 
-            try
-            {
-                _saver = SaverFactory.GetFactory(_properties).Create(_file);
 
-                _saver.Report += ProgressReporter;
-                _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _saver = SaverFactory.GetFactory(_properties).Create(_file);
 
-                _saver.Save(path, Path.GetExtension(path).Replace(".", "")
-                    .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
-            }
-            catch (OperationCanceledException)
+            _saver.Report += ProgressReporter;
+            _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+
+            _saver.Save(path, Path.GetExtension(path).Replace(".", "")
+                .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
+
+           
+            if (_saver.Cancelled)
             {
-                e.Cancel = true;
+                ClearWorkerData(() => ClearCancelledSaving(path));
             }
-            finally
-            {
-                e.Result = path;
-            }
+
+            e.Cancel = _saver.Cancelled;
+            e.Result = path;
         }
 
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _saver.Report -= ProgressReporter;
             _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+
             if (e.Cancelled)
-            {
+            {  
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Saving cancelled");
             }
             else if (e.Error != null)
@@ -299,35 +312,20 @@ namespace RlViewer.UI
             _aligner.Report += ProgressReporter;
             _aligner.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
             string fileName = "placeholder.raw";
-            try
-            {
-                _aligner.Resample(_pointSelector, fileName);
-            }
-            catch (OperationCanceledException)
-            {
-                e.Cancel = true;
-            }
-            catch (AggregateException aggex)
-            {
-                if (aggex.InnerException.GetType() == typeof(OperationCanceledException))
-                {
-                    e.Cancel = true;
-                }
-                else throw;
-            }
-            finally
-            {
-                e.Result = fileName;
-            }
+            _aligner.Resample(_pointSelector, fileName);
+
+            e.Cancel = _aligner.Cancelled;
+            e.Result = fileName;           
         }
 
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _aligner.Report -= ProgressReporter;
             _aligner.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+
             if (e.Cancelled)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Image aligning cancelled");
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Image aligning cancelled: {0}", (string)e.Result));
             }
             else if (e.Error != null)
             {
@@ -344,22 +342,18 @@ namespace RlViewer.UI
 
         private void loaderWorker_InitFile(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            try
-            {
                 _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
                 _navi.Report += ProgressReporter;
                 _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
                 _navi.GetNavigation();
+                 e.Cancel = _navi.Cancelled;
 
                 _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
                 _aligner = new Behaviors.ImageAligning.Aligning(_file);
                 _ruler = new Behaviors.Ruler.RulerFacade(_file);
-            }
-            catch (OperationCanceledException)
-            {
-                e.Cancel = true;
-            }
+
+                
         }
 
 
@@ -388,18 +382,14 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            try
-            {
-                _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
+            _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
-                _creator.Report += ProgressReporter;
-                _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-                _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-            }
-            catch (OperationCanceledException)
-            {
-                e.Cancel = true;   
-            }
+            _creator.Report += ProgressReporter;
+            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
+
+            e.Cancel = _creator.Cancelled;
+            
         }
 
 
@@ -423,6 +413,9 @@ namespace RlViewer.UI
             }
             else           
             {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                    string.Format("Tile creation process succeed. {0} {1} generated", _tiles.Length, _tiles.Length == 1 ? "tile" : "tiles"));
+                
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 InitProgressControls(false);
@@ -767,7 +760,7 @@ namespace RlViewer.UI
                     {
                         _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
                             new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
+                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
 
                         if (_pointSelector.Count() == 16)
                         {

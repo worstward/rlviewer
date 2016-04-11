@@ -47,6 +47,15 @@ namespace RlViewer.Settings
             set { _sectionSize = value; }
         }
 
+        private int _areaSize = 9;
+        /// <summary>
+        /// Rectangle area side length
+        /// </summary>
+        public int SelectorAreaSize
+        {
+            get { return _areaSize; }
+            set { _areaSize = value; }
+        }
 
 
     }

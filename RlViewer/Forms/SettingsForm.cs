@@ -23,6 +23,9 @@ namespace RlViewer.Forms
             forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
+
+            areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
+            areaSizeTextBox.PromptChar = ' ';
         }
 
         private Settings.Settings _settings;
@@ -31,6 +34,7 @@ namespace RlViewer.Forms
         private bool _isReversed;
         private bool _allowViewWhileLoading;
         private bool _forceTileGen;
+        
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -70,10 +74,19 @@ namespace RlViewer.Forms
                 _settings.SectionSize = sectionSize;
             }
             else return;
+
+            int areaSize;
+            if (Int32.TryParse(areaSizeTextBox.Text, out areaSize))
+            {
+                _settings.SelectorAreaSize = areaSize == 0 ? 1 : areaSize;
+            }
+            else return;
+
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
             _settings.ForceTileGeneration = _forceTileGen;
+
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();

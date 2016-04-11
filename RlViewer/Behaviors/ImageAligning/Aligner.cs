@@ -47,7 +47,7 @@ namespace RlViewer.Behaviors.ImageAligning
         private float[][] _yCoefficients = new float[4][];
         private Files.LocatorFile _file;
         private System.Drawing.Rectangle _areaBorders;
-
+        private const int _workingAreaSize = 4000;
 
         private System.Drawing.Rectangle GetArea(PointSelector.PointSelector selector)
         {
@@ -61,18 +61,18 @@ namespace RlViewer.Behaviors.ImageAligning
             int areaHeight = maxY - minY;
 
 
-            if (areaWidth < 4000)
+            if (areaWidth < _workingAreaSize)
             {
-                minX = minX - (4000 - areaWidth) / 2;
+                minX = minX - (_workingAreaSize - areaWidth) / 2;
                 minX = minX < 0 ? 0 : minX;
-                areaWidth = 4000;
+                areaWidth = _workingAreaSize;
             }
 
-            if (areaHeight < 4000)
+            if (areaHeight < _workingAreaSize)
             {
-                minY = minY - (4000 - areaHeight) / 2;
+                minY = minY - (_workingAreaSize - areaHeight) / 2;
                 minY = minY < 0 ? 0 : minY;
-                areaHeight = 4000;
+                areaHeight = _workingAreaSize;
             }
 
             return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
@@ -118,10 +118,16 @@ namespace RlViewer.Behaviors.ImageAligning
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - _areaBorders.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    throw new OperationCanceledException();
+                    return;
                 }
 
             });
+
+            if (Cancelled)
+            {
+                return null;
+            }
+
 
             Buffer.BlockCopy(image, 0, imageB, 0, imageB.Length);
 

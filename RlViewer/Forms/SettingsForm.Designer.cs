@@ -36,11 +36,13 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -147,6 +149,37 @@
             this.allowViewCheckBox.UseVisualStyleBackColor = true;
             this.allowViewCheckBox.CheckedChanged += new System.EventHandler(this.allowViewCheckBox_CheckedChanged);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label2);
+            this.tabPage3.Controls.Add(this.areaSizeTextBox);
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Controls.Add(this.sectionSizeTextBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(270, 150);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Инструменты";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(141, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Размер сечения, отсчетов";
+            // 
+            // sectionSizeTextBox
+            // 
+            this.sectionSizeTextBox.Location = new System.Drawing.Point(9, 36);
+            this.sectionSizeTextBox.Mask = "0000";
+            this.sectionSizeTextBox.Name = "sectionSizeTextBox";
+            this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.sectionSizeTextBox.TabIndex = 0;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(17, 304);
@@ -167,34 +200,22 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // tabPage3
+            // label2
             // 
-            this.tabPage3.Controls.Add(this.label1);
-            this.tabPage3.Controls.Add(this.sectionSizeTextBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(270, 150);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Инструменты";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 75);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(191, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Сторона области маркера, отсчетов";
             // 
-            // sectionSizeTextBox
+            // areaSizeTextBox
             // 
-            this.sectionSizeTextBox.Location = new System.Drawing.Point(9, 36);
-            this.sectionSizeTextBox.Mask = "0000";
-            this.sectionSizeTextBox.Name = "sectionSizeTextBox";
-            this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
-            this.sectionSizeTextBox.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Размер сечения";
+            this.areaSizeTextBox.Location = new System.Drawing.Point(9, 91);
+            this.areaSizeTextBox.Mask = "0";
+            this.areaSizeTextBox.Name = "areaSizeTextBox";
+            this.areaSizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.areaSizeTextBox.TabIndex = 3;
             // 
             // SettingsForm
             // 
@@ -238,5 +259,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MaskedTextBox sectionSizeTextBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.MaskedTextBox areaSizeTextBox;
     }
 }

@@ -10,7 +10,6 @@ namespace RlViewer.Behaviors
 {
     public static class FileReader
     {
-
         public static float[] GetArea(RlViewer.Files.LocatorFile file, Rectangle areaBorders)
         {
             FileStream fs = null;
@@ -71,6 +70,26 @@ namespace RlViewer.Behaviors
             }
         }
 
+        public static Point GetMaxSampleLocation(RlViewer.Files.LocatorFile file, Rectangle area)
+        {
+            float max = FileReader.GetSample(file, area.Location);
+            Point p = area.Location;
+
+
+            for (int i = area.Location.X; i < area.Location.X + area.Width; i++)
+            {
+                for (int j = area.Location.Y; j < area.Location.Y + area.Height; j++)
+                {
+                    var sample = FileReader.GetSample(file, new Point(i, j));
+                    if (max < sample)
+                    {
+                        max = sample;
+                        p = new Point(i, j);
+                    }
+                }
+            }
+            return p;
+        }
 
 
         //TODO: provide complex samples support (2 float = 8 bytes)

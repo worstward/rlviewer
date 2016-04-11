@@ -10,7 +10,7 @@ namespace RlViewer.Logging
     public static class Logger
     {
         private static string _logFileName = Path.Combine(
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "log.txt");
+            AppDomain.CurrentDomain.BaseDirectory, "log.txt");
 
         private static List<LogEntry> _logs = new List<LogEntry>();
         public static List<LogEntry> Logs

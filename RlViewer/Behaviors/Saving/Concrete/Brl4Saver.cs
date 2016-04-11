@@ -82,7 +82,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            throw new OperationCanceledException();
+                            return;
                         }
 
 
@@ -140,7 +140,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            throw new OperationCanceledException();
+                            return;
                         }
 
 
@@ -184,7 +184,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            throw new OperationCanceledException();
+                            return;
                         }
 
                         //fr.Seek(leftTop.X * )
@@ -261,7 +261,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
                         if (OnCancelWorker())
                         {
-                            throw new OperationCanceledException();
+                            return;
                         }
 
                         fr.Seek(strHeaderSize, SeekOrigin.Current);

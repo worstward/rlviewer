@@ -34,7 +34,7 @@ namespace RlViewer.Behaviors.Scaling
             get { return _minZoom; }
         }
 
-        private const float _maxZoom = 128;
+        private const float _maxZoom = 32f;
         public float MaxZoom
         {
             get { return _maxZoom; }

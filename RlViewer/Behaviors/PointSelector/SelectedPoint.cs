@@ -17,11 +17,13 @@ namespace RlViewer.Behaviors.PointSelector
             _epr = epr;
         }
 
+
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location)
-        {
+        {      
             _location = location;
             _value = FileReader.GetSample(file, location);
         }
+
 
         private Point _location;
 

@@ -28,6 +28,8 @@ namespace RlViewer.Behaviors.PointSelector
             return this.GetEnumerator();
         }
 
+
+
         /// <summary>
         /// Orders selected point list as 4x4 matrix
         /// </summary>
@@ -50,7 +52,7 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-        public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+        public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
         {
             //16 points required for the algorythm to work properly
             if (selectedPoints.Count < 16)
@@ -61,7 +63,40 @@ namespace RlViewer.Behaviors.PointSelector
                     {
                         if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {
-                            selectedPoints.Add(new SelectedPoint(file, location, epr.EprValue));
+
+                            int width = selectorSize.Width;
+                            int height = selectorSize.Height;
+
+
+                            int x = (location.X - (selectorSize.Width / 2));
+                            
+                            if (x < 0)
+                            {
+                                width = width + x;
+                                x = 0;
+                            }
+                            
+                            if (x + width > file.Width)
+                            {
+                                width = file.Width - x;
+                            }
+
+                            int y = (location.Y - (selectorSize.Height / 2));
+
+                            if (y < 0)
+                            {
+                                height = height + y;
+                                y = 0;
+                            }
+
+                            if (y + height > file.Height)
+                            {
+                                height = file.Height - y;
+                            }
+                            
+                            System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
+
+                            selectedPoints.Add(new SelectedPoint(file, FileReader.GetMaxSampleLocation(file, area), epr.EprValue));
                         }
                     }
                 }
