@@ -11,7 +11,7 @@ namespace RlViewer
 
         public delegate void ReportProgress(int percentage);
 
-        public event ReportProgress Report;
+        public virtual event ReportProgress Report;
 
         private bool _cancelled = false;
 
@@ -30,7 +30,7 @@ namespace RlViewer
             }
         }
 
-        public event EventHandler<CancelEventArgs> CancelJob;
+        public virtual event EventHandler<CancelEventArgs> CancelJob;
 
         protected virtual bool OnCancelWorker()
         {

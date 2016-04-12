@@ -8,45 +8,50 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file)
+        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector)
         {
-            _file = file;         
+            _file = file;     
+            _selector = selector;
+            _surface = Surfaces.Abstract.SurfaceFactory.CreateSurface(_selector);
         }
 
-
-        public void Resample(PointSelector.PointSelector selector, string fileName)
+        public override event ReportProgress Report
         {
-            for (int i = 0; i < 4; i++)
+            add 
             {
-                _zCoefficients[i] = new LinearEquation(
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        selector.Skip(i * 4).Take(4).Select(x => x.Value).ToArray())
-                    .Solution;
-
-                _yCoefficients[i] = new LinearEquation(
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.Y).ToArray())
-                    .Solution;
-
+                _surface.Report += value;
             }
-   
-            _areaBorders = GetArea(selector);
-   
-            System.IO.File.WriteAllBytes(fileName, ResampleImage());
+            remove
+            {
+                _surface.Report -= value;
+            }
+        }
+
+        public override event EventHandler<CancelEventArgs> CancelJob
+        {
+            add
+            {
+                _surface.CancelJob += value;
+            }
+            remove
+            {
+                _surface.CancelJob -= value;
+            }
         }
 
 
-        /// <summary>
-        /// Contains x-z linear equation coefficients (A*x^3 + B*x^2 + C*x + D = z)
-        /// /// </summary>
-        private float[][] _zCoefficients  = new float[4][];
+        private Surfaces.Abstract.Surface _surface;
+        private PointSelector.PointSelector _selector;
 
-        /// <summary>
-        /// Contains x-y linear equation coefficients (A*x^3 + B*x^2 + C*x + D = y)
-        /// </summary>
-        private float[][] _yCoefficients = new float[4][];
+
+        public void Resample(string fileName)
+        {
+            System.IO.File.WriteAllBytes(fileName, _surface.ResampleImage(_file, GetArea(_selector)));
+        }
+     
+
         private Files.LocatorFile _file;
-        private System.Drawing.Rectangle _areaBorders;
+
         private const int _workingAreaSize = 4000;
 
         private System.Drawing.Rectangle GetArea(PointSelector.PointSelector selector)
@@ -80,78 +85,6 @@ namespace RlViewer.Behaviors.ImageAligning
         }
 
 
-        private byte[] ResampleImage()
-        {
-            float[] image = new float[_areaBorders.Width * _areaBorders.Height];
-            byte[] imageB = new byte[image.Length * 4];
-
-            //iterate over X axis
-
-            int toInclusiveX = _areaBorders.Location.X + _areaBorders.Width;
-            toInclusiveX = toInclusiveX > _file.Width ? _file.Width : toInclusiveX;
-
-            int toInclusiveY = _areaBorders.Location.Y + _areaBorders.Height;
-            toInclusiveY = toInclusiveY > _file.Height ? _file.Height : toInclusiveY;
-            int counter = 0;
-
-
-            float[] imageArea = Behaviors.FileReader.GetArea(_file, _areaBorders);
-
-            Parallel.For(_areaBorders.Location.X, toInclusiveX, (i) =>
-            {
-                var zValues = _zCoefficients.Select(x => Extrapolate(i, x)).ToArray();
-                var yValues = _yCoefficients.Select(x => Extrapolate(i, x)).ToArray();
-                var _zCoefs = new LinearEquation(yValues, zValues).Solution;
-
-                for (int j = _areaBorders.Location.Y; j < toInclusiveY; j++)
-                {
-                    var oldVal = imageArea[(j - _areaBorders.Location.Y) 
-                        * _areaBorders.Width + (i - _areaBorders.Location.X)];
-                    var newVal = Extrapolate(j, _zCoefs);
-
-                    var diff = oldVal / newVal;
-                    image[(j - _areaBorders.Location.Y) * _areaBorders.Width + (i - _areaBorders.Location.X)] = diff;
-                    diff = diff < 0 ? 0 : diff;
-                }
-
-                System.Threading.Interlocked.Increment(ref counter);
-                OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - _areaBorders.Location.X)) * 100));
-                if (OnCancelWorker())
-                {
-                    return;
-                }
-
-            });
-
-            if (Cancelled)
-            {
-                return null;
-            }
-
-
-            Buffer.BlockCopy(image, 0, imageB, 0, imageB.Length);
-
-            return imageB;
-        }
-
-
-
-        private float Extrapolate(int sample, float[] solution)
-        {
-            if (solution.GetLength(0) != 4)
-            {
-                throw new ArgumentException();
-            }
-
-            //(A*x^3 + B*x^2 + C*x + D = z) to find z with provided x sample and ABCD coef in solution[]
-            float extrapolatedValue = 0;
-
-            for (int j = 3; j >= 0; j--)
-            {
-                extrapolatedValue += (float)Math.Pow(sample, 3 - j) * solution[j];
-            }
-            return extrapolatedValue;
-        }
 
 
 

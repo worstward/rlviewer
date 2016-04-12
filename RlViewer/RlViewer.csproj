@@ -64,6 +64,11 @@
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\LinearEquation.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
+    <Compile Include="Behaviors\ImageAligning\Plane.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\Surface.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\SurfaceFactory.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface16Points.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface3Points.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
     <Compile Include="Behaviors\FileReader.cs" />

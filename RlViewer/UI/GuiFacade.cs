@@ -125,7 +125,7 @@ namespace RlViewer.UI
             }
         }
 
-        public string OpenFile(string fileName)
+        private string OpenFile(string fileName)
         {
 
             string caption;
@@ -138,26 +138,15 @@ namespace RlViewer.UI
             _file = null;
             _tiles = null;
             _drawer = null;
-            _form.Canvas.Image = null;
+
             _form.NavigationDgv.Rows.Clear();
-
-            try
-            {
-                _properties = new Files.FileProperties(fileName);
-                _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);       
-            }
-            catch (ArgumentException)
-            {
-                ErrorGuiMessage("Неподдерживаемый формат файла");
-                Logging.Logger.Log(Logging.SeverityGrades.Error, "Неподдерживаемый формат файла");
-                return string.Empty;
-            }
-
-            caption = _caption = _properties.FilePath;
+            InitializeWindow();
+       
+            caption = _caption = fileName;
 
             InitProgressControls(true, "Чтение навигации");
             _worker = ThreadHelpers.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
-            _worker.RunWorkerAsync();
+            _worker.RunWorkerAsync(fileName);
          
             return caption;
         }
@@ -311,8 +300,8 @@ namespace RlViewer.UI
         {
             _aligner.Report += ProgressReporter;
             _aligner.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-            string fileName = "placeholder.raw";
-            _aligner.Resample(_pointSelector, fileName);
+            string fileName = Path.GetFileName(Path.ChangeExtension(_file.Properties.FilePath, "raw"));
+            _aligner.Resample(fileName);
 
             e.Cancel = _aligner.Cancelled;
             e.Result = fileName;           
@@ -342,25 +331,30 @@ namespace RlViewer.UI
 
         private void loaderWorker_InitFile(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-                _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
-                _navi.Report += ProgressReporter;
-                _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
-                _navi.GetNavigation();
-                 e.Cancel = _navi.Cancelled;
+            _properties = new Files.FileProperties((string)e.Argument);
+            _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);       
 
-                _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
-                _aligner = new Behaviors.ImageAligning.Aligning(_file);
-                _ruler = new Behaviors.Ruler.RulerFacade(_file);
+            _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
-                
+            _navi.Report += ProgressReporter;
+            _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _navi.GetNavigation();
+                e.Cancel = _navi.Cancelled;
+
+            _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+            _ruler = new Behaviors.Ruler.RulerFacade(_file);                
         }
 
 
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _navi.Report -= ProgressReporter;
-            _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            if (_navi != null)
+            {
+                _navi.Report -= ProgressReporter;
+                _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            }
+
 
             if (e.Cancelled)
             {
@@ -407,7 +401,8 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 ClearWorkerData(() => ClearCancelledFileTiles());
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}", e.Error.Message));
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}",
+                    e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
                 ErrorGuiMessage("Unable to create tiles");
                 InitializeWindow();
             }
@@ -762,7 +757,7 @@ namespace RlViewer.UI
                             new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
 
-                        if (_pointSelector.Count() == 16)
+                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 16)
                         {
                             _form.AlignBtn.Enabled = true;
                         }
@@ -930,6 +925,9 @@ namespace RlViewer.UI
         public void AlignImage()
         {
             _form.StatusLabel.Text = "Чтение навигации";
+
+            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector);
+
             InitProgressControls(true, "Выравнивание изображения");
             _worker = ThreadHelpers.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
 

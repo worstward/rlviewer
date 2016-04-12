@@ -306,18 +306,13 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             int index = 0;
 
-            try
+      
+            while (index != line.Length && s.Position != s.Length)
             {
-                while (index != line.Length && s.Position != s.Length)
-                {
-                    s.Seek(strHeaderLength, SeekOrigin.Current);
-                    index += s.Read(line, index, signalDataLength);
-                }
+                s.Seek(strHeaderLength, SeekOrigin.Current);
+                index += s.Read(line, index, signalDataLength);
             }
-            catch (Exception ex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, ex.Message);
-            }
+
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
             normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(x * normalizationFactor)).ToArray();

@@ -20,20 +20,7 @@ namespace RlViewer.Files
 
         private FileType GetType(string path)
         {
-            FileType type;
-            try
-            {
-                //get file extension without dot
-                type = System.IO.Path.GetExtension(path).Replace(".", "").ToEnum<FileType>();
-            }
-            catch (ArgumentException aex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error,
-                    string.Format("Attempt to open unsupported file type {0}  {1}", Environment.NewLine, aex.Message));
-                throw;
-            }
-
-            return type;        
+           return System.IO.Path.GetExtension(path).Replace(".", "").ToEnum<FileType>();     
         }   
 
 

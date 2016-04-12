@@ -43,7 +43,8 @@ namespace RlViewer
             {
                 return res;
             }
-            throw new NotSupportedException("attempt to cast from unsupported type");
+
+            throw new NotSupportedException("unsupported type");
         }
     }
 }
