@@ -18,13 +18,13 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             for (int i = 0; i < 4; i++)
             {
                 _zCoefficients[i] = new LinearEquation(
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        selector.Skip(i * 4).Take(4).Select(x => x.Value).ToArray())
+                        Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
+                        Selector.Skip(i * 4).Take(4).Select(x => x.Value).ToArray())
                     .Solution;
 
                 _yCoefficients[i] = new LinearEquation(
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.Y).ToArray())
+                        Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
+                        Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.Y).ToArray())
                     .Solution;
 
             } 
@@ -47,8 +47,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
 
             float[] image = new float[area.Width * area.Height];
-            byte[] imageB = new byte[image.Length * 4];
-
+           
             //iterate over X axis
 
             int toInclusiveX = area.Location.X + area.Width;
@@ -74,8 +73,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                     var newVal = Extrapolate(j, _zCoefs);
 
                     var diff = oldVal / newVal;
-                    image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                     diff = diff < 0 ? 0 : diff;
+
+                    image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
 
                 System.Threading.Interlocked.Increment(ref counter);
@@ -92,6 +92,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 return null;
             }
 
+            byte[] imageB = new byte[image.Length * 4];
 
             Buffer.BlockCopy(image, 0, imageB, 0, imageB.Length);
 

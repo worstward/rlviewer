@@ -10,13 +10,19 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class SelectedPoint
     {
-        public SelectedPoint(RlViewer.Files.LocatorFile file, Point location, float epr)
+        public SelectedPoint(RlViewer.Files.LocatorFile file, Point location, float rcs)
         {
             _location = location;
             _value = FileReader.GetSample(file, location);
-            _epr = epr;
+            _rcs = rcs;
         }
 
+        public SelectedPoint(Point location, float value, float rcs)
+        {
+            _location = location;
+            _value = value;
+            _rcs = rcs;
+        }
 
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location)
         {      
@@ -27,12 +33,18 @@ namespace RlViewer.Behaviors.PointSelector
 
         private Point _location;
 
+        /// <summary>
+        /// X-Y point coordinates
+        /// </summary>
         public Point Location
         {
             get { return _location; }
         }
 
         private float _value;
+        /// <summary>
+        /// Amplitude
+        /// </summary>
         public float Value
         {
             get { return _value; }
@@ -40,11 +52,15 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-        private float _epr;
-        public float Epr
+        private float _rcs;
+
+        /// <summary>
+        /// Radar cross-section
+        /// </summary>
+        public float Rcs
         {
-            get { return _epr; }
-            set { _epr = value; }
+            get { return _rcs; }
+            set { _rcs = value; }
         }
 
 

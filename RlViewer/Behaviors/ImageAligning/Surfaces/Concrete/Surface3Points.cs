@@ -14,17 +14,15 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         public Surface3Points(PointSelector.PointSelector selector)
             : base(selector)
         {
-            _solution = Solve(selector);
+            _solution = Solve(Selector);
         }
 
         private float[] _solution;
 
-        
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
             float[] image = new float[area.Width * area.Height];
-            byte[] imageB = new byte[image.Length * 4];
-
+            
             float[] imageArea = Behaviors.FileReader.GetArea(file, area);
 
             int toInclusiveX = area.Location.X + area.Width;
@@ -39,14 +37,15 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-                    var oldVal = imageArea[(j - area.Location.Y)
-                        * area.Width + (i - area.Location.X)];
+                    var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
 
                     var newVal = GetAmplitude(i, j);
 
                     var diff = oldVal / newVal;
-                    image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
+
                     diff = diff < 0 ? 0 : diff;
+
+                    image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
 
                 System.Threading.Interlocked.Increment(ref counter);
@@ -63,6 +62,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 return null;
             }
 
+            byte[] imageB = new byte[image.Length * 4];
 
             Buffer.BlockCopy(image, 0, imageB, 0, imageB.Length);
 

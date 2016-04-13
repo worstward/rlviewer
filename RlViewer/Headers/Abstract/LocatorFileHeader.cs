@@ -33,7 +33,7 @@ namespace RlViewer.Headers.Abstract
         protected abstract HeaderInfoOutput[] GetHeaderInfo();
 
 
-        protected virtual T ReadHeader<T>(string path) where T : struct
+        protected T ReadHeader<T>(string path) where T : struct
         {
             byte[] header = new byte[FileHeaderLength];
 

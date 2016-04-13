@@ -8,19 +8,30 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class PointSelector : IEnumerable<SelectedPoint>
     {
-        private List<SelectedPoint> selectedPoints = new List<SelectedPoint>();
+        private IList<SelectedPoint> _selectedPoints = new List<SelectedPoint>();
+
+        public PointSelector()
+        {
+ 
+        }
+
+        private PointSelector(IList<SelectedPoint> points)
+        {
+            _selectedPoints = points;
+        }
+
 
         public SelectedPoint this[int index]
         {
             get
             {
-                return selectedPoints[index];
+                return _selectedPoints[index];
             }
         }
 
         public IEnumerator<SelectedPoint> GetEnumerator()
         {
-            return selectedPoints.GetEnumerator();
+            return _selectedPoints.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -29,13 +40,12 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-
         /// <summary>
         /// Orders selected point list as 4x4 matrix
         /// </summary>
         /// <param name="selectedPoints">Selected points list</param>
         /// <returns>Ordered in matrix order list</returns>
-        public List<SelectedPoint> OrderAsMatrix(List<SelectedPoint> selectedPoints)
+        private IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
         {
             var sortedList = new List<SelectedPoint>();
             for (int i = 0; i < 4; i++)
@@ -51,11 +61,26 @@ namespace RlViewer.Behaviors.PointSelector
             return sortedList;
         }
 
+        //public PointSelector AverageAmplitudes()
+        //{
+        //    List<SelectedPoint> lst = new List<SelectedPoint>();
+
+        //    foreach (var grp in _selectedPoints.GroupBy(s => s.Rcs))
+        //    {
+        //        foreach (var item in grp)
+        //        {
+        //            lst.Add(new SelectedPoint(item.Location, grp.Average(x => (float)x.Value), item.Rcs));
+        //        }
+        //    }
+        //    return new PointSelector(lst);
+        //}
+
+
 
         public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
         {
             //16 points required for the algorythm to work properly
-            if (selectedPoints.Count < 16)
+            if (_selectedPoints.Count < 16)
             {
                 if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
                 {
@@ -96,27 +121,27 @@ namespace RlViewer.Behaviors.PointSelector
                             
                             System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
 
-                            selectedPoints.Add(new SelectedPoint(file, FileReader.GetMaxSampleLocation(file, area), epr.EprValue));
+                            _selectedPoints.Add(new SelectedPoint(file, FileReader.GetMaxSampleLocation(file, area), epr.EprValue));
                         }
                     }
                 }
-                if (selectedPoints.Count == 16)
+                if (_selectedPoints.Count == 16)
                 {
-                    selectedPoints = OrderAsMatrix(selectedPoints);
+                    _selectedPoints = OrderAsMatrix(_selectedPoints);
                 }
             }
         }
 
         public void Add(SelectedPoint selectedPoint)
         {
-            selectedPoints.Add(selectedPoint);
+            _selectedPoints.Add(selectedPoint);
         }
 
         public void RemoveLast()
         {
-            if (selectedPoints.Count > 0)
+            if (_selectedPoints.Count > 0)
             {
-                selectedPoints.RemoveAt(selectedPoints.Count - 1);
+                _selectedPoints.RemoveAt(_selectedPoints.Count - 1);
             }
         }
 

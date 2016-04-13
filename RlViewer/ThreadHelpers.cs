@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace RlViewer
 {
-    public static class ThreadHelpers
+    public static class ThreadHelper
     {
         public static BackgroundWorker InitWorker(DoWorkEventHandler doWork, RunWorkerCompletedEventHandler completed)
         {

@@ -23,6 +23,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             private set;
         }
 
+
         /// <summary>
         /// Changes image amplitudes with prebuilt surface
         /// </summary>

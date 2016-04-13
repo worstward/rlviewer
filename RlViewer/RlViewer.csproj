@@ -63,8 +63,8 @@
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\ImageAligning\LinearEquation.cs" />
+    <Compile Include="Behaviors\ImageAligning\LeastSquares.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
-    <Compile Include="Behaviors\ImageAligning\Plane.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\Surface.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\SurfaceFactory.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface16Points.cs" />

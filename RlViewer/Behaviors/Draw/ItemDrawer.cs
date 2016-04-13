@@ -24,7 +24,7 @@ namespace RlViewer.Behaviors.Draw
 
         public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
         {
-            GC.Collect();
+            GC.Collect(0, GCCollectionMode.Forced);
             Image img;
 
             var screen = new RectangleF(leftTopPointOfView.X, leftTopPointOfView.Y,

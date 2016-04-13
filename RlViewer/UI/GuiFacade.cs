@@ -145,7 +145,7 @@ namespace RlViewer.UI
             caption = _caption = fileName;
 
             InitProgressControls(true, "Чтение навигации");
-            _worker = ThreadHelpers.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
+            _worker = ThreadHelper.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
             _worker.RunWorkerAsync(fileName);
          
             return caption;
@@ -170,7 +170,7 @@ namespace RlViewer.UI
             if (_file != null)
             {
                 InitProgressControls(true, "Генерация тайлов");
-                _worker = ThreadHelpers.InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                _worker = ThreadHelper.InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
                 _worker.RunWorkerAsync();
             }
         }
@@ -258,8 +258,8 @@ namespace RlViewer.UI
 
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
 
-            _saver.Report += ProgressReporter;
-            _saver.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _saver.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
 
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
                 .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
@@ -276,8 +276,8 @@ namespace RlViewer.UI
 
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _saver.Report -= ProgressReporter;
-            _saver.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _saver.Report -= (s, pe) => ProgressReporter(pe.Percent); ;
+            _saver.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
 
             if (e.Cancelled)
             {  
@@ -298,8 +298,8 @@ namespace RlViewer.UI
 
         private void loaderWorker_AlignImage(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _aligner.Report += ProgressReporter;
-            _aligner.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _aligner.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
             string fileName = Path.GetFileName(Path.ChangeExtension(_file.Properties.FilePath, "raw"));
             _aligner.Resample(fileName);
 
@@ -309,8 +309,8 @@ namespace RlViewer.UI
 
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _aligner.Report -= ProgressReporter;
-            _aligner.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _aligner.Report -= (s, pe) => ProgressReporter(pe.Percent);
+            _aligner.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
 
             if (e.Cancelled)
             {
@@ -337,8 +337,8 @@ namespace RlViewer.UI
 
             _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
-            _navi.Report += ProgressReporter;
-            _navi.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _navi.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
             _navi.GetNavigation();
                 e.Cancel = _navi.Cancelled;
 
@@ -351,8 +351,8 @@ namespace RlViewer.UI
         {
             if (_navi != null)
             {
-                _navi.Report -= ProgressReporter;
-                _navi.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+                _navi.Report -= (s, pe) => ProgressReporter(pe.Percent);
+                _navi.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
             }
 
 
@@ -378,8 +378,8 @@ namespace RlViewer.UI
         {
             _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
-            _creator.Report += ProgressReporter;
-            _creator.CancelJob += (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _creator.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _creator.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
 
             e.Cancel = _creator.Cancelled;
@@ -389,8 +389,8 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _creator.Report -= ProgressReporter;
-            _creator.CancelJob -= (s, cEvent) => cEvent.Cancel = _worker.CancellationPending;
+            _creator.Report -= (s, pe) => ProgressReporter(pe.Percent);
+            _creator.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
 
             if (e.Cancelled)
             {
@@ -437,8 +437,8 @@ namespace RlViewer.UI
 
         private void ProgressReporter(int progress)
         {
-            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = progress; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl =>
+            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = progress; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl =>
                         { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
 
@@ -536,7 +536,7 @@ namespace RlViewer.UI
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
                                 InitProgressControls(true, "Сохранение");
-                                _worker = ThreadHelpers.InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
+                                _worker = ThreadHelper.InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
                                 _worker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
                             }
                         }
@@ -592,13 +592,13 @@ namespace RlViewer.UI
 
         private void InitProgressControls(bool isVisible, string caption = "")
         {
-            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });    
-            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
-            ThreadHelpers.ThreadSafeUpdate<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });    
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
         }
 
 
@@ -609,20 +609,20 @@ namespace RlViewer.UI
             _pointSelector = null;
             _areaSelector = null;
 
-            ThreadHelpers.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
-            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
-            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).SmallChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).LargeChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).Visible = false;
-            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).SmallChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<VScrollBar>(_form.Vertical).LargeChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).SmallChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).LargeChange = 1;
-            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
-            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
-            ThreadHelpers.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
-            ThreadHelpers.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            ThreadHelpers.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
+            ThreadHelper.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
+            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
+            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).SmallChange = 1;
+            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).LargeChange = 1;
+            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).Visible = false;
+            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).SmallChange = 1;
+            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).LargeChange = 1;
+            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).SmallChange = 1;
+            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).LargeChange = 1;
+            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
+            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
+            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
+            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
 
             InitProgressControls(false);
         }
@@ -929,7 +929,7 @@ namespace RlViewer.UI
             _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector);
 
             InitProgressControls(true, "Выравнивание изображения");
-            _worker = ThreadHelpers.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
+            _worker = ThreadHelper.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
 
             _worker.RunWorkerAsync();
         }

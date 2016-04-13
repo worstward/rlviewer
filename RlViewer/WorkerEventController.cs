@@ -8,8 +8,22 @@ namespace RlViewer
 {
     public class WorkerEventController
     {
+        public class ProgressEventArgs : EventArgs
+        {
+            private int _percent;
+            public int Percent
+            {
+                get { return _percent; }
+            }
 
-        public delegate void ReportProgress(int percentage);
+            public ProgressEventArgs(int percent)
+            {
+                _percent = percent;
+            }
+        }
+
+
+        public delegate void ReportProgress(object sender, ProgressEventArgs e);
 
         public virtual event ReportProgress Report;
 
@@ -26,7 +40,7 @@ namespace RlViewer
         {
             if (Report != null)
             {
-                Report(percentage);
+                Report(null, new ProgressEventArgs(percentage));
             }
         }
 
