@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RlViewer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Технологический наземный комплекс просмотра и обработки радиолокационной информации для проекта Банк-РЛВ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("АО Концерн Вега")]
 [assembly: AssemblyProduct("RlViewer")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

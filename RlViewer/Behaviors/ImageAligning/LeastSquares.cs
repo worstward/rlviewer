@@ -28,7 +28,6 @@ namespace RlViewer.Behaviors.ImageAligning
         }
 
 
-
         private float _slope;
         private float _yIntercept;
 

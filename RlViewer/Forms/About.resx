@@ -117,13 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RawSaveFilter" xml:space="preserve">
-    <value>Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
-  </data>
-  <data name="OpenFilter" xml:space="preserve">
-    <value>Локационные файлы |*.rl4;*.brl4;*.raw|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw</value>
-  </data>
-  <data name="SaveFilter" xml:space="preserve">
-    <value>Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
-  </data>
 </root>

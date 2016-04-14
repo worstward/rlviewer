@@ -186,7 +186,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 while (s.Position != frameLength && s.Position != s.Length)
                 {
-
                     s.Read(arr, 0, arr.Length);
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
                     var localMax = floatArr.Max();

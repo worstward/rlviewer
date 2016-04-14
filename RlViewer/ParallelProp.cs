@@ -13,7 +13,7 @@ namespace RlViewer
         public ParallelProperties(int offset, int dataSize)
         {
             _options = new ParallelOptions { MaxDegreeOfParallelism = _maxThread };
-            _chunks = System.Collections.Concurrent.Partitioner.Create(0, dataSize, dataSize / _maxThread);
+            _chunks = System.Collections.Concurrent.Partitioner.Create(offset, dataSize, dataSize / _maxThread);
         }
 
 

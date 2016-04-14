@@ -152,18 +152,6 @@ namespace RlViewer.UI
         }
         #endregion
 
-
-        public void ShowFileInfo()
-        {
-            if(_file != null)
-            {
-                using (var iFrm = new Forms.InfoForm(_file.Header.HeaderInfo))
-                {                   
-                    iFrm.ShowDialog();
-                }
-            }
-        }
-
     
         public void GetImage()
         {
@@ -389,8 +377,11 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _creator.Report -= (s, pe) => ProgressReporter(pe.Percent);
-            _creator.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+            if (_creator != null)
+            {
+                _creator.Report -= (s, pe) => ProgressReporter(pe.Percent);
+                _creator.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+            }
 
             if (e.Cancelled)
             {
@@ -891,6 +882,18 @@ namespace RlViewer.UI
 
 #endregion
 
+
+        public void ShowFileInfo()
+        {
+            if (_file != null)
+            {
+                using (var iFrm = new Forms.InfoForm(_file.Header.HeaderInfo))
+                {
+                    iFrm.ShowDialog();
+                }
+            }
+        }
+
         public void ShowSettings()
         {
             using (var settgingsForm = new Forms.SettingsForm(_settings))
@@ -911,7 +914,13 @@ namespace RlViewer.UI
             }
         }
 
-
+        public void ShowAbout()
+        {
+            using (var about = new Forms.About())
+            {
+                about.ShowDialog();
+            }
+        }
         
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs e)
