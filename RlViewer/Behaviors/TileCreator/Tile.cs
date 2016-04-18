@@ -17,11 +17,11 @@ namespace RlViewer.Behaviors.TileCreator
 
             if (_emptyTile == null)
             {
-                _emptyTile = new byte[tileSize.Width * tileSize.Height];
+               _emptyTile = new Lazy<byte[]>(() => { return new byte[tileSize.Width * tileSize.Height]; });
             }
         }
 
-        private static byte[] _emptyTile;
+        private static Lazy<byte[]> _emptyTile;
 
         private string _filePath;
         public string FilePath
@@ -41,12 +41,9 @@ namespace RlViewer.Behaviors.TileCreator
             get { return _leftTopCoord; }
         }
 
-        private bool _isVisible;
-
         public bool CheckVisibility(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
-            _isVisible = CheckIntersection(leftTopPointOfView, screenWidth, screenHeight);
-            return _isVisible;
+            return CheckIntersection(leftTopPointOfView, screenWidth, screenHeight);
         }
      
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
@@ -65,23 +62,23 @@ namespace RlViewer.Behaviors.TileCreator
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static byte[] ReadData(string path)
+        public byte[] ReadData()
         {
             byte[] tile;
-            if (System.IO.File.Exists(path))
+            if (System.IO.File.Exists(_filePath))
             {
                 try
                 {
-                    tile = System.IO.File.ReadAllBytes(path);
+                    tile = System.IO.File.ReadAllBytes(_filePath);
                 }
                 catch (System.IO.IOException)
                 {
-                    tile = _emptyTile;
+                    tile = _emptyTile.Value;
                 }
             }
             else
             {
-                tile = _emptyTile;
+                tile = _emptyTile.Value;
             }
 
             //if tile doesn't exist, return empty tile

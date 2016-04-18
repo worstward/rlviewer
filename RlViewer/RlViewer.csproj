@@ -97,6 +97,7 @@
     <Compile Include="Behaviors\Sections\Section.cs" />
     <Compile Include="Behaviors\Sections\VerticalSection.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\RTileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\TileWrapper.cs" />
     <Compile Include="Factories\File\Concrete\RFactory.cs" />
     <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />

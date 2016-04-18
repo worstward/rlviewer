@@ -15,9 +15,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             : base(selector)
         {
             _solution = Solve(Selector);
+            //var normalizedPoints = selector.Select(x => new System.Drawing.PointF(x.Rcs, x.Value / GetAmplitude(x.Location.X, x.Location.Y)));
+            _lSquares = new LeastSquares(selector);
         }
 
         private float[] _solution;
+        private LeastSquares _lSquares;
+
+
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
@@ -31,8 +36,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int toInclusiveY = area.Location.Y + area.Height;
             toInclusiveY = toInclusiveY > file.Height ? file.Height : toInclusiveY;
             int counter = 0;
-
-
+            
+   
             Parallel.For(area.Location.X, toInclusiveX, (i) =>
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
@@ -41,7 +46,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                     var newVal = GetAmplitude(i, j);
 
-                    var diff = oldVal / newVal;
+                    var diff = oldVal / newVal * _lSquares.LeastSquaresValueAtX((float)Math.Log10(oldVal));
 
                     diff = diff < 0 ? 0 : diff;
 

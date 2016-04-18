@@ -756,6 +756,7 @@ namespace RlViewer.UI
                     else if (_form.AnalyzePointRb.Checked)
                     {
                         _analyzer.StartTracing();
+                        AnalyzePoint(e);
                     }
                     else if (_form.VerticalSectionRb.Checked)
                     {
@@ -821,21 +822,7 @@ namespace RlViewer.UI
                 }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
-
-                    try
-                    {
-                        if (_analyzer.Analyze(_file, new Point((int)(e.X / _scaler.ScaleFactor)
-                             + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value)))
-                        {
-                             _toolTip.Show(string.Format("Амплитуда: {0}", _analyzer.Amplitude.ToString()),
-                                    _win, new Point(e.Location.X, e.Location.Y - 20));
-                        }
-
-                    }
-                    catch (Exception)
-                    {
-                        ErrorGuiMessage("Невозможно проанализировать точку");
-                    }
+                    AnalyzePoint(e);
                 }
                 else if (_form.VerticalSectionRb.Checked && _drawer != null)
                 {
@@ -863,7 +850,26 @@ namespace RlViewer.UI
             }         
         }
 
-        
+
+        private void AnalyzePoint(MouseEventArgs e)
+        {
+            try
+            {
+                if (_analyzer.Analyze(_file, new Point((int)(e.X / _scaler.ScaleFactor)
+                     + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value)))
+                {
+                    _toolTip.Show(string.Format("Амплитуда: {0}", _analyzer.Amplitude.ToString()),
+                           _win, new Point(e.Location.X, e.Location.Y - 20));
+                }
+
+            }
+            catch (Exception)
+            {
+                ErrorGuiMessage("Невозможно проанализировать точку");
+            }
+        }
+
+
 
         public void ClickFinished(MouseEventArgs e)
         {

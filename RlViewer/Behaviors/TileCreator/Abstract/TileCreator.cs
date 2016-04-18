@@ -189,6 +189,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     s.Read(arr, 0, arr.Length);
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
                     var localMax = floatArr.Max();
+
                     if(float.IsNaN(localMax))
                     {
                         continue;
@@ -219,13 +220,13 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     s.Read(arr, 0, arr.Length);
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
 
-                    var nonNans = floatArr.Where(x => !float.IsNaN(x));
+                    var nonNans = floatArr.Where(x => !float.IsNaN(x)).Where(x => !float.IsInfinity(x));
                     if (nonNans.Count() == 0)
                     {
                         continue;
                     }
 
-                    avg += floatArr.Where(x => !float.IsNaN(x)).Average();
+                    avg += nonNans.Average();
 
                     //fill histogram:
                     //count distinct float values, eg:

@@ -36,106 +36,59 @@ namespace RlViewer.Behaviors.Draw
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
             int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
 
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
-                scaledScreenX, scaledScreenY));
+            var visibleTiles = tiles.Where(x => x.CheckVisibility(leftTopPointOfView,
+                scaledScreenX, scaledScreenY)).ToArray();
+
             int scale = (int)(1 / Scaler.ScaleFactor);
             int scalePower = (int)Math.Log(scale, 2);
 
 
-            lock (_tileLocker)
+            var tileImgWrappers = new List<TileImageWrapper>(visibleTiles.Length);
+
+            Parallel.ForEach(visibleTiles, tile =>
+            {
+                byte[] imgData = tile.ReadData();
+                byte[] sievedImage = new byte[imgData.Length >> scalePower >> scalePower];
+
+                //scale by averaging nearby pixels
+                int index = 0;
+
+                for (int i = 0; i < tile.Size.Height * tile.Size.Width - tile.Size.Width; i += scale * tile.Size.Width)
+                {
+                    for (int j = i; j < i + tile.Size.Width; j += scale)
+                    {
+                        float cumulative = 0;
+                        for (int k = j; k < j + scale; k++)
+                        {
+                            cumulative += imgData[k];
+                        }
+
+                        sievedImage[index] = (byte)(cumulative / scale);
+                        index++;
+                        cumulative = 0;
+                    }
+                }
+
+                byte[] filteredData = _filter.ApplyFilters(sievedImage);
+
+                var tw = new TileImageWrapper(GetBmp(filteredData, tile.Size.Width / scale, tile.Size.Height / scale, Palette),
+                    new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
+                                (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
+
+                tileImgWrappers.Add(tw);
+            });
+
+            foreach (var t in tileImgWrappers)
             {
                 using (var g = Graphics.FromImage(canvas))
                 {
-                    foreach (var tile in visibleTiles)
-                    {
-                        byte[] imgData = Tile.ReadData(tile.FilePath);
-                        byte[] sievedImage = new byte[imgData.Length >> scalePower >> scalePower];
-
-                        //int index = 0;
-
-                        //for (int i = 0; i < tile.Size.Height * tile.Size.Width - tile.Size.Width; i += scale * tile.Size.Width)
-                        //{
-                        //    for (int j = i; j < i + tile.Size.Width; j += scale)
-                        //    {
-                        //        float cumulative = 0;
-                        //        for (int k = j; k < j + scale; k++)
-                        //        {
-                        //            cumulative += imgData[k];
-                        //        }
-
-                        //        sievedImage[index] = (byte)(cumulative / scale);
-                        //        index++;
-                        //        cumulative = 0;
-                        //    }
-                        //}
-
-                        Parallel.For(0, tile.Size.Height >> scalePower, (i) =>
-                        {
-                            var localIndex = tile.Size.Width * i << scalePower;
-
-                            for (int j = localIndex; j < localIndex + tile.Size.Width; j += scale)
-                            {
-                                float cumulative = 0;
-                                for (int k = j; k < j + scale; k++)
-                                {
-                                    cumulative += imgData[k];
-                                }
-
-                                //(j & tile.Size.Width - 1) equals j % tile.Size.Width for powers of two (since tile.Size is power of 2 it's ok)
-                                //bitwise version performs better
-                                int index = i * (tile.Size.Width >> scalePower) + (j & tile.Size.Width - 1) / scale;
-                                sievedImage[index] = (byte)(cumulative / scale);
-                                cumulative = 0;
-                            }
-                        });
-
-                        byte[] filteredData = _filter.ApplyFilters(sievedImage);
-
-                        using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width / scale, tile.Size.Height / scale, Palette))
-                        {
-                            g.DrawImage(tileImg, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
-                                (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
-                        }
-
-                    }
+                    g.DrawImage(t.TileImage, t.Location);
                 }
             }
+
             return canvas;
         }
 
-
-        //private Image ScaleDown(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
-        //{
-        //    int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
-        //    int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
-
-        //    var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
-        //        scaledScreenX, scaledScreenY));
-        //    int scale = (int)(1 / Scaler.ScaleFactor);
-
-
-        //    lock (_tileLocker)
-        //    {
-        //        using (var g = Graphics.FromImage(canvas))
-        //        {
-        //            foreach (var tile in visibleTiles)
-        //            {
-        //                byte[] imgData = Tile.ReadData(tile.FilePath);
-        //                byte[] filteredData = _filter.ApplyFilters(imgData);
-        //                Size scaledSize = new Size(tile.Size.Width / scale, tile.Size.Height / scale);
-
-        //                using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width, tile.Size.Height, Palette))
-        //                using (Bitmap resized = Resize(tileImg, scaledSize, InterpolationMode.High))
-        //                {
-        //                    g.DrawImage(resized, new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
-        //                        (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
-        //                }
-
-        //            }
-        //        }
-        //    }
-        //    return canvas;
-        //}
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
@@ -145,13 +98,16 @@ namespace RlViewer.Behaviors.Draw
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 scaledScreenX, scaledScreenY)).ToArray();
 
-            Point pointToDraw = new Point();
+            Point pointToDraw = default(Point);
 
             
             //g.ScaleTransform(1.0F, -1.0F);
-            //g.TranslateTransform(0.0F, -(float)canvas.Height);
+            //g.TranslateTransform(0.0F, -(float)canvas.Height)
             Size cropS = new Size();
-            Tile leftTopTile = null;
+            Tile leftTopTile = default(Tile);
+
+
+
             foreach (var tile in visibleTiles)
             {
                 //stores relative offset by X for visible part from the beginning of the current tile
@@ -170,7 +126,7 @@ namespace RlViewer.Behaviors.Draw
                 Size resizedCanvasSize = new Size((int)(croppedWidth * Scaler.ScaleFactor), (int)(croppedHeight * Scaler.ScaleFactor));
                    
                 //take lefttop visible tile to measure offset for other tiles
-                if (tile == visibleTiles.First())
+                if (tile.Equals(visibleTiles.First()))
                 {
                     leftTopTile = tile;
                     cropS = resizedCanvasSize;
@@ -189,7 +145,7 @@ namespace RlViewer.Behaviors.Draw
                 {
                     using (var g = Graphics.FromImage(canvas))
                     {
-                        byte[] imgData = Tile.ReadData(tile.FilePath);
+                        byte[] imgData = tile.ReadData();
                         byte[] filteredData = _filter.ApplyFilters(imgData);
 
                         using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width, tile.Size.Height, Palette))
@@ -209,24 +165,22 @@ namespace RlViewer.Behaviors.Draw
         private Image ScaleNormal(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
-                screenSize.Width, screenSize.Height)).ToArray();
+                screenSize.Width, screenSize.Height));
 
-            lock (_tileLocker)
+            using (var g = Graphics.FromImage(canvas))
             {
-                using (var g = Graphics.FromImage(canvas))
+                foreach (var tile in visibleTiles)
                 {
-                    foreach (var tile in visibleTiles)
+                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(tile.ReadData()), tile.Size.Width, tile.Size.Height, Palette))
                     {
-                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(Tile.ReadData(tile.FilePath)), tile.Size.Width, tile.Size.Height, Palette))
-                        {
-                            int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
-                            int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
-                            g.DrawImage(tileImg, new Point(xToScreen, yToScreen));
-                        }
-                    
+                        int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
+                        int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
+                        g.DrawImage(tileImg, new Point(xToScreen, yToScreen));
                     }
+                    
                 }
             }
+            
             return canvas;
         }
 
