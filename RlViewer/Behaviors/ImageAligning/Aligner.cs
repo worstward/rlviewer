@@ -3,16 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RlViewer.Behaviors.Converters;
+using System.IO;
 
 namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector)
+        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Saving.Abstract.Saver saver)
         {
             _file = file;     
             _selector = selector;
+            _saver = saver;
             _surface = Surfaces.Abstract.SurfaceFactory.CreateSurface(_selector);
+        }
+
+        public override bool Cancelled
+        {
+            get
+            {
+                return _surface.Cancelled;
+            }
         }
 
         public override event ReportProgress Report
@@ -39,16 +50,22 @@ namespace RlViewer.Behaviors.ImageAligning
             }
         }
 
-
+        private Saving.Abstract.Saver _saver;
         private Surfaces.Abstract.Surface _surface;
         private PointSelector.PointSelector _selector;
 
 
         public void Resample(string fileName)
-        {
-            System.IO.File.WriteAllBytes(fileName, _surface.ResampleImage(_file, GetArea(_selector)));
+        {           
+            var area = GetArea(_selector);
+            var resampledImage = _surface.ResampleImage(_file, area);
+
+            if(resampledImage != null)
+            { 
+                _saver.SaveAsAligned(fileName, area, resampledImage);
+            }
         }
-     
+
 
         private Files.LocatorFile _file;
 
@@ -83,13 +100,6 @@ namespace RlViewer.Behaviors.ImageAligning
             return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
 
         }
-
-
-
-
-
-
-
 
     }
 }

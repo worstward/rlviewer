@@ -77,14 +77,6 @@ namespace RlViewer.Behaviors.Ruler
         }
 
 
-        private static int GetY(Point point1, Point point2, float x)
-        {
-            float k = (point2.Y - point1.Y) / (float)(point2.X - point1.X);
-            float b = point1.Y - (k * point1.X);
-
-            return (int)(k * x + b);
-        }
-
 
         public string GetDistance(Point p2)
         {
@@ -94,7 +86,7 @@ namespace RlViewer.Behaviors.Ruler
             if (p2.X > _file.Width)
             {
                 x = _file.Width;
-                y = GetY(Pt1, p2, _file.Width);
+                y = GeometryHelper.GetY(Pt1, p2, _file.Width);
             }
             else if (x < 0)
             {

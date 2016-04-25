@@ -76,7 +76,7 @@ namespace RlViewer.Navigation.Concrete
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    Logging.Logger.Log(Logging.SeverityGrades.Error, "Wrong navigation data");
+                    Logging.Logger.Log(Logging.SeverityGrades.Warning, "Wrong navigation data");
                     _naviStrings = null;
                     return new NavigationString(1, 1, 1, 1, 1);
                 }

@@ -24,7 +24,8 @@ namespace RlViewer.UI
             _scaler = new Behaviors.Scaling.Scaler();
             _analyzer = new Behaviors.Analyzing.PointAnalyzer();
             _drag = new Behaviors.DragController();
-            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(), () => Save(), () => ShowFileInfo());
+            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
+                () => Save(), () => ShowFileInfo(), () => ShowLog());
             InitializeWindow();
             _form.Canvas.MouseWheel += Canvas_MouseWheel;
             _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
@@ -201,7 +202,6 @@ namespace RlViewer.UI
                 ErrorGuiMessage(ex.Message);
             }
 
-            InitializeWindow();   
         }
 
 
@@ -243,14 +243,11 @@ namespace RlViewer.UI
                 throw;
             }
 
-
-            _saver = SaverFactory.GetFactory(_properties).Create(_file);
-
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
 
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
-                .ToEnum<RlViewer.FileType>(), leftTop, new Size(width, height), _creator.NormalizationFactor);
+                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), _creator.NormalizationFactor);
 
            
             if (_saver.Cancelled)
@@ -288,7 +285,7 @@ namespace RlViewer.UI
         {
             _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
             _aligner.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
-            string fileName = Path.GetFileName(Path.ChangeExtension(_file.Properties.FilePath, "raw"));
+            string fileName = Path.GetFileName(_file.Properties.FilePath);
             _aligner.Resample(fileName);
 
             e.Cancel = _aligner.Cancelled;
@@ -302,7 +299,7 @@ namespace RlViewer.UI
 
             if (e.Cancelled)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Image aligning cancelled: {0}", (string)e.Result));
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Image aligning cancelled"));
             }
             else if (e.Error != null)
             {
@@ -331,6 +328,7 @@ namespace RlViewer.UI
                 e.Cancel = _navi.Cancelled;
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+            _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _ruler = new Behaviors.Ruler.RulerFacade(_file);                
         }
 
@@ -440,7 +438,10 @@ namespace RlViewer.UI
                 if (_form.MarkPointRb.Checked)
                 {
                     _pointSelector.RemoveLast();
-                    _form.AlignBtn.Enabled = false;
+                    if (_pointSelector.Count() != 3 || _pointSelector.Count() != 4 || _pointSelector.Count() != 16)
+                    {
+                        _form.AlignBtn.Enabled = false;
+                    }
                 }
                 else if (_form.MarkAreaRb.Checked)
                 {
@@ -748,7 +749,7 @@ namespace RlViewer.UI
                             new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
 
-                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 16)
+                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 16)
                         {
                             _form.AlignBtn.Enabled = true;
                         }
@@ -941,7 +942,7 @@ namespace RlViewer.UI
         {
             _form.StatusLabel.Text = "Чтение навигации";
 
-            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector);
+            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, _saver);
 
             InitProgressControls(true, "Выравнивание изображения");
             _worker = ThreadHelper.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);

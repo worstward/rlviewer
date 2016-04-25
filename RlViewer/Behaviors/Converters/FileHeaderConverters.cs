@@ -48,8 +48,6 @@ namespace RlViewer.Behaviors.Converters
         }
 
 
-
-
         public static Rl4RliSubHeaderStruct ChangeImgDimensions(this Rl4RliSubHeaderStruct head, int width, int height)
         {
             byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(head);

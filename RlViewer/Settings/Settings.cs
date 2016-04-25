@@ -47,7 +47,7 @@ namespace RlViewer.Settings
             set { _sectionSize = value; }
         }
 
-        private int _areaSize = 9;
+        private int _areaSize = 1;
         /// <summary>
         /// Rectangle area side length
         /// </summary>

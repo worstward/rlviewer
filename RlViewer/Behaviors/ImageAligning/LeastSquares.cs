@@ -27,10 +27,8 @@ namespace RlViewer.Behaviors.ImageAligning
             _yIntercept = YInterceptOfPoints(points, _slope);
         }
 
-
         private float _slope;
         private float _yIntercept;
-
 
         /// <summary>
         /// Gets the value at a given X using the line of best fit (Least Square Method) to determine the equation

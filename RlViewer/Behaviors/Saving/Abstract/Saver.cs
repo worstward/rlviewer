@@ -7,7 +7,6 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 
-
 namespace RlViewer.Behaviors.Saving.Abstract
 {
     public abstract class Saver : WorkerEventController
@@ -17,7 +16,9 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
         }
 
-        public abstract void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize, float normalization);
+        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, float normalization);
 
+        public abstract void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image);
+        
     }
 }

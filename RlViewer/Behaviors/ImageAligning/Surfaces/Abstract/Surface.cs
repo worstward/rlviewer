@@ -16,13 +16,13 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             Selector = selector;
         }
 
-
         protected PointSelector.PointSelector Selector
         {
             get;
             private set;
         }
 
+        protected abstract LeastSquares LSquares { get; }
 
         /// <summary>
         /// Changes image amplitudes with prebuilt surface

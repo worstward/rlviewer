@@ -1,14 +1,14 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
     /// <summary>
-    /// Surface made from 16 points
+    /// Incapsulates surface made from 16 points
     /// </summary>
     class Surface16Points : Surfaces.Abstract.Surface
     {
@@ -31,6 +31,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
 
+        private LeastSquares _lSquares;
+        protected override LeastSquares LSquares
+        {
+            get
+            {
+                return _lSquares = _lSquares ?? new LeastSquares(Selector);
+            }
+        }
 
         /// <summary>
         /// Contains x-z linear equation coefficients (A*x^3 + B*x^2 + C*x + D = z)
@@ -45,7 +53,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
-
             float[] image = new float[area.Width * area.Height];
            
             //iterate over X axis
@@ -60,7 +67,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             float[] imageArea = Behaviors.FileReader.GetArea(file, area);
 
-            Parallel.For(area.Location.X, toInclusiveX, (i) =>
+            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
                 var zValues = _zCoefficients.Select(x => Extrapolate(i, x)).ToArray();
                 var yValues = _yCoefficients.Select(x => Extrapolate(i, x)).ToArray();
@@ -72,7 +79,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                         * area.Width + (i - area.Location.X)];
                     var newVal = Extrapolate(j, _zCoefs);
 
-                    var diff = oldVal / newVal;
+                    var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
                     diff = diff < 0 ? 0 : diff;
 
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
@@ -82,7 +89,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    return;
+                    loopState.Break();
                 }
 
             });
@@ -103,9 +110,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         private float Extrapolate(int sample, float[] solution)
         {
-            if (solution.GetLength(0) != 4)
+            if (solution.Length != 4)
             {
-                throw new ArgumentOutOfRangeException("not 16 points provided");
+                throw new ArgumentOutOfRangeException("solution.Length");//not 16 points provided
             }
 
             //(A*x^3 + B*x^2 + C*x + D = z) to find z with provided x sample and ABCD coef in solution[]

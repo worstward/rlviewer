@@ -29,9 +29,12 @@ namespace RlViewer
 
         private bool _cancelled = false;
 
-        public bool Cancelled
+        public virtual bool Cancelled
         {
-            get { return _cancelled; }
+            get
+            {
+                return _cancelled;
+            }
         }
 
 

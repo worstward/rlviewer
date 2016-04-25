@@ -30,7 +30,6 @@ namespace RlViewer.Behaviors.Filters
         {
             _filterDelta = filterDelta;
             _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).Create();
-
         }
 
         public void ResetFilters()

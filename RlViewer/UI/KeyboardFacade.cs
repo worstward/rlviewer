@@ -9,18 +9,21 @@ namespace RlViewer.UI
 {
     class KeyboardFacade
     {
-        public KeyboardFacade(Action undo, Action openFile, Action saveFile, Action fileInfo)
+        public KeyboardFacade(Action undo, Action openFile, Action saveFile, Action fileInfo, Action log)
         {
             Undo = undo;
             OpenFile = openFile;
             SaveFile = saveFile;
             FileInfo = fileInfo;
+            Log = log;
         }
 
-        Action Undo;
-        Action OpenFile;
-        Action SaveFile;
-        Action FileInfo;
+        private Action Undo;
+        private Action OpenFile;
+        private Action SaveFile;
+        private Action FileInfo;
+        private Action Log;
+
 
         public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
         {
@@ -41,6 +44,9 @@ namespace RlViewer.UI
                         break;
                     case Keys.I:
                         FileInfo();
+                        break;
+                    case Keys.L:
+                        Log();
                         break;
                     default:
                         break;

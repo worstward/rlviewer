@@ -41,18 +41,29 @@ namespace RlViewer.Behaviors.PointSelector
 
 
         /// <summary>
-        /// Orders selected point list as 4x4 matrix
+        /// Orders selected point list as a square matrix
         /// </summary>
         /// <param name="selectedPoints">Selected points list</param>
         /// <returns>Ordered in matrix order list</returns>
         private IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
         {
             var sortedList = new List<SelectedPoint>();
-            for (int i = 0; i < 4; i++)
+            var matrixDimension = (int)Math.Sqrt(selectedPoints.Count);
+            if (matrixDimension * matrixDimension != selectedPoints.Count)
             {
-                //take each 4 topmost elements from original list, order them by X coordinate,
+                throw new ArgumentOutOfRangeException("selectedPoints.Count");
+            }
+
+
+            for (int i = 0; i < matrixDimension; i++)
+            {
+                //take each sqrt(elementCount) topmost elements from original list, order them by X coordinate,
                 //add to new list and remove from original
-                sortedList.AddRange(selectedPoints.OrderBy(point => point.Location.Y).Take(4).OrderBy(point => point.Location.X));
+                sortedList.AddRange(
+                    selectedPoints
+                    .OrderBy(point => point.Location.Y)
+                    .Take(matrixDimension)
+                    .OrderBy(point => point.Location.X));
                 foreach(var item in sortedList)
                 {
                     selectedPoints.Remove(item);
@@ -79,7 +90,6 @@ namespace RlViewer.Behaviors.PointSelector
 
         public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
         {
-            //16 points required for the algorythm to work properly
             if (_selectedPoints.Count < 16)
             {
                 if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
@@ -125,7 +135,7 @@ namespace RlViewer.Behaviors.PointSelector
                         }
                     }
                 }
-                if (_selectedPoints.Count == 16)
+                if (_selectedPoints.Count == 4 || _selectedPoints.Count == 16)
                 {
                     _selectedPoints = OrderAsMatrix(_selectedPoints);
                 }

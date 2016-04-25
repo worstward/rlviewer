@@ -21,15 +21,15 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.Raw _file;
         private RlViewer.Headers.Concrete.Raw.RawHeader _head;
 
-        public override void Save(string path, RlViewer.FileType destinationType, Point leftTop, Size areaSize, float normalization = 0)
+        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, float normalization = 0)
         {           
             switch (destinationType)
             {
                 case FileType.raw:
-                    SaveAsRaw(path, leftTop, areaSize);
+                    SaveAsRaw(path, area);
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, leftTop, areaSize, normalization);
+                    SaveAsBmp(path, area, normalization);
                     break;
                 default:
                     throw new ArgumentException();
@@ -37,9 +37,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-     
+        public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
+        {
+            fileName = Path.ChangeExtension(fileName, "raw");
 
-        private void SaveAsRaw(string path, Point leftTop, Size areaSize)
+            File.WriteAllBytes(fileName, image);                    
+        }
+
+        private void SaveAsRaw(string path, Rectangle area)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -47,14 +52,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 { 
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
-                    byte[] frameStrData = new byte[areaSize.Width * _file.Header.BytesPerSample];
+                    byte[] frameStrData = new byte[area.Width * _file.Header.BytesPerSample];
 
-                    var lineToStartSaving = leftTop.Y * (_file.Width * _file.Header.BytesPerSample);
-                    var sampleToStartSaving = leftTop.X * _file.Header.BytesPerSample;
+                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample);
+                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
 
-                    for (int i = 0; i < areaSize.Height; i++)
+                    for (int i = 0; i < area.Height; i++)
                     {
-                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        OnProgressReport((int)((double)i / (double)area.Height * 100));
                         if (OnCancelWorker())
                         {
                             return;
@@ -74,7 +79,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        private void SaveAsBmp(string path, Point leftTop, Size areaSize, float normalization)
+        private void SaveAsBmp(string path, Rectangle area, float normalization)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -82,11 +87,11 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
-                    byte[] frameStrData = new byte[areaSize.Width * _file.Header.BytesPerSample];
-                    float[] floatFrameStrData = new float[areaSize.Width];
+                    byte[] frameStrData = new byte[area.Width * _file.Header.BytesPerSample];
+                    float[] floatFrameStrData = new float[area.Width];
 
-                    var lineToStartSaving = leftTop.Y * (_file.Width * _file.Header.BytesPerSample);
-                    var sampleToStartSaving = leftTop.X * _file.Header.BytesPerSample;
+                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample);
+                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
 
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
@@ -96,7 +101,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     var rgbSize = Marshal.SizeOf(new RGBQUAD());
                     var headerSize = Marshal.SizeOf(new BITMAPINFOHEADER()) + Marshal.SizeOf(new BITMAPFILEHEADER()) + rgbSize * 256;
 
-                    var bmpFileheader = new BITMAPFILEHEADER((uint)(areaSize.Width * areaSize.Height + headerSize),
+                    var bmpFileheader = new BITMAPFILEHEADER((uint)(area.Width * area.Height + headerSize),
                         (uint)headerSize);
 
 
@@ -108,7 +113,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     }
 
 
-                    var bmpInfoHeader = new BITMAPINFOHEADER(areaSize.Width, areaSize.Height, (uint)(areaSize.Height * areaSize.Width));
+                    var bmpInfoHeader = new BITMAPINFOHEADER(area.Width, area.Height, (uint)(area.Height * area.Width));
 
 
 
@@ -119,13 +124,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     fw.Write(palette.ToArray(), 0, palette.Count);
 
 
-                    var padBytes = new byte[(int)(Math.Ceiling((double)(areaSize.Width / 4f))) * 4 - areaSize.Width];
+                    var padBytes = new byte[(int)(Math.Ceiling((double)(area.Width / 4f))) * 4 - area.Width];
 
 
 
-                    for (int i = 0; i < areaSize.Height; i++)
+                    for (int i = 0; i < area.Height; i++)
                     {
-                        OnProgressReport((int)((double)i / (double)areaSize.Height * 100));
+                        OnProgressReport((int)((double)i / (double)area.Height * 100));
                         if (OnCancelWorker())
                         {
                             return;

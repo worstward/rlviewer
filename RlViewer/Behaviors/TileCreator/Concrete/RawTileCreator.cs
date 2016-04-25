@@ -20,8 +20,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             _rli = rli;
         }
 
-        private string tileFolder;
-
         private LocatorFile _rli;
         private float _normalFactor;
 

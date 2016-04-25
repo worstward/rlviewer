@@ -14,6 +14,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             {
                 case 3:
                     return new Concrete.Surface3Points(selector);
+                case 4:
+                    return new Concrete.Surface4Points(selector);
                 case 16:
                     return new Concrete.Surface16Points(selector);
                 default:
