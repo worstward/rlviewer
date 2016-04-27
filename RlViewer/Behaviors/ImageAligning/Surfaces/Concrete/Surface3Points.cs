@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
     /// <summary>
@@ -22,6 +23,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             get 
             {
+                
                 return _solution = _solution ?? InitPlanes(); 
             }
         }      
@@ -130,15 +132,20 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 throw new ArgumentOutOfRangeException("selector.Count()");//not 3 points provided
             }
 
+
             var p1 = selector[0];
             var p2 = selector[1];
             var p3 = selector[2];
 
-            float A = p1.Location.Y * (p2.Value - p3.Value) + p2.Location.Y * (p3.Value - p1.Value) + p3.Location.Y * (p1.Value - p2.Value);
-            float B = p1.Value * (p2.Location.X - p3.Location.X) + p2.Value * (p3.Location.X - p1.Location.X) + p3.Value * (p1.Location.X - p2.Location.X);
-            float C = p1.Location.X * (p2.Location.Y - p3.Location.Y) + p2.Location.X * (p3.Location.Y - p1.Location.Y) + p2.Location.X * (p1.Location.Y - p2.Location.Y);
-            float D = -(p1.Location.X * (p2.Location.Y * p3.Value - p3.Location.Y * p2.Value) + p2.Location.X * 
-                (p3.Location.Y * p1.Value - p1.Location.Y * p3.Value) + p3.Location.X * (p1.Location.Y * p2.Value - p2.Location.Y * p1.Value));
+            float A = (p2.Location.Y - p1.Location.Y) * (p3.Value - p1.Value) - (p3.Location.Y - p1.Location.Y) * (p2.Value - p1.Value);
+                //p1.Location.Y * (p2.Value - p3.Value) + p2.Location.Y * (p3.Value - p1.Value) + p3.Location.Y * (p1.Value - p2.Value);
+            float B = -((p2.Location.X - p1.Location.X) * (p3.Value - p1.Value) - (p3.Location.X - p1.Location.X) * (p2.Value - p1.Value));
+                //p1.Value * (p2.Location.X - p3.Location.X) + p2.Value * (p3.Location.X - p1.Location.X) + p3.Value * (p1.Location.X - p2.Location.X);
+            float C = (p2.Location.X - p1.Location.X) * (p3.Location.Y - p1.Location.Y) - (p3.Location.X - p1.Location.X) * (p2.Location.Y - p1.Location.Y);
+                //p1.Location.X * (p2.Location.Y - p3.Location.Y) + p2.Location.X * (p3.Location.Y - p1.Location.Y) + p2.Location.X * (p1.Location.Y - p2.Location.Y);
+            float D = -p1.Location.X * A - p1.Location.Y * B - p1.Value * C;
+                //-(p1.Location.X * (p2.Location.Y * p3.Value - p3.Location.Y * p2.Value) + p2.Location.X * 
+                //(p3.Location.Y * p1.Value - p1.Location.Y * p3.Value) + p3.Location.X * (p1.Location.Y * p2.Value - p2.Location.Y * p1.Value));
 
             return new float[] { A, B, C, D };
         }

@@ -39,9 +39,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
-            var path = Path.Combine(Path.GetDirectoryName(
-                System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles",
-                Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath));
+            var path = GetDirectoryName(filePath);
             Tile[] tiles;
 
             if (forceTileGeneration && Directory.Exists(path))
@@ -52,7 +50,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             if (Directory.Exists(path))
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
-                tiles = GetTilesFromTl(Path.Combine(path));
+                tiles = GetTilesFromTl(path);
             }
             else
             {
@@ -71,17 +69,20 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
-
         protected abstract Tile[] GetTilesFromTl(string path);
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
 
 
-
         protected Tile[] GetTilesFromFile(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader)
         {
-            var tileFolder = InitTilePath(filePath);
+            if (file.Width == 0 || file.Height == 0)
+            {
+                return new Tile[0];
+            }
+
+            var tileFolder = GetDirectoryName(filePath, true);
 
             List<Tile> tiles = new List<Tile>();
             byte[] tileLine;
@@ -140,7 +141,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected virtual Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader)
         {
-            var tileFolder = InitTilePath(filePath);
+            if (file.Width == 0 || file.Height == 0)
+            {
+                return new Tile[0];
+            }
+
+            var tileFolder = GetDirectoryName(filePath, true);
 
             Task.Run(() =>
             {
@@ -339,16 +345,24 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
 
-        protected virtual string InitTilePath(string filePath)
+        /// <summary>
+        /// Gets unique name for tile directory
+        /// </summary>
+        /// <param name="fileName">Initial input file name</param>
+        /// <param name="initialize">Should we try to create folder for this path</param>
+        /// <returns></returns>
+        public static string GetDirectoryName(string filePath, bool initialize = false)
         {
-            string path =  Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-                "tiles", Path.GetFileNameWithoutExtension(filePath),
-                Path.GetExtension(filePath));
+            string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles",
+                Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),
+                File.GetCreationTime(filePath).ToFileTime().ToString());
 
-            if (!Directory.Exists(path))
+
+            if (initialize && !Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
+
             return path;
         }
     }

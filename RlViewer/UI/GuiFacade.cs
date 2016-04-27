@@ -192,7 +192,8 @@ namespace RlViewer.UI
             {
                 var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                     "tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
-                    Path.GetExtension(_file.Properties.FilePath));
+                    Path.GetExtension(_file.Properties.FilePath),
+                    File.GetCreationTime(_file.Properties.FilePath).GetHashCode().ToString());
                 File.SetAttributes(path, FileAttributes.Normal);
                 Directory.Delete(path, true);
             }
@@ -438,7 +439,12 @@ namespace RlViewer.UI
                 if (_form.MarkPointRb.Checked)
                 {
                     _pointSelector.RemoveLast();
-                    if (_pointSelector.Count() != 3 || _pointSelector.Count() != 4 || _pointSelector.Count() != 16)
+
+                    if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 16)
+                    {
+                        _form.AlignBtn.Enabled = true;
+                    }
+                    else
                     {
                         _form.AlignBtn.Enabled = false;
                     }
@@ -753,6 +759,10 @@ namespace RlViewer.UI
                         {
                             _form.AlignBtn.Enabled = true;
                         }
+                        else
+                        {
+                            _form.AlignBtn.Enabled = false;
+                        }
                     }
                     else if (_form.AnalyzePointRb.Checked)
                     {
@@ -910,6 +920,15 @@ namespace RlViewer.UI
                     ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
                 }
 
+            }
+        }
+
+        public void ShowCache()
+        {
+            var tileDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles");
+            using (var cacheForm = new Forms.TileStatusForm(tileDir))
+            {
+                cacheForm.ShowDialog();
             }
         }
 

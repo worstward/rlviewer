@@ -39,7 +39,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
         {
-            fileName = Path.ChangeExtension(fileName, "raw");
+            fileName = Path.ChangeExtension(fileName + "_aligned", "raw");
 
             File.WriteAllBytes(fileName, image);                    
         }

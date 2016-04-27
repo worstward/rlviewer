@@ -47,7 +47,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
         {
-            fileName = Path.ChangeExtension(fileName, "brl4");
+            fileName = Path.ChangeExtension(fileName + "_aligned", "brl4");
             Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
             byte[] strHeader;
             byte[] strData = new byte[area.Width * _file.Header.BytesPerSample];

@@ -20,21 +20,44 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         }
 
+
+        private object _solutionLocker = new object();
         private float[][] _solution;
         private float[][] Solution
         {
             get
             {
-                return _solution = _solution ?? InitPlanes();
+                if (_solution == null)
+                {
+                    lock (_solutionLocker)
+                    {
+                        if (_solution == null)
+                        {
+                            _solution = InitPlanes();
+                        }
+                    }
+                }
+                return _solution;
             }
-        } 
+        }
 
+        private object _lSquaresLocker = new object();
         private LeastSquares _lSquares;
         protected override LeastSquares LSquares
         {
             get
             {
-                return _lSquares = _lSquares ?? new LeastSquares(Selector);
+                if (_lSquares == null)
+                {
+                    lock (_lSquaresLocker)
+                    {
+                        if (_lSquares == null)
+                        {
+                            _lSquares = new LeastSquares(Selector);
+                        }
+                    }
+                }
+                return _lSquares;
             }
         
         }
@@ -54,7 +77,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             toInclusiveY = toInclusiveY > file.Height ? file.Height : toInclusiveY;
             int counter = 0;
 
-
+         
             Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
@@ -128,11 +151,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             }
             throw new ArgumentException();
         }
-
-
-
-     
-
 
     }
 }

@@ -19,6 +19,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
         private float[][] _solution;
+        /// <summary>
+        /// Contains coefficients for 4 planes
+        /// </summary>
         private float[][] Solution
         {
             get
@@ -84,6 +87,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             return imageB;
         }
 
+        /// <summary>
+        /// Gets Z coordinate of a point
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <returns></returns>
         protected float GetAmplitude(int x, int y)
         {
             return GetAmplitude(x, y, PointToPlane(new System.Drawing.Point(x, y)));

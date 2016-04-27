@@ -356,5 +356,10 @@ namespace RlViewer.Forms
             _guiFacade.ShowAbout();
         }
 
+        private void статусКешаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _guiFacade.ShowCache();
+        }
+
     }
 }

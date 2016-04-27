@@ -9,6 +9,7 @@ namespace RlViewer.Behaviors.ImageAligning
     public static class IEnumerableCombinationExt
     {
 
+
         public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
         {
             return k == 0 ? new[] { new T[0] } :
