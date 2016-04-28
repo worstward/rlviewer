@@ -28,6 +28,10 @@ namespace RlViewer.UI
         RadioButton VerticalSectionRb { get; }
         RadioButton HorizontalSectionRb { get; }
         RadioButton RulerRb { get; }
+        RadioButton BrightnessRb { get; }
+        RadioButton ContrastRb { get; }
+        RadioButton GammaRb { get; }
+        Button ResetFilter { get; }
         Button AlignBtn { get; }
         CheckBox NavigationCb { get; }
         DataGridView NavigationDgv { get; }

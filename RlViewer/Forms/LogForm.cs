@@ -80,6 +80,34 @@ namespace RlViewer.Forms
             return new Size(Width - 10, height);
         }
 
+        /// <summary>
+        /// Splits message string to fit into dgv cell
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        private string[] GetFormattedEntry(string entry, int acceptedMsgSize)
+        {
+            var acceptedLength = acceptedMsgSize;
+            List<string> entryParts = new List<string>();
+
+            if (entry.Length < acceptedLength)
+            {
+                return new string[] { entry };
+            }
+            else
+            {
+                int lastSlashIndex = entry.Substring(0, acceptedLength).LastIndexOf('\\');
+                if (lastSlashIndex <= 0)
+                {
+                    return new string[] { entry };
+                }
+
+                entryParts.Add(entry.Substring(0, lastSlashIndex));
+                entryParts.Add(Environment.NewLine);
+                entryParts.AddRange(GetFormattedEntry(entry.Substring(lastSlashIndex, entry.Length - lastSlashIndex), acceptedLength));
+            }
+            return entryParts.ToArray();
+        }
 
 
         private void LoadData(Logging.SeverityGrades grade)
@@ -88,7 +116,8 @@ namespace RlViewer.Forms
 
             foreach (var logEntry in Logging.Logger.Logs.Where(x => x.Severity == grade))
             {
-                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
+                var msg = GetFormattedEntry(logEntry.Message, _dgv.Columns[2].Width / 5);
+                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, msg.Aggregate((x, y) => x + y));
             }  
         }
 
@@ -98,7 +127,8 @@ namespace RlViewer.Forms
 
             foreach (var logEntry in Logging.Logger.Logs)
             {
-                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, logEntry.Message);
+                var msg = GetFormattedEntry(logEntry.Message, _dgv.Columns[2].Width / 5);
+                _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, msg.Aggregate((x, y) => x + y));
             }
         }
 
@@ -141,9 +171,9 @@ namespace RlViewer.Forms
         }
 
         private void LogForm_Shown(object sender, EventArgs e)
-        {
-            InitComboBox(comboBox1);
+        {           
             _dgv.Size = SetDgvSize();
+            InitComboBox(comboBox1);
         }
 
 

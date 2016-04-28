@@ -110,6 +110,39 @@ namespace RlViewer.Forms
             }
         }
 
+        public RadioButton BrightnessRb
+        {
+            get
+            {
+                return brightnessRb;
+            }
+        }
+
+        public RadioButton ContrastRb
+        {
+            get
+            {
+                return contrastRb;
+            }
+        }
+
+        public RadioButton GammaRb
+        {
+            get
+            {
+                return gammaCorrRb;
+            }
+        }
+
+        public Button ResetFilter
+        {
+            get
+            {
+                return resetFilterBtn;
+            }
+        }
+
+
         public RadioButton DragRb
         {
             get

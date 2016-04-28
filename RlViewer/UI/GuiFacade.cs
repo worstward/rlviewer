@@ -30,6 +30,7 @@ namespace RlViewer.UI
             _form.Canvas.MouseWheel += Canvas_MouseWheel;
             _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
             _win = _form.Canvas;
+            AddToolTips(form);
         }
 
 
@@ -969,6 +970,29 @@ namespace RlViewer.UI
             _worker.RunWorkerAsync();
         }
 
+        private void AddToolTips(ISuitableForm frm)
+        {
+            AddToolTip(frm.AlignBtn, "Выровнять");
+            AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
+            AddToolTip(frm.DragRb, "Перемещение по изображению");
+            AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
+            AddToolTip(frm.MarkAreaRb, "Область");
+            AddToolTip(frm.MarkPointRb, "Точка");
+            AddToolTip(frm.NavigationCb, "Навигация");
+            AddToolTip(frm.RulerRb, "Линейка");
+            AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
+
+            AddToolTip(frm.BrightnessRb, "Яркость");
+            AddToolTip(frm.ContrastRb, "Контрастность");
+            AddToolTip(frm.GammaRb, "Гамма");
+            AddToolTip(frm.ResetFilter, "Сброс фильтров");
+        }
+
+        private void AddToolTip(Control c, string caption)
+        {
+            ToolTip t = new ToolTip();
+            t.SetToolTip(c, caption);
+        }
 
         private void RulerRb_CheckedChanged(object sender, EventArgs e)
         {

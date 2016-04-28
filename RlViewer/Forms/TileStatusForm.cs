@@ -24,7 +24,7 @@ namespace RlViewer.Forms
            
         }
 
-        private DataGridViewRow _selectedRow;
+        private DataGridViewSelectedRowCollection _selectedRows;
         private string _tileDir;
 
         private void InitDataGrid()
@@ -36,13 +36,13 @@ namespace RlViewer.Forms
             dataGridView1.AllowUserToResizeRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.MultiSelect = false;
+            //dataGridView1.MultiSelect = false;
 
             dataGridView1.SelectionChanged += (s, e) =>
                 {
                     if(dataGridView1.SelectedRows.Count != 0)
-                    { 
-                        _selectedRow = dataGridView1.SelectedRows[0];
+                    {
+                        _selectedRows = dataGridView1.SelectedRows;
                     }
                 };
 
@@ -92,23 +92,42 @@ namespace RlViewer.Forms
             this.Close();
         }
 
+        private void TileStatusForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if(_selectedRow != null)
-            { 
-                var deletionPath = Path.Combine(_tileDir, _selectedRow.Cells[0].Value.ToString(),
-                    ((DateTime)_selectedRow.Cells[1].Value).ToFileTime().ToString());
+            if(_selectedRows != null && _selectedRows.Count != 0)
+            {
 
-                try
+                var confirmation = MessageBox.Show("Вы уверены, что хотите удалить кеш выбранных файлов?",
+                                     "Подтвердите удаление",
+                                     MessageBoxButtons.YesNo);
+                if (confirmation == DialogResult.Yes)
                 {
-                    Directory.Delete(deletionPath, true);
-                    dataGridView1.Rows.Remove(_selectedRow);
-                    Logging.Logger.Log(Logging.SeverityGrades.Info,
-                        string.Format("Successfully deleted file cache: {0}", deletionPath));
-                }
-                catch(Exception ex)
-                {
-                    Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
+                    foreach (var r in _selectedRows)
+                    {
+                        var row = r as DataGridViewRow;
+                        
+                        try
+                        {
+                            var deletionPath = Path.Combine(_tileDir, row.Cells[0].Value.ToString(),
+                            ((DateTime)row.Cells[1].Value).ToFileTime().ToString());
+                            Directory.Delete(deletionPath, true);
+                            dataGridView1.Rows.Remove(row);
+                            Logging.Logger.Log(Logging.SeverityGrades.Info,
+                                string.Format("Successfully deleted file cache: {0}", deletionPath));
+                        }
+                        catch (Exception ex)
+                        {
+                            Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
+                        }
+                    }
                 }
             }
         }
