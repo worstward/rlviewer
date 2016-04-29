@@ -13,19 +13,19 @@ namespace RlViewer.Forms
 {
     public partial class TileStatusForm : Form
     {
-        public TileStatusForm(string tileDirectory)
+        public TileStatusForm(string tileDirectory, string currFile)
         {
             InitializeComponent();
             InitDataGrid();
 
             _tileDir = tileDirectory;
-
+            _currFile = currFile;
             FillDataGrid(_tileDir);
            
         }
 
-        private DataGridViewSelectedRowCollection _selectedRows;
         private string _tileDir;
+        private string _currFile;
 
         private void InitDataGrid()
         {
@@ -33,24 +33,23 @@ namespace RlViewer.Forms
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView1.AllowUserToResizeColumns = false;
             dataGridView1.AllowUserToAddRows = false;
+            
             dataGridView1.AllowUserToResizeRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            //dataGridView1.MultiSelect = false;
-
-            dataGridView1.SelectionChanged += (s, e) =>
-                {
-                    if(dataGridView1.SelectedRows.Count != 0)
-                    {
-                        _selectedRows = dataGridView1.SelectedRows;
-                    }
-                };
 
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
             {
                 dataGridView1.Columns[i].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dataGridView1.Columns[i].ReadOnly = true;
             }
+
+            dataGridView1.CellDoubleClick += (s, e) =>
+                {
+                    OpenInExplorer();
+                };
+
 
             foreach (DataGridViewTextBoxColumn column in dataGridView1.Columns)
             {
@@ -58,8 +57,12 @@ namespace RlViewer.Forms
             }
         }
 
+
+
         private void FillDataGrid(string tileDir)
         {
+            var currFileTilePath = Path.Combine(Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
+                File.GetCreationTime(_currFile).ToFileTime().ToString());
 
             foreach (var fileNameDirectory in Directory.GetDirectories(tileDir))
             {
@@ -77,10 +80,23 @@ namespace RlViewer.Forms
                             creationTime = default(DateTime);
                         }
 
-                        dataGridView1.Rows.Add(Path.Combine(Path.GetFileName(fileNameDirectory),
-                            Path.GetFileName(extensionDirectory)),
-                            creationTime,
-                            Directory.GetFiles(imgDirectory).Length);
+
+                        var tilePath = Path.Combine(Path.GetFileName(fileNameDirectory), Path.GetFileName(extensionDirectory));
+
+                        dataGridView1.Rows.Add(tilePath, creationTime,
+                            Directory.GetFiles(imgDirectory).Where(x => Path.GetExtension(x) == ".tl").Count());
+
+
+                        if (currFileTilePath == Path.Combine(tilePath, creationTime.ToFileTime().ToString()))
+                        {
+                            var style = new DataGridViewCellStyle();
+                            style.BackColor = Color.Aquamarine;
+
+                            foreach (var cell in dataGridView1.Rows.Cast<DataGridViewRow>().LastOrDefault().Cells.Cast<DataGridViewCell>())
+                            {
+                                cell.Style = style;
+                            }
+                        }
                     }
 
                 }
@@ -102,7 +118,7 @@ namespace RlViewer.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(_selectedRows != null && _selectedRows.Count != 0)
+            if (dataGridView1.SelectedRows != null && dataGridView1.SelectedRows.Count != 0)
             {
 
                 var confirmation = MessageBox.Show("Вы уверены, что хотите удалить кеш выбранных файлов?",
@@ -110,7 +126,7 @@ namespace RlViewer.Forms
                                      MessageBoxButtons.YesNo);
                 if (confirmation == DialogResult.Yes)
                 {
-                    foreach (var r in _selectedRows)
+                    foreach (var r in dataGridView1.SelectedRows)
                     {
                         var row = r as DataGridViewRow;
                         
@@ -132,6 +148,17 @@ namespace RlViewer.Forms
             }
         }
 
+        private void OpenInExplorer()
+        {
+            if (dataGridView1.SelectedRows.Count != 0)
+            {
+                var selectedRow = (dataGridView1.SelectedRows.Cast<DataGridViewRow>()).FirstOrDefault();
+                var path = Path.Combine(_tileDir, selectedRow.Cells[0].Value.ToString(),
+                    ((DateTime)selectedRow.Cells[1].Value).ToFileTime().ToString());
+
+                System.Diagnostics.Process.Start("explorer.exe", path);
+            }
+        }
 
 
 

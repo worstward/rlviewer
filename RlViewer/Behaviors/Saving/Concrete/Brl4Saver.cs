@@ -46,8 +46,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
         {
-            fileName = Path.ChangeExtension(fileName + "_aligned", "brl4");
+            var alignedFileName = Path.GetFileNameWithoutExtension(fileName) + "_aligned";
 
+            alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
+            
             Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
             byte[] strHeader;
             byte[] strData = new byte[area.Width * _file.Header.BytesPerSample];
@@ -61,9 +63,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
             using (var ms = new MemoryStream(image))
             {
+                
                 using (var fr = File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (var fw = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
                         var headBytes = RlViewer.Files.LocatorFile.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
                         fw.Write(headBytes, 0, headBytes.Length);

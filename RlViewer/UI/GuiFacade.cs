@@ -291,7 +291,7 @@ namespace RlViewer.UI
             _aligner.Resample(fileName);
 
             e.Cancel = _aligner.Cancelled;
-            e.Result = fileName;           
+            e.Result = Path.GetFileNameWithoutExtension(fileName) + "_aligned" + Path.GetExtension(fileName);           
         }
 
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -927,7 +927,7 @@ namespace RlViewer.UI
         public void ShowCache()
         {
             var tileDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles");
-            using (var cacheForm = new Forms.TileStatusForm(tileDir))
+            using (var cacheForm = new Forms.TileStatusForm(tileDir, _file.Properties.FilePath))
             {
                 cacheForm.ShowDialog();
             }
