@@ -23,6 +23,8 @@ namespace RlViewer.Factories.Header.Abstract
                     return new RawHeaderFactory(); 
                 case RlViewer.FileType.k:
                     return new RhgKHeaderFactory(); 
+                case RlViewer.FileType.r:
+                    return new RHeaderFactory();
                 default:
                     throw new NotSupportedException("Unsupported filter type");
             }

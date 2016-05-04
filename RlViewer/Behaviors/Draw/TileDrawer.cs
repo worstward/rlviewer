@@ -167,20 +167,22 @@ namespace RlViewer.Behaviors.Draw
             var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
                 screenSize.Width, screenSize.Height));
 
-            using (var g = Graphics.FromImage(canvas))
+            lock (_tileLocker)
             {
-                foreach (var tile in visibleTiles)
+                using (var g = Graphics.FromImage(canvas))
                 {
-                    using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(tile.ReadData()), tile.Size.Width, tile.Size.Height, Palette))
+                    foreach (var tile in visibleTiles)
                     {
-                        int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
-                        int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
-                        g.DrawImage(tileImg, new Point(xToScreen, yToScreen));
+                        using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(tile.ReadData()), tile.Size.Width, tile.Size.Height, Palette))
+                        {
+                            int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
+                            int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
+                            g.DrawImage(tileImg, new Point(xToScreen, yToScreen));
+                        }
+
                     }
-                    
                 }
             }
-            
             return canvas;
         }
 

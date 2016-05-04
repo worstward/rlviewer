@@ -60,7 +60,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalFactor == 0)
                         {
                             _normalFactor = ComputeNormalizationFactor(_rli, _rli.Width * _rli.Header.BytesPerSample,
-                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.R.RliLineHeader()),
+                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.R.RStrHeaderStruct()),
                             Math.Min(_rli.Height, (int)(_rli.Header as RlViewer.Headers.Concrete.R.RHeader).HeaderStruct.synthesisHeader.NShift));
                         }
                     }
@@ -86,7 +86,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFile(string path)
         {
-            return GetTilesFromFile(path, _rli, new RlViewer.Headers.Concrete.R.RliLineHeader());
+            return GetTilesFromFile(path, _rli, new RlViewer.Headers.Concrete.R.RStrHeaderStruct());
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFileAsync(string path)
         {
-            return GetTilesFromFileAsync(path, _rli, new RlViewer.Headers.Concrete.R.RliLineHeader());
+            return GetTilesFromFileAsync(path, _rli, new RlViewer.Headers.Concrete.R.RStrHeaderStruct());
         }
 
 

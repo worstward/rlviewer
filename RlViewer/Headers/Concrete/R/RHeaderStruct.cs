@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.R
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct RHeaderStruct
+    public struct RFileHeaderStruct
     {
 
 	    public SignatureHeader		signatureHeader;		// сигнатура заголовка
@@ -24,8 +24,6 @@ namespace RlViewer.Headers.Concrete.R
         public SynthesisHeader synthesisHeader;		// параметры синтеза;
         public LineInfoHeader lineInfoHeader;			// формат строки
     };
-
-
 
     #region FileHeaderInnerStructs
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -211,7 +209,7 @@ namespace RlViewer.Headers.Concrete.R
     #endregion
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct RliLineHeader : Abstract.IStrHeader
+    public struct RStrHeaderStruct : Abstract.IStrHeader
     {
         public SignatureHeader signatureHeader; 				// сигнатура заголовка
         public NavigationHeader navigationHeader;				// параметры навигации
@@ -281,7 +279,7 @@ namespace RlViewer.Headers.Concrete.R
         public double speedLongInsSns;
         public double realTraceInsSns;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 468)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 428)]
         public byte[] reserved3;
 
 

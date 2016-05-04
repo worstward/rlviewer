@@ -22,6 +22,8 @@ namespace RlViewer.Factories.NavigationContainer.Abstract
                     return new Concrete.RawNavigationContainerFactory();
                 case FileType.rl4:
                     return new Concrete.Rl4NavigationContainerFactory();
+                case FileType.r:
+                    return new Concrete.RNavigationContainerFactory();
 
                 default: throw new ArgumentException();
             }

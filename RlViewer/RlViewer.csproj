@@ -97,6 +97,7 @@
     <Compile Include="Behaviors\Ruler\RulerFacade.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
+    <Compile Include="Behaviors\Saving\Concrete\RSaver.cs" />
     <Compile Include="Behaviors\Scaling\Scaler.cs" />
     <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
     <Compile Include="Behaviors\Sections\Section.cs" />
@@ -284,9 +285,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EprInputForm.resx">
       <DependentUpon>EprInputForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>

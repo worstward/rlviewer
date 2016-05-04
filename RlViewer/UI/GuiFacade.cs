@@ -66,14 +66,8 @@ namespace RlViewer.UI
         #region OpenFile
         public string OpenWithDoubleClick()
         {
-            foreach (var path in System.Environment.GetCommandLineArgs())
-            {
-                if (!path.EndsWith(".exe"))
-                {
-                    return OpenFile(path);
-                }
-            }
-            return string.Empty;
+            var fName = Environment.GetCommandLineArgs().Where(x => Path.GetExtension(x) != ".exe").FirstOrDefault();
+            return  fName == null ? string.Empty : OpenFile(fName);
         }
 
         public string OpenFileDragDrop(DragEventArgs e)
@@ -195,8 +189,12 @@ namespace RlViewer.UI
                     "tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
                     Path.GetExtension(_file.Properties.FilePath),
                     File.GetCreationTime(_file.Properties.FilePath).GetHashCode().ToString());
-                File.SetAttributes(path, FileAttributes.Normal);
-                Directory.Delete(path, true);
+
+                if (Directory.Exists(path))
+                {
+                    File.SetAttributes(path, FileAttributes.Normal);
+                    Directory.Delete(path, true);
+                }
             }
             catch (Exception ex)
             {
@@ -462,8 +460,8 @@ namespace RlViewer.UI
         {
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null)
             {
-                RlViewer.Behaviors.Draw.TileDrawer tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter, _scaler);
-                RlViewer.Behaviors.Draw.ItemDrawer iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
+                var tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter, _scaler);
+                var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
@@ -527,7 +525,8 @@ namespace RlViewer.UI
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
-                    sfd.Filter = _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.Raw) ? Resources.RawSaveFilter : Resources.SaveFilter;
+                    sfd.Filter = _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.Raw) || _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.R) 
+                        ? Resources.RawSaveFilter : Resources.SaveFilter;
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
                         using (var sSize = new Forms.SaveSizeForm(_file.Width, _file.Height, _areaSelector))
@@ -926,8 +925,8 @@ namespace RlViewer.UI
 
         public void ShowCache()
         {
-            var tileDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles");
-            using (var cacheForm = new Forms.TileStatusForm(tileDir, _file.Properties.FilePath))
+            var tileDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles");
+            using (var cacheForm = new Forms.TileStatusForm(tileDir, _file == null ? string.Empty : _file.Properties.FilePath))
             {
                 cacheForm.ShowDialog();
             }

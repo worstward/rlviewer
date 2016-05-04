@@ -67,14 +67,7 @@ namespace RlViewer.Behaviors.TileCreator
             byte[] tile;
             if (System.IO.File.Exists(_filePath))
             {
-                try
-                {
-                    tile = System.IO.File.ReadAllBytes(_filePath);
-                }
-                catch (System.IO.IOException)
-                {
-                    tile = _emptyTile.Value;
-                }
+                tile = System.IO.File.ReadAllBytes(_filePath);
             }
             else
             {

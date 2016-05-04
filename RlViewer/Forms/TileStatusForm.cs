@@ -61,7 +61,7 @@ namespace RlViewer.Forms
 
         private void FillDataGrid(string tileDir)
         {
-            var currFileTilePath = Path.Combine(Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
+            var currFileTilePath = _currFile == string.Empty ? string.Empty : Path.Combine(Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
                 File.GetCreationTime(_currFile).ToFileTime().ToString());
 
             foreach (var fileNameDirectory in Directory.GetDirectories(tileDir))
@@ -135,13 +135,19 @@ namespace RlViewer.Forms
                             var deletionPath = Path.Combine(_tileDir, row.Cells[0].Value.ToString(),
                             ((DateTime)row.Cells[1].Value).ToFileTime().ToString());
                             Directory.Delete(deletionPath, true);
+
+
+                            //if (Directory.GetDirectories(Directory.GetParent(deletionPath)).Select(x => Directory.GetFiles(x)).SelectMany(x => x).Count() == 0)
+                            //{
+ 
+                            //}
                             dataGridView1.Rows.Remove(row);
                             Logging.Logger.Log(Logging.SeverityGrades.Info,
                                 string.Format("Successfully deleted file cache: {0}", deletionPath));
                         }
                         catch (Exception ex)
                         {
-                            Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
+                            Logging.Logger.Log(Logging.SeverityGrades.Internal, ex.Message);
                         }
                     }
                 }

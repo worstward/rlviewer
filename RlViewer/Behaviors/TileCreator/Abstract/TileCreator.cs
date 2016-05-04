@@ -42,18 +42,18 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             var path = GetDirectoryName(filePath);
             Tile[] tiles;
 
-            if (forceTileGeneration && Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
-            }
-
-            if (Directory.Exists(path))
+            if (!forceTileGeneration && Directory.Exists(path))
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
                 tiles = GetTilesFromTl(path);
             }
             else
             {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
                 if (allowScrolling)
                 {
@@ -196,6 +196,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
                     var localMax = floatArr.Max();
 
+                    Array.Clear(floatArr, 0, floatArr.Length);
+
                     if(float.IsNaN(localMax))
                     {
                         continue;
@@ -207,7 +209,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             float histogramStep = maxSampleValue / 1000f;
             var histogram = new List<int>();
 
-            for (int i = 0; i < histogramStep; i++)
+            for (float i = 0; i < 1000; i += histogramStep)
             {
                 histogram.Add(0);
             }
@@ -353,7 +355,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         /// <returns></returns>
         public static string GetDirectoryName(string filePath, bool initialize = false)
         {
-            string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tiles",
+            string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),
                 File.GetCreationTime(filePath).ToFileTime().ToString());
 

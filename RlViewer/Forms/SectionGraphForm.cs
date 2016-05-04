@@ -54,7 +54,7 @@ namespace RlViewer.Forms
         {
             GraphPane pane = _zedGraph.GraphPane;
 
-            pane.YAxis.Scale.MagAuto = false;
+            pane.YAxis.Scale.MagAuto = true;
             pane.XAxis.Title.Text = "Отсчеты";
             pane.YAxis.Title.Text = yAxisName;
 

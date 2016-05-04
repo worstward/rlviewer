@@ -16,7 +16,7 @@ namespace RlViewer.Headers.Concrete.R
     {
         public RHeader(string path)
         {
-            _headerStruct =  ReadHeader<RHeaderStruct>(path);
+            _headerStruct =  ReadHeader<RFileHeaderStruct>(path);
         }
 
         protected override byte[] Signature
@@ -58,17 +58,14 @@ namespace RlViewer.Headers.Concrete.R
             }
         }
 
-
-
         private int _bytesPerSample = 4;
-        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new RHeaderStruct());
-        private const int _headerLength = 16384;
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.R.RStrHeaderStruct());
+        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.R.RFileHeaderStruct());
         private byte[] _signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
-        private RHeaderStruct _headerStruct;
+        private RFileHeaderStruct _headerStruct;
         private HeaderInfoOutput[] _headerInfo;
 
-
-        public RHeaderStruct HeaderStruct
+        public RFileHeaderStruct HeaderStruct
         {
             get
             {
@@ -94,7 +91,7 @@ namespace RlViewer.Headers.Concrete.R
         }
 
 
-        private HeaderInfoOutput[] ParseHeader(RHeaderStruct headerStruct)
+        private HeaderInfoOutput[] ParseHeader(RFileHeaderStruct headerStruct)
         {
             try
             {

@@ -36,7 +36,7 @@ namespace RlViewer.Navigation.Concrete
 
         private NavigationString[] _naviStrings;
 
-        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.R.RliLineHeader[] strCollection, byte board)
+        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.R.RStrHeaderStruct[] strCollection, byte board)
         {
             IEnumerable<NavigationString> naviStrings;
             try
@@ -56,7 +56,7 @@ namespace RlViewer.Navigation.Concrete
         public override void GetNavigation()
         {
             _naviStrings =
-                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RliLineHeader>(
+                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
                 _path, _headerLength, _dataLength), _board);
             _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
         }

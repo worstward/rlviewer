@@ -23,6 +23,8 @@ namespace RlViewer.Factories.Saver.Abstract
                     return new RawSaverFactory();
                 case FileType.k:
                     return new RhgKSaverFactory();
+                case FileType.r:
+                    return new RSaverFactory();
                 default:
                     throw new NotSupportedException("Unsupported file format");
             }

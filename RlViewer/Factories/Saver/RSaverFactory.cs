@@ -10,7 +10,7 @@ namespace RlViewer.Factories.Saver
     {
         public override Behaviors.Saving.Abstract.Saver Create(Files.LoadedFile file)
         {
-            throw new NotImplementedException();
+            return new RlViewer.Behaviors.Saving.Concrete.RSaver(file);
         }
     }
 }
