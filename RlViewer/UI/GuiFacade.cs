@@ -140,9 +140,8 @@ namespace RlViewer.UI
        
             caption = _caption = fileName;
 
-            InitProgressControls(true, "Чтение навигации");
-            _worker = ThreadHelper.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
-            _worker.RunWorkerAsync(fileName);
+            StartTask("Чтение навигации", loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);   
+            
             return caption;
         }
         #endregion
@@ -152,9 +151,7 @@ namespace RlViewer.UI
         {
             if (_file != null)
             {
-                InitProgressControls(true, "Генерация тайлов");
-                _worker = ThreadHelper.InitWorker(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
-                _worker.RunWorkerAsync();
+                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);   
             }
         }
 
@@ -220,9 +217,16 @@ namespace RlViewer.UI
 
         public void FindPoint()
         {
-            using (var ff = new Forms.FindPointForm())
-            {
-                ff.ShowDialog();
+            if (_file != null)
+            { 
+                using (var ff = new Forms.FindPointForm(_file.Navigation != null))
+                {
+                    if (ff.ShowDialog() == DialogResult.OK)
+                    {
+                        StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
+                            new Tuple<string, string>(ff.XLat, ff.YLon));                          
+                    };
+                }
             }
         }
 
@@ -232,7 +236,16 @@ namespace RlViewer.UI
             _finder.Report += (s, pe) => ProgressReporter(pe.Percent); ;
             _finder.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
 
-            _finder.GetCoordinates(NaviStringExt.ParseToRadians("45°28'36''N"), NaviStringExt.ParseToRadians("036°16'25''E"));
+            var xy = (Tuple<string, string>)(e.Argument);
+            int x;
+            if (Int32.TryParse(xy.Item1, out x))
+            {
+                e.Result = new Point(Convert.ToInt32(xy.Item1), Convert.ToInt32(xy.Item2));
+            }
+            else
+            {
+                e.Result = _finder.GetCoordinates(NaviStringExt.ParseToRadians(xy.Item1), NaviStringExt.ParseToRadians(xy.Item2));
+            }
 
         }
 
@@ -249,17 +262,21 @@ namespace RlViewer.UI
             }
             else
             {
-                if (((Point)e.Result) != default(Point))
+                var foundPoint = (Point)e.Result;
+
+                if (foundPoint != default(Point) && 
+                    foundPoint.X > 0 && foundPoint.X < _file.Width && foundPoint.Y > 0 && foundPoint.Y < _file.Height)
                 {
-                    _form.Horizontal.Value = ((Point)e.Result).X;
-                    _form.Vertical.Value = ((Point)e.Result).Y;
+                    _form.Horizontal.Value = ((Point)e.Result).X - _form.Canvas.Width / 2;
+                    _form.Vertical.Value = ((Point)e.Result).Y - _form.Canvas.Height / 2;
                 }
                 else
                 {
-                    ErrorGuiMessage("Точки нет на представленном РЛИ");
+                    ErrorGuiMessage("Невозможно найти точку");
                 }
             }
 
+            DrawImage();
             InitProgressControls(false);
         }
 
@@ -581,9 +598,8 @@ namespace RlViewer.UI
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                InitProgressControls(true, "Сохранение");
-                                _worker = ThreadHelper.InitWorker(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted);
-                                _worker.RunWorkerAsync(new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });
+                                StartTask("Сохранение", loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
+                                    new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });        
                             }
                         }
                     }
@@ -948,6 +964,8 @@ namespace RlViewer.UI
 #endregion
 
 
+
+
         public void ShowFileInfo()
         {
             if (_file != null)
@@ -1007,15 +1025,31 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            _form.StatusLabel.Text = "Чтение навигации";
-
             _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, _saver);
-
-            InitProgressControls(true, "Выравнивание изображения");
-            _worker = ThreadHelper.InitWorker(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
-
-            _worker.RunWorkerAsync();
+            StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);            
         }
+
+        private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
+            System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
+        {
+            if (_worker != null && _worker.IsBusy)
+            {
+                var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
+                                "Подтвердите отмену",
+                                MessageBoxButtons.YesNo);
+                if (confirmation == DialogResult.Yes)
+                {
+                    _worker.CancelAsync();
+                    System.Threading.Thread.Sleep(2000);
+                }
+                else return;
+            }
+
+            InitProgressControls(true, caption);
+            _worker = ThreadHelper.InitWorker(d, c);
+            _worker.RunWorkerAsync(arg);
+        }
+
 
         private void AddToolTips(ISuitableForm frm)
         {

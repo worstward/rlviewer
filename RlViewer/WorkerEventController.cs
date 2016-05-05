@@ -37,7 +37,7 @@ namespace RlViewer
             }
         }
 
-
+        private bool _completed = false;
 
         protected virtual void OnProgressReport(int percentage)
         {

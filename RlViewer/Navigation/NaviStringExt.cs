@@ -30,13 +30,13 @@ namespace RlViewer.Navigation
         }
 
 
-        private static string ParseLatitude(double value)
+        public static string ParseLatitude(double value)
         {
             var direction = value < 0 ? "S" : "N";
             return ParseToDegrees(value, direction);
         }
 
-        private static string ParseLongitude(double value)
+        public static string ParseLongitude(double value)
         {
             var direction = value < 0 ? "W" : "E";
             return ParseToDegrees(value, direction);
@@ -44,11 +44,13 @@ namespace RlViewer.Navigation
 
         private static string ParseToDegrees(double value, string suffix = "")
         {
+            var val = value;
             //radians to degrees
             value = Math.Abs(value * ( 180 / Math.PI ));
 
             var degrees = Math.Truncate(value);
 
+            
             value = (value - degrees) * 60;
 
             var minutes = Math.Truncate(value);
@@ -58,6 +60,7 @@ namespace RlViewer.Navigation
 
             return formatted;
         }
+
 
         public static double ParseToRadians(string degrees)
         {
@@ -73,7 +76,7 @@ namespace RlViewer.Navigation
             parsedValue = (suffix == "S" || suffix == "W") ? -parsedValue : parsedValue;
 
             //degrees to radians
-            parsedValue = parsedValue * Math.PI / 180;
+            parsedValue = parsedValue * Math.PI / 180d;
 
             return parsedValue;
            

@@ -24,6 +24,7 @@ namespace RlViewer
             return worker;
         }
 
+
         public static void DisposeWorker(BackgroundWorker worker)
         {
             worker.Dispose();

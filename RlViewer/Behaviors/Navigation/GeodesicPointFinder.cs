@@ -17,39 +17,82 @@ namespace RlViewer.Behaviors.Navigation
 
         private Files.LocatorFile _file;
 
-        //0.79371599702881679, 0.63309294071067668
+
+        //TODO: REFACTOR ASAP
+        private int GetNaviShift()
+        {
+            var t = _file.GetType();
+            if (t == typeof(Files.Rli.Concrete.Brl4))
+            {
+                var head = _file.Header as Headers.Concrete.Brl4.Brl4Header;
+                return (int)head.HeaderStruct.rlParams.sx;
+            }
+            else if (t == typeof(Files.Rli.Concrete.Rl4))
+            {
+                var head = _file.Header as Headers.Concrete.Rl4.Rl4Header;
+                return (int)head.HeaderStruct.rlParams.sx;
+            }
+            else if(t == typeof(Files.Rli.Concrete.R))
+            {
+                throw new NotSupportedException("Point finder for .R is not yet supported");
+            }
+            return 0;
+        }
+
+
         public Point GetCoordinates(double latitude, double longitude)
         {
-            for (int i = 0; i < _file.Navigation.Count() - 1; i++)
+            int fromInclusive = 0;
+            int toInclusive = _file.Navigation.Count();
+
+            Point foundPoint = new Point();
+            var shift = GetNaviShift();
+            int counter = 0;
+
+            List<Point> lst = new List<Point>();
+
+            //Parallel.For(fromInclusive, toInclusive, 
+            //    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 2 }, (i, loopState) =>
+            //{
+            for(int i = 0; i < toInclusive; i++)
             {
                 for (int j = 0; j < _file.Width; j++)
                 {
-                    var alpha = _file.Navigation.Computer.ComputeAlpha(_file.Navigation.Computer.InitialRange, _file.Navigation.Computer.Step, j + 2798, _file.Navigation[i].AircraftHeight);
-                    var localLat = _file.Navigation.Computer.GetSampleLatitude(_file.Navigation[i].AircraftLatitude, _file.Navigation[i].Track, alpha, _file.Navigation[i].Board);
+                    var alpha = _file.Navigation.Computer.ComputeAlpha(
+                        _file.Navigation.Computer.InitialRange, _file.Navigation.Computer.Step,
+                        j + shift, _file.Navigation[i].AircraftHeight);
+                    var localLat = _file.Navigation.Computer.GetSampleLatitude(_file.Navigation[i].AircraftLatitude,
+                        _file.Navigation[i].Track, alpha, _file.Navigation[i].Board);
 
-                    if (Math.Round(localLat, 6) == Math.Round(latitude, 6))
+
+                    if (Math.Abs(localLat - latitude) < 0.00000242406)
                     {
                         var localLong = _file.Navigation.Computer.GetSampleLongtitude(_file.Navigation[i].AircraftLongitude,
                             _file.Navigation[i].AircraftLatitude, _file.Navigation[i].Track, alpha, _file.Navigation[i].Board);
-                        if(Math.Round(localLong, 5) == Math.Round(longitude, 5))
-                        { 
-                            if(i != 0 && j != 56)
-                            return new Point(i, j);
+                        if (Math.Abs(localLong - longitude) < 0.00000242406)
+                        {
+                            foundPoint = new Point(j, i);
+                           // loopState.Break();
+
                         }
                     }
                 }
 
 
+               // System.Threading.Interlocked.Increment(ref counter);
                 OnProgressReport((int)((double)i / (double)_file.Navigation.Count() * 100));
                 if (OnCancelWorker())
                 {
-                    break;
+                    return foundPoint;
+                    //loopState.Break();
                 }
 
             }
 
-            return new Point();
+            return foundPoint;
         }
+
+
 
 
     }

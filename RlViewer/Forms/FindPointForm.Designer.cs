@@ -50,7 +50,7 @@
             // maskedTextBox1
             // 
             this.maskedTextBox1.Location = new System.Drawing.Point(6, 27);
-            this.maskedTextBox1.Mask = "00°00\'00\'\'";
+            this.maskedTextBox1.Mask = "000° 00\' 00\'\' ";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.PromptChar = '0';
             this.maskedTextBox1.Size = new System.Drawing.Size(80, 20);
@@ -59,7 +59,7 @@
             // maskedTextBox2
             // 
             this.maskedTextBox2.Location = new System.Drawing.Point(127, 27);
-            this.maskedTextBox2.Mask = "000°00\'00\'\'";
+            this.maskedTextBox2.Mask = "000° 00\' 00\'\' ";
             this.maskedTextBox2.Name = "maskedTextBox2";
             this.maskedTextBox2.PromptChar = '0';
             this.maskedTextBox2.Size = new System.Drawing.Size(74, 20);
