@@ -39,22 +39,22 @@ namespace RlViewer.UI
         private Behaviors.Filters.ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
-        private RlViewer.Behaviors.Scaling.Scaler _scaler;
-        private RlViewer.Behaviors.Analyzing.PointAnalyzer _analyzer;
-        private RlViewer.Behaviors.Ruler.RulerFacade _ruler;
-        private RlViewer.Behaviors.ImageAligning.Aligning _aligner;
-
+        private Behaviors.Scaling.Scaler _scaler;
+        private Behaviors.Analyzing.PointAnalyzer _analyzer;
+        private Behaviors.Ruler.RulerFacade _ruler;
+        private Behaviors.ImageAligning.Aligning _aligner;
+        private Behaviors.Navigation.GeodesicPointFinder _finder;
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
         private Navigation.NavigationContainer _navi;
 
         private Files.LocatorFile _file;
-        private RlViewer.Behaviors.TileCreator.Tile[] _tiles;
-        private RlViewer.Behaviors.Draw.DrawerFacade _drawer;
-        private RlViewer.Behaviors.PointSelector.PointSelector _pointSelector;
-        private RlViewer.Behaviors.AreaSelector.AreaSelector _areaSelector;
-        private RlViewer.Behaviors.DragController _drag;
+        private Behaviors.TileCreator.Tile[] _tiles;
+        private Behaviors.Draw.DrawerFacade _drawer;
+        private Behaviors.PointSelector.PointSelector _pointSelector;
+        private Behaviors.AreaSelector.AreaSelector _areaSelector;
+        private Behaviors.DragController _drag;
 
         private ISuitableForm _form;
         private System.ComponentModel.BackgroundWorker _worker;
@@ -143,7 +143,6 @@ namespace RlViewer.UI
             InitProgressControls(true, "Чтение навигации");
             _worker = ThreadHelper.InitWorker(loaderWorker_InitFile, loaderWorker_InitFileCompleted);
             _worker.RunWorkerAsync(fileName);
-         
             return caption;
         }
         #endregion
@@ -218,6 +217,51 @@ namespace RlViewer.UI
             }
         }
 
+
+        public void FindPoint()
+        {
+            using (var ff = new Forms.FindPointForm())
+            {
+                ff.ShowDialog();
+            }
+        }
+
+        private void loaderWorker_FindPoint(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+
+            _finder.Report += (s, pe) => ProgressReporter(pe.Percent); ;
+            _finder.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
+
+            _finder.GetCoordinates(NaviStringExt.ParseToRadians("45°28'36''N"), NaviStringExt.ParseToRadians("036°16'25''E"));
+
+        }
+
+        private void loaderWorker_FindPointCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+
+            _finder.Report -= (s, pe) => ProgressReporter(pe.Percent); ;
+            _finder.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+
+            if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point {0}", e.Error.Message));
+                ErrorGuiMessage("Unable to find point");
+            }
+            else
+            {
+                if (((Point)e.Result) != default(Point))
+                {
+                    _form.Horizontal.Value = ((Point)e.Result).X;
+                    _form.Vertical.Value = ((Point)e.Result).Y;
+                }
+                else
+                {
+                    ErrorGuiMessage("Точки нет на представленном РЛИ");
+                }
+            }
+
+            InitProgressControls(false);
+        }
 
 
 
@@ -329,7 +373,9 @@ namespace RlViewer.UI
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
-            _ruler = new Behaviors.Ruler.RulerFacade(_file);                
+            _ruler = new Behaviors.Ruler.RulerFacade(_file);
+            _finder = new Behaviors.Navigation.GeodesicPointFinder(_file);
+
         }
 
 
@@ -405,7 +451,9 @@ namespace RlViewer.UI
                 InitProgressControls(false);
                 InitDrawImage();              
             }
-            
+
+
+
         }
 
         private void Canvas_MouseWheel(object sender, MouseEventArgs e)

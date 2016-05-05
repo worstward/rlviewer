@@ -394,5 +394,10 @@ namespace RlViewer.Forms
             _guiFacade.ShowCache();
         }
 
+        private void findPointBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.FindPoint();
+        }
+
     }
 }

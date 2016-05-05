@@ -7,15 +7,26 @@ using System.IO;
 
 namespace RlViewer.Navigation
 {
-    public abstract class NavigationContainer : WorkerEventController
+    public abstract class NavigationContainer : WorkerEventController, IEnumerable<NavigationString>
     {
 
         public abstract NavigationString this[int stringNumber] { get; }
         public abstract Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0] { get; }
         public abstract void GetNavigation();
 
+        protected NavigationString[] NaviStrings;
 
-        protected abstract RlViewer.Behaviors.Navigation.NavigationComputing Computer { get; }
+        public IEnumerator<NavigationString> GetEnumerator()
+        {
+            return NaviStrings.AsEnumerable<NavigationString>().GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public abstract RlViewer.Behaviors.Navigation.NavigationComputing Computer { get; }
 
         protected virtual T[] GetNaviStrings<T>(string path, int headerLength, int dataLength) where T : struct
         {

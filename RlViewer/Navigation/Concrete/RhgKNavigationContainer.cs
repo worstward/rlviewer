@@ -10,11 +10,9 @@ namespace RlViewer.Navigation.Concrete
     {
         public RhgKNavigationContainer(string path)
         {
-            //_naviStrings =
+            //NaviStrings =
               //  ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.r>(path, 16384, 1));
         }
-
-        private NavigationString[] naviStrings;
 
         private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
         {
@@ -24,7 +22,7 @@ namespace RlViewer.Navigation.Concrete
             return naviStrings.ToArray();
         }
 
-        protected override Behaviors.Navigation.NavigationComputing Computer
+        public override Behaviors.Navigation.NavigationComputing Computer
         {
             get { throw new NotImplementedException(); }
         }
@@ -38,7 +36,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return naviStrings[stringNumber];
+                return NaviStrings[stringNumber];
             }
         }
 

@@ -34,22 +34,21 @@ namespace RlViewer.Navigation.Concrete
 
 
         private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
-        protected override RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        public override RlViewer.Behaviors.Navigation.NavigationComputing Computer
         {
             get { return _computer; }
         }
 
-
-        private NavigationString[] _naviStrings;
+        
 
         private NavigationString[] ConvertToCommonNavigation(
-            RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection, byte board)
+            RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
         {
             IEnumerable<NavigationString> naviStrings;
             try
             {
                 naviStrings = strCollection.Select
-                    (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, board));
+                    (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, _board));
             }
             catch (ArgumentNullException)
             {
@@ -60,9 +59,9 @@ namespace RlViewer.Navigation.Concrete
 
         public override void GetNavigation()
         {
-            _naviStrings =
+            NaviStrings =
                 ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(
-                _path, _headerLength, _dataLength), _board);
+                _path, _headerLength, _dataLength));
             _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
         }
 
@@ -72,12 +71,12 @@ namespace RlViewer.Navigation.Concrete
             {
                 try
                 {
-                    return _naviStrings[stringNumber];
+                    return NaviStrings[stringNumber];
                 }
                 catch (IndexOutOfRangeException)
                 {
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, "Wrong navigation data");
-                    _naviStrings = null;
+                    NaviStrings = null;
                     return new NavigationString(1, 1, 1, 1, 1);
                 }
             }
@@ -87,7 +86,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return _naviStrings[stringNumber].NaviInfo((sampleNumber + _sx), _computer);    //.NaviInfo();          
+                return NaviStrings[stringNumber].NaviInfo((sampleNumber + _sx), _computer);    //.NaviInfo();          
             }
         }       
 

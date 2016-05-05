@@ -90,6 +90,7 @@
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface3Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface4Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface5Points.cs" />
+    <Compile Include="Behaviors\Navigation\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
     <Compile Include="Behaviors\FileReader.cs" />
@@ -102,6 +103,12 @@
     <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
     <Compile Include="Behaviors\Sections\Section.cs" />
     <Compile Include="Behaviors\Sections\VerticalSection.cs" />
+    <Compile Include="Forms\FindPointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindPointForm.Designer.cs">
+      <DependentUpon>FindPointForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TileStatusForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -280,6 +287,9 @@
     <Compile Include="Forms\RawSizeForm.Designer.cs">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\FindPointForm.resx">
+      <DependentUpon>FindPointForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\TileStatusForm.resx">
       <DependentUpon>TileStatusForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -374,6 +384,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Vega_radio.png" />
+    <None Include="Resources\FindPoint.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

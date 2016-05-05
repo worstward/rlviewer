@@ -28,23 +28,20 @@ namespace RlViewer.Navigation.Concrete
 
 
         private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
-        protected override RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        public override RlViewer.Behaviors.Navigation.NavigationComputing Computer
         {
             get { return _computer; }
         }
 
-
-        private NavigationString[] _naviStrings;
-
-        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.R.RStrHeaderStruct[] strCollection, byte board)
+        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.R.RStrHeaderStruct[] strCollection)
         {
             IEnumerable<NavigationString> naviStrings;
             try
             {
                 naviStrings = strCollection.Select
                     (x => new NavigationString((float)x.navigationHeader.longtitudeInsSns,
-                        (float)x.navigationHeader.latitudeInsSns, (float)x.navigationHeader.heightInsSns, 
-                        (float)x.navigationHeader.realTraceInsSns, board));
+                        (float)x.navigationHeader.latitudeInsSns, (float)x.navigationHeader.heightInsSns,
+                        (float)x.navigationHeader.realTraceInsSns, _board));
             }
             catch (ArgumentNullException)
             {
@@ -55,9 +52,9 @@ namespace RlViewer.Navigation.Concrete
 
         public override void GetNavigation()
         {
-            _naviStrings =
+            NaviStrings =
                 ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
-                _path, _headerLength, _dataLength), _board);
+                _path, _headerLength, _dataLength));
             _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
         }
 
@@ -67,12 +64,12 @@ namespace RlViewer.Navigation.Concrete
             {
                 try
                 {
-                    return _naviStrings[stringNumber];
+                    return NaviStrings[stringNumber];
                 }
                 catch (IndexOutOfRangeException)
                 {
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, "Wrong navigation data");
-                    _naviStrings = null;
+                    NaviStrings = null;
                     return new NavigationString(1, 1, 1, 1, 1);
                 }
             }
@@ -82,7 +79,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return _naviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
+                return NaviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
             }
         }  
 

@@ -47,11 +47,11 @@ namespace RlViewer.Navigation
             //radians to degrees
             value = Math.Abs(value * ( 180 / Math.PI ));
 
-            var degrees = (int)value;
+            var degrees = Math.Truncate(value);
 
             value = (value - degrees) * 60;
 
-            var minutes = (int)(value);
+            var minutes = Math.Truncate(value);
             var seconds = (value - minutes) * 60;
 
             var formatted =  string.Format("{0:000}° {1:00}' {2:00}'' {3}", degrees, minutes, seconds, suffix);
@@ -59,7 +59,7 @@ namespace RlViewer.Navigation
             return formatted;
         }
 
-        private static double ParseToRadians(string degrees)
+        public static double ParseToRadians(string degrees)
         {
             var splitted = degrees.Split(new char[] { '°', '\'' }, StringSplitOptions.RemoveEmptyEntries);
 

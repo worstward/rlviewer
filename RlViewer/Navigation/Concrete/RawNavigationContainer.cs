@@ -11,9 +11,9 @@ namespace RlViewer.Navigation.Concrete
         public RawNavigationContainer(string path)
         {
         }
-        
 
-        protected override Behaviors.Navigation.NavigationComputing Computer
+
+        public override Behaviors.Navigation.NavigationComputing Computer
         {
             get { throw new NotImplementedException(); }
         }
