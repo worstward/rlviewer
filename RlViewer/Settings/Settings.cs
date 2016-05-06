@@ -39,6 +39,15 @@ namespace RlViewer.Settings
             set { _isPaletteReversed = value; }
         }
 
+        private bool isLogarithmic;
+
+        public bool IsPaletteLogarithmic
+        {
+            get { return isLogarithmic; }
+            set { isLogarithmic = value; }
+        }
+
+
         private int _sectionSize = 500;
 
         public int SectionSize

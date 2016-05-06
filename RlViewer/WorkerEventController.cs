@@ -35,9 +35,11 @@ namespace RlViewer
             {
                 return _cancelled;
             }
+            set
+            {
+                _cancelled = value;
+            }
         }
-
-        private bool _completed = false;
 
         protected virtual void OnProgressReport(int percentage)
         {

@@ -31,18 +31,19 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -74,14 +75,26 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.logPaletteCb);
             this.groupBox3.Controls.Add(this.comboBox1);
             this.groupBox3.Controls.Add(this.inverseCheckBox);
             this.groupBox3.Location = new System.Drawing.Point(6, 29);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 58);
+            this.groupBox3.Size = new System.Drawing.Size(258, 115);
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
+            // 
+            // logPaletteCb
+            // 
+            this.logPaletteCb.AutoSize = true;
+            this.logPaletteCb.Location = new System.Drawing.Point(17, 46);
+            this.logPaletteCb.Name = "logPaletteCb";
+            this.logPaletteCb.Size = new System.Drawing.Size(152, 17);
+            this.logPaletteCb.TabIndex = 15;
+            this.logPaletteCb.Text = "Логарифмические цвета";
+            this.logPaletteCb.UseVisualStyleBackColor = true;
+            this.logPaletteCb.CheckedChanged += new System.EventHandler(this.logPaletteCb_CheckedChanged);
             // 
             // comboBox1
             // 
@@ -107,7 +120,7 @@
             // 
             this.inverseCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.inverseCheckBox.AutoSize = true;
-            this.inverseCheckBox.Location = new System.Drawing.Point(148, 22);
+            this.inverseCheckBox.Location = new System.Drawing.Point(17, 69);
             this.inverseCheckBox.Name = "inverseCheckBox";
             this.inverseCheckBox.Size = new System.Drawing.Size(104, 17);
             this.inverseCheckBox.TabIndex = 14;
@@ -163,6 +176,23 @@
             this.tabPage3.Text = "Инструменты";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 75);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(191, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Сторона области маркера, отсчетов";
+            // 
+            // areaSizeTextBox
+            // 
+            this.areaSizeTextBox.Location = new System.Drawing.Point(9, 91);
+            this.areaSizeTextBox.Mask = "0";
+            this.areaSizeTextBox.Name = "areaSizeTextBox";
+            this.areaSizeTextBox.Size = new System.Drawing.Size(100, 20);
+            this.areaSizeTextBox.TabIndex = 3;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -199,23 +229,6 @@
             this.button3.Text = "Отмена";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 75);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(191, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Сторона области маркера, отсчетов";
-            // 
-            // areaSizeTextBox
-            // 
-            this.areaSizeTextBox.Location = new System.Drawing.Point(9, 91);
-            this.areaSizeTextBox.Mask = "0";
-            this.areaSizeTextBox.Name = "areaSizeTextBox";
-            this.areaSizeTextBox.Size = new System.Drawing.Size(100, 20);
-            this.areaSizeTextBox.TabIndex = 3;
             // 
             // SettingsForm
             // 
@@ -261,5 +274,6 @@
         private System.Windows.Forms.MaskedTextBox sectionSizeTextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.MaskedTextBox areaSizeTextBox;
+        private System.Windows.Forms.CheckBox logPaletteCb;
     }
 }

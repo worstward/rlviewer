@@ -60,7 +60,7 @@ namespace RlViewer.Forms
             }
             else if (radioButton2.Checked && _hasNavigation)
             {
-                XLat = string.IsNullOrEmpty(maskedTextBox1.Text) ? "00° 00' 00''" + comboBox1.Text : maskedTextBox1.Text + comboBox1.Text;
+                XLat = string.IsNullOrEmpty(maskedTextBox1.Text) ? "00° 00' 00''" + comboBox1.Text : "0" + maskedTextBox1.Text + comboBox1.Text;
                 YLon = string.IsNullOrEmpty(maskedTextBox2.Text) ? "000° 00' 00''" + comboBox2.Text : maskedTextBox2.Text + comboBox2.Text;
             }
 

@@ -34,7 +34,7 @@ namespace RlViewer.Behaviors.Navigation
             }
             else if(t == typeof(Files.Rli.Concrete.R))
             {
-                throw new NotSupportedException("Point finder for .R is not yet supported");
+                throw new NotSupportedException("Point finder for .R is not supported");
             }
             return 0;
         }

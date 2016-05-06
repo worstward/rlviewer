@@ -29,9 +29,9 @@ namespace RlViewer.Behaviors.Draw
 
 
 
-        public void GetPalette(int R, int G, int B, bool reversed)
+        public void GetPalette(int R, int G, int B, bool reversed, bool logarithmic)
         {
-            _tDrawer.GetPalette(R, G, B, reversed);
+            _tDrawer.GetPalette(R, G, B, reversed, logarithmic);
         }
 
         public Image Draw(Tile[] tiles, Point pointOfView)

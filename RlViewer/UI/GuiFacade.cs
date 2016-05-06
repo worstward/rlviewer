@@ -43,7 +43,9 @@ namespace RlViewer.UI
         private Behaviors.Analyzing.PointAnalyzer _analyzer;
         private Behaviors.Ruler.RulerFacade _ruler;
         private Behaviors.ImageAligning.Aligning _aligner;
-        private Behaviors.Navigation.GeodesicPointFinder _finder;
+        private Behaviors.Navigation.GeodesicPointFinder _searcher;
+        private WorkerEventController _cancellableAction;
+
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
@@ -159,7 +161,7 @@ namespace RlViewer.UI
         {
             if (_worker != null)
             {
-                _worker.CancelAsync();
+                _cancellableAction.Cancelled = true;
             }
         }
 
@@ -233,9 +235,9 @@ namespace RlViewer.UI
         private void loaderWorker_FindPoint(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
 
-            _finder.Report += (s, pe) => ProgressReporter(pe.Percent); ;
-            _finder.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
-
+            _searcher.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _searcher.CancelJob += (s, ce) => ce.Cancel = _searcher.Cancelled;
+            _cancellableAction = _searcher;
             var xy = (Tuple<string, string>)(e.Argument);
             int x;
             if (Int32.TryParse(xy.Item1, out x))
@@ -244,7 +246,7 @@ namespace RlViewer.UI
             }
             else
             {
-                e.Result = _finder.GetCoordinates(NaviStringExt.ParseToRadians(xy.Item1), NaviStringExt.ParseToRadians(xy.Item2));
+                e.Result = _searcher.GetCoordinates(NaviStringExt.ParseToRadians(xy.Item1), NaviStringExt.ParseToRadians(xy.Item2));
             }
 
         }
@@ -252,12 +254,12 @@ namespace RlViewer.UI
         private void loaderWorker_FindPointCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
 
-            _finder.Report -= (s, pe) => ProgressReporter(pe.Percent); ;
-            _finder.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _searcher.Report -= (s, pe) => ProgressReporter(pe.Percent);
+            _searcher.CancelJob -= (s, ce) => ce.Cancel = _searcher.Cancelled;
 
             if (e.Error != null)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point {0}", e.Error.Message));
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point: {0}", e.Error.Message));
                 ErrorGuiMessage("Unable to find point");
             }
             else
@@ -305,8 +307,8 @@ namespace RlViewer.UI
             }
 
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _saver.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
-
+            _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
+            _cancellableAction = _saver;
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
                 .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), _creator.NormalizationFactor);
 
@@ -323,7 +325,7 @@ namespace RlViewer.UI
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _saver.Report -= (s, pe) => ProgressReporter(pe.Percent); ;
-            _saver.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
 
             if (e.Cancelled)
             {  
@@ -345,7 +347,8 @@ namespace RlViewer.UI
         private void loaderWorker_AlignImage(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _aligner.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
+            _cancellableAction = _aligner;
             string fileName = Path.GetFileName(_file.Properties.FilePath);
             _aligner.Resample(fileName);
 
@@ -356,7 +359,7 @@ namespace RlViewer.UI
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _aligner.Report -= (s, pe) => ProgressReporter(pe.Percent);
-            _aligner.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _aligner.CancelJob -= (s, ce) => ce.Cancel = _aligner.Cancelled;
 
             if (e.Cancelled)
             {
@@ -384,14 +387,15 @@ namespace RlViewer.UI
             _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
             _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _navi.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
+            _cancellableAction = _navi;
             _navi.GetNavigation();
                 e.Cancel = _navi.Cancelled;
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _ruler = new Behaviors.Ruler.RulerFacade(_file);
-            _finder = new Behaviors.Navigation.GeodesicPointFinder(_file);
+            _searcher = new Behaviors.Navigation.GeodesicPointFinder(_file);
 
         }
 
@@ -401,7 +405,7 @@ namespace RlViewer.UI
             if (_navi != null)
             {
                 _navi.Report -= (s, pe) => ProgressReporter(pe.Percent);
-                _navi.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+                _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
             }
 
 
@@ -428,7 +432,8 @@ namespace RlViewer.UI
             _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
 
             _creator.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _creator.CancelJob += (s, ce) => ce.Cancel = _worker.CancellationPending;
+            _creator.CancelJob += (s, ce) => ce.Cancel = _creator.Cancelled;
+            _cancellableAction = _creator;
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
 
             e.Cancel = _creator.Cancelled;
@@ -441,7 +446,7 @@ namespace RlViewer.UI
             if (_creator != null)
             {
                 _creator.Report -= (s, pe) => ProgressReporter(pe.Percent);
-                _creator.CancelJob -= (s, ce) => ce.Cancel = _worker.CancellationPending;
+                _creator.CancelJob -= (s, ce) => ce.Cancel = _creator.Cancelled;
             }
 
             if (e.Cancelled)
@@ -557,7 +562,7 @@ namespace RlViewer.UI
         {
             if (_drawer != null)
             {
-                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed);
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, _settings.IsPaletteLogarithmic);
                 if (_file != null && _tiles != null)
                 {
                     _form.Canvas.Image = _drawer.Draw(_tiles,
@@ -1032,6 +1037,7 @@ namespace RlViewer.UI
         private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
             System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
         {
+
             if (_worker != null && _worker.IsBusy)
             {
                 var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
@@ -1039,12 +1045,12 @@ namespace RlViewer.UI
                                 MessageBoxButtons.YesNo);
                 if (confirmation == DialogResult.Yes)
                 {
-                    _worker.CancelAsync();
-                    System.Threading.Thread.Sleep(2000);
+                    CancelLoading();
                 }
                 else return;
             }
 
+           
             InitProgressControls(true, caption);
             _worker = ThreadHelper.InitWorker(d, c);
             _worker.RunWorkerAsync(arg);

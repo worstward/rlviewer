@@ -57,13 +57,32 @@ namespace RlViewer.Behaviors.Draw
                 }
                 else
                 {
-                    colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    if (PaletteParams.Logarithmic)
+                    {
+                        colorPalette.Entries[i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
+                    }
+                    else
+                    {
+                        colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    }
                 }
             }
 
 
             return colorPalette;
         }
+
+
+
+        private int GroupValues(int val)
+        {
+            throw new NotSupportedException("Log palette");
+
+        }
+
+
+
+
 
         private int TrimToByteRange(int value)
         {
@@ -77,70 +96,86 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="G">Green channel</param>
         /// <param name="B">Blue channel</param>
         /// <param name="reversed">Determines if colors in color table are reversed</param>
-        public void GetPalette(int R, int G, int B, bool reversed)
+        /// <param name="logarithmic">Determines if palette uses logarithmic colors</param>
+        public void GetPalette(int R, int G, int B, bool reversed, bool logarithmic)
         {
             _colorPalette = null;
             PaletteParams.R = R;
             PaletteParams.G = G;
             PaletteParams.B = B;
             PaletteParams.Reversed = reversed;
+            PaletteParams.Logarithmic = logarithmic;
         }
 
         private static class PaletteParams
         {
+            private static bool _logarithmic;
 
-            private static bool reversed;
+            public static bool Logarithmic
+            {
+                get
+                {
+                    return _logarithmic;
+                }
+                set
+                {
+                    _logarithmic = value; 
+                }
+            }
+
+
+            private static bool _reversed;
 
             public static bool Reversed
             {
                 get
                 {
-                    return reversed;
+                    return _reversed;
                 }
                 set
                 {
-                    reversed = value;
+                    _reversed = value;
                 }
             }
 
 
 
-            private static int red = 1;
+            private static int _red = 1;
             public static int R
             {
                 get
                 {
-                    return red;
+                    return _red;
                 }
                 set
                 {
-                    red = value < 1 ? 0 : value;
+                    _red = value < 1 ? 0 : value;
                 }
             }
 
-            private static int green = 1;
+            private static int _green = 1;
             public static int G
             {
                 get
                 {
-                    return green;
+                    return _green;
                 }
                 set
                 {
-                    green = value < 1 ? 0 : value;
+                    _green = value < 1 ? 0 : value;
                 }
             }
 
-            private static int blue = 1;
+            private static int _blue = 1;
             public static int B
             {
                 get
                 {
-                    return blue;
+                    return _blue;
                 }
                 set
                 {
-                    blue = value < 1 ? 0 : value;
+                    _blue = value < 1 ? 0 : value;
                 }
             }
         }

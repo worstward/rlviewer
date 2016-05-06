@@ -21,6 +21,7 @@ namespace RlViewer.Forms
             inverseCheckBox.Checked = _settings.IsPaletteReversed;
             allowViewCheckBox.Checked = _settings.AllowViewWhileLoading;
             forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
+            logPaletteCb.Checked = _settings.IsPaletteLogarithmic;
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
 
@@ -32,6 +33,7 @@ namespace RlViewer.Forms
 
         private int[] _palette;
         private bool _isReversed;
+        private bool _isLogarithmic;
         private bool _allowViewWhileLoading;
         private bool _forceTileGen;
         
@@ -86,7 +88,7 @@ namespace RlViewer.Forms
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
             _settings.ForceTileGeneration = _forceTileGen;
-
+            _settings.IsPaletteLogarithmic = _isLogarithmic;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
@@ -104,6 +106,11 @@ namespace RlViewer.Forms
             {
                 this.Close();
             }
+        }
+
+        private void logPaletteCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _isLogarithmic = ((CheckBox)sender).Checked;
         }
 
 

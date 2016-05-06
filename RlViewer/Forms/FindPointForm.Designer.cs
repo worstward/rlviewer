@@ -50,7 +50,7 @@
             // maskedTextBox1
             // 
             this.maskedTextBox1.Location = new System.Drawing.Point(6, 27);
-            this.maskedTextBox1.Mask = "000° 00\' 00\'\' ";
+            this.maskedTextBox1.Mask = "00° 00\' 00\'\' ";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.PromptChar = '0';
             this.maskedTextBox1.Size = new System.Drawing.Size(80, 20);
@@ -58,16 +58,16 @@
             // 
             // maskedTextBox2
             // 
-            this.maskedTextBox2.Location = new System.Drawing.Point(127, 27);
+            this.maskedTextBox2.Location = new System.Drawing.Point(6, 78);
             this.maskedTextBox2.Mask = "000° 00\' 00\'\' ";
             this.maskedTextBox2.Name = "maskedTextBox2";
             this.maskedTextBox2.PromptChar = '0';
-            this.maskedTextBox2.Size = new System.Drawing.Size(74, 20);
+            this.maskedTextBox2.Size = new System.Drawing.Size(80, 20);
             this.maskedTextBox2.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(189, 228);
+            this.button1.Location = new System.Drawing.Point(245, 153);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -83,39 +83,41 @@
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.maskedTextBox1);
             this.panel2.Controls.Add(this.maskedTextBox2);
-            this.panel2.Location = new System.Drawing.Point(12, 142);
+            this.panel2.Location = new System.Drawing.Point(170, 35);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(252, 67);
+            this.panel2.Size = new System.Drawing.Size(150, 112);
             this.panel2.TabIndex = 3;
             // 
             // comboBox2
             // 
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
-            "W",
-            "E"});
-            this.comboBox2.Location = new System.Drawing.Point(207, 27);
+            "E",
+            "W"});
+            this.comboBox2.Location = new System.Drawing.Point(89, 78);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(39, 21);
+            this.comboBox2.Size = new System.Drawing.Size(39, 20);
             this.comboBox2.TabIndex = 6;
             // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "N",
             "S"});
             this.comboBox1.Location = new System.Drawing.Point(89, 27);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(32, 21);
+            this.comboBox1.Size = new System.Drawing.Size(39, 20);
             this.comboBox1.TabIndex = 5;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(127, 11);
+            this.label2.Location = new System.Drawing.Point(3, 62);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 4;
@@ -138,13 +140,13 @@
             this.panel1.Controls.Add(this.maskedTextBox4);
             this.panel1.Location = new System.Drawing.Point(12, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(252, 67);
+            this.panel1.Size = new System.Drawing.Size(147, 113);
             this.panel1.TabIndex = 5;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(143, 11);
+            this.label3.Location = new System.Drawing.Point(3, 56);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(14, 13);
             this.label3.TabIndex = 4;
@@ -165,16 +167,16 @@
             this.maskedTextBox3.Mask = "000000";
             this.maskedTextBox3.Name = "maskedTextBox3";
             this.maskedTextBox3.PromptChar = '0';
-            this.maskedTextBox3.Size = new System.Drawing.Size(100, 20);
+            this.maskedTextBox3.Size = new System.Drawing.Size(83, 20);
             this.maskedTextBox3.TabIndex = 0;
             // 
             // maskedTextBox4
             // 
-            this.maskedTextBox4.Location = new System.Drawing.Point(146, 27);
+            this.maskedTextBox4.Location = new System.Drawing.Point(6, 72);
             this.maskedTextBox4.Mask = "000000";
             this.maskedTextBox4.Name = "maskedTextBox4";
             this.maskedTextBox4.PromptChar = '0';
-            this.maskedTextBox4.Size = new System.Drawing.Size(100, 20);
+            this.maskedTextBox4.Size = new System.Drawing.Size(80, 20);
             this.maskedTextBox4.TabIndex = 1;
             // 
             // radioButton1
@@ -192,12 +194,12 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(12, 119);
+            this.radioButton2.Location = new System.Drawing.Point(170, 12);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(166, 17);
+            this.radioButton2.Size = new System.Drawing.Size(107, 17);
             this.radioButton2.TabIndex = 10;
             this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Геодезические координаты";
+            this.radioButton2.Text = "Гео координаты";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
@@ -205,7 +207,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(283, 263);
+            this.ClientSize = new System.Drawing.Size(329, 188);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.panel1);
