@@ -53,7 +53,14 @@ namespace RlViewer.Behaviors.Draw
                 var b = bFactor * i;
                 if (isReversed)
                 {
-                    colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    if (PaletteParams.Logarithmic)
+                    {
+                        colorPalette.Entries[255 - i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
+                    }
+                    else
+                    {
+                        colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
+                    }
                 }
                 else
                 {
@@ -76,8 +83,7 @@ namespace RlViewer.Behaviors.Draw
 
         private int GroupValues(int val)
         {
-            throw new NotSupportedException("Log palette");
-
+            return (int)(val / 16) * 16;
         }
 
 

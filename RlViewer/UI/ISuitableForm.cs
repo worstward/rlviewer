@@ -33,8 +33,11 @@ namespace RlViewer.UI
         RadioButton GammaRb { get; }
         Button ResetFilter { get; }
         Button AlignBtn { get; }
-        CheckBox NavigationCb { get; }
+        CheckBox NavigationPanelCb { get; }
         DataGridView NavigationDgv { get; }
-        SplitContainer WorkingAreaSplitter { get; }
+        CheckBox FilterPanelCb { get; }
+        SplitContainer NaviSplitter { get; }
+        SplitContainer FilterSplitter { get; }
+        System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart { get; }
     }
 }

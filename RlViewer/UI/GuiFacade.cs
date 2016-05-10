@@ -27,7 +27,7 @@ namespace RlViewer.UI
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
                 () => Save(), () => ShowFileInfo(), () => ShowLog());
             InitializeWindow();
-            _form.Canvas.MouseWheel += Canvas_MouseWheel;
+            //_form.Canvas.MouseWheel += Canvas_MouseWheel;
             _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
             _win = _form.Canvas;
             AddToolTips(form);
@@ -50,6 +50,8 @@ namespace RlViewer.UI
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
         private Navigation.NavigationContainer _navi;
+        private Behaviors.Draw.HistContainer _histogram = new Behaviors.Draw.HistContainer();
+
 
         private Files.LocatorFile _file;
         private Behaviors.TileCreator.Tile[] _tiles;
@@ -57,6 +59,8 @@ namespace RlViewer.UI
         private Behaviors.PointSelector.PointSelector _pointSelector;
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
+
+
 
         private ISuitableForm _form;
         private System.ComponentModel.BackgroundWorker _worker;
@@ -478,7 +482,7 @@ namespace RlViewer.UI
 
         }
 
-        private void Canvas_MouseWheel(object sender, MouseEventArgs e)
+        public void ScaleImage(MouseEventArgs e)
         {
             if (_file != null)
             {
@@ -542,10 +546,12 @@ namespace RlViewer.UI
 
         public void DrawImage()
         {
+            
             if (_file != null && _drawer != null && _tiles != null)
             {
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+                InitChart(_form.HistogramChart, (Image)(_form.Canvas.Image.Clone()));
             }
         }
 
@@ -570,22 +576,63 @@ namespace RlViewer.UI
                 }
             }
         }
-     
+
+        public async void InitChart(System.Windows.Forms.DataVisualization.Charting.Chart c, Image img)
+        {
+            if (_form.FilterPanelCb.Checked)
+            {
+                c.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
+                c.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+                c.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+                c.ChartAreas[0].AxisX.Maximum = 265;
+                c.ChartAreas[0].AxisX.Minimum = -10;
+                c.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+                c.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+                c.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+                c.ChartAreas[0].AxisY.Maximum = img.Width * img.Height / 4;
+                c.ChartAreas[0].AxisY.Minimum = 0;
+                c.ChartAreas[0].AxisY.LabelStyle.Format = "#";
+                c.Series[0].IsVisibleInLegend = false;
+
+                var width = _file.Width - _form.Horizontal.Value;
+                width = width < img.Width ? width : img.Width;
+                var height = _file.Height - _form.Vertical.Value;
+                height = height < img.Height ? height : img.Height;
+
+                c.Series["Series1"].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits", await _histogram.GetHistogram(img, width, height), "values");
+            }
+        }
 
         public void ToggleNavigation()
         {
-            if (_form.NavigationCb.Checked)
+            if (_form.NavigationPanelCb.Checked)
             {
-                _form.WorkingAreaSplitter.Panel2Collapsed = false;
-                _form.WorkingAreaSplitter.Panel2.Show();
+                _form.NaviSplitter.Panel2Collapsed = false;
+                _form.NaviSplitter.Panel2.Show();
             }
             else
             {
-                _form.WorkingAreaSplitter.Panel2Collapsed = true;
-                _form.WorkingAreaSplitter.Panel2.Hide();
+                _form.NaviSplitter.Panel2Collapsed = true;
+                _form.NaviSplitter.Panel2.Hide();
             }
             InitDrawImage();
         }
+
+        public void ToggleFilters()
+        {
+            if (_form.FilterPanelCb.Checked)
+            {
+                _form.FilterSplitter.Panel2Collapsed = false;
+                _form.FilterSplitter.Panel2.Show();
+            }
+            else
+            {
+                _form.FilterSplitter.Panel2Collapsed = true;
+                _form.FilterSplitter.Panel2.Hide();
+            }
+            InitDrawImage();
+        }
+
 
 
         public void Save()
@@ -773,7 +820,7 @@ namespace RlViewer.UI
             if (_file != null && !_worker.IsBusy)
             {
 
-                if (_form.NavigationCb.Checked && _file.Navigation != null)
+                if (_form.NavigationPanelCb.Checked && _file.Navigation != null)
                 {
                         if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 
                             && e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
@@ -1065,7 +1112,7 @@ namespace RlViewer.UI
             AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
             AddToolTip(frm.MarkAreaRb, "Область");
             AddToolTip(frm.MarkPointRb, "Точка");
-            AddToolTip(frm.NavigationCb, "Навигация");
+            AddToolTip(frm.NavigationPanelCb, "Навигация");
             AddToolTip(frm.RulerRb, "Линейка");
             AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
 
@@ -1073,6 +1120,7 @@ namespace RlViewer.UI
             AddToolTip(frm.ContrastRb, "Контрастность");
             AddToolTip(frm.GammaRb, "Гамма");
             AddToolTip(frm.ResetFilter, "Сброс фильтров");
+            AddToolTip(frm.FilterPanelCb, "Панель фильтров");
         }
 
         private void AddToolTip(Control c, string caption)

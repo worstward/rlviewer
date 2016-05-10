@@ -47,9 +47,7 @@ namespace RlViewer.Forms
                 maskedTextBox1.Focus();
                 return;
             }
-            
-
-            
+                        
             DialogResult = DialogResult.OK;
             Close();
             

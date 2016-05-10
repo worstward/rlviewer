@@ -214,9 +214,11 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.Name = "FindPointForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Поиск точки";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindPointForm_KeyDown);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);

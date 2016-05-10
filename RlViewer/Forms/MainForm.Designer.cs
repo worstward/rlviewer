@@ -28,6 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
@@ -48,6 +53,8 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.percentageLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -61,11 +68,8 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.resetFilterBtn = new System.Windows.Forms.Button();
-            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
-            this.contrastRb = new System.Windows.Forms.RadioButton();
-            this.brightnessRb = new System.Windows.Forms.RadioButton();
+            this.filterPanelCb = new System.Windows.Forms.CheckBox();
+            this.naviPanelCb = new System.Windows.Forms.CheckBox();
             this.findPointBtn = new System.Windows.Forms.Button();
             this.rulerRb = new System.Windows.Forms.RadioButton();
             this.alignBtn = new System.Windows.Forms.Button();
@@ -76,6 +80,10 @@
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.resetFilterBtn = new System.Windows.Forms.Button();
+            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
+            this.contrastRb = new System.Windows.Forms.RadioButton();
+            this.brightnessRb = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -84,6 +92,11 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -222,9 +235,9 @@
             this.groupBox2.Controls.Add(this.brightnessRb);
             this.groupBox2.Controls.Add(this.filterLbl);
             this.groupBox2.Controls.Add(this.trackBar1);
-            this.groupBox2.Location = new System.Drawing.Point(357, 29);
+            this.groupBox2.Location = new System.Drawing.Point(9, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(313, 58);
+            this.groupBox2.Size = new System.Drawing.Size(313, 98);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Фильтр";
@@ -232,7 +245,7 @@
             // filterLbl
             // 
             this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(143, 35);
+            this.filterLbl.Location = new System.Drawing.Point(142, 55);
             this.filterLbl.Name = "filterLbl";
             this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
@@ -241,7 +254,7 @@
             // trackBar1
             // 
             this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(114, 13);
+            this.trackBar1.Location = new System.Drawing.Point(113, 33);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(155, 32);
             this.trackBar1.TabIndex = 10;
@@ -264,20 +277,58 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(17, 89);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(875, 401);
-            this.splitContainer1.SplitterDistance = 671;
+            this.splitContainer1.SplitterDistance = 691;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.pictureBox1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.chart1);
+            this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
+            this.splitContainer2.Size = new System.Drawing.Size(691, 401);
+            this.splitContainer2.SplitterDistance = 289;
+            this.splitContainer2.TabIndex = 0;
+            this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
+            // 
+            // chart1
+            // 
+            this.chart1.BackColor = System.Drawing.Color.Transparent;
+            this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            this.chart1.Location = new System.Drawing.Point(390, 3);
+            this.chart1.Name = "chart1";
+            series1.ChartArea = "ChartArea1";
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
+            this.chart1.Size = new System.Drawing.Size(298, 98);
+            this.chart1.TabIndex = 10;
+            this.chart1.Text = "chart1";
             // 
             // dataGridView1
             // 
@@ -287,16 +338,40 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Location = new System.Drawing.Point(6, 4);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(191, 397);
+            this.dataGridView1.Size = new System.Drawing.Size(171, 397);
             this.dataGridView1.TabIndex = 0;
             // 
             // paramColumn
@@ -392,90 +467,40 @@
             this.toolStripDropDownButton1.Text = "Cancel";
             this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
-            // checkBox1
+            // filterPanelCb
             // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
-            this.checkBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.FlatAppearance.BorderSize = 0;
-            this.checkBox1.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.checkBox1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox1.Location = new System.Drawing.Point(859, 47);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(30, 30);
-            this.checkBox1.TabIndex = 20;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.filterPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.filter;
+            this.filterPanelCb.Checked = true;
+            this.filterPanelCb.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.filterPanelCb.FlatAppearance.BorderSize = 0;
+            this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.filterPanelCb.Location = new System.Drawing.Point(345, 44);
+            this.filterPanelCb.Name = "filterPanelCb";
+            this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
+            this.filterPanelCb.TabIndex = 24;
+            this.filterPanelCb.UseVisualStyleBackColor = true;
+            this.filterPanelCb.CheckedChanged += new System.EventHandler(this.filterPanelCb_CheckedChanged);
             // 
-            // resetFilterBtn
+            // naviPanelCb
             // 
-            this.resetFilterBtn.BackColor = System.Drawing.Color.Transparent;
-            this.resetFilterBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetFilterBtn.BackgroundImage")));
-            this.resetFilterBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.resetFilterBtn.FlatAppearance.BorderSize = 0;
-            this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.resetFilterBtn.Location = new System.Drawing.Point(275, 15);
-            this.resetFilterBtn.Name = "resetFilterBtn";
-            this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
-            this.resetFilterBtn.TabIndex = 13;
-            this.resetFilterBtn.UseVisualStyleBackColor = false;
-            this.resetFilterBtn.Click += new System.EventHandler(this.resetFilterBtn_Click);
-            // 
-            // gammaCorrRb
-            // 
-            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
-            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
-            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gammaCorrRb.Location = new System.Drawing.Point(78, 15);
-            this.gammaCorrRb.Name = "gammaCorrRb";
-            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
-            this.gammaCorrRb.TabIndex = 2;
-            this.gammaCorrRb.TabStop = true;
-            this.gammaCorrRb.UseVisualStyleBackColor = true;
-            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
-            // 
-            // contrastRb
-            // 
-            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
-            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.contrastRb.FlatAppearance.BorderSize = 0;
-            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.contrastRb.Location = new System.Drawing.Point(45, 15);
-            this.contrastRb.Name = "contrastRb";
-            this.contrastRb.Size = new System.Drawing.Size(30, 30);
-            this.contrastRb.TabIndex = 1;
-            this.contrastRb.TabStop = true;
-            this.contrastRb.UseVisualStyleBackColor = true;
-            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
-            // 
-            // brightnessRb
-            // 
-            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
-            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.brightnessRb.Checked = true;
-            this.brightnessRb.FlatAppearance.BorderSize = 0;
-            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.brightnessRb.Location = new System.Drawing.Point(12, 15);
-            this.brightnessRb.Name = "brightnessRb";
-            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
-            this.brightnessRb.TabIndex = 0;
-            this.brightnessRb.TabStop = true;
-            this.brightnessRb.UseVisualStyleBackColor = true;
-            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
+            this.naviPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.naviPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
+            this.naviPanelCb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.naviPanelCb.Checked = true;
+            this.naviPanelCb.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.naviPanelCb.FlatAppearance.BorderSize = 0;
+            this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.naviPanelCb.Location = new System.Drawing.Point(859, 44);
+            this.naviPanelCb.Name = "naviPanelCb";
+            this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
+            this.naviPanelCb.TabIndex = 20;
+            this.naviPanelCb.UseVisualStyleBackColor = true;
+            this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
             // 
             // findPointBtn
             // 
@@ -630,15 +655,83 @@
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(3, 4);
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(665, 397);
-            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.Size = new System.Drawing.Size(685, 283);
+            this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
+            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
+            // 
+            // resetFilterBtn
+            // 
+            this.resetFilterBtn.BackColor = System.Drawing.Color.Transparent;
+            this.resetFilterBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetFilterBtn.BackgroundImage")));
+            this.resetFilterBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.resetFilterBtn.FlatAppearance.BorderSize = 0;
+            this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resetFilterBtn.Location = new System.Drawing.Point(274, 35);
+            this.resetFilterBtn.Name = "resetFilterBtn";
+            this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
+            this.resetFilterBtn.TabIndex = 13;
+            this.resetFilterBtn.UseVisualStyleBackColor = false;
+            this.resetFilterBtn.Click += new System.EventHandler(this.resetFilterBtn_Click);
+            // 
+            // gammaCorrRb
+            // 
+            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
+            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
+            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gammaCorrRb.Location = new System.Drawing.Point(77, 35);
+            this.gammaCorrRb.Name = "gammaCorrRb";
+            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
+            this.gammaCorrRb.TabIndex = 2;
+            this.gammaCorrRb.TabStop = true;
+            this.gammaCorrRb.UseVisualStyleBackColor = true;
+            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
+            // 
+            // contrastRb
+            // 
+            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
+            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.contrastRb.FlatAppearance.BorderSize = 0;
+            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.contrastRb.Location = new System.Drawing.Point(44, 35);
+            this.contrastRb.Name = "contrastRb";
+            this.contrastRb.Size = new System.Drawing.Size(30, 30);
+            this.contrastRb.TabIndex = 1;
+            this.contrastRb.TabStop = true;
+            this.contrastRb.UseVisualStyleBackColor = true;
+            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
+            // 
+            // brightnessRb
+            // 
+            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
+            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.brightnessRb.Checked = true;
+            this.brightnessRb.FlatAppearance.BorderSize = 0;
+            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.brightnessRb.Location = new System.Drawing.Point(11, 35);
+            this.brightnessRb.Name = "brightnessRb";
+            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
+            this.brightnessRb.TabIndex = 0;
+            this.brightnessRb.TabStop = true;
+            this.brightnessRb.UseVisualStyleBackColor = true;
+            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
             // MainForm
             // 
@@ -646,12 +739,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.filterPanelCb);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.scaleLabel);
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.naviPanelCb);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.hScrollBar1);
@@ -677,6 +770,11 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -710,8 +808,7 @@
         private System.Windows.Forms.ToolStripMenuItem логToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem сохранитьToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox naviPanelCb;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.RadioButton analyzeRb;
@@ -735,6 +832,10 @@
         private System.Windows.Forms.Button resetFilterBtn;
         private System.Windows.Forms.ToolStripMenuItem статусКешаToolStripMenuItem;
         private System.Windows.Forms.Button findPointBtn;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.CheckBox filterPanelCb;
     }
 }
 

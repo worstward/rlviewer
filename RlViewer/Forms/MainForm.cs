@@ -19,7 +19,8 @@ namespace RlViewer.Forms
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(this);
             Text = string.Empty;
-            checkBox1.Checked = false;
+            naviPanelCb.Checked = false;
+            filterPanelCb.Checked = false;
         }
 
 
@@ -195,11 +196,19 @@ namespace RlViewer.Forms
             }
         }
         
-        public CheckBox NavigationCb
+        public CheckBox NavigationPanelCb
         {
             get
             {
-                return checkBox1;
+                return naviPanelCb;
+            }
+        }
+
+        public CheckBox FilterPanelCb
+        {
+            get
+            {
+                return filterPanelCb;
             }
         }
 
@@ -211,11 +220,19 @@ namespace RlViewer.Forms
             }
         }
 
-        public SplitContainer WorkingAreaSplitter
+        public SplitContainer NaviSplitter
         {
             get
             {
                 return splitContainer1;
+            }
+        }
+
+        public SplitContainer FilterSplitter
+        {
+            get
+            {
+                return splitContainer2;
             }
         }
 
@@ -233,6 +250,14 @@ namespace RlViewer.Forms
             get
             {
                 return toolStripStatusLabel5;
+            }
+        }
+
+        public System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart
+        {
+            get
+            {
+                return chart1;
             }
         }
 
@@ -268,14 +293,23 @@ namespace RlViewer.Forms
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            _guiFacade.ClickStarted(e);
-            
+            _guiFacade.ClickStarted(e);          
             _guiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             _guiFacade.ClickFinished(e);
+        }
+
+        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            _guiFacade.ScaleImage(e);
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            ((PictureBox)sender).Focus();
         }
 
 
@@ -343,9 +377,13 @@ namespace RlViewer.Forms
             _guiFacade.InitDrawImage();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void naviPanelCb_CheckedChanged(object sender, EventArgs e)
         {
             _guiFacade.ToggleNavigation();
+        }
+        private void filterPanelCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _guiFacade.ToggleFilters();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -353,10 +391,6 @@ namespace RlViewer.Forms
             Text = _guiFacade.OpenWithDoubleClick();
         }
 
-        private void pictureBox1_MouseEnter(object sender, EventArgs e)
-        {
-            ((PictureBox)sender).Focus();
-        }
 
         private void alignBtn_Click(object sender, EventArgs e)
         {
@@ -398,6 +432,12 @@ namespace RlViewer.Forms
         {
             _guiFacade.FindPoint();
         }
+
+        private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+             _guiFacade.InitDrawImage();
+        }
+
 
     }
 }

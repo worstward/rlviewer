@@ -60,6 +60,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -78,6 +79,7 @@
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\DragController.cs" />
+    <Compile Include="Behaviors\Draw\HistContainer.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
     <Compile Include="Behaviors\ImageAligning\IEnumerableCombinationExt.cs" />
@@ -385,6 +387,7 @@
   <ItemGroup>
     <None Include="Resources\Vega_radio.png" />
     <None Include="Resources\FindPoint.png" />
+    <None Include="Resources\filter.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

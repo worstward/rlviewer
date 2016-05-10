@@ -85,8 +85,15 @@ namespace RlViewer.Forms
                 ControlSwitch(panel2, true);
                 ControlSwitch(panel1, false);
             }
-
-
         }
+
+        private void FindPointForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+        }
+
     }
 }
