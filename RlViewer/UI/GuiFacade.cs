@@ -31,6 +31,7 @@ namespace RlViewer.UI
             _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
             _win = _form.Canvas;
             AddToolTips(form);
+            InitChart(_form.HistogramChart);
         }
 
 
@@ -474,6 +475,7 @@ namespace RlViewer.UI
                 
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
+                RedrawChart(_form.HistogramChart);
                 InitProgressControls(false);
                 InitDrawImage();              
             }
@@ -551,7 +553,6 @@ namespace RlViewer.UI
             {
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
-                InitChart(_form.HistogramChart, (Image)(_form.Canvas.Image.Clone()));
             }
         }
 
@@ -577,60 +578,72 @@ namespace RlViewer.UI
             }
         }
 
-        public async void InitChart(System.Windows.Forms.DataVisualization.Charting.Chart c, Image img)
+        private void InitChart(System.Windows.Forms.DataVisualization.Charting.Chart c)
+        {
+            c.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
+            c.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            c.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+            c.ChartAreas[0].AxisX.Maximum = 265;
+            c.ChartAreas[0].AxisX.Minimum = -10;
+            c.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+            c.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+            c.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+            c.ChartAreas[0].BackColor = Color.Transparent;
+            c.ChartAreas[0].AxisY.Minimum = 0;
+            c.Series[0]["PixelPointWidth"] = "3";
+            c.ChartAreas[0].AxisY.LabelStyle.Format = "#";
+            c.Series[0].IsVisibleInLegend = false;
+        }
+
+        private async void RedrawChart(System.Windows.Forms.DataVisualization.Charting.Chart c, Image img)
         {
             if (_form.FilterPanelCb.Checked)
             {
-                c.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
-                c.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-                c.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
-                c.ChartAreas[0].AxisX.Maximum = 265;
-                c.ChartAreas[0].AxisX.Minimum = -10;
-                c.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
-                c.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
-                c.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
-                c.ChartAreas[0].AxisY.Maximum = img.Width * img.Height / 4;
-                c.ChartAreas[0].AxisY.Minimum = 0;
-                c.ChartAreas[0].AxisY.LabelStyle.Format = "#";
-                c.Series[0].IsVisibleInLegend = false;
-
-                var width = _file.Width - _form.Horizontal.Value;
+                var width = (int)((_file.Width - _form.Horizontal.Value) * _scaler.ScaleFactor);
                 width = width < img.Width ? width : img.Width;
-                var height = _file.Height - _form.Vertical.Value;
+                var height = (int)((_file.Height - _form.Vertical.Value) * _scaler.ScaleFactor);
                 height = height < img.Height ? height : img.Height;
 
-                c.Series["Series1"].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits", await _histogram.GetHistogram(img, width, height), "values");
+                if(width > 0 && height > 0)
+                {
+                    c.ChartAreas[0].AxisY.Maximum = width * height / 2;
+                    c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
+                        await _histogram.GetHistogramAsync(img, width, height), "values");
+                }
             }
+        }
+
+        private async void RedrawChart(System.Windows.Forms.DataVisualization.Charting.Chart c)
+        {
+            c.ChartAreas[0].AxisY.Maximum = _file.Width * _file.Height / 4;
+            c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
+              await _histogram.GetHistogramAsync(_file, _tiles), "values");
+        }
+
+
+        private void TogglePanel(bool isPanelOpen, SplitContainer sp)
+        {
+            if (isPanelOpen)
+            {
+                sp.Panel2Collapsed = false;
+                sp.Panel2.Show();
+            }
+            else
+            {
+                sp.Panel2Collapsed = true;
+                sp.Panel2.Hide();
+            }
+            InitDrawImage();
         }
 
         public void ToggleNavigation()
         {
-            if (_form.NavigationPanelCb.Checked)
-            {
-                _form.NaviSplitter.Panel2Collapsed = false;
-                _form.NaviSplitter.Panel2.Show();
-            }
-            else
-            {
-                _form.NaviSplitter.Panel2Collapsed = true;
-                _form.NaviSplitter.Panel2.Hide();
-            }
-            InitDrawImage();
+            TogglePanel(_form.NavigationPanelCb.Checked, _form.NaviSplitter);
         }
 
         public void ToggleFilters()
         {
-            if (_form.FilterPanelCb.Checked)
-            {
-                _form.FilterSplitter.Panel2Collapsed = false;
-                _form.FilterSplitter.Panel2.Show();
-            }
-            else
-            {
-                _form.FilterSplitter.Panel2Collapsed = true;
-                _form.FilterSplitter.Panel2.Hide();
-            }
-            InitDrawImage();
+            TogglePanel(_form.FilterPanelCb.Checked, _form.FilterSplitter);
         }
 
 

@@ -273,7 +273,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
 
                 if ((int)normal == 0) normal = histogramStep;
-                return 255f / normal;
+                return 255 / normal;
             }
         }
 
@@ -307,8 +307,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
             return tiles;
         }
-
-
 
         protected virtual string SaveTile(string path, byte[] tileData)
         {
