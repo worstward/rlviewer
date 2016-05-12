@@ -15,7 +15,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class RawTileCreator : RlViewer.Behaviors.TileCreator.Abstract.TileCreator, INormalizable
     {
-        public RawTileCreator(LocatorFile rli)
+        public RawTileCreator(LocatorFile rli, TileOutputType type)
+            : base(type)
         {
             _rli = rli;
         }
@@ -76,7 +77,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFile(string filePath)
         {
-            return GetTilesFromFile(filePath, _rli, null);
+            return GetTilesFromFile(filePath, _rli, null, OutputType);
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFileAsync(string filePath)
         {
-            return GetTilesFromFileAsync(filePath, _rli, null);
+            return GetTilesFromFileAsync(filePath, _rli, null, OutputType);
         }
       
     }

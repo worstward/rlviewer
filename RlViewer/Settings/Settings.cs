@@ -39,12 +39,12 @@ namespace RlViewer.Settings
             set { _isPaletteReversed = value; }
         }
 
-        private bool isLogarithmic;
+        private bool isGrouped;
 
-        public bool IsPaletteLogarithmic
+        public bool IsPaletteGroupped
         {
-            get { return isLogarithmic; }
-            set { isLogarithmic = value; }
+            get { return isGrouped; }
+            set { isGrouped = value; }
         }
 
 
@@ -66,6 +66,11 @@ namespace RlViewer.Settings
             set { _areaSize = value; }
         }
 
+        public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
+        {
+            get;
+            set;
+        }
 
     }
 }

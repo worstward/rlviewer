@@ -434,7 +434,7 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile);
+            _creator = TileCreatorFactory.GetFactory(_file.Properties).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm);
 
             _creator.Report += (s, pe) => ProgressReporter(pe.Percent);
             _creator.CancelJob += (s, ce) => ce.Cancel = _creator.Cancelled;
@@ -475,7 +475,7 @@ namespace RlViewer.UI
                 
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
-                RedrawChart(_form.HistogramChart);
+                //RedrawChart(_form.HistogramChart);
                 InitProgressControls(false);
                 InitDrawImage();              
             }
@@ -553,6 +553,7 @@ namespace RlViewer.UI
             {
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+                RedrawChart(_form.HistogramChart, (Image)(_form.Canvas.Image.Clone()));
             }
         }
 
@@ -569,7 +570,7 @@ namespace RlViewer.UI
         {
             if (_drawer != null)
             {
-                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, _settings.IsPaletteLogarithmic);
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, _settings.IsPaletteGroupped);
                 if (_file != null && _tiles != null)
                 {
                     _form.Canvas.Image = _drawer.Draw(_tiles,

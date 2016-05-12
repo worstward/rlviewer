@@ -12,9 +12,9 @@ namespace RlViewer.Factories.TileCreator.Concrete
 {
     class RawTileCreatorFactory : TileCreatorFactory
     {
-        public override RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile locatorFile)
+        public override RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile locatorFile, Behaviors.TileCreator.TileOutputType type)
         {
-            return new RawTileCreator(locatorFile);
+            return new RawTileCreator(locatorFile, type);
         }
     }
 }

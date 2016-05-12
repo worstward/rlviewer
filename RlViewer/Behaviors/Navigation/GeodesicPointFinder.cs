@@ -42,12 +42,10 @@ namespace RlViewer.Behaviors.Navigation
 
         public Point GetCoordinates(double latitude, double longitude)
         {
-            int fromInclusive = 0;
             int toInclusive = _file.Navigation.Count();
 
             Point foundPoint = new Point();
             var shift = GetNaviShift();
-            int counter = 0;
 
             List<Point> lst = new List<Point>();
 

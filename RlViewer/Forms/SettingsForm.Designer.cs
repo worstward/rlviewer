@@ -35,6 +35,8 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tileOutputCb = new System.Windows.Forms.ComboBox();
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -90,9 +92,9 @@
             this.logPaletteCb.AutoSize = true;
             this.logPaletteCb.Location = new System.Drawing.Point(17, 46);
             this.logPaletteCb.Name = "logPaletteCb";
-            this.logPaletteCb.Size = new System.Drawing.Size(152, 17);
+            this.logPaletteCb.Size = new System.Drawing.Size(128, 17);
             this.logPaletteCb.TabIndex = 15;
-            this.logPaletteCb.Text = "Логарифмические цвета";
+            this.logPaletteCb.Text = "Группировать цвета";
             this.logPaletteCb.UseVisualStyleBackColor = true;
             this.logPaletteCb.CheckedChanged += new System.EventHandler(this.logPaletteCb_CheckedChanged);
             // 
@@ -130,6 +132,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label3);
+            this.tabPage2.Controls.Add(this.tileOutputCb);
             this.tabPage2.Controls.Add(this.forceTileGenCheckBox);
             this.tabPage2.Controls.Add(this.allowViewCheckBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -139,6 +143,29 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Подготовка вывода";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 78);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(97, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Алгоритм вывода";
+            // 
+            // tileOutputCb
+            // 
+            this.tileOutputCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tileOutputCb.FormattingEnabled = true;
+            this.tileOutputCb.Items.AddRange(new object[] {
+            "Линейный",
+            "Логарифмический",
+            "Линейно-Логарифмический"});
+            this.tileOutputCb.Location = new System.Drawing.Point(6, 94);
+            this.tileOutputCb.Name = "tileOutputCb";
+            this.tileOutputCb.Size = new System.Drawing.Size(170, 21);
+            this.tileOutputCb.TabIndex = 2;
+            this.tileOutputCb.SelectedIndexChanged += new System.EventHandler(this.tileOutputCb_SelectedIndexChanged);
             // 
             // forceTileGenCheckBox
             // 
@@ -275,5 +302,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.MaskedTextBox areaSizeTextBox;
         private System.Windows.Forms.CheckBox logPaletteCb;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox tileOutputCb;
     }
 }

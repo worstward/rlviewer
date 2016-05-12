@@ -12,7 +12,7 @@ namespace RlViewer.Factories.TileCreator.Abstract
 {
     public abstract class TileCreatorFactory
     {
-        public abstract RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile rli);
+        public abstract RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile rli, Behaviors.TileCreator.TileOutputType type);
 
         public static TileCreatorFactory GetFactory(FileProperties properties)
         {

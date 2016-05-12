@@ -21,10 +21,12 @@ namespace RlViewer.Forms
             inverseCheckBox.Checked = _settings.IsPaletteReversed;
             allowViewCheckBox.Checked = _settings.AllowViewWhileLoading;
             forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
-            logPaletteCb.Checked = _settings.IsPaletteLogarithmic;
+            tileOutputCb.SelectedIndex = (int)_settings.TileOutputAlgorithm;
+
+            logPaletteCb.Checked = _settings.IsPaletteGroupped;
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
-
+            
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areaSizeTextBox.PromptChar = ' ';
         }
@@ -33,10 +35,10 @@ namespace RlViewer.Forms
 
         private int[] _palette;
         private bool _isReversed;
-        private bool _isLogarithmic;
+        private bool _isGrouped;
         private bool _allowViewWhileLoading;
         private bool _forceTileGen;
-        
+        private Behaviors.TileCreator.TileOutputType _outputType;
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -88,7 +90,8 @@ namespace RlViewer.Forms
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
             _settings.ForceTileGeneration = _forceTileGen;
-            _settings.IsPaletteLogarithmic = _isLogarithmic;
+            _settings.IsPaletteGroupped = _isGrouped;
+            _settings.TileOutputAlgorithm = _outputType;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
@@ -110,8 +113,27 @@ namespace RlViewer.Forms
 
         private void logPaletteCb_CheckedChanged(object sender, EventArgs e)
         {
-            _isLogarithmic = ((CheckBox)sender).Checked;
+            _isGrouped = ((CheckBox)sender).Checked;
         }
+
+        private void tileOutputCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (((ComboBox)sender).Text)
+            {
+                case "Линейный":
+                    _outputType = Behaviors.TileCreator.TileOutputType.Linear;
+                    break;
+                case "Логарифмический":
+                    _outputType = Behaviors.TileCreator.TileOutputType.Logarithmic;
+                    break;
+                case "Линейно-Логарифмический":
+                    _outputType = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
 
     }

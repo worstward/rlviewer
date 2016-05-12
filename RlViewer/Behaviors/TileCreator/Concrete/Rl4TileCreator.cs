@@ -15,7 +15,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class Rl4TileCreator : TileCreator.Abstract.TileCreator, INormalizable
     {
-        public Rl4TileCreator(LocatorFile rli)
+        public Rl4TileCreator(LocatorFile rli, TileOutputType type) : base(type)
         {
             _rli = rli;
         }
@@ -85,7 +85,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFile(string path)
         {
-            return GetTilesFromFile(path, _rli, new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
+            return GetTilesFromFile(path, _rli, new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct(), OutputType);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFileAsync(string path)
         {
-            return GetTilesFromFileAsync(path, _rli, new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct());
+            return GetTilesFromFileAsync(path, _rli, new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct(), OutputType);
         }
     }
 

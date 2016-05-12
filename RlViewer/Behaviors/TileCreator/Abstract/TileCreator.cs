@@ -13,6 +13,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class TileCreator : WorkerEventController
     {
+        public TileCreator(TileOutputType type)
+        {
+            OutputType = type;
+        }
+
         private System.Drawing.Size tileSize = new System.Drawing.Size(1024, 1024);
         protected System.Drawing.Size TileSize
         {
@@ -22,8 +27,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-        public abstract Tile[] Tiles { get; }
 
+        protected TileOutputType OutputType
+        {
+            get;
+            set;
+        }
+
+        public abstract Tile[] Tiles { get; }
 
         private string tileExtension = ".tl";
         protected virtual string TileFileExtension
@@ -36,6 +47,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public abstract float NormalizationFactor { get; }
 
+        private float _maxValue;
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
@@ -75,7 +87,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
         protected Tile[] GetTilesFromFile(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader)
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
             if (file.Width == 0 || file.Height == 0)
             {
@@ -100,7 +112,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)
                 {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor, outputType);
                     tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
@@ -139,7 +151,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
         protected virtual Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader)
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
             if (file.Width == 0 || file.Height == 0)
             {
@@ -167,7 +179,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                     for (int i = 0; i < totalLines; i++)
                     {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor);
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor, outputType);
                         SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
                     }
                 }
@@ -176,6 +188,36 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
+
+        protected virtual float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
+        {
+            byte[] arr = new byte[strDataLen + strHeadLen];
+            float[] floatArr = new float[strDataLen / 4];
+
+            int frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
+            float maxSampleValue = 0;
+
+            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+
+                while (s.Position != frameLength && s.Position != s.Length)
+                {
+                    s.Read(arr, 0, arr.Length);
+                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
+                    var localMax = floatArr.Max();
+
+                    Array.Clear(floatArr, 0, floatArr.Length);
+
+                    if (float.IsNaN(localMax))
+                    {
+                        continue;
+                    }
+                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
+                }
+            }
+            return maxSampleValue;
+        }
 
         protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
@@ -205,6 +247,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
                 }
             }
+
+            _maxValue = maxSampleValue;
 
             float histogramStep = maxSampleValue / 1000f;
             var histogram = new List<int>();
@@ -273,7 +317,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
 
                 if ((int)normal == 0) normal = histogramStep;
-                return 255 / normal;
+                return normal;
             }
         }
 
@@ -315,15 +359,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return path;
         }
 
-        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor)
+        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor, TileOutputType logarithmicOutput)
         {
             byte[] line = new byte[signalDataLength * tileHeight];
             float[] fLine = new float[line.Length / 4];
             byte[] normalizedLine = new byte[fLine.Length];
 
             int index = 0;
+            float border = normalizationFactor / 4f * 3;
 
-      
             while (index != line.Length && s.Position != s.Length)
             {
                 s.Seek(strHeaderLength, SeekOrigin.Current);
@@ -332,15 +376,57 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-            normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(x * normalizationFactor)).ToArray();
+            switch(logarithmicOutput)
+            {
+                case TileOutputType.Linear:
+                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(x / normalizationFactor * 255)).ToArray();
+                    break;
+                case TileOutputType.Logarithmic:
+                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(GetLogarithmicValue(x, _maxValue))).ToArray();
+                    break;
+                case TileOutputType.LinearLogarithmic:
+                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(GetLinearLogarithmicValue(x, border, _maxValue, normalizationFactor))).ToArray();
+                    break;
+                default:
+                    break;
+
+            }
 
             return normalizedLine;
         }
 
+        protected virtual float GetLogarithmicValue(float sample, float maxvalue)
+        {
+            var sampleLog = Math.Log10(sample);
+            var normLog = Math.Log10(maxvalue);
+            var quotient = sampleLog / normLog;
+            return 255 * (float)quotient;
+        }
+
+        protected virtual float GetLinearLogarithmicValue(float sample, float border, float maxvalue, float normalizationFactor)
+        {
+            if (sample < border)
+            {
+                return 191 * sample / normalizationFactor;
+            }
+            else
+            {
+                var sampleLog = Math.Log10(sample);
+                var normLog = Math.Log10(maxvalue);
+                var quotient = sampleLog / normLog;
+                return 255 * (float)quotient;
+            }          
+        }
+
+
+
+
         private byte ToByteRange(float val)
         {
             val =  val > 255 ? 255 : val;
-            return (byte)val;
+            val = val < 1 ? 0 : val;
+            byte b = (byte)val;
+            return b;
         }
 
 
