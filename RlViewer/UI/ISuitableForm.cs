@@ -33,6 +33,7 @@ namespace RlViewer.UI
         RadioButton GammaRb { get; }
         Button ResetFilter { get; }
         Button AlignBtn { get; }
+        Button FindPointBtn { get; }
         CheckBox NavigationPanelCb { get; }
         DataGridView NavigationDgv { get; }
         CheckBox FilterPanelCb { get; }

@@ -82,6 +82,9 @@
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />
+    <Compile Include="Behaviors\Navigation\Abstract\GeodesicPointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\Concrete\Brl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\Concrete\Rl4PointFinder.cs" />
     <Compile Include="Behaviors\TileCreator\TileOutput.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
@@ -95,7 +98,6 @@
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface3Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface4Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface5Points.cs" />
-    <Compile Include="Behaviors\Navigation\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
     <Compile Include="Behaviors\FileReader.cs" />
@@ -108,6 +110,9 @@
     <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
     <Compile Include="Behaviors\Sections\Section.cs" />
     <Compile Include="Behaviors\Sections\VerticalSection.cs" />
+    <Compile Include="Factories\NavigationSearcher\Abstract\PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\Brl4PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\Rl4PointFinderFactory.cs" />
     <Compile Include="Forms\FindPointForm.cs">
       <SubType>Form</SubType>
     </Compile>

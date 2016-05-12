@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms.DataVisualization.Charting;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
@@ -26,12 +27,8 @@ namespace RlViewer.UI
             _drag = new Behaviors.DragController();
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
                 () => Save(), () => ShowFileInfo(), () => ShowLog());
-            InitializeWindow();
-            //_form.Canvas.MouseWheel += Canvas_MouseWheel;
-            _form.RulerRb.CheckedChanged += RulerRb_CheckedChanged;
             _win = _form.Canvas;
-            AddToolTips(form);
-            InitChart(_form.HistogramChart);
+            InitializeWindow();
         }
 
 
@@ -44,7 +41,7 @@ namespace RlViewer.UI
         private Behaviors.Analyzing.PointAnalyzer _analyzer;
         private Behaviors.Ruler.RulerFacade _ruler;
         private Behaviors.ImageAligning.Aligning _aligner;
-        private Behaviors.Navigation.GeodesicPointFinder _searcher;
+        private Behaviors.Navigation.Abstract.GeodesicPointFinder _searcher;
         private WorkerEventController _cancellableAction;
 
 
@@ -170,6 +167,29 @@ namespace RlViewer.UI
             }
         }
 
+        private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
+            System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
+        {
+
+            if (_worker != null && _worker.IsBusy)
+            {
+                var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
+                                "Подтвердите отмену",
+                                MessageBoxButtons.YesNo);
+                if (confirmation == DialogResult.Yes)
+                {
+                    CancelLoading();
+                }
+                else return;
+            }
+
+
+            InitProgressControls(true, caption);
+            _worker = ThreadHelper.InitWorker(d, c);
+            _worker.RunWorkerAsync(arg);
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -222,21 +242,6 @@ namespace RlViewer.UI
         }
 
 
-        public void FindPoint()
-        {
-            if (_file != null)
-            { 
-                using (var ff = new Forms.FindPointForm(_file.Navigation != null))
-                {
-                    if (ff.ShowDialog() == DialogResult.OK)
-                    {
-                        StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
-                            new Tuple<string, string>(ff.XLat, ff.YLon));                          
-                    };
-                }
-            }
-        }
-
         private void loaderWorker_FindPoint(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
 
@@ -274,8 +279,8 @@ namespace RlViewer.UI
                 if (foundPoint != default(Point) && 
                     foundPoint.X > 0 && foundPoint.X < _file.Width && foundPoint.Y > 0 && foundPoint.Y < _file.Height)
                 {
-                    _form.Horizontal.Value = ((Point)e.Result).X - _form.Canvas.Width / 2;
-                    _form.Vertical.Value = ((Point)e.Result).Y - _form.Canvas.Height / 2;
+                    _form.Horizontal.Value = (((Point)e.Result).X - (int)(_form.Canvas.Width / 2 / _scaler.ScaleFactor));
+                    _form.Vertical.Value = (((Point)e.Result).Y - (int)(_form.Canvas.Height / 2 / _scaler.ScaleFactor));
                 }
                 else
                 {
@@ -400,7 +405,7 @@ namespace RlViewer.UI
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _ruler = new Behaviors.Ruler.RulerFacade(_file);
-            _searcher = new Behaviors.Navigation.GeodesicPointFinder(_file);
+            _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
 
         }
 
@@ -579,47 +584,7 @@ namespace RlViewer.UI
             }
         }
 
-        private void InitChart(System.Windows.Forms.DataVisualization.Charting.Chart c)
-        {
-            c.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
-            c.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            c.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
-            c.ChartAreas[0].AxisX.Maximum = 265;
-            c.ChartAreas[0].AxisX.Minimum = -10;
-            c.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
-            c.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
-            c.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
-            c.ChartAreas[0].BackColor = Color.Transparent;
-            c.ChartAreas[0].AxisY.Minimum = 0;
-            c.Series[0]["PixelPointWidth"] = "3";
-            c.ChartAreas[0].AxisY.LabelStyle.Format = "#";
-            c.Series[0].IsVisibleInLegend = false;
-        }
-
-        private async void RedrawChart(System.Windows.Forms.DataVisualization.Charting.Chart c, Image img)
-        {
-            if (_form.FilterPanelCb.Checked)
-            {
-                var width = (int)((_file.Width - _form.Horizontal.Value) * _scaler.ScaleFactor);
-                width = width < img.Width ? width : img.Width;
-                var height = (int)((_file.Height - _form.Vertical.Value) * _scaler.ScaleFactor);
-                height = height < img.Height ? height : img.Height;
-
-                if(width > 0 && height > 0)
-                {
-                    c.ChartAreas[0].AxisY.Maximum = width * height / 2;
-                    c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
-                        await _histogram.GetHistogramAsync(img, width, height), "values");
-                }
-            }
-        }
-
-        private async void RedrawChart(System.Windows.Forms.DataVisualization.Charting.Chart c)
-        {
-            c.ChartAreas[0].AxisY.Maximum = _file.Width * _file.Height / 4;
-            c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
-              await _histogram.GetHistogramAsync(_file, _tiles), "values");
-        }
+        
 
 
         private void TogglePanel(bool isPanelOpen, SplitContainer sp)
@@ -675,7 +640,7 @@ namespace RlViewer.UI
         }
 
 
-        public void ChangeScaleFactor(float value)
+        private void ChangeScaleFactor(float value)
         {
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;                
   
@@ -718,16 +683,7 @@ namespace RlViewer.UI
         }
 
 
-        private void InitProgressControls(bool isVisible, string caption = "")
-        {
-            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
-            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
-            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
-            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });    
-            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
-            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
-            ThreadHelper.ThreadSafeUpdate<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
-        }
+       
 
 
         private void InitializeWindow()
@@ -751,8 +707,90 @@ namespace RlViewer.UI
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
             ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
+            ThreadHelper.ThreadSafeUpdate<Chart>(_form.HistogramChart).Series[0].Points.Clear();
 
             InitProgressControls(false);
+            AddToolTips(_form);
+            InitChart(_form.HistogramChart);
+        }
+
+        private void InitProgressControls(bool isVisible, string caption = "")
+        {
+            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
+            ThreadHelper.ThreadSafeUpdate<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
+        }
+
+        private void AddToolTips(ISuitableForm frm)
+        {
+            AddToolTip(frm.AlignBtn, "Выровнять");
+            AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
+            AddToolTip(frm.DragRb, "Перемещение по изображению");
+            AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
+            AddToolTip(frm.MarkAreaRb, "Область");
+            AddToolTip(frm.MarkPointRb, "Точка");
+            AddToolTip(frm.NavigationPanelCb, "Навигация");
+            AddToolTip(frm.RulerRb, "Линейка");
+            AddToolTip(frm.FindPointBtn, "Поиск точки");
+            AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
+            AddToolTip(frm.BrightnessRb, "Яркость");
+            AddToolTip(frm.ContrastRb, "Контрастность");
+            AddToolTip(frm.GammaRb, "Гамма");
+            AddToolTip(frm.ResetFilter, "Сброс фильтров");
+            AddToolTip(frm.FilterPanelCb, "Панель фильтров");
+        }
+
+        private void AddToolTip(Control c, string caption)
+        {
+            ToolTip t = new ToolTip();
+            t.SetToolTip(c, caption);
+        }
+
+
+        private void InitChart(Chart c)
+        {
+            c.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
+            c.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            c.ChartAreas[0].AxisX.MinorGrid.Enabled = false;
+            c.ChartAreas[0].AxisX.Maximum = 265;
+            c.ChartAreas[0].AxisX.Minimum = -10;
+            c.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+            c.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+            c.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+            c.ChartAreas[0].BackColor = Color.Transparent;
+            c.ChartAreas[0].AxisY.Minimum = 0;
+            c.Series[0]["PixelPointWidth"] = "3";
+            c.ChartAreas[0].AxisY.LabelStyle.Format = "#";
+            c.Series[0].IsVisibleInLegend = false;
+        }
+
+        private async void RedrawChart(Chart c, Image img)
+        {
+            if (_form.FilterPanelCb.Checked)
+            {
+                var width = (int)((_file.Width - _form.Horizontal.Value) * _scaler.ScaleFactor);
+                width = width < img.Width ? width : img.Width;
+                var height = (int)((_file.Height - _form.Vertical.Value) * _scaler.ScaleFactor);
+                height = height < img.Height ? height : img.Height;
+
+                if (width > 0 && height > 0)
+                {
+                    c.ChartAreas[0].AxisY.Maximum = width * height / 2;
+                    c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
+                        await _histogram.GetHistogramAsync(img, width, height), "values");
+                }
+            }
+        }
+
+        private async void RedrawChart(Chart c)
+        {
+            c.ChartAreas[0].AxisY.Maximum = _file.Width * _file.Height / 4;
+            c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
+              await _histogram.GetHistogramAsync(_file, _tiles), "values");
         }
 
         private void ErrorGuiMessage(string message)
@@ -793,20 +831,6 @@ namespace RlViewer.UI
             _form.FilterTrackBar.Value = 0;
         }
 
-        private void ShowSection(Behaviors.Sections.Section section, Point p)
-        {
-            
-            var points = section.GetValues(_file, p);
-            var mark = section.InitialPointMark;
-            var caption = section.GetType() == typeof(Behaviors.Sections.HorizontalSection)
-                ? "Горизонтальное сечение" : "Вертикальное сечение";
-
-
-            using (var sectionForm = new Forms.SectionGraphForm(points, mark, caption))
-            { 
-                sectionForm.ShowDialog();
-            }
-        }
 
 
         #region MouseHandlers
@@ -858,7 +882,6 @@ namespace RlViewer.UI
 
             }
         }
-
 
 
         public void ClickStarted(MouseEventArgs e)
@@ -1030,6 +1053,20 @@ namespace RlViewer.UI
 #endregion
 
 
+        private void ShowSection(Behaviors.Sections.Section section, Point p)
+        {
+
+            var points = section.GetValues(_file, p);
+            var mark = section.InitialPointMark;
+            var caption = section.GetType() == typeof(Behaviors.Sections.HorizontalSection)
+                ? "Горизонтальное сечение" : "Вертикальное сечение";
+
+
+            using (var sectionForm = new Forms.SectionGraphForm(points, mark, caption))
+            {
+                sectionForm.ShowDialog();
+            }
+        }
 
 
         public void ShowFileInfo()
@@ -1072,6 +1109,36 @@ namespace RlViewer.UI
             }
         }
 
+        public void AlignImage()
+        {
+            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, _saver);
+            StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
+        }
+
+        public void ShowFindPoint()
+        {
+            if (_file != null)
+            {
+                using (var ff = new Forms.FindPointForm(_file.Navigation != null))
+                {
+                    if (ff.ShowDialog() == DialogResult.OK)
+                    {
+                        StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
+                            new Tuple<string, string>(ff.XLat, ff.YLon));
+                    };
+                }
+            }
+        }
+
+        public void ResetRuler()
+        {
+            if (_ruler != null)
+            {
+                _ruler.ResetRuler();
+                _form.DistanceLabel.Text = string.Empty;
+            }
+        }
+
         public void ShowAbout()
         {
             using (var about = new Forms.About())
@@ -1089,67 +1156,7 @@ namespace RlViewer.UI
             }
         }
 
-        public void AlignImage()
-        {
-            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, _saver);
-            StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);            
-        }
-
-        private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
-            System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
-        {
-
-            if (_worker != null && _worker.IsBusy)
-            {
-                var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
-                                "Подтвердите отмену",
-                                MessageBoxButtons.YesNo);
-                if (confirmation == DialogResult.Yes)
-                {
-                    CancelLoading();
-                }
-                else return;
-            }
-
-           
-            InitProgressControls(true, caption);
-            _worker = ThreadHelper.InitWorker(d, c);
-            _worker.RunWorkerAsync(arg);
-        }
 
 
-        private void AddToolTips(ISuitableForm frm)
-        {
-            AddToolTip(frm.AlignBtn, "Выровнять");
-            AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
-            AddToolTip(frm.DragRb, "Перемещение по изображению");
-            AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
-            AddToolTip(frm.MarkAreaRb, "Область");
-            AddToolTip(frm.MarkPointRb, "Точка");
-            AddToolTip(frm.NavigationPanelCb, "Навигация");
-            AddToolTip(frm.RulerRb, "Линейка");
-            AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
-
-            AddToolTip(frm.BrightnessRb, "Яркость");
-            AddToolTip(frm.ContrastRb, "Контрастность");
-            AddToolTip(frm.GammaRb, "Гамма");
-            AddToolTip(frm.ResetFilter, "Сброс фильтров");
-            AddToolTip(frm.FilterPanelCb, "Панель фильтров");
-        }
-
-        private void AddToolTip(Control c, string caption)
-        {
-            ToolTip t = new ToolTip();
-            t.SetToolTip(c, caption);
-        }
-
-        private void RulerRb_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_ruler != null)
-            {
-                _ruler.ResetRuler();
-                _form.DistanceLabel.Text = string.Empty;
-            }
-        }
     }
 }

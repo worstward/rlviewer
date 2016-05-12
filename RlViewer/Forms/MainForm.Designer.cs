@@ -68,6 +68,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -84,7 +85,6 @@
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -98,10 +98,10 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // hScrollBar1
@@ -173,6 +173,7 @@
             this.rulerRb.TabIndex = 12;
             this.rulerRb.TabStop = true;
             this.rulerRb.UseVisualStyleBackColor = false;
+            this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
             // 
             // alignBtn
             // 
@@ -507,7 +508,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(875, 401);
-            this.splitContainer1.SplitterDistance = 688;
+            this.splitContainer1.SplitterDistance = 686;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -530,8 +531,8 @@
             this.splitContainer2.Panel2.Controls.Add(this.trackBar2);
             this.splitContainer2.Panel2.Controls.Add(this.chart1);
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer2.Size = new System.Drawing.Size(688, 401);
-            this.splitContainer2.SplitterDistance = 285;
+            this.splitContainer2.Size = new System.Drawing.Size(686, 401);
+            this.splitContainer2.SplitterDistance = 283;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -543,7 +544,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(682, 279);
+            this.pictureBox1.Size = new System.Drawing.Size(680, 277);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -551,6 +552,14 @@
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.AutoSize = false;
+            this.trackBar2.Location = new System.Drawing.Point(328, 76);
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(298, 25);
+            this.trackBar2.TabIndex = 11;
             // 
             // chart1
             // 
@@ -741,14 +750,6 @@
             this.naviPanelCb.UseVisualStyleBackColor = true;
             this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
             // 
-            // trackBar2
-            // 
-            this.trackBar2.AutoSize = false;
-            this.trackBar2.Location = new System.Drawing.Point(328, 76);
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(298, 25);
-            this.trackBar2.TabIndex = 11;
-            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -791,11 +792,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

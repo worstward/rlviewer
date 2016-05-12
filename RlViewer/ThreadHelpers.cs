@@ -24,13 +24,6 @@ namespace RlViewer
             return worker;
         }
 
-
-        public static void DisposeWorker(BackgroundWorker worker)
-        {
-            worker.Dispose();
-        }
-
-
         public  static T ThreadSafeUpdate<T>(T control) where T : Control
         {
             return control.InvokeRequired ? (T)control.Invoke((Func<Control>)(() => control)) : control;

@@ -111,6 +111,14 @@ namespace RlViewer.Forms
             }
         }
 
+        public Button FindPointBtn
+        {
+            get
+            {
+                return findPointBtn;
+            }
+        }
+
         public RadioButton BrightnessRb
         {
             get
@@ -430,12 +438,17 @@ namespace RlViewer.Forms
 
         private void findPointBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.FindPoint();
+            _guiFacade.ShowFindPoint();
         }
 
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
              _guiFacade.InitDrawImage();
+        }
+
+        private void rulerRb_CheckedChanged(object sender, EventArgs e)
+        {
+            _guiFacade.ResetRuler();
         }
 
 
