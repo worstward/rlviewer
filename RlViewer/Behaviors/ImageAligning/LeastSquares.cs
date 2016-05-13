@@ -41,6 +41,7 @@ namespace RlViewer.Behaviors.ImageAligning
             float slope = SlopeOfPoints(points);
             float yIntercept = YInterceptOfPoints(points, slope);
 
+            
             return (slope * x) + yIntercept;
         }
 

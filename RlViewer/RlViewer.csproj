@@ -85,6 +85,7 @@
     <Compile Include="Behaviors\Navigation\Abstract\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Brl4PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Rl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\Concrete\RPointFinder.cs" />
     <Compile Include="Behaviors\TileCreator\TileOutput.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
@@ -112,7 +113,9 @@
     <Compile Include="Behaviors\Sections\VerticalSection.cs" />
     <Compile Include="Factories\NavigationSearcher\Abstract\PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Brl4PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\RawPointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl4PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\RPointFinderFactory.cs" />
     <Compile Include="Forms\FindPointForm.cs">
       <SubType>Form</SubType>
     </Compile>

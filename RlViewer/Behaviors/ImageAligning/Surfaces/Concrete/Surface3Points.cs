@@ -61,6 +61,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                     var newVal = GetAmplitude(i, j, Solution.First());
                     var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
                     diff = diff < 0 ? 0 : diff;
+                    if (i == Selector[0].Location.X && j == Selector[0].Location.Y)
+                    {
+                        var a  = 2;
+                        var b = a + 1;
+                    }
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
 

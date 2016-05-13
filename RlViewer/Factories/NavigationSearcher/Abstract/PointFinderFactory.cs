@@ -18,7 +18,10 @@ namespace RlViewer.Factories.NavigationSearcher.Abstract
                     return new Concrete.Brl4PointFinderFactory();
                 case FileType.rl4:
                     return new Concrete.Rl4PointFinderFactory();
-
+                case FileType.r:
+                    return new Concrete.RPointFinderFactory();
+                case FileType.raw:
+                    return new Concrete.RawPointFinderFactory();
                 default: throw new ArgumentException();
             }
         }

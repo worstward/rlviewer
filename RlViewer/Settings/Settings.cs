@@ -50,6 +50,9 @@ namespace RlViewer.Settings
 
         private int _sectionSize = 500;
 
+        /// <summary>
+        /// Amount of points for section graph
+        /// </summary>
         public int SectionSize
         {
             get { return _sectionSize; }
@@ -66,10 +69,17 @@ namespace RlViewer.Settings
             set { _areaSize = value; }
         }
 
+        private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
         public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
         {
-            get;
-            set;
+            get
+            {
+                return _tileOutputAlgorithm;
+            }
+            set
+            {
+                _tileOutputAlgorithm = value;
+            }
         }
 
     }

@@ -39,9 +39,9 @@ namespace RlViewer.Navigation.Concrete
             try
             {
                 naviStrings = strCollection.Select
-                    (x => new NavigationString((float)x.navigationHeader.longtitudeInsSns,
-                        (float)x.navigationHeader.latitudeInsSns, (float)x.navigationHeader.heightInsSns,
-                        (float)x.navigationHeader.realTraceInsSns, _board));
+                    (x => new NavigationString((float)(x.navigationHeader.longtitudeInsSns / 180f * Math.PI),
+                        (float)(x.navigationHeader.latitudeInsSns / 180f * Math.PI), (float)x.navigationHeader.heightInsSns,
+                        (float)(x.navigationHeader.realTraceInsSns / 180f * Math.PI), _board));
             }
             catch (ArgumentNullException)
             {

@@ -406,7 +406,6 @@ namespace RlViewer.UI
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _ruler = new Behaviors.Ruler.RulerFacade(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
-
         }
 
 
@@ -1055,7 +1054,6 @@ namespace RlViewer.UI
 
         private void ShowSection(Behaviors.Sections.Section section, Point p)
         {
-
             var points = section.GetValues(_file, p);
             var mark = section.InitialPointMark;
             var caption = section.GetType() == typeof(Behaviors.Sections.HorizontalSection)
@@ -1117,12 +1115,13 @@ namespace RlViewer.UI
 
         public void ShowFindPoint()
         {
-            if (_file != null)
+            if (_file != null && _searcher != null)
             {
                 using (var ff = new Forms.FindPointForm(_file.Navigation != null))
                 {
                     if (ff.ShowDialog() == DialogResult.OK)
                     {
+                        
                         StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
                             new Tuple<string, string>(ff.XLat, ff.YLon));
                     };
