@@ -9,7 +9,7 @@ namespace RlViewer.Factories.Saver.Abstract
 {
     public abstract class SaverFactory
     {
-        public abstract RlViewer.Behaviors.Saving.Abstract.Saver Create(Files.LoadedFile file);
+        public abstract RlViewer.Behaviors.Saving.Abstract.Saver Create(Files.LocatorFile file);
 
         public static SaverFactory GetFactory(RlViewer.Files.FileProperties properties)
         {

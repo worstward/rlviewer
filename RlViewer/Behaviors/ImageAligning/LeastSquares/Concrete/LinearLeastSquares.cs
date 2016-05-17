@@ -5,27 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace RlViewer.Behaviors.ImageAligning
+namespace RlViewer.Behaviors.ImageAligning.LeastSquares.Concrete
 {
 
-    /// <summary>
-    /// Incapsulates Least Squares Method
-    /// </summary>
-    public class LeastSquares
+    public class LinearLeastSquares : Abstract.LeastSquares
     {
-        public LeastSquares(Behaviors.PointSelector.PointSelector selector)
+        public LinearLeastSquares(Behaviors.PointSelector.PointSelector selector) : base(selector)
         {
             var points = selector.Select(x => new PointF(x.Value, x.Rcs));
 
-            _slope = SlopeOfPoints(points);
-            _yIntercept = YInterceptOfPoints(points, _slope);
+            //var ps = MathNet.Numerics.Fit.Polynomial(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray(),
+            //    selector.Count(), MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+
+            var p = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray());
+
+            _slope = (float)p.Item1; //SlopeOfPoints(points);
+            _yIntercept = (float)p.Item2;// YInterceptOfPoints(points, _slope);
         }
 
-        public LeastSquares(IEnumerable<PointF> points)
-        {
-            _slope = SlopeOfPoints(points);
-            _yIntercept = YInterceptOfPoints(points, _slope);
-        }
 
         private float _slope;
         private float _yIntercept;
@@ -36,16 +33,20 @@ namespace RlViewer.Behaviors.ImageAligning
         /// <param name="points">Points to calculate the value from</param>
         /// <param name="x">Function input</param>
         /// <returns>Value at X in the given points</returns>
-        public static float LeastSquaresValueAtX(IEnumerable<PointF> points, float x)
+        public static float LeastSquaresValueAt(IEnumerable<PointF> points, float x)
         {
             float slope = SlopeOfPoints(points);
             float yIntercept = YInterceptOfPoints(points, slope);
-
-            
             return (slope * x) + yIntercept;
         }
 
-        public float LeastSquaresValueAtX(float x)
+
+        public override float GetRcsValueAt(float x)
+        {
+            return LeastSquaresValueAt(x);
+        }
+
+        protected override float LeastSquaresValueAt(float x)
         {
             return (_slope * x) + _yIntercept;
         }

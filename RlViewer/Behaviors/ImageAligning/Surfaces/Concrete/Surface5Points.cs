@@ -12,10 +12,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface5Points : Surface3Points
     {
-        public Surface5Points(PointSelector.PointSelector selector)
-            : base(selector)
+        public Surface5Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+            : base(selector, rcsProvider)
         {
-
+            _rcsProvider = rcsProvider;
         }
 
         private float[][] _solution;
@@ -28,14 +28,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 return _solution = _solution ?? InitPlanes();
             }
-        } 
+        }
 
-        private LeastSquares _lSquares;
-        protected override LeastSquares LSquares
+        private IRcsDependenceProvider _rcsProvider;
+        protected override IRcsDependenceProvider RcsProvider
         {
             get
             {
-                return _lSquares = _lSquares ?? new LeastSquares(Selector);
+                return _rcsProvider;
             }
         
         }
@@ -61,7 +61,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newVal = GetAmplitude(i, j);
-                    var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
+                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using RlViewer.Behaviors.ImageAligning;
 
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
@@ -12,9 +12,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface16Points : Surfaces.Abstract.Surface
     {
-        public Surface16Points(PointSelector.PointSelector selector)
+        public Surface16Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
             : base(selector)
         {
+            _rcsProvider = rcsProvider;
+        
             for (int i = 0; i < 4; i++)
             {
                 _zCoefficients[i] = new LinearEquation(
@@ -31,13 +33,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
 
-        private LeastSquares _lSquares;
-        protected override LeastSquares LSquares
+        private IRcsDependenceProvider _rcsProvider;
+        protected override IRcsDependenceProvider RcsProvider
         {
             get
             {
-                return _lSquares = _lSquares ?? new LeastSquares(Selector);
+                return _rcsProvider;
             }
+
         }
 
         /// <summary>
@@ -79,7 +82,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                         * area.Width + (i - area.Location.X)];
                     var newVal = Extrapolate(j, _zCoefs);
 
-                    var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
+                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
                     diff = diff < 0 ? 0 : diff;
 
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;

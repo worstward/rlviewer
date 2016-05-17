@@ -320,7 +320,7 @@ namespace RlViewer.UI
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _cancellableAction = _saver;
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
-                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), _creator.NormalizationFactor);
+                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), _creator.NormalizationFactor, _creator.MaxValue);
 
            
             if (_saver.Cancelled)
@@ -1109,7 +1109,7 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, _saver);
+            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector), _saver);
             StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
         }
 

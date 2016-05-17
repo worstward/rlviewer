@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             private set;
         }
 
-        protected abstract LeastSquares LSquares { get; }
+        protected abstract IRcsDependenceProvider RcsProvider { get; }
 
         /// <summary>
         /// Changes image amplitudes with prebuilt surface

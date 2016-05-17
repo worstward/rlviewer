@@ -12,28 +12,33 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface3Points : Surfaces.Abstract.Surface
     {
-        public Surface3Points(PointSelector.PointSelector selector)
+        public Surface3Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
             : base(selector)
         {
-
+            _rcsProvider = rcsProvider;
         }
+
+        private object _solutionLocker = new object();
 
         private float[][] _solution;
         private float[][] Solution
         {
             get 
             {
-                
-                return _solution = _solution ?? InitPlanes(); 
+                lock (_solutionLocker)
+                { 
+                    return _solution = _solution ?? InitPlanes(); 
+                }
             }
-        }      
+        }
 
-        private LeastSquares _lSquares;
-        protected override LeastSquares LSquares
+
+       private IRcsDependenceProvider _rcsProvider;
+        protected override IRcsDependenceProvider RcsProvider
         {
             get
             {
-                return _lSquares = _lSquares ?? new LeastSquares(Selector);
+                return _rcsProvider;
             }
         }
 
@@ -59,13 +64,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newVal = GetAmplitude(i, j, Solution.First());
-                    var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
+                    var ls = RcsProvider.GetRcsValueAt(oldVal);
+                    var diff = oldVal / newVal * ls;
                     diff = diff < 0 ? 0 : diff;
-                    if (i == Selector[0].Location.X && j == Selector[0].Location.Y)
-                    {
-                        var a  = 2;
-                        var b = a + 1;
-                    }
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
 

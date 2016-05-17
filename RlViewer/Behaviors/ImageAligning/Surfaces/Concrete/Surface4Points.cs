@@ -14,10 +14,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface4Points : Surface3Points
     {
-        public Surface4Points(PointSelector.PointSelector selector)
-            : base(selector)
+        public Surface4Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+            : base(selector, rcsProvider)
         {
-
+            _rcsProvider = rcsProvider;
         }
 
 
@@ -41,27 +41,15 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             }
         }
 
-        private object _lSquaresLocker = new object();
-        private LeastSquares _lSquares;
-        protected override LeastSquares LSquares
+        private IRcsDependenceProvider _rcsProvider;
+        protected override IRcsDependenceProvider RcsProvider
         {
             get
             {
-                if (_lSquares == null)
-                {
-                    lock (_lSquaresLocker)
-                    {
-                        if (_lSquares == null)
-                        {
-                            _lSquares = new LeastSquares(Selector);
-                        }
-                    }
-                }
-                return _lSquares;
+                return _rcsProvider;
             }
-        
-        }
 
+        }
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
@@ -84,7 +72,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newVal = GetAmplitude(i, j);
-                    var diff = oldVal / newVal * LSquares.LeastSquaresValueAtX(oldVal);
+                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }

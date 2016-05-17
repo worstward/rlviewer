@@ -47,6 +47,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public abstract float NormalizationFactor { get; }
 
+        public float MaxValue 
+        {
+            get
+            {
+                return _maxValue;
+            }
+        }
+
         private float _maxValue;
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
@@ -366,8 +374,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             byte[] normalizedLine = new byte[fLine.Length];
 
             int index = 0;
-            float border = normalizationFactor / 4f * 3;
 
+            //if (normalizationFactor > _maxValue)
+            //{
+            //    _maxValue = normalizationFactor;
+            //}
+
+            float border = normalizationFactor / 9f * 7;// *3;
+
+           
             while (index != line.Length && s.Position != s.Length)
             {
                 s.Seek(strHeaderLength, SeekOrigin.Current);
@@ -379,13 +394,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             switch(logarithmicOutput)
             {
                 case TileOutputType.Linear:
-                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(x / normalizationFactor * 255)).ToArray();
+                    normalizedLine = fLine.AsParallel<float>().Select(x => NormalizationHelpers.ToByteRange(x / normalizationFactor * 255)).ToArray();
                     break;
                 case TileOutputType.Logarithmic:
-                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(GetLogarithmicValue(x, _maxValue))).ToArray();
+                    normalizedLine = fLine.AsParallel<float>().Select(x => NormalizationHelpers.ToByteRange(
+                        NormalizationHelpers.GetLogarithmicValue(x, _maxValue))).ToArray();
                     break;
                 case TileOutputType.LinearLogarithmic:
-                    normalizedLine = fLine.AsParallel<float>().Select(x => ToByteRange(GetLinearLogarithmicValue(x, border, _maxValue, normalizationFactor))).ToArray();
+                    normalizedLine = fLine.AsParallel<float>().Select(x => NormalizationHelpers.ToByteRange(
+                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, _maxValue, normalizationFactor))).ToArray();
                     break;
                 default:
                     break;
@@ -395,40 +412,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return normalizedLine;
         }
 
-        protected virtual float GetLogarithmicValue(float sample, float maxvalue)
-        {
-            var sampleLog = Math.Log10(sample);
-            var normLog = Math.Log10(maxvalue);
-            var quotient = sampleLog / normLog;
-            return 255 * (float)quotient;
-        }
-
-        protected virtual float GetLinearLogarithmicValue(float sample, float border, float maxvalue, float normalizationFactor)
-        {
-            if (sample < border)
-            {
-                return 191 * sample / normalizationFactor;
-            }
-            else
-            {
-                var sampleLog = Math.Log10(sample);
-                var normLog = Math.Log10(maxvalue);
-                var quotient = sampleLog / normLog;
-                return 255 * (float)quotient;
-            }          
-        }
-
-
-
-
-        private byte ToByteRange(float val)
-        {
-            val =  val > 255 ? 255 : val;
-            val = val < 1 ? 0 : val;
-            byte b = (byte)val;
-            return b;
-        }
-
+       
 
 
         /// <summary>

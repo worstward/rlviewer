@@ -10,12 +10,12 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Saving.Abstract.Saver saver)
+        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Behaviors.ImageAligning.IRcsDependenceProvider rcsProvider, Saving.Abstract.Saver saver)
         {
             _file = file;     
             _selector = selector;
             _saver = saver;
-            _surface = Surfaces.Abstract.SurfaceFactory.CreateSurface(_selector);
+            _surface = Surfaces.Abstract.SurfaceFactory.CreateSurface(_selector, rcsProvider);
         }
 
         public override bool Cancelled
