@@ -417,7 +417,6 @@ namespace RlViewer.UI
                 _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
             }
 
-
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
@@ -476,10 +475,15 @@ namespace RlViewer.UI
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
                     string.Format("Tile creation process succeed. {0} {1} generated", _tiles.Length, _tiles.Length == 1 ? "tile" : "tiles"));
-                
+
+                if (!_creator.CheckTileConsistency(_file.Properties.FilePath, _tiles.Length))
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Missing tiles for {0} detected!", _file.Properties.FilePath));
+                }
+
+
                 _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
-                //RedrawChart(_form.HistogramChart);
                 InitProgressControls(false);
                 InitDrawImage();              
             }
@@ -544,7 +548,7 @@ namespace RlViewer.UI
                 var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
-                ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
+                ChangePalette(_settings.Palette, _settings.IsPaletteReversed, _settings.IsPaletteGroupped);
                 InitScrollBars(_scaler.ScaleFactor);
                 DrawImage();
             }
@@ -570,16 +574,11 @@ namespace RlViewer.UI
             }
         }
 
-        public void ChangePalette(int[] rgb, bool isReversed)
+        public void ChangePalette(int[] rgb, bool isReversed, bool isGrouped)
         {
             if (_drawer != null)
             {
-                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, _settings.IsPaletteGroupped);
-                if (_file != null && _tiles != null)
-                {
-                    _form.Canvas.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
-                }
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, isGrouped);
             }
         }
 
@@ -1084,7 +1083,7 @@ namespace RlViewer.UI
             {
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
-                    ChangePalette(_settings.Palette, _settings.IsPaletteReversed);
+                    InitDrawImage();
                 }
 
             }
@@ -1109,7 +1108,10 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector), _saver);
+            //new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector)
+
+
+            _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, new Behaviors.ImageAligning.LeastSquares.Concrete.LinearLeastSquares(_pointSelector), _saver);
             StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
         }
 

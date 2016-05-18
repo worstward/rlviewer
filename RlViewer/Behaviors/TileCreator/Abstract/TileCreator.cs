@@ -94,6 +94,20 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromFile(string path);
 
 
+
+        /// <summary>
+        /// Determines if there are no missing tiles for current file
+        /// </summary>
+        /// <param name="filePath">Current file path</param>
+        /// <param name="tileCount">Expected tiles count</param>
+        /// <returns>True if all tiles are present, false otherwise</returns>
+        public bool CheckTileConsistency(string filePath, int tileCount)
+        {
+            var tileDir = GetDirectoryName(filePath);
+            var createdTilesCount = Directory.GetFiles(tileDir).Select(x => Path.GetExtension(x)).Where(x => x.ToLowerInvariant() == TileFileExtension).Count();
+            return createdTilesCount == tileCount;
+        }
+
         protected Tile[] GetTilesFromFile(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
@@ -102,7 +116,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 return new Tile[0];
             }
 
-            var tileFolder = GetDirectoryName(filePath, true);
+            var tileFolder = GetDirectoryName(filePath);
+            CreateTileFolder(tileFolder);
+
 
             List<Tile> tiles = new List<Tile>();
             byte[] tileLine;
@@ -166,7 +182,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 return new Tile[0];
             }
 
-            var tileFolder = GetDirectoryName(filePath, true);
+            var tileFolder = GetDirectoryName(filePath);
+            CreateTileFolder(tileFolder);
+
 
             Task.Run(() =>
             {
@@ -419,21 +437,22 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         /// Gets unique name for tile directory
         /// </summary>
         /// <param name="fileName">Initial input file name</param>
-        /// <param name="initialize">Should we try to create folder for this path</param>
         /// <returns></returns>
-        public static string GetDirectoryName(string filePath, bool initialize = false)
+        private string GetDirectoryName(string filePath)
         {
-            string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
+            string dirPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),
                 File.GetCreationTime(filePath).ToFileTime().ToString());
+            return dirPath;
+        }
 
-
-            if (initialize && !Directory.Exists(path))
+        private void CreateTileFolder(string path)
+        {
+            if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
-
-            return path;
         }
+        
     }
 }

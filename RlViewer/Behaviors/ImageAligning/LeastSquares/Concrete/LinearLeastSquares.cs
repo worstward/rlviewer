@@ -17,10 +17,10 @@ namespace RlViewer.Behaviors.ImageAligning.LeastSquares.Concrete
             //var ps = MathNet.Numerics.Fit.Polynomial(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray(),
             //    selector.Count(), MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
 
-            var p = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray());
+            //var p = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray());
 
-            _slope = (float)p.Item1; //SlopeOfPoints(points);
-            _yIntercept = (float)p.Item2;// YInterceptOfPoints(points, _slope);
+            _slope = SlopeOfPoints(points); //(float)p.Item2;
+            _yIntercept = YInterceptOfPoints(points, _slope); //(float)p.Item1;
         }
 
 

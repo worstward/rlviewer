@@ -124,7 +124,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
                         Buffer.BlockCopy(frameStrData, 0, floatFrameStrData, 0, frameStrData.Length);
 
                         var bytes = floatFrameStrData.Select(x => TileCreator.NormalizationHelpers.ToByteRange(
-                            TileCreator.NormalizationHelpers.GetLinearLogarithmicValue(x, normalization / 4f * 3, maxValue, normalization))).ToArray();
+                            TileCreator.NormalizationHelpers.GetLinearLogarithmicValue(x, normalization / 9f * 7, maxValue, normalization))).ToArray();
                         fw.Write(bytes, 0, floatFrameStrData.Length);
                         fw.Write(padBytes, 0, padBytes.Length);
                         fr.Seek(strDataLength - frameStrData.Length - sampleToStartSaving, SeekOrigin.Current);
