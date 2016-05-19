@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace RlViewer.Behaviors.Filters
 {
 
-    class ImageFilterFacade
+    public class ImageFilterFacade
     {
         public ImageFilterFacade()
         {

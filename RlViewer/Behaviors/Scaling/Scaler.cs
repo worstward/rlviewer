@@ -28,7 +28,7 @@ namespace RlViewer.Behaviors.Scaling
             }
         }
 
-        private const float _minZoom = 0.015625f;
+        private const float _minZoom = 0.125f;
         public float MinZoom
         {
             get { return _minZoom; }

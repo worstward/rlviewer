@@ -31,7 +31,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.R _file;
         private RlViewer.Headers.Concrete.R.RHeader _head;
 
-        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, float normalization, float maxValue)
+        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue)
         {
             switch (destinationType)
             {
@@ -39,7 +39,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     SaveAsRaw(path, area);
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue);
+                    SaveAsBmp(path, area, normalization, maxValue, filter);
                     break;
                 default:
                     throw new NotSupportedException("Unsupported destination type");

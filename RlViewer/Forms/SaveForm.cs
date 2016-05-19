@@ -11,9 +11,12 @@ using RlViewer.Behaviors.AreaSelector;
 
 namespace RlViewer.Forms
 {
-    public partial class SaveSizeForm : Form
+    public partial class SaveForm : Form
     {
-        public SaveSizeForm(int fileWidth, int fileHeight, AreaSelector selector)
+
+        ///TODO: add class to keep save parameters
+
+        public SaveForm(int fileWidth, int fileHeight, AreaSelector selector)
         {
 
             InitializeComponent();
@@ -39,13 +42,20 @@ namespace RlViewer.Forms
             InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
         }
 
-        AreaSelector _selector;
+        private AreaSelector _selector;
 
 
         private int _fileWidth;
         private int _fileHeight;
 
+        private bool _keepFiltering;
 
+        public bool KeepFiltering
+        {
+            get { return _keepFiltering; }
+        }
+
+       
         private Point _leftTop;
         public Point LeftTop
         {
@@ -203,6 +213,7 @@ namespace RlViewer.Forms
             if (Convert.ToInt32(x1CoordTextBox.Text) < _fileWidth && Convert.ToInt32(x2CoordTextBox.Text) < _fileWidth &&
                    Convert.ToInt32(y1CoordTextBox.Text) < _fileHeight && Convert.ToInt32(y2CoordTextBox.Text) < _fileHeight)
             {
+                _keepFiltering = keepFilteringCb.Checked;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -224,5 +235,6 @@ namespace RlViewer.Forms
                 this.Close();
             }
         }
+
     }
 }

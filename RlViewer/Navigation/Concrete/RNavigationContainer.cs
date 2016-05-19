@@ -52,10 +52,17 @@ namespace RlViewer.Navigation.Concrete
 
         public override void GetNavigation()
         {
-            NaviStrings =
-                ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
-                _path, _headerLength, _dataLength));
-            _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+            try
+            {
+                NaviStrings =
+                    ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
+                    _path, _headerLength, _dataLength));
+                _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+            }
+            catch (ArgumentNullException)
+            {
+                return;
+            }
         }
 
         public override NavigationString this[int stringNumber]

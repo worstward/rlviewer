@@ -217,10 +217,13 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected virtual float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
-            byte[] arr = new byte[strDataLen + strHeadLen];
-            float[] floatArr = new float[strDataLen / 4];
+            byte[] bRliString = new byte[strDataLen + strHeadLen];
+            float[] fRliString = new float[strDataLen / 4];
 
-            int frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
+
+            frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
+
+            long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
             float maxSampleValue = 0;
 
             using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -229,54 +232,40 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 while (s.Position != frameLength && s.Position != s.Length)
                 {
-                    s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
-                    var localMax = floatArr.Max();
+                    s.Read(bRliString, 0, bRliString.Length);
+                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
+                    var localMax = fRliString.Max();
 
-                    Array.Clear(floatArr, 0, floatArr.Length);
+                    Array.Clear(fRliString, 0, fRliString.Length);
 
-                    if (float.IsNaN(localMax))
-                    {
-                        continue;
-                    }
+                    //if (float.IsNaN(localMax))
+                    //{
+                    //    continue;
+                    //}
                     maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
                 }
             }
+
+            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
             return maxSampleValue;
         }
 
+
+
         protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
-            byte[] arr = new byte[strDataLen + strHeadLen];
-            float[] floatArr = new float[strDataLen / 4];
+            byte[] bRliString = new byte[strDataLen + strHeadLen];
+            float[] fRliString = new float[strDataLen / 4];
             float normal = 0;
 
-            int frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-            float maxSampleValue = 0;
+            frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
 
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+            long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
+            
+            _maxValue = GetMaxValue(loc, strDataLen, strHeadLen, frameHeight);
 
-                while (s.Position != frameLength && s.Position != s.Length)
-                {
-                    s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
-                    var localMax = floatArr.Max();
 
-                    Array.Clear(floatArr, 0, floatArr.Length);
-
-                    if(float.IsNaN(localMax))
-                    {
-                        continue;
-                    }
-                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
-                }
-            }
-
-            _maxValue = maxSampleValue;
-
-            float histogramStep = maxSampleValue / 1000f;
+            float histogramStep = _maxValue / 1000f;
             var histogram = new List<int>();
 
             for (float i = 0; i < 1000; i += histogramStep)
@@ -295,25 +284,25 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 {
                     parts++;
 
-                    s.Read(arr, 0, arr.Length);
-                    Buffer.BlockCopy(arr, strHeadLen, floatArr, 0, arr.Length - strHeadLen);
+                    s.Read(bRliString, 0, bRliString.Length);
+                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
 
-                    var nonNans = floatArr.Where(x => !float.IsNaN(x)).Where(x => !float.IsInfinity(x));
-                    if (nonNans.Count() == 0)
-                    {
-                        continue;
-                    }
+                    //var nonNans = fRliString.Where(x => !float.IsNaN(x)).Where(x => !float.IsInfinity(x));
+                    //if (nonNans.Count() == 0)
+                    //{
+                    //    continue;
+                    //}
 
-                    avg += nonNans.Average();
+                    avg += fRliString.Average();
 
                     //fill histogram:
                     //count distinct float values, eg:
                     //numbers 1.4, 5, 6, 9, 24
                     //steps 1-10, 11-20
                     //1st step - 4 numbers, 2nd step 1 number
-                    for (int i = 0; i < floatArr.Length; i++)
+                    for (int i = 0; i < fRliString.Length; i++)
                     {
-                        int index = (int)(floatArr[i] / histogramStep);
+                        int index = (int)(fRliString[i] / histogramStep);
                         if(index < 0) continue;
 
                         if (index >= histogram.Count)
@@ -438,7 +427,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         /// </summary>
         /// <param name="fileName">Initial input file name</param>
         /// <returns></returns>
-        private string GetDirectoryName(string filePath)
+        public static string GetDirectoryName(string filePath)
         {
             string dirPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),

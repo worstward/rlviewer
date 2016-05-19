@@ -20,11 +20,14 @@ namespace RlViewer.UI
         public GuiFacade(ISuitableForm form)
         {
             _form = form;
+
             _settings = new Settings.Settings();
             _filterFacade = new Behaviors.Filters.ImageFilterFacade();
             _scaler = new Behaviors.Scaling.Scaler();
             _analyzer = new Behaviors.Analyzing.PointAnalyzer();
             _drag = new Behaviors.DragController();
+            _histogram = new Behaviors.Draw.HistContainer();
+
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
                 () => Save(), () => ShowFileInfo(), () => ShowLog());
             _win = _form.Canvas;
@@ -48,7 +51,7 @@ namespace RlViewer.UI
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
         private Navigation.NavigationContainer _navi;
-        private Behaviors.Draw.HistContainer _histogram = new Behaviors.Draw.HistContainer();
+        private Behaviors.Draw.HistContainer _histogram;
 
 
         private Files.LocatorFile _file;
@@ -208,10 +211,7 @@ namespace RlViewer.UI
         {
             try
             {
-                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                    "tiles", Path.GetFileNameWithoutExtension(_file.Properties.FilePath),
-                    Path.GetExtension(_file.Properties.FilePath),
-                    File.GetCreationTime(_file.Properties.FilePath).GetHashCode().ToString());
+                var path = Behaviors.TileCreator.Abstract.TileCreator.GetDirectoryName(_file.Properties.FilePath); 
 
                 if (Directory.Exists(path))
                 {
@@ -301,6 +301,8 @@ namespace RlViewer.UI
             Point leftTop;
             int width;
             int height;
+            bool keepFiltering;
+
 
             try
             {
@@ -309,6 +311,7 @@ namespace RlViewer.UI
                 leftTop = (Point)args[1];
                 width   = (int)args[2];
                 height  = (int)args[3];
+                keepFiltering = (bool)args[4];
             }
             catch (InvalidCastException)
             {
@@ -319,8 +322,11 @@ namespace RlViewer.UI
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _cancellableAction = _saver;
+
+            var filter = keepFiltering ? _filterFacade : null;
+
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
-                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), _creator.NormalizationFactor, _creator.MaxValue);
+                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), filter, _creator.NormalizationFactor, _creator.MaxValue);
 
            
             if (_saver.Cancelled)
@@ -400,7 +406,7 @@ namespace RlViewer.UI
             _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
             _cancellableAction = _navi;
             _navi.GetNavigation();
-                e.Cancel = _navi.Cancelled;
+             e.Cancel = _navi.Cancelled;
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
@@ -623,12 +629,12 @@ namespace RlViewer.UI
                         ? Resources.RawSaveFilter : Resources.SaveFilter;
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        using (var sSize = new Forms.SaveSizeForm(_file.Width, _file.Height, _areaSelector))
+                        using (var sSize = new Forms.SaveForm(_file.Width, _file.Height, _areaSelector))
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
                                 StartTask("Сохранение", loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
-                                    new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight });        
+                                    new object[] { sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight, sSize.KeepFiltering});        
                             }
                         }
                     }
@@ -643,7 +649,7 @@ namespace RlViewer.UI
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;                
   
             float scaleFactor = (float)Math.Pow(2, value);
-            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
+            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (Math.Pow(scaleFactor, 2) * 100).ToString());
 
             CenterPointOfView(scaleFactor);
 

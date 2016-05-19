@@ -82,6 +82,7 @@
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />
+    <Compile Include="Behaviors\ImageAligning\CoarseningMatrix.cs" />
     <Compile Include="Behaviors\ImageAligning\IRcsDependenceProvider.cs" />
     <Compile Include="Behaviors\ImageAligning\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\ImageAligning\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
@@ -178,11 +179,11 @@
     <Compile Include="Factories\Saver\Concrete\RawSaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\RhgKSaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Rl4SaverFactory.cs" />
-    <Compile Include="Forms\SaveSizeForm.cs">
+    <Compile Include="Forms\SaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SaveSizeForm.Designer.cs">
-      <DependentUpon>SaveSizeForm.cs</DependentUpon>
+    <Compile Include="Forms\SaveForm.Designer.cs">
+      <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Navigation\Abstract\NavigationContainer.cs" />
     <Compile Include="Behaviors\Saving\Abstract\Saver.cs" />
@@ -327,8 +328,8 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SaveSizeForm.resx">
-      <DependentUpon>SaveSizeForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\SaveForm.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SectionGraphForm.resx">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>

@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
         }
         public abstract Files.LocatorFile SourceFile { get; }
 
-        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, float normalization, float maxValue);
+        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue);
 
         public abstract void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image);
 
@@ -84,7 +84,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
             return bmpHeader.ToArray();
         }
 
-        protected virtual void SaveAsBmp(string path, Rectangle area, float normalization, float maxValue)
+        protected virtual void SaveAsBmp(string path, Rectangle area, float normalization, float maxValue, Filters.ImageFilterFacade filter = null)
         {
             using (var fr = System.IO.File.Open(SourceFile.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -115,16 +115,24 @@ namespace RlViewer.Behaviors.Saving.Abstract
                         OnProgressReport((int)((double)i / (double)area.Height * 100));
                         if (OnCancelWorker())
                         {
+                            fw.Flush();
                             return;
                         }
 
                         fr.Seek(SourceFile.Header.StrHeaderLength, SeekOrigin.Current);
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);
+                        
                         Buffer.BlockCopy(frameStrData, 0, floatFrameStrData, 0, frameStrData.Length);
 
                         var bytes = floatFrameStrData.Select(x => TileCreator.NormalizationHelpers.ToByteRange(
                             TileCreator.NormalizationHelpers.GetLinearLogarithmicValue(x, normalization / 9f * 7, maxValue, normalization))).ToArray();
+
+                        if (filter != null)
+                        {
+                            bytes = filter.Filter.ApplyFilters(bytes);
+                        }
+
                         fw.Write(bytes, 0, floatFrameStrData.Length);
                         fw.Write(padBytes, 0, padBytes.Length);
                         fr.Seek(strDataLength - frameStrData.Length - sampleToStartSaving, SeekOrigin.Current);

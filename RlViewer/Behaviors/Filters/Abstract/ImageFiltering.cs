@@ -29,7 +29,11 @@ namespace RlViewer.Behaviors.Filters.Abstract
             filters[filterType] = this;
         }
 
-        public abstract int FilterValue { get; set; }
+        public abstract int FilterValue 
+        {
+            get;
+            set;
+        }
 
 
         public byte[] MergeLut()

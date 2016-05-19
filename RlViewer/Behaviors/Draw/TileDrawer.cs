@@ -65,7 +65,6 @@ namespace RlViewer.Behaviors.Draw
 
                         sievedImage[index] = (byte)(cumulative / scale);
                         index++;
-                        cumulative = 0;
                     }
                 }
 
@@ -89,6 +88,65 @@ namespace RlViewer.Behaviors.Draw
             return canvas;
         }
 
+        /*
+       private Image ScaleDown(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+       {
+           int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
+           int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
+
+           var visibleTiles = tiles.Where(x => x.CheckVisibility(leftTopPointOfView,
+               scaledScreenX, scaledScreenY)).ToArray();
+
+           int scale = (int)(1 / Scaler.ScaleFactor);
+           int scalePower = (int)Math.Log(scale, 2);
+           int scaleSq = scale * scale;
+
+           var tileImgWrappers = new List<TileImageWrapper>(visibleTiles.Length);
+
+           Parallel.ForEach(visibleTiles, tile =>
+           {
+               byte[] imgData = tile.ReadData();
+               byte[] sievedImage = new byte[imgData.Length >> scalePower >> scalePower];
+
+               //scale by averaging nearby pixels
+               int index = 0;
+
+               for (int i = 0; i < tile.Size.Height * tile.Size.Width - tile.Size.Width; i += scale * tile.Size.Width)
+               {
+                   for (int j = i; j < i + tile.Size.Width; j += scale)
+                   {
+                       float cumulative = 0;
+                       for (int n = j; n < j + tile.Size.Width * scale; n += tile.Size.Width)
+                       {
+                           for (int k = n; k < n + scale; k++)
+                           {
+                               cumulative += imgData[k];
+                           }
+                       }
+                       sievedImage[index++] = (byte)(cumulative / scaleSq);
+                   }
+               }
+
+               byte[] filteredData = _filter.ApplyFilters(sievedImage);
+
+               var tw = new TileImageWrapper(GetBmp(filteredData, tile.Size.Width / scale, tile.Size.Height / scale, Palette),
+                   new Point((int)((tile.LeftTopCoord.X - leftTopPointOfView.X) / scale),
+                               (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) / scale)));
+
+               tileImgWrappers.Add(tw);
+           });
+
+           foreach (var t in tileImgWrappers)
+           {
+               using (var g = Graphics.FromImage(canvas))
+               {
+                   g.DrawImage(t.TileImage, t.Location);
+               }
+           }
+
+           return canvas;
+       }
+       */
 
         private Image ScaleUp(Image canvas, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {

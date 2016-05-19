@@ -61,8 +61,7 @@ namespace RlViewer.Forms
 
         private void FillDataGrid(string tileDir)
         {
-            var currFileTilePath = _currFile == string.Empty ? string.Empty : Path.Combine(Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
-                File.GetCreationTime(_currFile).ToFileTime().ToString());
+            var currFileTilePath = _currFile == string.Empty ? string.Empty : Behaviors.TileCreator.Abstract.TileCreator.GetDirectoryName(_currFile);
 
             foreach (var fileNameDirectory in Directory.GetDirectories(tileDir))
             {
@@ -84,10 +83,10 @@ namespace RlViewer.Forms
                         var tilePath = Path.Combine(Path.GetFileName(fileNameDirectory), Path.GetFileName(extensionDirectory));
 
                         dataGridView1.Rows.Add(tilePath, creationTime,
-                            Directory.GetFiles(imgDirectory).Where(x => Path.GetExtension(x) == ".tl").Count());
+                            Directory.GetFiles(imgDirectory).Where(x => Path.GetExtension(x).ToLowerInvariant() == ".tl").Count());
 
-
-                        if (currFileTilePath == Path.Combine(tilePath, creationTime.ToFileTime().ToString()))
+                        var b = Path.Combine(tilePath, creationTime.ToFileTime().ToString());
+                        if (currFileTilePath == imgDirectory)
                         {
                             var style = new DataGridViewCellStyle();
                             style.BackColor = Color.Aquamarine;
