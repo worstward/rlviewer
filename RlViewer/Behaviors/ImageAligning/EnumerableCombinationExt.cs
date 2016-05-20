@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.ImageAligning
 {
-    public static class IEnumerableCombinationExt
+    public static class EnumerableCombinationExt
     {
 
 

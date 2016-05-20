@@ -48,9 +48,9 @@ namespace RlViewer.Behaviors.ImageAligning
             byte[] coarsedImage = new byte[_file.Width / _matrixCellWidthInPx * _file.Height / _matrixCellHeightInPx];
             int index = 0;
 
-            for (int i = 0; i < height * width - width; i += _matrixCellHeightInPx * width)
+            for (int i = 0; i < height * width; i += _matrixCellHeightInPx * width)
             {
-                for (int j = i; j < i + width; j += _matrixCellWidthInPx)
+                for (int j = i; j < i + width - _matrixCellWidthInPx; j += _matrixCellWidthInPx)
                 {
                     float cumulative = 0;
                     for (int n = j; n < j + width * _matrixCellHeightInPx; n += width)

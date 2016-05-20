@@ -53,8 +53,10 @@ namespace RlViewer.Behaviors.AreaSelector
                     }
                 }
 
-                Area.Width = width;
-                Area.Height = height;
+                //we add 1 to avoid need of full pixel envelopment to take it into area
+                //so even if we cover part of pixel it will get inside
+                Area.Width = width + 1;
+                Area.Height = height + 1;
             }
             return _canResize;
         }
@@ -83,7 +85,9 @@ namespace RlViewer.Behaviors.AreaSelector
         {
             _canResize = true;
             _pointOfView = pointOfView;
-            _initialLocation = new Point(location.X + pointOfView.X, location.Y + pointOfView.Y);
+
+            //we substract 1 to get area started from clicked pixel
+            _initialLocation = new Point(location.X + pointOfView.X - 1, location.Y + pointOfView.Y - 1);
         }
 
         public void StopResizing()

@@ -22,6 +22,7 @@ namespace RlViewer.Behaviors.Analyzing
 
         public void StopTracing()
         {
+            currentLocation = new Point(-1, -1);
             _isMouseDown = false;
         }
 
@@ -56,6 +57,7 @@ namespace RlViewer.Behaviors.Analyzing
                     }
                 }
             }
+
             return hasLocationChanged;
                      
         }

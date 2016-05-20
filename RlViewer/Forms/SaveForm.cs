@@ -166,8 +166,8 @@ namespace RlViewer.Forms
         {
             if (radioButton2.Checked)
             {
-                _width = Convert.ToInt32(x2CoordTextBox.Text) - Convert.ToInt32(x1CoordTextBox.Text);
-                _heigth = Convert.ToInt32(y2CoordTextBox.Text) - Convert.ToInt32(y1CoordTextBox.Text);
+                _width = Convert.ToInt32(x2CoordTextBox.Text) - Convert.ToInt32(x1CoordTextBox.Text) + 1;
+                _heigth = Convert.ToInt32(y2CoordTextBox.Text) - Convert.ToInt32(y1CoordTextBox.Text) + 1;
 
                 int x = Convert.ToInt32(x1CoordTextBox.Text);
                 int y = Convert.ToInt32(y1CoordTextBox.Text);

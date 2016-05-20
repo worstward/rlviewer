@@ -13,9 +13,9 @@ namespace RlViewer.Forms
 {
     public partial class MainForm : Form, RlViewer.UI.ISuitableForm
     {
-
         public MainForm()
         {
+
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(this);
             Text = string.Empty;

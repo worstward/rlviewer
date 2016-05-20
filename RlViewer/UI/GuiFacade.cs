@@ -340,11 +340,12 @@ namespace RlViewer.UI
 
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _saver.Report -= (s, pe) => ProgressReporter(pe.Percent); ;
+            _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
 
+            
             if (e.Cancelled)
-            {  
+            {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Saving cancelled");
             }
             else if (e.Error != null)
@@ -409,8 +410,8 @@ namespace RlViewer.UI
              e.Cancel = _navi.Cancelled;
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
-            _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _ruler = new Behaviors.Ruler.RulerFacade(_file);
+            _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
         }
 
@@ -449,9 +450,7 @@ namespace RlViewer.UI
             _creator.CancelJob += (s, ce) => ce.Cancel = _creator.Cancelled;
             _cancellableAction = _creator;
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-
-            e.Cancel = _creator.Cancelled;
-            
+            e.Cancel = _creator.Cancelled;          
         }
 
 
@@ -493,8 +492,6 @@ namespace RlViewer.UI
                 InitProgressControls(false);
                 InitDrawImage();              
             }
-
-
 
         }
 
@@ -622,6 +619,7 @@ namespace RlViewer.UI
         {
             if (_file != null)
             {
+                _saver = SaverFactory.GetFactory(_properties).Create(_file);
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
@@ -649,7 +647,7 @@ namespace RlViewer.UI
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;                
   
             float scaleFactor = (float)Math.Pow(2, value);
-            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (Math.Pow(scaleFactor, 2) * 100).ToString());
+            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
 
             CenterPointOfView(scaleFactor);
 
@@ -976,8 +974,7 @@ namespace RlViewer.UI
                     newHor = newHor > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : newHor;
                     _form.Horizontal.Value = newHor;
                  
-                    DrawImage();
-                   
+                    DrawImage();                 
                 }
                 else if (_form.MarkAreaRb.Checked && _areaSelector != null)
                 {
@@ -1116,7 +1113,6 @@ namespace RlViewer.UI
         {
             //new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector)
 
-
             _aligner = new Behaviors.ImageAligning.Aligning(_file, _pointSelector, new Behaviors.ImageAligning.LeastSquares.Concrete.LinearLeastSquares(_pointSelector), _saver);
             StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
         }
@@ -1129,7 +1125,7 @@ namespace RlViewer.UI
                 {
                     if (ff.ShowDialog() == DialogResult.OK)
                     {
-                        
+                       
                         StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
                             new Tuple<string, string>(ff.XLat, ff.YLon));
                     };

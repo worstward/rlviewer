@@ -94,7 +94,7 @@
     <Compile Include="Behaviors\TileCreator\TileOutput.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
-    <Compile Include="Behaviors\ImageAligning\IEnumerableCombinationExt.cs" />
+    <Compile Include="Behaviors\ImageAligning\EnumerableCombinationExt.cs" />
     <Compile Include="Behaviors\ImageAligning\LinearEquation.cs" />
     <Compile Include="Behaviors\ImageAligning\LeastSquares\Concrete\LinearLeastSquares.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
