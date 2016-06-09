@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+
 
 namespace RlViewer.Settings
 {
+    [DataContract]
     public class Settings
     {
         private bool _allowViewWhileLoading;
+
+        [DataMember]
         public bool AllowViewWhileLoading
         {
             get { return _allowViewWhileLoading; }
             set { _allowViewWhileLoading = value; }
         }
 
+
         private bool _forceTileGen;
+
+        [DataMember]
         public bool ForceTileGeneration
         {
             get { return _forceTileGen; }
@@ -23,9 +31,10 @@ namespace RlViewer.Settings
         }
 
 
-        private int[] _palette = new int[3] { 1, 1, 1 };
+        private float[] _palette = new float[3] { 1, 1, 1 };
 
-        public int[] Palette
+        [DataMember]
+        public float[] Palette
         {
             get { return _palette; }
             set { _palette = value; }
@@ -33,6 +42,7 @@ namespace RlViewer.Settings
 
         private bool _isPaletteReversed;
 
+        [DataMember]
         public bool IsPaletteReversed
         {
             get { return _isPaletteReversed; }
@@ -41,6 +51,7 @@ namespace RlViewer.Settings
 
         private bool isGrouped;
 
+        [DataMember]
         public bool IsPaletteGroupped
         {
             get { return isGrouped; }
@@ -53,6 +64,7 @@ namespace RlViewer.Settings
         /// <summary>
         /// Amount of points for section graph
         /// </summary>
+        [DataMember]
         public int SectionSize
         {
             get { return _sectionSize; }
@@ -63,6 +75,7 @@ namespace RlViewer.Settings
         /// <summary>
         /// Rectangle area side length
         /// </summary>
+        [DataMember]
         public int SelectorAreaSize
         {
             get { return _areaSize; }
@@ -70,6 +83,8 @@ namespace RlViewer.Settings
         }
 
         private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
+
+        [DataMember]
         public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
         {
             get

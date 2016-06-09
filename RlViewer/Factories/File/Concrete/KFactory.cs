@@ -9,7 +9,7 @@ using RlViewer.Factories.File.Abstract;
 
 namespace RlViewer.Factories.File.Concrete
 {
-    class RhgKFactory : FileFactory
+    class KFactory : FileFactory
     {
         public override LocatorFile Create(FileProperties properties,
             Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)

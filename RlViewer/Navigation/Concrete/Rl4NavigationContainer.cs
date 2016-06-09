@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Navigation.Concrete
 {
-    class Rl4NavigationContainer : NavigationContainer
+    public class Rl4NavigationContainer : NavigationContainer
     {
         public Rl4NavigationContainer(string path, float initialRange, float step, byte board,
             int headerLength, int dataLength, int sx, int sy)

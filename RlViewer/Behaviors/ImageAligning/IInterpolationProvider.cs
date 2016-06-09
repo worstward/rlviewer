@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.ImageAligning
 {
-    public interface IRcsDependenceProvider
+    public interface IInterpolationProvider
     {
-        float GetRcsValueAt(float x);
+        float GetValueAt(float x);
     }
 }

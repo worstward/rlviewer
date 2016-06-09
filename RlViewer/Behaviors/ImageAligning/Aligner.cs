@@ -10,7 +10,7 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Behaviors.ImageAligning.IRcsDependenceProvider rcsProvider, Saving.Abstract.Saver saver)
+        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Behaviors.ImageAligning.IInterpolationProvider rcsProvider, Saving.Abstract.Saver saver)
         {
             _file = file;     
             _selector = selector;

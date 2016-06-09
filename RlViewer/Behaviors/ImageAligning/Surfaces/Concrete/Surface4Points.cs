@@ -14,35 +14,43 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface4Points : Surface3Points
     {
-        public Surface4Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+        public Surface4Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
             : base(selector, rcsProvider)
         {
             _rcsProvider = rcsProvider;
         }
 
 
-        private object _solutionLocker = new object();
-        private float[][] _solution;
-        private float[][] Solution
+        private object _amplitudeSolutionLocker = new object();
+
+        private float[][] _amplitudeSolution;
+        private float[][] AmplitudeSolution
         {
             get
             {
-                if (_solution == null)
+                lock (_amplitudeSolutionLocker)
                 {
-                    lock (_solutionLocker)
-                    {
-                        if (_solution == null)
-                        {
-                            _solution = InitPlanes();
-                        }
-                    }
+                    return _amplitudeSolution = _amplitudeSolution ?? InitAmplitudePlanes();
                 }
-                return _solution;
             }
         }
 
-        private IRcsDependenceProvider _rcsProvider;
-        protected override IRcsDependenceProvider RcsProvider
+        private object _rscSolutionLocker = new object();
+
+        private float[][] _rcsSolution;
+        private float[][] RcsSolution
+        {
+            get
+            {
+                lock (_rscSolutionLocker)
+                {
+                    return _rcsSolution = _rcsSolution ?? InitRcsPlanes();
+                }
+            }
+        }
+
+        private IInterpolationProvider _rcsProvider;
+        protected override IInterpolationProvider RcsProvider
         {
             get
             {
@@ -53,10 +61,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
-
             float[] image = new float[area.Width * area.Height];
 
-            float[] imageArea = Behaviors.FileReader.GetArea(file, area);
+            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
 
             int toInclusiveX = area.Location.X + area.Width;
             toInclusiveX = toInclusiveX > file.Width ? file.Width : toInclusiveX;
@@ -70,9 +77,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-                    var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newVal = GetAmplitude(i, j);
-                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
+                    var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
+                    var newAmplVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), AmplitudeSolution));
+                    var newRcsVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), RcsSolution));
+                    var diff = (float)(Math.Round(oldAmplVal, 2) / Math.Round(newAmplVal, 2) * newRcsVal);
+
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -98,15 +107,16 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             return imageB;
         }
 
-        protected float GetAmplitude(int x, int y)
+
+        protected virtual float GetPlaneValue(int x, int y, float[] solution)
         {
-            return GetAmplitude(x, y, PointToPlane(new System.Drawing.Point(x, y)));
+            //Ax + By + Cz + D = 0
+            //z = (-Ax - By - D) / C
+            return (-solution[0] * x - solution[1] * y - solution[3]) / solution[2];
         }
 
 
-
-
-        private float[] PointToPlane(Point p)
+        private float[] PointToPlane(Point p, float[][] solution)
         {
            
             //in order to belong to plane 1, point has to be to the left of (i1-i4) and to the left of (i2-i3)
@@ -123,19 +133,19 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             if (!firstLineRelative && !secondLineRelative)
             {
-                return Solution[0];
+                return solution[0];
             }
             else if (firstLineRelative && !secondLineRelative)
             {
-                return Solution[1];
+                return solution[1];
             }
             else if (firstLineRelative && secondLineRelative)
             {
-                return Solution[2];
+                return solution[2];
             }
             else if (!firstLineRelative && secondLineRelative)
             {
-                return Solution[3];
+                return solution[3];
             }
             throw new ArgumentException();
         }

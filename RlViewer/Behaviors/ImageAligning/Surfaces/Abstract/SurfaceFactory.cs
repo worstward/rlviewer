@@ -8,7 +8,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
 {
     public class SurfaceFactory
     {
-        public static Surface CreateSurface(RlViewer.Behaviors.PointSelector.PointSelector selector, Behaviors.ImageAligning.IRcsDependenceProvider rcsProvider)
+        public static Surface CreateSurface(RlViewer.Behaviors.PointSelector.PointSelector selector, Behaviors.ImageAligning.IInterpolationProvider rcsProvider)
         {
             switch (selector.Count())
             {

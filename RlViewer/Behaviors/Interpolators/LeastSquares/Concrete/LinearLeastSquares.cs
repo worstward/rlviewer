@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace RlViewer.Behaviors.ImageAligning.LeastSquares.Concrete
+namespace RlViewer.Behaviors.Interpolators.LeastSquares.Concrete
 {
 
     public class LinearLeastSquares : Abstract.LeastSquares
     {
         public LinearLeastSquares(Behaviors.PointSelector.PointSelector selector) : base(selector)
         {
+
+
             var points = selector.Select(x => new PointF(x.Value, x.Rcs));
 
             //var ps = MathNet.Numerics.Fit.Polynomial(selector.Select(x => (double)x.Value).ToArray(), selector.Select(x => (double)x.Rcs).ToArray(),
@@ -22,6 +24,13 @@ namespace RlViewer.Behaviors.ImageAligning.LeastSquares.Concrete
             _slope = SlopeOfPoints(points); //(float)p.Item2;
             _yIntercept = YInterceptOfPoints(points, _slope); //(float)p.Item1;
         }
+
+        public LinearLeastSquares(IEnumerable<PointF> selectedPoints) : base(selectedPoints)
+        {
+            _slope = SlopeOfPoints(selectedPoints);
+            _yIntercept = YInterceptOfPoints(selectedPoints, _slope); 
+        }
+
 
 
         private float _slope;
@@ -41,7 +50,7 @@ namespace RlViewer.Behaviors.ImageAligning.LeastSquares.Concrete
         }
 
 
-        public override float GetRcsValueAt(float x)
+        public override float GetValueAt(float x)
         {
             return LeastSquaresValueAt(x);
         }

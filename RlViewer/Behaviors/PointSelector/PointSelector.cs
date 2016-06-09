@@ -131,7 +131,8 @@ namespace RlViewer.Behaviors.PointSelector
                             
                             System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
 
-                            _selectedPoints.Add(new SelectedPoint(file, FileReader.GetMaxSampleLocation(file, area), epr.EprValue));
+                            _selectedPoints.Add(new SelectedPoint(file,
+                                file.GetMaxSampleLocation(area), epr.EprValue));
                         }
                     }
                 }

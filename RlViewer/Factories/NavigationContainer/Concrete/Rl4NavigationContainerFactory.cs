@@ -7,7 +7,7 @@ using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Factories.NavigationContainer.Concrete
 {
-    class Rl4NavigationContainerFactory : Abstract.NavigationContainerFactory
+    public class Rl4NavigationContainerFactory : Abstract.NavigationContainerFactory
     {
         public override Navigation.NavigationContainer Create(RlViewer.Files.FileProperties properties, Headers.Abstract.LocatorFileHeader header)
         {

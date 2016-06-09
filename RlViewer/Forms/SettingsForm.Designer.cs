@@ -111,7 +111,8 @@
             "54 1 54",
             "1 54 1",
             "54 54 1",
-            "1 1 54"});
+            "1 1 54",
+            "1 0,2 1"});
             this.comboBox1.Location = new System.Drawing.Point(17, 19);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(93, 21);
@@ -261,7 +262,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 350);
+            this.ClientSize = new System.Drawing.Size(303, 345);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControl1);

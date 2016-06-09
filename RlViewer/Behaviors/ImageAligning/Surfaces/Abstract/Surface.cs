@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             private set;
         }
 
-        protected abstract IRcsDependenceProvider RcsProvider { get; }
+        protected abstract IInterpolationProvider RcsProvider { get; }
 
         /// <summary>
         /// Changes image amplitudes with prebuilt surface

@@ -12,7 +12,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface16Points : Surfaces.Abstract.Surface
     {
-        public Surface16Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+        public Surface16Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
             : base(selector)
         {
             _rcsProvider = rcsProvider;
@@ -33,8 +33,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
 
-        private IRcsDependenceProvider _rcsProvider;
-        protected override IRcsDependenceProvider RcsProvider
+        private IInterpolationProvider _rcsProvider;
+        protected override IInterpolationProvider RcsProvider
         {
             get
             {
@@ -68,7 +68,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            float[] imageArea = Behaviors.FileReader.GetArea(file, area);
+            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
 
             Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
@@ -82,7 +82,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                         * area.Width + (i - area.Location.X)];
                     var newVal = Extrapolate(j, _zCoefs);
 
-                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
+                    var diff = oldVal / newVal * RcsProvider.GetValueAt(oldVal);
                     diff = diff < 0 ? 0 : diff;
 
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;

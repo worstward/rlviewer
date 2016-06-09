@@ -19,7 +19,6 @@ namespace RlViewer.Behaviors.Draw
             _screenSize = screenSize;
             _iDrawer = iDrawer;
             _tDrawer = tDrawer;
-            _canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
         }
 
         private ItemDrawer _iDrawer;
@@ -29,14 +28,15 @@ namespace RlViewer.Behaviors.Draw
 
 
 
-        public void GetPalette(int R, int G, int B, bool reversed, bool logarithmic)
+        public void GetPalette(float R, float G, float B, bool reversed, bool logarithmic)
         {
             _tDrawer.GetPalette(R, G, B, reversed, logarithmic);
         }
 
         public Image Draw(Tile[] tiles, Point pointOfView)
         {
-            return _iDrawer.DrawItems(_tDrawer.DrawImage(_canvas, tiles, pointOfView, _screenSize), pointOfView, _screenSize);
+            _canvas = _tDrawer.DrawImage(_screenSize.Width, _screenSize.Height, tiles, pointOfView, _screenSize);
+            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize);
         }
 
         public Image Draw(Point pointOfView)
@@ -57,9 +57,14 @@ namespace RlViewer.Behaviors.Draw
                             new Point(current.X, current.Y + size / 2));
         }
 
-        public Image DrawRuler(Point p1, Point p2)
+        public Image DrawRuler(Point from, Point to)
         {
-            return _iDrawer.DrawSection(_canvas, p1, p2);
+            return _iDrawer.DrawSection(_canvas, from, to);
+        }
+
+        public Image DrawLinearSection(Point from, Point to)
+        {
+            return _iDrawer.DrawSection(_canvas, from, to);
         }
 
 

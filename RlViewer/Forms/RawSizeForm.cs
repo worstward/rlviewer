@@ -17,6 +17,14 @@ namespace RlViewer.Forms
             InitializeComponent();
             maskedTextBox1.PromptChar = ' ';
             maskedTextBox2.PromptChar = ' ';
+            comboBox1.SelectedIndex = 0;
+        }
+
+        private int _bytesPerSample;
+
+        public int BytesPerSample
+        {
+            get { return _bytesPerSample; }
         }
 
         private System.Drawing.Size _imgSize = new Size();
@@ -58,18 +66,21 @@ namespace RlViewer.Forms
             }
             else
             {
+                switch (comboBox1.SelectedIndex)
+                {
+                    case 0:
+                        _bytesPerSample = 4;
+                        break;
+                    case 1:
+                        _bytesPerSample = 8;
+                        break;
+                }
+
                 _imgSize = new Size(ImgWidth, ImgHeight);
                 DialogResult = DialogResult.OK;
             }
         }
 
-        private void button1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-            {
-                Close();
-            }
-        }
 
         private void SizeForm_KeyDown(object sender, KeyEventArgs e)
         {

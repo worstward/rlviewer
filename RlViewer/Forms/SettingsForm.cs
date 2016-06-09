@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RlViewer.Settings;
 
 namespace RlViewer.Forms
 {
@@ -15,6 +16,7 @@ namespace RlViewer.Forms
         public SettingsForm(Settings.Settings settings)
         {
             _settings = settings;
+
             InitializeComponent();
             comboBox1.SelectedItem = _settings.Palette.Select(x => x.ToString())
                 .Aggregate((x, y) => x.ToString() + " " + y.ToString());
@@ -33,7 +35,7 @@ namespace RlViewer.Forms
 
         private Settings.Settings _settings;
 
-        private int[] _palette;
+        private float[] _palette;
         private bool _isReversed;
         private bool _isGrouped;
         private bool _allowViewWhileLoading;
@@ -55,11 +57,11 @@ namespace RlViewer.Forms
             try
             {
                 _palette = ((ComboBox)sender).GetItemText(comboBox1.SelectedItem).Split(' ')
-                    .Select(x => Convert.ToInt32(x)).ToArray();
+                    .Select(x => Convert.ToSingle(x)).ToArray();
             }
             catch (Exception ex)
             {
-                _palette = new int[] { 1, 1, 1 };
+                _palette = new float[] { 1, 1, 1 };
                 Logging.Logger.Log(Logging.SeverityGrades.Warning, 
                     string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
             }
@@ -92,6 +94,7 @@ namespace RlViewer.Forms
             _settings.ForceTileGeneration = _forceTileGen;
             _settings.IsPaletteGroupped = _isGrouped;
             _settings.TileOutputAlgorithm = _outputType;
+            _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();

@@ -13,7 +13,7 @@ namespace RlViewer
         /// </summary>
         brl4,
         /// <summary>
-        /// Формат файла РЛИ
+        /// Формат файла РЛИ (4 байта на отсчет)
         /// </summary>
         rl4,
         /// <summary>
@@ -31,7 +31,11 @@ namespace RlViewer
         /// <summary>
         /// Формат изображений для вывода
         /// </summary>
-        bmp
+        bmp,
+        /// <summary>
+        /// Формат файла рли (8 байт на отсчет)
+        /// </summary>
+        rl8       
     }
 
     public static class EnumExt

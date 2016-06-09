@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using RlViewer.Behaviors;
+
 
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
@@ -12,7 +14,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface5Points : Surface3Points
     {
-        public Surface5Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+        public Surface5Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
             : base(selector, rcsProvider)
         {
             _rcsProvider = rcsProvider;
@@ -26,12 +28,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             get
             {
-                return _solution = _solution ?? InitPlanes();
+                return _solution = _solution ?? InitAmplitudePlanes();
             }
         }
 
-        private IRcsDependenceProvider _rcsProvider;
-        protected override IRcsDependenceProvider RcsProvider
+        private IInterpolationProvider _rcsProvider;
+        protected override IInterpolationProvider RcsProvider
         {
             get
             {
@@ -45,8 +47,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             float[] image = new float[area.Width * area.Height];
 
-            float[] imageArea = Behaviors.FileReader.GetArea(file, area);
-
+            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
             int toInclusiveX = area.Location.X + area.Width;
             toInclusiveX = toInclusiveX > file.Width ? file.Width : toInclusiveX;
 
@@ -61,7 +62,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newVal = GetAmplitude(i, j);
-                    var diff = oldVal / newVal * RcsProvider.GetRcsValueAt(oldVal);
+                    var diff = oldVal / newVal * RcsProvider.GetValueAt(oldVal);
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -95,7 +96,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         /// <returns></returns>
         protected float GetAmplitude(int x, int y)
         {
-            return GetAmplitude(x, y, PointToPlane(new System.Drawing.Point(x, y)));
+            return GetPlaneValue(x, y, PointToPlane(new System.Drawing.Point(x, y)));
         }
 
 

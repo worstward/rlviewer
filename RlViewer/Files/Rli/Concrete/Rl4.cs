@@ -19,7 +19,6 @@ namespace RlViewer.Files.Rli.Concrete
         {
             _header = header as Rl4Header;
             _navi = navi;
-            Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Rl4 file opened: {0}", properties.FilePath));
         }
 
 

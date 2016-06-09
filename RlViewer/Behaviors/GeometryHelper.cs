@@ -37,7 +37,7 @@ namespace RlViewer.Behaviors
         /// <param name="p1">First point of the line</param>
         /// <param name="p2">Second point of the line</param>
         /// <param name="input">Point which relative position we want to know</param>
-        /// <returns>True if point is to the right of the line, false if it is to the left</returns>
+        /// <returns>True if point is to the right of the line, false if it is to the left or on the line</returns>
         public static bool MutualPosition(Point p1, Point p2, Point input)
         {
             var valueToAnalyze = (input.X - p1.X) * (p2.Y - p1.Y) - (input.Y - p1.Y) * (p2.X - p1.X);
@@ -45,8 +45,31 @@ namespace RlViewer.Behaviors
             //valueToAnalyze < 0 : left
             //valueToAnalyze == 0 : point is on the line
 
-            //we don't care if the point lies on a line so this case is just included to 'right'
-            return valueToAnalyze >= 0;
+            return valueToAnalyze > 0;
+        }
+
+
+        /// <summary>
+        /// Gets line angle
+        /// </summary>
+        /// <param name="p1">First point</param>
+        /// <param name="p2">Second point</param>
+        /// <returns>Angle in radians</returns>
+        public static float GetAngle(PointF p1, PointF p2)
+        {
+            return (float)Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+        }
+
+
+
+        private static float GetK(Point p1, Point p2) //y = kx+b
+        {
+            return (p2.Y - p1.Y) / (float)(p2.X - p1.X);
+        }
+
+        private static float GetB(Point p1, Point p2) //y = kx+b
+        {
+            return (p2.X * p1.Y - p2.Y * p1.X) / (float)(p2.X - p1.X);
         }
 
 
@@ -57,14 +80,29 @@ namespace RlViewer.Behaviors
         /// <param name="point2">Second point of the line</param>
         /// <param name="x">X coordinate of a needed point</param>
         /// <returns>Y coordinate</returns>
-        public static int GetY(Point point1, Point point2, float x)
+        public static int GetY(Point p1, Point p2, int x)
         {
-            //y = kx+b
-            float k = (point2.Y - point1.Y) / (float)(point2.X - point1.X);
-            float b = point1.Y - (k * point1.X);
-
-            return (int)(k * x + b);
+            if (p1.Y == p2.Y)
+                return p1.Y;
+            return (int)(GetK(p1, p2) * x + GetB(p1, p2));
         }
+
+
+        /// <summary>
+        /// Gets X coordinate of a point on the line
+        /// </summary>
+        /// <param name="point1">First point of the line</param>
+        /// <param name="point2">Second point of the line</param>
+        /// <param name="y">Y coordinate of a needed point</param>
+        /// <returns>X coordinate</returns>
+        public static int GetX(Point p1, Point p2, int y)
+        {
+            if (p1.X == p2.X)
+                return p1.X;
+            return (int)((y - GetB(p1, p2)) / GetK(p1, p2));
+        }
+
+
 
     }
 }

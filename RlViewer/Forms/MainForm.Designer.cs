@@ -37,6 +37,7 @@
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linSectionRb = new System.Windows.Forms.RadioButton();
             this.findPointBtn = new System.Windows.Forms.Button();
             this.rulerRb = new System.Windows.Forms.RadioButton();
             this.alignBtn = new System.Windows.Forms.Button();
@@ -83,6 +84,8 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.zoomOutBtn = new System.Windows.Forms.Button();
+            this.zoomInBtn = new System.Windows.Forms.Button();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
@@ -126,6 +129,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.linSectionRb);
             this.groupBox1.Controls.Add(this.findPointBtn);
             this.groupBox1.Controls.Add(this.rulerRb);
             this.groupBox1.Controls.Add(this.alignBtn);
@@ -137,10 +141,28 @@
             this.groupBox1.Controls.Add(this.markPointRb);
             this.groupBox1.Location = new System.Drawing.Point(20, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(319, 58);
+            this.groupBox1.Size = new System.Drawing.Size(352, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Инструменты";
+            // 
+            // linSectionRb
+            // 
+            this.linSectionRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.linSectionRb.BackColor = System.Drawing.Color.Transparent;
+            this.linSectionRb.BackgroundImage = global::RlViewer.Properties.Resources.LinearSection;
+            this.linSectionRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.linSectionRb.FlatAppearance.BorderSize = 0;
+            this.linSectionRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.linSectionRb.Location = new System.Drawing.Point(244, 15);
+            this.linSectionRb.Name = "linSectionRb";
+            this.linSectionRb.Size = new System.Drawing.Size(30, 30);
+            this.linSectionRb.TabIndex = 14;
+            this.linSectionRb.TabStop = true;
+            this.linSectionRb.UseVisualStyleBackColor = false;
             // 
             // findPointBtn
             // 
@@ -149,7 +171,7 @@
             this.findPointBtn.FlatAppearance.BorderSize = 0;
             this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.findPointBtn.Location = new System.Drawing.Point(275, 15);
+            this.findPointBtn.Location = new System.Drawing.Point(313, 15);
             this.findPointBtn.Name = "findPointBtn";
             this.findPointBtn.Size = new System.Drawing.Size(30, 30);
             this.findPointBtn.TabIndex = 13;
@@ -167,7 +189,7 @@
             this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rulerRb.Location = new System.Drawing.Point(242, 15);
+            this.rulerRb.Location = new System.Drawing.Point(280, 15);
             this.rulerRb.Name = "rulerRb";
             this.rulerRb.Size = new System.Drawing.Size(30, 30);
             this.rulerRb.TabIndex = 12;
@@ -508,7 +530,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(875, 401);
-            this.splitContainer1.SplitterDistance = 686;
+            this.splitContainer1.SplitterDistance = 678;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -531,8 +553,8 @@
             this.splitContainer2.Panel2.Controls.Add(this.trackBar2);
             this.splitContainer2.Panel2.Controls.Add(this.chart1);
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer2.Size = new System.Drawing.Size(686, 401);
-            this.splitContainer2.SplitterDistance = 283;
+            this.splitContainer2.Size = new System.Drawing.Size(678, 401);
+            this.splitContainer2.SplitterDistance = 275;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -544,7 +566,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(680, 277);
+            this.pictureBox1.Size = new System.Drawing.Size(672, 269);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -685,7 +707,7 @@
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(751, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(720, 17);
             this.toolStripStatusLabel3.Spring = true;
             // 
             // toolStripProgressBar1
@@ -715,6 +737,34 @@
             this.toolStripDropDownButton1.Text = "Cancel";
             this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
+            // zoomOutBtn
+            // 
+            this.zoomOutBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomOut;
+            this.zoomOutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.zoomOutBtn.FlatAppearance.BorderSize = 0;
+            this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.zoomOutBtn.Location = new System.Drawing.Point(804, 44);
+            this.zoomOutBtn.Name = "zoomOutBtn";
+            this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
+            this.zoomOutBtn.TabIndex = 26;
+            this.zoomOutBtn.UseVisualStyleBackColor = true;
+            this.zoomOutBtn.Click += new System.EventHandler(this.zoomOutBtn_Click);
+            // 
+            // zoomInBtn
+            // 
+            this.zoomInBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomIn;
+            this.zoomInBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.zoomInBtn.FlatAppearance.BorderSize = 0;
+            this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.zoomInBtn.Location = new System.Drawing.Point(768, 44);
+            this.zoomInBtn.Name = "zoomInBtn";
+            this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
+            this.zoomInBtn.TabIndex = 25;
+            this.zoomInBtn.UseVisualStyleBackColor = true;
+            this.zoomInBtn.Click += new System.EventHandler(this.zoomInBtn_Click);
+            // 
             // filterPanelCb
             // 
             this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
@@ -725,7 +775,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(345, 44);
+            this.filterPanelCb.Location = new System.Drawing.Point(381, 44);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -756,6 +806,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 532);
+            this.Controls.Add(this.zoomOutBtn);
+            this.Controls.Add(this.zoomInBtn);
             this.Controls.Add(this.filterPanelCb);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.scaleLabel);
@@ -855,6 +907,9 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.CheckBox filterPanelCb;
         private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.RadioButton linSectionRb;
+        private System.Windows.Forms.Button zoomInBtn;
+        private System.Windows.Forms.Button zoomOutBtn;
     }
 }
 

@@ -13,16 +13,15 @@ namespace RlViewer.Behaviors.Draw
         public async Task<long[]> GetHistogramAsync(System.Drawing.Image img, int visibleWidth, int visibleHeight)
         {
             return await Task.Run(() =>
-                {
-                    
-                    byte[] imgBytes = GetBytesFromBmp(img, visibleWidth, visibleHeight);
+                {      
+                    var imageRGB = GetBytesFromBmp(img, visibleWidth, visibleHeight);
 
                     //var hist =  imgBytes.GroupBy(x => x).Select(x => new { Key = x.Key, Value = x.Count() });
                     Array.Clear(histogram, 0, histogram.Length);
 
-                    for (int i = 0; i < imgBytes.Length; i++)
+                    for (int i = 0; i < imageRGB.Length; i++)
                     {
-                        histogram[imgBytes[i]]++;
+                        histogram[imageRGB[i]]++;
                     }
 
                     return histogram;
@@ -53,7 +52,7 @@ namespace RlViewer.Behaviors.Draw
         {
             byte[] imgBytes = new byte[visibleWidth * 3 * visibleHeight];
 
-            //since bmp format requests image width of (multiples of 4) we have to take padding into account
+            //since bmp format requests certain image width (of multiples of 4) we have to take padding into account
             var padding = img.Width - (int)(Math.Floor((double)(img.Width / 4f))) * 4;
             var bitmapHeaderOffset = 54;
 
@@ -75,7 +74,7 @@ namespace RlViewer.Behaviors.Draw
                     ms.Seek((img.Width - visibleWidth) * 3, System.IO.SeekOrigin.Current);
                 }
             }
-            return imgBytes;
+            return imgBytes.Where((x, i) => (i + 1) % 4 != 255).ToArray();
         }
 
        

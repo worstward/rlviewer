@@ -15,6 +15,13 @@ namespace RlViewer.Behaviors.TileCreator
             Location = location;
         }
 
+        public TileImageWrapper(Bitmap bmp, int x, int y)
+        {
+            TileImage = bmp;
+            Location = new Point(x, y);
+        }
+
+
         public Bitmap TileImage
         {
             get;

@@ -27,6 +27,7 @@ namespace RlViewer.UI
         RadioButton AnalyzePointRb { get; }
         RadioButton VerticalSectionRb { get; }
         RadioButton HorizontalSectionRb { get; }
+        RadioButton LinearSectionRb { get; }
         RadioButton RulerRb { get; }
         RadioButton BrightnessRb { get; }
         RadioButton ContrastRb { get; }
@@ -39,6 +40,8 @@ namespace RlViewer.UI
         CheckBox FilterPanelCb { get; }
         SplitContainer NaviSplitter { get; }
         SplitContainer FilterSplitter { get; }
+        Button ZoomInBtn { get; }
+        Button ZoomOutBtn { get; }
         System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart { get; }
     }
 }

@@ -68,8 +68,9 @@ namespace RlViewer.Behaviors.Draw
                 if (screen.Contains(point.Location))
                 {
                     g.FillRectangle(Brushes.Red, (int)((point.Location.X - screen.X) * Scaler.ScaleFactor),
-                        (int)((point.Location.Y - screen.Y) * Scaler.ScaleFactor), 5,  5);
-                    
+                        (int)((point.Location.Y - screen.Y) * Scaler.ScaleFactor),
+                        5 < Scaler.ScaleFactor ? Scaler.ScaleFactor : 5, 
+                        5 < Scaler.ScaleFactor ? Scaler.ScaleFactor : 5);                    
                 }
             }
         }
@@ -100,8 +101,6 @@ namespace RlViewer.Behaviors.Draw
             }
             return img;
         }
-         
-        
 
 
     }

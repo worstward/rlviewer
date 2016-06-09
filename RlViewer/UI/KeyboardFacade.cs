@@ -54,8 +54,5 @@ namespace RlViewer.UI
             }
 
         }
-
-
-
     }
 }

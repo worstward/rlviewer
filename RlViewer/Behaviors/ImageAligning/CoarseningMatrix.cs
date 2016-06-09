@@ -43,6 +43,9 @@ namespace RlViewer.Behaviors.ImageAligning
         /// <returns></returns>
         public byte[] ApplyMatrix(byte[] image, int width, int height)
         {
+            //TODO: fixme
+            throw new NotImplementedException();
+
             var coarseMatrixCellArea = _matrixCellHeightInPx * _matrixCellWidthInPx;
 
             byte[] coarsedImage = new byte[_file.Width / _matrixCellWidthInPx * _file.Height / _matrixCellHeightInPx];

@@ -196,6 +196,14 @@ namespace RlViewer.Forms
             }
         }
 
+        public RadioButton LinearSectionRb
+        {
+            get
+            {
+                return linSectionRb;
+            }
+        }
+
         public RadioButton RulerRb
         {
             get
@@ -269,6 +277,22 @@ namespace RlViewer.Forms
             }
         }
 
+        public Button ZoomInBtn
+        {
+            get
+            {
+                return zoomInBtn;
+            }
+        }
+
+        public Button ZoomOutBtn
+        {
+            get
+            {
+                return zoomOutBtn;
+            }
+        }
+
 
         #endregion
 
@@ -312,7 +336,7 @@ namespace RlViewer.Forms
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            _guiFacade.ScaleImage(e);
+            _guiFacade.ScaleImage(e.Delta);
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
@@ -407,7 +431,6 @@ namespace RlViewer.Forms
 
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-            Text = string.Empty;
             _guiFacade.CancelLoading();
         }
 
@@ -449,6 +472,16 @@ namespace RlViewer.Forms
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
         {
             _guiFacade.ResetRuler();
+        }
+
+        private void zoomOutBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.ScaleImage(-1);
+        }
+
+        private void zoomInBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.ScaleImage(1);
         }
 
 

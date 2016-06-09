@@ -104,7 +104,6 @@ namespace RlViewer.Headers.Concrete.R
             }
 
             var rhgHeader = new List<Tuple<string, string>>();
-
             
           
             var synthHeader = new List<Tuple<string, string>>();

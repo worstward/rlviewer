@@ -39,7 +39,7 @@ namespace RlViewer.Behaviors.Draw
         /// Initializes look-up palette for 8bpp image
         /// </summary>
         /// <returns>Color palette</returns>
-        private ColorPalette InitPalette(int rFactor, int gFactor, int bFactor, bool isReversed)
+        private ColorPalette InitPalette(float rFactor, float gFactor, float bFactor, bool isReversed)
         {
             //TODO: REWRITE PALETTE INIT
             ColorPalette colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
@@ -53,7 +53,7 @@ namespace RlViewer.Behaviors.Draw
                 var b = bFactor * i;
                 if (isReversed)
                 {
-                    if (PaletteParams.Logarithmic)
+                    if (PaletteParams.IsGroupped)
                     {
                         colorPalette.Entries[255 - i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
                     }
@@ -64,7 +64,7 @@ namespace RlViewer.Behaviors.Draw
                 }
                 else
                 {
-                    if (PaletteParams.Logarithmic)
+                    if (PaletteParams.IsGroupped)
                     {
                         colorPalette.Entries[i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
                     }
@@ -81,18 +81,17 @@ namespace RlViewer.Behaviors.Draw
 
 
 
-        private int GroupValues(int val)
+        private int GroupValues(float val)
         {
-            return (int)(val / 16) * 16;
+            return ((int)val / 16) * 16;
         }
 
 
-
-
-
-        private int TrimToByteRange(int value)
+        private int TrimToByteRange(float value)
         {
-            return value > 255 ? 255 : value;
+            var bVal = (int)(value > 255 ? 255 : value);
+            bVal = bVal < 0 ? 0 : bVal;
+            return bVal;
         }
 
         /// <summary>
@@ -102,30 +101,30 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="G">Green channel</param>
         /// <param name="B">Blue channel</param>
         /// <param name="reversed">Determines if colors in color table are reversed</param>
-        /// <param name="logarithmic">Determines if palette uses logarithmic colors</param>
-        public void GetPalette(int R, int G, int B, bool reversed, bool logarithmic)
+        /// <param name="logarithmic">Determines if palette uses grouped colors</param>
+        public void GetPalette(float R, float G, float B, bool reversed, bool grouped)
         {
             _colorPalette = null;
             PaletteParams.R = R;
             PaletteParams.G = G;
             PaletteParams.B = B;
             PaletteParams.Reversed = reversed;
-            PaletteParams.Logarithmic = logarithmic;
+            PaletteParams.IsGroupped = grouped;
         }
 
         private static class PaletteParams
         {
-            private static bool _logarithmic;
+            private static bool _isGroupped;
 
-            public static bool Logarithmic
+            public static bool IsGroupped
             {
                 get
                 {
-                    return _logarithmic;
+                    return _isGroupped;
                 }
                 set
                 {
-                    _logarithmic = value; 
+                    _isGroupped = value; 
                 }
             }
 
@@ -146,8 +145,8 @@ namespace RlViewer.Behaviors.Draw
 
 
 
-            private static int _red = 1;
-            public static int R
+            private static float _red = 1;
+            public static float R
             {
                 get
                 {
@@ -159,8 +158,8 @@ namespace RlViewer.Behaviors.Draw
                 }
             }
 
-            private static int _green = 1;
-            public static int G
+            private static float _green = 1;
+            public static float G
             {
                 get
                 {
@@ -172,8 +171,8 @@ namespace RlViewer.Behaviors.Draw
                 }
             }
 
-            private static int _blue = 1;
-            public static int B
+            private static float _blue = 1;
+            public static float B
             {
                 get
                 {

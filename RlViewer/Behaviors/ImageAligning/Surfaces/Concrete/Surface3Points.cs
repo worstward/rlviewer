@@ -12,29 +12,45 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface3Points : Surfaces.Abstract.Surface
     {
-        public Surface3Points(PointSelector.PointSelector selector, IRcsDependenceProvider rcsProvider)
+        public Surface3Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
             : base(selector)
         {
+
             _rcsProvider = rcsProvider;
         }
 
-        private object _solutionLocker = new object();
+        private object _amplitudeSolutionLocker = new object();
 
-        private float[][] _solution;
-        private float[][] Solution
+        private float[][] _amplitudeSolution;
+        private float[][] AmplitudeSolution
         {
             get 
             {
-                lock (_solutionLocker)
+                lock (_amplitudeSolutionLocker)
                 { 
-                    return _solution = _solution ?? InitPlanes(); 
+                    return _amplitudeSolution = _amplitudeSolution ?? InitAmplitudePlanes(); 
+                }
+            }
+        }
+
+        private object _rscSolutionLocker = new object();
+
+        private float[][] _rcsSolution;
+        private float[][] RcsSolution
+        {
+            get
+            {
+                lock (_rscSolutionLocker)
+                {
+                    return _rcsSolution = _rcsSolution ?? InitRcsPlanes();
                 }
             }
         }
 
 
-       private IRcsDependenceProvider _rcsProvider;
-        protected override IRcsDependenceProvider RcsProvider
+
+       private IInterpolationProvider _rcsProvider;
+        protected override IInterpolationProvider RcsProvider
         {
             get
             {
@@ -47,8 +63,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
             float[] image = new float[area.Width * area.Height];
-            
-            float[] imageArea = Behaviors.FileReader.GetArea(file, area);
+
+            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
 
             int toInclusiveX = area.Location.X + area.Width;
             toInclusiveX = toInclusiveX > file.Width ? file.Width : toInclusiveX;
@@ -62,10 +78,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-                    var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newVal = GetAmplitude(i, j, Solution.First());
-                    var ls = RcsProvider.GetRcsValueAt(oldVal);
-                    var diff = oldVal / newVal * ls;
+                    var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
+                    var newAmplVal = GetPlaneValue(i, j, AmplitudeSolution.First());
+                    var newRcsVal = GetPlaneValue(i, j, RcsSolution.First());
+                    var diff = oldAmplVal / newAmplVal * newRcsVal;
+                    //var ls = RcsProvider.GetValueAt(diff);
+                    //diff *= ls;
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -97,7 +115,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         /// Builds a plane through each 3 selected points
         /// </summary>
         /// <returns></returns>
-        protected float[][] InitPlanes()
+        protected float[][] InitAmplitudePlanes()
         {
             var planes = Selector.Combinations<PointSelector.SelectedPoint>(3).ToList();
 
@@ -105,20 +123,35 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             for (int i = 0; i < planes.Count; i++)
             {
-                solution[i] = Solve(planes[i].ToList());
+                solution[i] = SolveAmplitude(planes[i].ToList());
             }
             return solution;
         }
 
+        /// <summary>
+        /// Builds a plane through each 3 selected points
+        /// </summary>
+        /// <returns></returns>
+        protected float[][] InitRcsPlanes()
+        {
+            var planes = Selector.Combinations<PointSelector.SelectedPoint>(3).ToList();
 
+            float[][] solution = new float[planes.Count][];
+
+            for (int i = 0; i < planes.Count; i++)
+            {
+                solution[i] = SolveRcs(planes[i].ToList());
+            }
+            return solution;
+        }
 
         /// <summary>
-        /// Gets amplitude of given point for provided plane
+        /// Gets value of given point for provided plane
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        /// <returns>Amplitude</returns>
-        protected virtual float GetAmplitude(int x, int y, float[] solution)
+        /// <returns>Value</returns>
+        protected virtual float GetPlaneValue(int x, int y, float[] solution)
         {
             //Ax + By + Cz + D = 0
             //z = (-Ax - By - D) / C
@@ -127,34 +160,54 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         
 
         /// <summary>
-        /// Gets coefficients of plane from 3 points
+        /// Gets coefficients of amplitude plane from 3 points
         /// </summary>
         /// <param name="selector"></param>
         /// <returns></returns>
-        protected float[] Solve(List<PointSelector.SelectedPoint> selector)
+        protected float[] SolveAmplitude(List<PointSelector.SelectedPoint> selector)
         {
             if (selector.Count() != 3)
             {
                 throw new ArgumentOutOfRangeException("selector.Count()");//not 3 points provided
             }
 
-
             var p1 = selector[0];
             var p2 = selector[1];
             var p3 = selector[2];
 
             float A = (p2.Location.Y - p1.Location.Y) * (p3.Value - p1.Value) - (p3.Location.Y - p1.Location.Y) * (p2.Value - p1.Value);
-                //p1.Location.Y * (p2.Value - p3.Value) + p2.Location.Y * (p3.Value - p1.Value) + p3.Location.Y * (p1.Value - p2.Value);
             float B = -((p2.Location.X - p1.Location.X) * (p3.Value - p1.Value) - (p3.Location.X - p1.Location.X) * (p2.Value - p1.Value));
-                //p1.Value * (p2.Location.X - p3.Location.X) + p2.Value * (p3.Location.X - p1.Location.X) + p3.Value * (p1.Location.X - p2.Location.X);
             float C = (p2.Location.X - p1.Location.X) * (p3.Location.Y - p1.Location.Y) - (p3.Location.X - p1.Location.X) * (p2.Location.Y - p1.Location.Y);
-                //p1.Location.X * (p2.Location.Y - p3.Location.Y) + p2.Location.X * (p3.Location.Y - p1.Location.Y) + p2.Location.X * (p1.Location.Y - p2.Location.Y);
             float D = -p1.Location.X * A - p1.Location.Y * B - p1.Value * C;
-                //-(p1.Location.X * (p2.Location.Y * p3.Value - p3.Location.Y * p2.Value) + p2.Location.X * 
-                //(p3.Location.Y * p1.Value - p1.Location.Y * p3.Value) + p3.Location.X * (p1.Location.Y * p2.Value - p2.Location.Y * p1.Value));
+            
+            return new float[] { A, B, C, D };
+        }
+
+        /// <summary>
+        /// Gets coefficients of radio cross section plane from 3 points
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        protected float[] SolveRcs(List<PointSelector.SelectedPoint> selector)
+        {
+            if (selector.Count() != 3)
+            {
+                throw new ArgumentOutOfRangeException("selector.Count()");//not 3 points provided
+            }
+
+            var p1 = selector[0];
+            var p2 = selector[1];
+            var p3 = selector[2];
+
+            float A = (p2.Location.Y - p1.Location.Y) * (p3.Rcs - p1.Rcs) - (p3.Location.Y - p1.Location.Y) * (p2.Rcs - p1.Rcs);
+            float B = -((p2.Location.X - p1.Location.X) * (p3.Rcs - p1.Rcs) - (p3.Location.X - p1.Location.X) * (p2.Rcs - p1.Rcs));
+            float C = (p2.Location.X - p1.Location.X) * (p3.Location.Y - p1.Location.Y) - (p3.Location.X - p1.Location.X) * (p2.Location.Y - p1.Location.Y);
+            float D = -p1.Location.X * A - p1.Location.Y * B - p1.Rcs * C;
 
             return new float[] { A, B, C, D };
         }
+
+
 
     }
 }

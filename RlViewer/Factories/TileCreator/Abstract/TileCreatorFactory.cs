@@ -14,18 +14,27 @@ namespace RlViewer.Factories.TileCreator.Abstract
     {
         public abstract RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile rli, Behaviors.TileCreator.TileOutputType type);
 
-        public static TileCreatorFactory GetFactory(FileProperties properties)
+        public static TileCreatorFactory GetFactory(LocatorFile file)
         {
-            switch (properties.Type)
+            switch (file.Properties.Type)
             {
                 case FileType.brl4:
                     return new Brl4TileCreatorFactory();
                 case FileType.rl4:
                     return new Rl4TileCreatorFactory();
                 case FileType.raw:
-                    return new RawTileCreatorFactory();
+                    if (file.Header.BytesPerSample == 4)
+                    {
+                        return new Raw4TileCreatorFactory();
+                    }
+                    else
+                    {
+                        return new Raw8TileCreatorFactory();
+                    }                    
                 case FileType.r:
                     return new RTileCreatorFactory();
+                case FileType.rl8:
+                    return new Rl8TileCreatorFactory();
                 case FileType.k:
                     throw new NotSupportedException("Implement me");
                 default:

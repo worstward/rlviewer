@@ -61,7 +61,7 @@ namespace RlViewer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Локационные файлы |*.rl4;*.brl4;*.r;*.raw|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Бортовые файлы РЛИ МРК2 (*.r)|*.r|Файлы МРК411 без заголовка (*.raw)|*.raw.
+        ///   Looks up a localized string similar to Локационные файлы |*.rl4;*.brl4;*.rl8;*.r;*.raw|Файлы РЛИ МРК2 (*.rl4;*.rl8)|*.rl4;*.rl8|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Бортовые файлы РЛИ МРК2 (*.r)|*.r|Файлы МРК411 без заголовка (*.raw)|*.raw.
         /// </summary>
         internal static string OpenFilter {
             get {

@@ -8,6 +8,7 @@ using RlViewer.Files;
 using RlViewer.Files.Rli.Concrete;
 using RlViewer.Headers.Concrete.Brl4;
 using RlViewer.Headers.Concrete.Rl4;
+using RlViewer.Headers.Concrete.Rl8;
 using RlViewer.Headers.Concrete.R;
 using System.Drawing;
 
@@ -150,6 +151,18 @@ namespace RlViewer.Behaviors.Ruler
                         {
                             _dx = rl4Header.HeaderStruct.rlParams.dx;
                             _dy = rl4Header.HeaderStruct.rlParams.dy;
+                        }
+                    }
+                    break;
+                case FileType.rl8:
+                    var rl8 = file as Rl8;
+                    if (rl8 != null)
+                    {
+                        var rl8Header = rl8.Header as Rl8Header;
+                        if (rl8Header != null)
+                        {
+                            _dx = rl8Header.HeaderStruct.rlParams.dx;
+                            _dy = rl8Header.HeaderStruct.rlParams.dy;
                         }
                     }
                     break;

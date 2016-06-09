@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Behaviors.TileCreator.Concrete;
 
 
 namespace RlViewer.Factories.TileCreator.Concrete
 {
-    class RawTileCreatorFactory : TileCreatorFactory
+    class Raw4TileCreatorFactory : TileCreatorFactory
     {
         public override RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile locatorFile, Behaviors.TileCreator.TileOutputType type)
         {
-            return new RawTileCreator(locatorFile, type);
+            return new Raw4TileCreator(locatorFile, type);
         }
     }
 }

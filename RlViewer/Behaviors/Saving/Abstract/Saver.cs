@@ -122,8 +122,26 @@ namespace RlViewer.Behaviors.Saving.Abstract
                         fr.Seek(SourceFile.Header.StrHeaderLength, SeekOrigin.Current);
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameStrData, 0, frameStrData.Length);
+
+
+                        if (SourceFile.Header.BytesPerSample == 4)
+                        {
+                            Buffer.BlockCopy(frameStrData, 0, floatFrameStrData, 0, frameStrData.Length);
+                        }
+                        else if (SourceFile.Header.BytesPerSample == 8)
+                        {
+                          
+                            var amplitudeModulus = new float[floatFrameStrData.Length * 2];
+                            Buffer.BlockCopy(frameStrData, 0, amplitudeModulus, 0, frameStrData.Length);
+
+
+                            for (int j = 0; j < amplitudeModulus.Length; j += 2)
+                            {
+                                floatFrameStrData[j / 2] = (float)Math.Sqrt(amplitudeModulus[j] * amplitudeModulus[j] +
+                                    amplitudeModulus[j + 1] * amplitudeModulus[j + 1]);
+                            }
+                        }
                         
-                        Buffer.BlockCopy(frameStrData, 0, floatFrameStrData, 0, frameStrData.Length);
 
                         var bytes = floatFrameStrData.Select(x => TileCreator.NormalizationHelpers.ToByteRange(
                             TileCreator.NormalizationHelpers.GetLinearLogarithmicValue(x, normalization / 9f * 7, maxValue, normalization))).ToArray();

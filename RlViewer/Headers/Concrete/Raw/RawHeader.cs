@@ -18,8 +18,9 @@ namespace RlViewer.Headers.Concrete.Raw
                 if (sizeFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     _imgSize = sizeFrm.ImgSize;
+                    _bytesPerSample = sizeFrm.BytesPerSample;
                 }
-
+                
             }
         }
 
@@ -60,7 +61,7 @@ namespace RlViewer.Headers.Concrete.Raw
             }
         }
 
-        private int _bytesPerSample = 4;
+        private int _bytesPerSample;
         private const int _strHeaderLength = 0;
         private const int _headerLength = 0;
         private byte[] _signature = new byte[_headerLength];

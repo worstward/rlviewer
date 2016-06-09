@@ -26,7 +26,9 @@ namespace RlViewer.Factories.File.Abstract
                 case FileType.r:
                     return new RFactory();
                 case FileType.k:
-                    return new RhgKFactory();
+                    return new KFactory();
+                case FileType.rl8:
+                    return new Rl8Factory();
                 default:
                     throw new NotSupportedException("Unsupported file format");
             }

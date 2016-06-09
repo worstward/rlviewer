@@ -15,16 +15,18 @@ namespace RlViewer.Factories.Header.Abstract
         {
             switch (properties.Type)
             {
-                case RlViewer.FileType.brl4:                 
+                case FileType.brl4:                 
                     return new Brl4HeaderFactory();
-                case RlViewer.FileType.rl4:
+                case FileType.rl4:
                     return new Rl4HeaderFactory(); 
-                case RlViewer.FileType.raw:
+                case FileType.raw:
                     return new RawHeaderFactory(); 
-                case RlViewer.FileType.k:
-                    return new RhgKHeaderFactory(); 
-                case RlViewer.FileType.r:
+                case FileType.k:
+                    return new KHeaderFactory(); 
+                case FileType.r:
                     return new RHeaderFactory();
+                case FileType.rl8:
+                    return new Rl8HeaderFactory();
                 default:
                     throw new NotSupportedException("Unsupported filter type");
             }

@@ -56,7 +56,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-        private float _maxValue;
+        protected float _maxValue;
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
@@ -105,7 +105,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         public bool CheckTileConsistency(string filePath, int tileCount)
         {
             var tileDir = GetDirectoryName(filePath);
-            var createdTilesCount = Directory.GetFiles(tileDir).Select(x => Path.GetExtension(x)).Where(x => x.ToLowerInvariant() == TileFileExtension).Count();
+            var createdTilesCount = Directory.GetFiles(tileDir).Select(
+                x => Path.GetExtension(x)).Where(x => x.ToLowerInvariant() == TileFileExtension).Count();
             return createdTilesCount == tileCount;
         }
 
@@ -214,52 +215,80 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return GetTilesFromTl(tileFolder);
         }
 
-
-
-        protected virtual T GetMaxValue<T>(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight) where T : struct, IComparable<T>
+        protected virtual float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
             byte[] bRliString = new byte[strDataLen + strHeadLen];
 
-            T[] tRliString = new T[strDataLen / Marshal.SizeOf(typeof(T))];
+            float[] fRliString = new float[strDataLen / sizeof(float)];
 
-            frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
-
-            long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-            T maxSampleValue = default(T);
+            float maxSampleValue = 0;
 
             using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
 
-                while (s.Position != frameLength && s.Position != s.Length)
+                while (s.Position != s.Length)
                 {
                     s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, tRliString, 0, bRliString.Length - strHeadLen);
-                    var localMax = tRliString.Max();
+                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
 
-                    Array.Clear(tRliString, 0, tRliString.Length);
+                    var localMax = fRliString.Max();
 
-                    maxSampleValue = EqualityComparer<T>.Default.Equals(maxSampleValue, localMax) ? maxSampleValue : localMax;
+                    Array.Clear(fRliString, 0, fRliString.Length);
+
+                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
                 }
             }
 
-            if (EqualityComparer<T>.Default.Equals(maxSampleValue, default(T))) throw new ArgumentException("Corrupted file");
+            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
             return maxSampleValue;
         }
+
+
+        //protected virtual T GetMaxValue<T>(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight) where T : struct, IComparable<T>
+        //{
+        //    byte[] bRliString = new byte[strDataLen + strHeadLen];
+
+        //    T[] tRliString = new T[strDataLen / Marshal.SizeOf(typeof(T))];
+
+        //    //frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
+
+        //    //long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
+        //    T maxSampleValue = default(T);
+
+        //    using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //    {
+        //        s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+
+        //        while (s.Position != s.Length)
+        //        {
+        //            s.Read(bRliString, 0, bRliString.Length);
+        //            Buffer.BlockCopy(bRliString, strHeadLen, tRliString, 0, bRliString.Length - strHeadLen);
+        //            var localMax = tRliString.Max();
+
+        //            Array.Clear(tRliString, 0, tRliString.Length);
+
+        //            maxSampleValue = maxSampleValue.CompareTo(localMax) >= 0 ? maxSampleValue : localMax;// EqualityComparer<T>.Default.Equals(maxSampleValue, localMax) ? maxSampleValue : localMax;
+        //        }
+        //    }
+
+        //    if (EqualityComparer<T>.Default.Equals(maxSampleValue, default(T))) throw new ArgumentException("Corrupted file");
+        //    return maxSampleValue;
+        //}
 
 
 
         protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
             byte[] bRliString = new byte[strDataLen + strHeadLen];
-            float[] fRliString = new float[strDataLen / 4];
+            float[] fRliString = new float[strDataLen / sizeof(float)];
             float normal = 0;
 
             frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
             
-            _maxValue = GetMaxValue<float>(loc, strDataLen, strHeadLen, frameHeight);
+            _maxValue = GetMaxValue(loc, strDataLen, strHeadLen, frameHeight);
 
 
             float histogramStep = _maxValue / 1000f;
@@ -365,7 +394,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return path;
         }
 
-        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor, TileOutputType logarithmicOutput)
+        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor, TileOutputType outputType)
         {
             byte[] line = new byte[signalDataLength * tileHeight];
             float[] fLine = new float[line.Length / 4];
@@ -389,7 +418,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
 
-            switch(logarithmicOutput)
+            switch (outputType)
             {
                 case TileOutputType.Linear:
                     normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / normalizationFactor * 255)).ToArray();

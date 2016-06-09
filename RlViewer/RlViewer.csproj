@@ -27,7 +27,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
-    <NuGetPackageImportStamp>63d207d0</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>81feec17</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -83,20 +84,28 @@
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />
     <Compile Include="Behaviors\ImageAligning\CoarseningMatrix.cs" />
-    <Compile Include="Behaviors\ImageAligning\IRcsDependenceProvider.cs" />
-    <Compile Include="Behaviors\ImageAligning\LeastSquares\Abstract\LeastSquares.cs" />
-    <Compile Include="Behaviors\ImageAligning\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
+    <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
+    <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
+    <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
+    <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
     <Compile Include="Behaviors\Navigation\Abstract\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Brl4PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Rl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\Concrete\Rl8PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\RPointFinder.cs" />
+    <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
+    <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
+    <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\KTileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\Raw8TileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\Rl8TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\NormalizationHelpers.cs" />
     <Compile Include="Behaviors\TileCreator\TileOutput.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
     <Compile Include="Behaviors\ImageAligning\EnumerableCombinationExt.cs" />
     <Compile Include="Behaviors\ImageAligning\LinearEquation.cs" />
-    <Compile Include="Behaviors\ImageAligning\LeastSquares\Concrete\LinearLeastSquares.cs" />
+    <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\LinearLeastSquares.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\Surface.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\SurfaceFactory.cs" />
@@ -106,21 +115,29 @@
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface5Points.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
     <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
-    <Compile Include="Behaviors\FileReader.cs" />
+    <Compile Include="Behaviors\FileReaderExt.cs" />
     <Compile Include="Behaviors\Ruler\Ruler.cs" />
     <Compile Include="Behaviors\Ruler\RulerFacade.cs" />
     <Compile Include="Behaviors\Saving\BmpHeaderStructs.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RawSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\RSaver.cs" />
     <Compile Include="Behaviors\Scaling\Scaler.cs" />
-    <Compile Include="Behaviors\Sections\HorizontalSection.cs" />
-    <Compile Include="Behaviors\Sections\Section.cs" />
-    <Compile Include="Behaviors\Sections\VerticalSection.cs" />
+    <Compile Include="Behaviors\Sections\Concrete\HorizontalSection.cs" />
+    <Compile Include="Behaviors\Sections\Abstract\Section.cs" />
+    <Compile Include="Behaviors\Sections\Concrete\VerticalSection.cs" />
+    <Compile Include="Factories\File\Concrete\KFactory.cs" />
+    <Compile Include="Factories\File\Concrete\Rl8Factory.cs" />
+    <Compile Include="Factories\Header\Concrete\Rl8HeaderFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\Rl8NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Abstract\PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Brl4PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\RawPointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl4PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\Rl8PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\RPointFinderFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\Rl8TileCreatorFactory.cs" />
+    <Compile Include="Files\Rli\Concrete\Rl8.cs" />
     <Compile Include="Forms\FindPointForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,7 +157,7 @@
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RawHeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\RHeaderFactory.cs" />
-    <Compile Include="Factories\Header\Concrete\RhgKHeaderFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\KHeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Rl4HeaderFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Abstract\NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Brl4NavigationContainerFactory.cs" />
@@ -164,14 +181,19 @@
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Headers\Abstract\IStrHeader.cs" />
+    <Compile Include="Headers\Concrete\K\KHeader.cs" />
+    <Compile Include="Headers\Concrete\K\KHeaderStruct.cs" />
+    <Compile Include="Headers\Concrete\Rl8\Rl8Header.cs" />
     <Compile Include="Headers\Concrete\R\RHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
+    <Compile Include="Navigation\Concrete\Rl8NavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Settings\SettingsSerializationExt.cs" />
     <Compile Include="ThreadHelpers.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
@@ -203,7 +225,7 @@
     <Compile Include="Behaviors\PointSelector\PointSelector.cs" />
     <Compile Include="Behaviors\PointSelector\SelectedPoint.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
-    <Compile Include="Behaviors\TileCreator\Concrete\RawTileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Concrete\Raw4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
     <Compile Include="Behaviors\Converters\SupportiveConverters.cs" />
@@ -219,7 +241,7 @@
     <Compile Include="Factories\Filter\Concrete\ContrastFilterFactory.cs" />
     <Compile Include="Factories\Filter\Concrete\GammaCorrectionFilterFactory.cs" />
     <Compile Include="Factories\TileCreator\Abstract\TileCreatorFactory.cs" />
-    <Compile Include="Factories\TileCreator\Concrete\RawTileCreatorFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\Raw4TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl4TileCreatorFactory.cs" />
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
     <Compile Include="UI\GuiFacade.cs" />
@@ -235,7 +257,6 @@
     <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Factories\File\Concrete\Brl4Factory.cs" />
     <Compile Include="Factories\File\Abstract\FileFactory.cs" />
-    <Compile Include="Factories\File\Concrete\RhgKFactory.cs" />
     <Compile Include="Factories\File\Concrete\Rl4Factory.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4Header.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4RhgSubHeader.cs" />
@@ -244,7 +265,6 @@
     <Compile Include="Headers\Concrete\Brl4\Brl4StrHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Brl4\Brl4SynthesisSubHeader.cs" />
     <Compile Include="Headers\Concrete\Raw\RawHeader.cs" />
-    <Compile Include="Headers\Concrete\RhgK\RhgKHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4RhgSubHeader.cs" />
     <Compile Include="Headers\Concrete\Rl4\Rl4Header.cs" />
     <Compile Include="Files\FileProperties.cs" />
@@ -404,6 +424,9 @@
     <None Include="Resources\Vega_radio.png" />
     <None Include="Resources\FindPoint.png" />
     <None Include="Resources\filter.png" />
+    <None Include="Resources\LinearSection.png" />
+    <None Include="Resources\ZoomIn.png" />
+    <None Include="Resources\ZoomOut.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>
@@ -424,8 +447,18 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Behaviors\ResolutionAnalyzer\Abstract\" />
+    <Folder Include="Behaviors\ResolutionAnalyzer\Concrete\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
