@@ -33,9 +33,9 @@ namespace RlViewer.Behaviors.Draw
             _tDrawer.GetPalette(R, G, B, reversed, logarithmic);
         }
 
-        public Image Draw(Tile[] tiles, Point pointOfView)
+        public Image Draw(Tile[] tiles, Point pointOfView, bool highRes)
         {
-            _canvas = _tDrawer.DrawImage(_screenSize.Width, _screenSize.Height, tiles, pointOfView, _screenSize);
+            _canvas = _tDrawer.DrawImage(_screenSize.Width, _screenSize.Height, tiles, pointOfView, _screenSize, highRes);
             return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize);
         }
 

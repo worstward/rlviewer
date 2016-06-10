@@ -10,7 +10,7 @@ using RlViewer.Behaviors.Converters;
 
 namespace RlViewer.Behaviors.Saving.Concrete
 {
-    class Rl8Saver : RlViewer.Behaviors.Saving.Abstract.Saver
+    class Rl8Saver : RlViewer.Behaviors.Saving.Concrete.Rl4Saver
     {
         public Rl8Saver(Files.LocatorFile file)
             : base(file)
@@ -42,10 +42,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 case FileType.bmp:
                     SaveAsBmp(path, area, normalization, maxValue, filter);
                     break;
+                case FileType.rl8:
+                    SaveAsRl4(path, area, "r.8");
+                    break;
                 default:
                     throw new NotSupportedException("Unsupported destination type");
             }
         }
+
 
         public override void SaveAsAligned(string fileName, Rectangle area, byte[] image)
         {

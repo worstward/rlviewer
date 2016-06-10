@@ -28,12 +28,14 @@ namespace RlViewer.Forms
             logPaletteCb.Checked = _settings.IsPaletteGroupped;
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
-            
+            highResCb.Checked = _settings.HighResForDownScaled;
+
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areaSizeTextBox.PromptChar = ' ';
         }
 
         private Settings.Settings _settings;
+
 
         private float[] _palette;
         private bool _isReversed;
@@ -41,6 +43,7 @@ namespace RlViewer.Forms
         private bool _allowViewWhileLoading;
         private bool _forceTileGen;
         private Behaviors.TileCreator.TileOutputType _outputType;
+        private bool _highRes;
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -88,12 +91,15 @@ namespace RlViewer.Forms
             }
             else return;
 
+            
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
             _settings.ForceTileGeneration = _forceTileGen;
             _settings.IsPaletteGroupped = _isGrouped;
             _settings.TileOutputAlgorithm = _outputType;
+            _settings.HighResForDownScaled = _highRes;
+
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -137,7 +143,10 @@ namespace RlViewer.Forms
             }
         }
 
-
+        private void highResCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _highRes = ((CheckBox)sender).Checked;
+        }
 
     }
 }

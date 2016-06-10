@@ -26,7 +26,7 @@ namespace RlViewer.Factories.Saver.Abstract
                 case FileType.r:
                     return new RSaverFactory();
                 case FileType.rl8:
-                    return new Rl4SaverFactory();
+                    return new Rl8SaverFactory();
 
                 default:
                     throw new NotSupportedException("Unsupported file format");

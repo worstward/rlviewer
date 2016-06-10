@@ -589,19 +589,24 @@ namespace RlViewer.UI
         {
             Task.Run(() =>
             {
-
-                if (_messageList.Count != 0)
+                while(true)
                 {
-                    var actionsToSkip = _messageList.Count < 3 ? _messageList.Count : 3;
-                    _form.Canvas.Image = _messageList.First()();
-                    _messageList.RemoveRange(0, actionsToSkip);
-                }
                 
+                    if (_messageList.Count != 0)
+                    {
+                        _form.Canvas.Image = _messageList.Take()();
+
+                        while (_messageList.Count > 0)
+                        {
+                            var obj = _messageList.Take();
+                        }
+                    }
+                }
             });
         }
 
 
-        private List<Func<Image>> _messageList = new List<Func<Image>>();
+        private System.Collections.Concurrent.BlockingCollection<Func<Image>> _messageList = new System.Collections.Concurrent.BlockingCollection<Func<Image>>();
 
         public void DrawImage()
         {
@@ -609,11 +614,14 @@ namespace RlViewer.UI
             if (_tiles != null)
             {
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled)).Wait();
 
-                //_messageList.Add(() => _drawer.Draw(_tiles,
-                //       new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value)));
-                
+                //Task.Run(() =>
+                //    { 
+                //        _messageList.Add(() => _drawer.Draw(_tiles,
+                //               new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled));
+                //    });
+
                 RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
             }
         }
@@ -665,6 +673,24 @@ namespace RlViewer.UI
 
 
 
+        private string GetSaveFilter(Files.LocatorFile file)
+        {
+            Type fileType = file.GetType();
+            string filter = Resources.SaveFilter;
+            
+            if(fileType  == typeof(RlViewer.Files.Rli.Concrete.Raw) ||
+                fileType == typeof(RlViewer.Files.Rli.Concrete.R))
+            {
+                filter = Resources.RawSaveFilter;
+            }
+            else if (fileType == typeof(RlViewer.Files.Rli.Concrete.Rl8))
+            {
+                filter = Resources.Rl8SaveFilter;
+            }
+
+            return filter;
+        }
+        
         public void Save()
         {
             if (_file != null)
@@ -673,8 +699,9 @@ namespace RlViewer.UI
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
-                    sfd.Filter = _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.Raw) || _file.GetType() == typeof(RlViewer.Files.Rli.Concrete.R)
-                        ? Resources.RawSaveFilter : Resources.SaveFilter;
+
+                    sfd.Filter = GetSaveFilter(_file);
+
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
                         using (var sSize = new Forms.SaveForm(_file.Width, _file.Height, _areaSelector))

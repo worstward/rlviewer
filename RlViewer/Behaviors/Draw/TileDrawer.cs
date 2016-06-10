@@ -45,7 +45,7 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
-        private IEnumerable<TileImageWrapper> ScaleDown(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        private IEnumerable<TileImageWrapper> ScaleDown(Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
         {
 
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
@@ -74,13 +74,21 @@ namespace RlViewer.Behaviors.Draw
                 {
                     for (int j = i; j < i + tile.Size.Width; j += scale)
                     {
-                        //int cumulative = 0;
-                        //for (int k = j; k < j + scale; k++)
-                        //{
-                        //    cumulative += imgData[k];
-                        //}
+                        if (highRes)
+                        {
 
-                        sievedImage[index] = imgData[j];//(byte)(cumulative >> scalePower);
+                            int cumulative = 0;
+                            for (int k = j; k < j + scale; k++)
+                            {
+                                cumulative += imgData[k];
+                            }
+                            sievedImage[index] = (byte)(cumulative >> scalePower);
+                        }
+                        else
+                        {
+                            sievedImage[index] = imgData[j];
+                        }
+
                         index++;
                     }
                 }
@@ -260,7 +268,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="tiles">Array of Tile objects</param>
         /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
         /// <returns></returns>       
-        public Image DrawImage(int width, int height, Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        public Image DrawImage(int width, int height, Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
         {
             IEnumerable<TileImageWrapper> wrappers;
 
@@ -274,7 +282,7 @@ namespace RlViewer.Behaviors.Draw
             }
             else
             {
-                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize);
+                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
             }
 
             return DrawWrappers(wrappers, screenSize);       

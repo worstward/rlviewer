@@ -46,6 +46,7 @@
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.highResCb = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -77,6 +78,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.highResCb);
             this.groupBox3.Controls.Add(this.logPaletteCb);
             this.groupBox3.Controls.Add(this.comboBox1);
             this.groupBox3.Controls.Add(this.inverseCheckBox);
@@ -90,7 +92,7 @@
             // logPaletteCb
             // 
             this.logPaletteCb.AutoSize = true;
-            this.logPaletteCb.Location = new System.Drawing.Point(17, 46);
+            this.logPaletteCb.Location = new System.Drawing.Point(6, 46);
             this.logPaletteCb.Name = "logPaletteCb";
             this.logPaletteCb.Size = new System.Drawing.Size(128, 17);
             this.logPaletteCb.TabIndex = 15;
@@ -113,7 +115,7 @@
             "54 54 1",
             "1 1 54",
             "1 0,2 1"});
-            this.comboBox1.Location = new System.Drawing.Point(17, 19);
+            this.comboBox1.Location = new System.Drawing.Point(6, 19);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(93, 21);
             this.comboBox1.TabIndex = 13;
@@ -123,7 +125,7 @@
             // 
             this.inverseCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.inverseCheckBox.AutoSize = true;
-            this.inverseCheckBox.Location = new System.Drawing.Point(17, 69);
+            this.inverseCheckBox.Location = new System.Drawing.Point(6, 69);
             this.inverseCheckBox.Name = "inverseCheckBox";
             this.inverseCheckBox.Size = new System.Drawing.Size(104, 17);
             this.inverseCheckBox.TabIndex = 14;
@@ -258,6 +260,18 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // highResCb
+            // 
+            this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.highResCb.AutoSize = true;
+            this.highResCb.Location = new System.Drawing.Point(6, 92);
+            this.highResCb.Name = "highResCb";
+            this.highResCb.Size = new System.Drawing.Size(253, 17);
+            this.highResCb.TabIndex = 16;
+            this.highResCb.Text = "Высокое разрешение при масштабировании";
+            this.highResCb.UseVisualStyleBackColor = true;
+            this.highResCb.CheckedChanged += new System.EventHandler(this.highResCb_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -305,5 +319,6 @@
         private System.Windows.Forms.CheckBox logPaletteCb;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox tileOutputCb;
+        private System.Windows.Forms.CheckBox highResCb;
     }
 }

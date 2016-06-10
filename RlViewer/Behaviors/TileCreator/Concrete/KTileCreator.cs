@@ -49,6 +49,13 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
+        public override Tile[] Tiles
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+
+
         protected override Tile[] GetTilesFromTl(string directoryPath)
         {
             return GetTilesFromTl(directoryPath, _rhg);

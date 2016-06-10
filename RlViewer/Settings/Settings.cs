@@ -82,8 +82,17 @@ namespace RlViewer.Settings
             set { _areaSize = value; }
         }
 
-        private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
+        private bool _highResForDownScaled;
+        
+        [DataMember]
+        public bool HighResForDownScaled
+        {
+            get { return _highResForDownScaled; }
+            set { _highResForDownScaled = value; }
+        }
 
+
+        private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
         [DataMember]
         public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
         {

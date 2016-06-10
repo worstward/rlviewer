@@ -126,4 +126,7 @@
   <data name="SaveFilter" xml:space="preserve">
     <value>Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
   </data>
+  <data name="Rl8SaveFilter" xml:space="preserve">
+    <value>Файлы РЛИ МРК2 (*.rl8)|*.rl8|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
+  </data>
 </root>

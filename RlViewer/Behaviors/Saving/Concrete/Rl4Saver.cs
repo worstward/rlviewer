@@ -37,13 +37,13 @@ namespace RlViewer.Behaviors.Saving.Concrete
             switch (destinationType)
             {
                 case FileType.brl4:
-                    SaveAsBrl4(path, area);
+                    SaveAsBrl4(path, area, ".brl4");
                     break;
                 case FileType.raw:
                     SaveAsRaw(path, area);
                     break;
                 case FileType.rl4:
-                    SaveAsRl4(path, area);
+                    SaveAsRl4(path, area, ".rl4");
                     break;
                 case FileType.bmp:
                     SaveAsBmp(path, area, normalization, maxValue, filter);
@@ -100,11 +100,11 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        private void SaveAsRl4(string path, Rectangle area)
+        protected void SaveAsRl4(string path, Rectangle area, string newExt)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var fname = Path.ChangeExtension(path, ".rl4");
+                var fname = Path.ChangeExtension(path, newExt);
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     fr.Seek(SourceFile.Header.FileHeaderLength, SeekOrigin.Begin);
@@ -155,11 +155,11 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        private void SaveAsBrl4(string path, Rectangle area)
+        private void SaveAsBrl4(string path, Rectangle area, string newExt)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var fname = Path.ChangeExtension(path, ".brl4");
+                var fname = Path.ChangeExtension(path, newExt);
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
