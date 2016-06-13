@@ -68,7 +68,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
+            float[] imageArea = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
 
             Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {

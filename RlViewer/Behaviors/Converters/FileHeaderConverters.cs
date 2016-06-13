@@ -14,68 +14,39 @@ namespace RlViewer.Behaviors.Converters
 
         public static Rl4RliSubHeaderStruct ChangeFragmentShift(this Rl4RliSubHeaderStruct head, int shiftX, int shiftY)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(head);
-
-
-            var offset = 135;//offset to sx
-            var sx = BitConverter.ToInt32(headerStructArr, offset);
-            var sy = BitConverter.ToInt32(headerStructArr, offset + sizeof(int));
-
-            Buffer.BlockCopy(BitConverter.GetBytes(shiftX + sx), 0, headerStructArr, offset, sizeof(int));//change sx
-            Buffer.BlockCopy(BitConverter.GetBytes(shiftY + sy), 0, headerStructArr, offset + sizeof(int), sizeof(int));//change sy
-
-            using (var ms = new System.IO.MemoryStream(headerStructArr))
-            {
-                return RlViewer.Files.LocatorFile.ReadStruct<Rl4RliSubHeaderStruct>(ms);
-            }
+            var header = head;
+            header.sx += shiftX;
+            header.sy += shiftY;
+            return header;
         }
 
         public static Brl4RliSubHeaderStruct ChangeFragmentShift(this Brl4RliSubHeaderStruct head, int shiftX, int shiftY)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4RliSubHeaderStruct>(head);
-
-            var offset = 135;//offset to sx
-            var sx = BitConverter.ToInt32(headerStructArr, offset);
-            var sy = BitConverter.ToInt32(headerStructArr, offset + sizeof(int));
-
-            Buffer.BlockCopy(BitConverter.GetBytes(shiftX + sx), 0, headerStructArr, offset, sizeof(int));//change sx
-            Buffer.BlockCopy(BitConverter.GetBytes(shiftY + sy), 0, headerStructArr, offset + sizeof(int), sizeof(int));//change sy
-
-            using (var ms = new System.IO.MemoryStream(headerStructArr))
-            {
-                return RlViewer.Files.LocatorFile.ReadStruct<Brl4RliSubHeaderStruct>(ms);
-            }
+            var header = head;
+            header.sx += shiftX;
+            header.sy += shiftY;
+            return header;
         }
 
 
         public static Rl4RliSubHeaderStruct ChangeImgDimensions(this Rl4RliSubHeaderStruct head, int width, int height)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(head);
+            var header = head;
+            header.cadrHeight = height;
+            header.height = height;
+            header.width = width;
 
-            var offset = 16 + 24 + 1 + 4 + 8 + 4 ;//offset to cadrwidth
-            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));//change cadrwidth
-            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset + sizeof(int) * 2, sizeof(int));//change image width
-            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int) * 3, sizeof(int));//change image height
-
-            using (var ms = new System.IO.MemoryStream(headerStructArr))
-            {
-                return RlViewer.Files.LocatorFile.ReadStruct<Rl4RliSubHeaderStruct>(ms);
-            }
+            return header;
         }
 
         public static Brl4RliSubHeaderStruct ChangeImgDimensions(this Brl4RliSubHeaderStruct head, int width, int height)
-        {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4RliSubHeaderStruct>(head);
+        {           
+            var header = head;
+            header.cadrHeight = height;
+            header.height = height;
+            header.width = width;
 
-            var offset = 16 + 24 + 1 + 4 + 8 + 4;//offset to cadrwidth
-            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset, sizeof(int));//change cadrwidth
-            Buffer.BlockCopy(BitConverter.GetBytes(width), 0, headerStructArr, offset + sizeof(int) * 2, sizeof(int));//change image width
-            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, headerStructArr, offset + sizeof(int) * 3, sizeof(int));//change image height
-
-            using (var ms = new System.IO.MemoryStream(headerStructArr))
-            {
-                return RlViewer.Files.LocatorFile.ReadStruct<Brl4RliSubHeaderStruct>(ms);
-            }
+            return header;
         }
 
 
@@ -109,9 +80,23 @@ namespace RlViewer.Behaviors.Converters
             var offset = sizeof(bool) + 16;
             Buffer.BlockCopy(BitConverter.GetBytes(LatSns), 0, rl4StrHeader, offset, sizeof(double));
             Buffer.BlockCopy(BitConverter.GetBytes(LonSns), 0, rl4StrHeader, offset + sizeof(double), sizeof(double));
-            Buffer.BlockCopy(BitConverter.GetBytes(Hsns),   0, rl4StrHeader, offset + sizeof(double) * 2, sizeof(double));
+            Buffer.BlockCopy(BitConverter.GetBytes(Hsns), 0, rl4StrHeader, offset + sizeof(double) * 2, sizeof(double));
 
             return rl4StrHeader;
+        }
+
+
+        public static Brl4StrHeaderStruct ToBrl4StrHeader(Rl4StrHeaderStruct rl4StrHeader, double LatSns, double LonSns, double Hsns)
+        {
+            //16 это systime
+            using (var ms = new System.IO.MemoryStream(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct>(rl4StrHeader)))
+            {
+                var header = RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(ms);
+                header.LatSNS = LatSns;
+                header.LongSNS = LonSns;
+                header.Hsns = Hsns;
+                return header;
+            }
         }
 
         [Obsolete("Демка для питерцев")]
@@ -126,22 +111,6 @@ namespace RlViewer.Behaviors.Converters
             return rl4StrHeader;
         }
 
-
-
-        private static RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct ToBrl4StrHeader(this Rl4StrHeaderStruct rl4StrHeader, double LatSns, double LongSns, double Hsns)
-        {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4StrHeaderStruct>(rl4StrHeader);
-
-            var offset = sizeof(bool) + rl4StrHeader.time.Length;
-            Buffer.BlockCopy(BitConverter.GetBytes(LatSns) , 0, headerStructArr, offset,  sizeof(double));
-            Buffer.BlockCopy(BitConverter.GetBytes(LongSns), 0, headerStructArr, offset + sizeof(double),     sizeof(double));
-            Buffer.BlockCopy(BitConverter.GetBytes(Hsns)   , 0, headerStructArr, offset + sizeof(double) * 2, sizeof(double));
-
-            using (var ms = new System.IO.MemoryStream(headerStructArr))
-            {
-                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(ms);
-            }
-        }
 
 
         private static RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct ToBrl4SynthSubHeader

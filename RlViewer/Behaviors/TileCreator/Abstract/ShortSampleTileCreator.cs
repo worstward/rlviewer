@@ -5,72 +5,98 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using RlViewer.Files;
-using RlViewer.Files.Rhg.Concrete;
 using RlViewer.Behaviors.Draw;
-using RlViewer.Behaviors.TileCreator.Abstract;
+using RlViewer.Files;
 
 
-namespace RlViewer.Behaviors.TileCreator.Concrete
+namespace RlViewer.Behaviors.TileCreator.Abstract
 {
-    class KTileCreator : TileCreator.Abstract.ShortSampleTileCreator
+    public abstract class ShortSampleTileCreator : TileCreator<short>
     {
-        public KTileCreator(LocatorFile rhg, TileOutputType type)
+        public ShortSampleTileCreator(TileOutputType type)
             : base(type)
+        { }
+
+
+        protected override Tile[] GetTilesFromFile(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
-            _rhg = rhg;
-        }
-
-        private LocatorFile _rhg;
-        private short _normalFactor;
-
-
-        private object _normalLocker = new object();
-        public override float NormalizationFactor
-        {
-            get
+            if (file.Width == 0 || file.Height == 0)
             {
-                //double lock checking
-                if (_normalFactor == 0)
+                return new Tile[0];
+            }
+
+            var tileFolder = GetDirectoryName(filePath);
+            CreateTileFolder(tileFolder);
+
+            List<Tile> tiles = new List<Tile>();
+            byte[] tileLine;
+            using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+                int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                int strHeaderLength = 0;
+                if (strHeader != null)
                 {
-                    lock (_normalLocker)
+                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                }
+
+                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                for (int i = 0; i < totalLines; i++)
+                {
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
+                    OnProgressReport((int)(i / totalLines * 100));
+                    if (OnCancelWorker())
                     {
-                        if (_normalFactor == 0)
-                        {
-                            _normalFactor = ComputeNormalizationFactor(_rhg, _rhg.Width * _rhg.Header.BytesPerSample,
-                                System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.K.KStrHeaderStruct())
-                                , Math.Min(_rhg.Height, 4096));
-                        }
+                        return null;
                     }
                 }
-                return (float)_normalFactor;
-
             }
+            return tiles.ToArray();
         }
 
-        private Tile[] _tiles;
 
-        private object _tileLocker = new object();
-        public override Tile[] Tiles
+        protected override Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
-            get
+            if (file.Width == 0 || file.Height == 0)
             {
-                if (_tiles == null)
+                return new Tile[0];
+            }
+
+            var tileFolder = GetDirectoryName(filePath);
+            CreateTileFolder(tileFolder);
+
+
+            Task.Run(() =>
+            {
+                List<Tile> tiles = new List<Tile>();
+                byte[] tileLine;
+                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    lock (_tileLocker)
+                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+
+                    int strHeaderLength = 0;
+                    if (strHeader != null)
                     {
-                        if (_tiles == null)
-                        {
-                            _tiles = GetTiles(_rhg.Properties.FilePath);
-                        }
+                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                    }
+
+                    int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                    for (int i = 0; i < totalLines; i++)
+                    {
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
+                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
                     }
                 }
-                return _tiles;
-            }
+            });
+            return GetTilesFromTl(tileFolder);
         }
-
 
         protected override short GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
@@ -88,18 +114,10 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 {
                     s.Read(bRliString, 0, bRliString.Length);
 
-                    var amplitudeModulus = new short[rliString.Length / 2];
 
                     Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
 
-                    for (int i = 0; i < rliString.Length; i += 2)
-                    {
-                        amplitudeModulus[i / 2] = (short)Math.Sqrt(rliString[i] * rliString[i] +
-                           rliString[i + 1] * rliString[i + 1]);
-                    }
-
-                    var localMax = amplitudeModulus.Max();
-
+                    var localMax = rliString.Max();
 
                     Array.Clear(rliString, 0, rliString.Length);
 
@@ -146,14 +164,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                     s.Read(bRliString, 0, bRliString.Length);
                     Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
 
-                    var amplitudeModulus = new short[rliString.Length / 2];
-
-                    for (int i = 0; i < rliString.Length; i += 2)
-                    {
-                        amplitudeModulus[i / 2] = (short)Math.Sqrt(rliString[i] * rliString[i] +
-                            rliString[i + 1] * rliString[i + 1]);
-                    }
-
                     avg += (float)rliString.Average(x => x);
 
                     //fill histogram:
@@ -197,15 +207,18 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
-
-        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength,
-            int tileHeight, TileOutputType outputType)
+        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType)
         {
             byte[] line = new byte[signalDataLength * tileHeight];
             short[] sLine = new short[line.Length / sizeof(short)];
             byte[] normalizedLine = new byte[sLine.Length];
 
             int index = 0;
+
+            //if (normalizationFactor > _maxValue)
+            //{
+            //    _maxValue = normalizationFactor;
+            //}
 
             float border = NormalizationFactor / 9f * 7;// *3;
 
@@ -218,27 +231,17 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
             Buffer.BlockCopy(line, 0, sLine, 0, line.Length);
 
-            var amplitudeModulus = new short[sLine.Length / 2];
-
-            for (int i = 0; i < sLine.Length; i += 2)
-            {
-                amplitudeModulus[i / 2] = (short)Math.Sqrt(sLine[i] * sLine[i] +
-                    sLine[i + 1] * sLine[i + 1]);
-            }
-
-
-
             switch (outputType)
             {
                 case TileOutputType.Linear:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / NormalizationFactor * 255)).ToArray();
+                    normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / NormalizationFactor * 255)).ToArray();
                     break;
                 case TileOutputType.Logarithmic:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                    normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
                         NormalizationHelpers.GetLogarithmicValue(x, _maxValue))).ToArray();
                     break;
                 case TileOutputType.LinearLogarithmic:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                    normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
                         NormalizationHelpers.GetLinearLogarithmicValue(x, border, _maxValue, NormalizationFactor))).ToArray();
                     break;
                 default:
@@ -247,31 +250,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
 
             return normalizedLine;
-        }
-
-
-        protected override Tile[] GetTilesFromTl(string directoryPath)
-        {
-            return GetTilesFromTl(directoryPath, _rhg);
-        }
-
-
-        /// <summary>
-        /// Saves tiles to local folder and creates tile objects array from Raw file.  Reports progress to backgroundworker object.
-        /// </summary>
-        /// <returns></returns>
-        protected override Tile[] GetTilesFromFile(string filePath)
-        {
-            return GetTilesFromFile(filePath, _rhg, null, OutputType);
-        }
-
-        /// <summary>
-        /// Saves tiles to local folder and creates tile objects array from Raw file.
-        /// </summary>
-        /// <returns></returns>
-        protected override Tile[] GetTilesFromFileAsync(string filePath)
-        {
-            return GetTilesFromFileAsync(filePath, _rhg, null, OutputType);
         }
 
     }

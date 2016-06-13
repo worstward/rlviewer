@@ -22,7 +22,7 @@ namespace RlViewer.Factories.Saver.Abstract
                 case FileType.raw:
                     return new RawSaverFactory();
                 case FileType.k:
-                    return new RhgKSaverFactory();
+                    return new KSaverFactory();
                 case FileType.r:
                     return new RSaverFactory();
                 case FileType.rl8:

@@ -24,7 +24,9 @@ namespace RlViewer.Factories.NavigationSearcher.Abstract
                     return new Concrete.RawPointFinderFactory();
                 case FileType.rl8:
                     return new Concrete.Rl8PointFinderFactory();
-
+                case FileType.k:
+                    Logging.Logger.Log(Logging.SeverityGrades.Internal, ".k point finder not implemented");
+                    return new Concrete.KPointFinderFactory();
                 default: throw new ArgumentException();
             }
         }

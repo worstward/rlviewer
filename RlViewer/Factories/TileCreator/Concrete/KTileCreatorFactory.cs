@@ -8,11 +8,11 @@ using RlViewer.Behaviors.TileCreator.Concrete;
 
 namespace RlViewer.Factories.TileCreator.Concrete
 {
-    class Rl4TileCreatorFactory : TileCreatorFactory
+    class KTileCreatorFactory : TileCreatorFactory
     {
         public override RlViewer.Behaviors.TileCreator.Abstract.ITileCreator Create(RlViewer.Files.LocatorFile locatorFile, Behaviors.TileCreator.TileOutputType type)
         {
-            return new Rl4TileCreator(locatorFile, type);
+            return new KTileCreator(locatorFile, type);
         }
         
     }

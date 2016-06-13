@@ -252,7 +252,7 @@ namespace RlViewer.Headers.Concrete.R
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
         public byte[] reserved1;
 
-         [MarshalAs(UnmanagedType.I1)]
+        [MarshalAs(UnmanagedType.I1)]
         public bool ins; //Данные ИНС
 
         public double latitudeIns; //широта ИНС
@@ -270,7 +270,7 @@ namespace RlViewer.Headers.Concrete.R
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 96)]
         public byte[] reserved2;
 
-         [MarshalAs(UnmanagedType.I1)]
+        [MarshalAs(UnmanagedType.I1)]
         public bool insSns; //Данные ИНС/СНС
         public double latitudeInsSns; //широта
         public double longtitudeInsSns;//долгота

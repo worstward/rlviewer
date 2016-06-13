@@ -17,7 +17,7 @@ namespace RlViewer.Factories.NavigationContainer.Abstract
                 case FileType.brl4:
                     return new Concrete.Brl4NavigationContainerFactory();
                 case FileType.k:
-                    return new Concrete.RhgKNavigationContainerFactory();
+                    return new Concrete.KNavigationContainerFactory();
                 case FileType.raw:
                     return new Concrete.RawNavigationContainerFactory();
                 case FileType.rl4:

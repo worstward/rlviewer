@@ -49,7 +49,8 @@ namespace RlViewer.UI
 
 
         private Settings.Settings _settings;
-        private TileCreator _creator;
+        private ITileCreator _creator;
+
         private Behaviors.Filters.ImageFilterFacade _filterFacade;
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
@@ -61,12 +62,10 @@ namespace RlViewer.UI
         private Behaviors.Navigation.Abstract.GeodesicPointFinder _searcher;
         private WorkerEventController _cancellableAction;
 
-
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
         private Navigation.NavigationContainer _navi;
         private Behaviors.Draw.HistContainer _histogram;
-
 
         private Files.LocatorFile _file;
         private Behaviors.TileCreator.Tile[] _tiles;
@@ -74,8 +73,6 @@ namespace RlViewer.UI
         private Behaviors.PointSelector.PointSelector _pointSelector;
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
-
-
 
         private ISuitableForm _form;
         private System.ComponentModel.BackgroundWorker _worker;
@@ -225,7 +222,7 @@ namespace RlViewer.UI
         {
             try
             {
-                var path = Behaviors.TileCreator.Abstract.TileCreator.GetDirectoryName(_file.Properties.FilePath);
+                var path = _creator.GetDirectoryName(_file.Properties.FilePath);
 
                 if (Directory.Exists(path))
                 {
@@ -343,6 +340,8 @@ namespace RlViewer.UI
                 throw;
             }
 
+            _saver = SaverFactory.GetFactory(_file.Properties).Create(_file);
+
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _cancellableAction = _saver;
@@ -350,7 +349,8 @@ namespace RlViewer.UI
             var filter = keepFiltering ? _filterFacade : null;
 
             _saver.Save(path, Path.GetExtension(path).Replace(".", "")
-                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height), filter, _creator.NormalizationFactor, _creator.MaxValue);
+                .ToEnum<RlViewer.FileType>(), new Rectangle(leftTop.X, leftTop.Y, width, height),
+                filter, _creator.NormalizationFactor, _creator.MaxValue);
 
 
             if (_saver.Cancelled)
@@ -472,11 +472,11 @@ namespace RlViewer.UI
         {
             _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm);
 
-            _creator.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _creator.CancelJob += (s, ce) => ce.Cancel = _creator.Cancelled;
-            _cancellableAction = _creator;
+            ((WorkerEventController)_creator).Report += (s, pe) => ProgressReporter(pe.Percent);
+            ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
+            _cancellableAction = ((WorkerEventController)_creator);
             _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-            e.Cancel = _creator.Cancelled;
+            e.Cancel = ((WorkerEventController)_creator).Cancelled;
         }
 
 
@@ -484,8 +484,8 @@ namespace RlViewer.UI
         {
             if (_creator != null)
             {
-                _creator.Report -= (s, pe) => ProgressReporter(pe.Percent);
-                _creator.CancelJob -= (s, ce) => ce.Cancel = _creator.Cancelled;
+                ((WorkerEventController)_creator).Report -= (s, pe) => ProgressReporter(pe.Percent);
+                ((WorkerEventController)_creator).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
             }
 
             if (e.Cancelled)
@@ -523,7 +523,7 @@ namespace RlViewer.UI
 
         public void ScaleImage(int delta)
         {
-            if (_file != null)
+            if (_file != null && _drawer != null)
             {
                 if (delta > 0)
                 {
@@ -591,11 +591,9 @@ namespace RlViewer.UI
             {
                 while(true)
                 {
-                
                     if (_messageList.Count != 0)
                     {
                         _form.Canvas.Image = _messageList.Take()();
-
                         while (_messageList.Count > 0)
                         {
                             var obj = _messageList.Take();
@@ -610,18 +608,15 @@ namespace RlViewer.UI
 
         public void DrawImage()
         {
-
             if (_tiles != null)
-            {
+            {                
                 Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled)).Wait();
-
                 //Task.Run(() =>
                 //    { 
                 //        _messageList.Add(() => _drawer.Draw(_tiles,
                 //               new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled));
                 //    });
-
                 RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
             }
         }
@@ -695,7 +690,6 @@ namespace RlViewer.UI
         {
             if (_file != null)
             {
-                _saver = SaverFactory.GetFactory(_properties).Create(_file);
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();

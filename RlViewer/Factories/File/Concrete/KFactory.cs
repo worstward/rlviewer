@@ -14,7 +14,7 @@ namespace RlViewer.Factories.File.Concrete
         public override LocatorFile Create(FileProperties properties,
             Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
         {
-            return new RhgK(properties, header, navi);
+            return new K(properties, header, navi);
         }
     }
 }

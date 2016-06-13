@@ -25,7 +25,7 @@ namespace RlViewer.Behaviors.Sections.Concrete
             {
                 if (i < 0 || i > file.Width) continue;
 
-                coordPairList.Add(new PointF(i, file.GetSample(new Point(i, p1.Y)).ToFloatSample(file.Header.BytesPerSample)));
+                coordPairList.Add(new PointF(i, file.GetSample(new Point(i, p1.Y)).ToSample<float>(file.Header.BytesPerSample)));
             }
 
             return coordPairList;

@@ -63,7 +63,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             float[] image = new float[area.Width * area.Height];
 
-            float[] imageArea = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
+            float[] imageArea = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
 
             int toInclusiveX = area.Location.X + area.Width;
             toInclusiveX = toInclusiveX > file.Width ? file.Width : toInclusiveX;
@@ -106,15 +106,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             return imageB;
         }
-
-
-        protected virtual float GetPlaneValue(int x, int y, float[] solution)
-        {
-            //Ax + By + Cz + D = 0
-            //z = (-Ax - By - D) / C
-            return (-solution[0] * x - solution[1] * y - solution[3]) / solution[2];
-        }
-
 
         private float[] PointToPlane(Point p, float[][] solution)
         {

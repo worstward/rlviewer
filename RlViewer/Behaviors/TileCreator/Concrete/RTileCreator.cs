@@ -14,7 +14,7 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
-    class RTileCreator: TileCreator.Abstract.TileCreator, INormalizable
+    class RTileCreator: TileCreator.Abstract.FloatSampleTileCreator
     {
         public RTileCreator(LocatorFile rli, TileOutputType type)
             : base(type)

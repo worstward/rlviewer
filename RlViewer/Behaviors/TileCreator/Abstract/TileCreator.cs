@@ -12,7 +12,7 @@ using RlViewer.Files;
 
 namespace RlViewer.Behaviors.TileCreator.Abstract
 {
-    public abstract class TileCreator : WorkerEventController
+    public abstract class TileCreator<T> : WorkerEventController, ITileCreator
     {
         public TileCreator(TileOutputType type)
         {
@@ -48,7 +48,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public abstract float NormalizationFactor { get; }
 
-        public float MaxValue 
+        public virtual float MaxValue
         {
             get
             {
@@ -57,6 +57,48 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
         protected float _maxValue;
+
+
+
+
+        protected abstract Tile[] GetTilesFromTl(string path);
+        protected abstract Tile[] GetTilesFromFileAsync(string path);
+        protected abstract Tile[] GetTilesFromFile(string path);
+        protected abstract T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
+        protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
+        protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType);
+        protected abstract Tile[] GetTilesFromFile(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
+        protected abstract Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
+
+
+        /// <summary>
+        /// Determines if there are no missing tiles for current file
+        /// </summary>
+        /// <param name="filePath">Current file path</param>
+        /// <param name="tileCount">Expected tiles count</param>
+        /// <returns>True if all tiles are present, false otherwise</returns>
+        public bool CheckTileConsistency(string filePath, int tileCount)
+        {
+            var tileDir = GetDirectoryName(filePath);
+            var createdTilesCount = Directory.GetFiles(tileDir).Select(
+                x => Path.GetExtension(x)).Where(x => x.ToLowerInvariant() == TileFileExtension).Count();
+            return createdTilesCount == tileCount;
+        }
+
+        /// <summary>
+        /// Gets unique name for tile directory
+        /// </summary>
+        /// <param name="fileName">Initial input file name</param>
+        /// <returns></returns>
+        public string GetDirectoryName(string filePath)
+        {
+            string dirPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
+                Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),
+                File.GetCreationTime(filePath).ToFileTime().ToString());
+            return dirPath;
+        }
 
         public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
         {
@@ -89,67 +131,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles;
         }
 
-
-        protected abstract Tile[] GetTilesFromTl(string path);
-        protected abstract Tile[] GetTilesFromFileAsync(string path);
-        protected abstract Tile[] GetTilesFromFile(string path);
-
-
-
-        /// <summary>
-        /// Determines if there are no missing tiles for current file
-        /// </summary>
-        /// <param name="filePath">Current file path</param>
-        /// <param name="tileCount">Expected tiles count</param>
-        /// <returns>True if all tiles are present, false otherwise</returns>
-        public bool CheckTileConsistency(string filePath, int tileCount)
-        {
-            var tileDir = GetDirectoryName(filePath);
-            var createdTilesCount = Directory.GetFiles(tileDir).Select(
-                x => Path.GetExtension(x)).Where(x => x.ToLowerInvariant() == TileFileExtension).Count();
-            return createdTilesCount == tileCount;
-        }
-
-        protected Tile[] GetTilesFromFile(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
-        {
-            if (file.Width == 0 || file.Height == 0)
-            {
-                return new Tile[0];
-            }
-
-            var tileFolder = GetDirectoryName(filePath);
-            CreateTileFolder(tileFolder);
-
-
-            List<Tile> tiles = new List<Tile>();
-            byte[] tileLine;
-            using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
-                int signalDataLength = file.Width * file.Header.BytesPerSample;
-
-                int strHeaderLength = 0;
-                if (strHeader != null)
-                {
-                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                }
-
-                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
-                for (int i = 0; i < totalLines; i++)
-                {
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor, outputType);
-                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
-                    OnProgressReport((int)(i / totalLines * 100));
-                    if (OnCancelWorker())
-                    {
-                        return null;
-                    }
-                }
-            }
-            return tiles.ToArray();
-        }
-
         /// <summary>
         /// Creates tile objects array from existing tile files
         /// </summary>
@@ -175,187 +156,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles.ToArray();
         }
 
-
-        protected virtual Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
-        {
-            if (file.Width == 0 || file.Height == 0)
-            {
-                return new Tile[0];
-            }
-
-            var tileFolder = GetDirectoryName(filePath);
-            CreateTileFolder(tileFolder);
-
-
-            Task.Run(() =>
-            {
-                List<Tile> tiles = new List<Tile>();
-                byte[] tileLine;
-                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                    int strHeaderLength = 0;
-                    if (strHeader != null)
-                    {
-                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                    }
-
-                    int signalDataLength = file.Width * file.Header.BytesPerSample;
-
-                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
-                    for (int i = 0; i < totalLines; i++)
-                    {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, NormalizationFactor, outputType);
-                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
-                    }
-                }
-            });
-            return GetTilesFromTl(tileFolder);
-        }
-
-        protected virtual float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
-        {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-
-            float[] fRliString = new float[strDataLen / sizeof(float)];
-
-            float maxSampleValue = 0;
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                while (s.Position != s.Length)
-                {
-                    s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
-
-                    var localMax = fRliString.Max();
-
-                    Array.Clear(fRliString, 0, fRliString.Length);
-
-                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
-                }
-            }
-
-            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
-            return maxSampleValue;
-        }
-
-
-        //protected virtual T GetMaxValue<T>(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight) where T : struct, IComparable<T>
-        //{
-        //    byte[] bRliString = new byte[strDataLen + strHeadLen];
-
-        //    T[] tRliString = new T[strDataLen / Marshal.SizeOf(typeof(T))];
-
-        //    //frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
-
-        //    //long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-        //    T maxSampleValue = default(T);
-
-        //    using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        //    {
-        //        s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-        //        while (s.Position != s.Length)
-        //        {
-        //            s.Read(bRliString, 0, bRliString.Length);
-        //            Buffer.BlockCopy(bRliString, strHeadLen, tRliString, 0, bRliString.Length - strHeadLen);
-        //            var localMax = tRliString.Max();
-
-        //            Array.Clear(tRliString, 0, tRliString.Length);
-
-        //            maxSampleValue = maxSampleValue.CompareTo(localMax) >= 0 ? maxSampleValue : localMax;// EqualityComparer<T>.Default.Equals(maxSampleValue, localMax) ? maxSampleValue : localMax;
-        //        }
-        //    }
-
-        //    if (EqualityComparer<T>.Default.Equals(maxSampleValue, default(T))) throw new ArgumentException("Corrupted file");
-        //    return maxSampleValue;
-        //}
-
-
-
-        protected virtual float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
-        {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-            float[] fRliString = new float[strDataLen / sizeof(float)];
-            float normal = 0;
-
-            frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
-
-            long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-            
-            _maxValue = GetMaxValue(loc, strDataLen, strHeadLen, frameHeight);
-
-
-            float histogramStep = _maxValue / 1000f;
-            var histogram = new List<int>();
-
-            for (float i = 0; i < 1000; i += histogramStep)
-            {
-                histogram.Add(0);
-            }
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                float avg = 0;
-                int parts = 0;
-
-                while (s.Position != frameLength && s.Position != s.Length)
-                {
-                    parts++;
-
-                    s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
-
-                    avg += fRliString.Average();
-
-                    //fill histogram:
-                    //count distinct float values, eg:
-                    //numbers 1.4, 5, 6, 9, 24
-                    //steps 1-10, 11-20
-                    //1st step - 4 numbers, 2nd step 1 number
-                    for (int i = 0; i < fRliString.Length; i++)
-                    {
-                        int index = (int)(fRliString[i] / histogramStep);
-                        if(index < 0) continue;
-
-                        if (index >= histogram.Count)
-                            histogram[histogram.Count - 1]++;
-                        else histogram[index]++;
-                    }
-                }
-
-                //find average value of samples array
-                avg /= parts;
-
-                //select max histogram value (most often occuring element)
-                var max = histogram.Max();
-
-                //get index of max histogram value
-                var maxIndex = histogram.Where(x => x == max).Select((x, i) => i).FirstOrDefault();
-
-                //find histogram index of average value sample and shift it
-                var avgIndex = avg / histogramStep * 5;
-
-
-                //get abs distance from max to avg values of histogram
-                var dst = Math.Abs(maxIndex - avgIndex);
-
-                normal = (maxIndex + dst) * histogramStep;
-
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
-
-                if ((int)normal == 0) normal = histogramStep;
-                return normal;
-            }
-        }
-
         protected virtual IEnumerable<Tile> SaveTiles(string folderPath, byte[] line, int linePixelWidth,
             int lineNumber, System.Drawing.Size tileSize)
         {
@@ -378,10 +178,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                         ms.Read(tileData, j * tileSize.Width, bytesToRead);
                         ms.Seek(Math.Max(linePixelWidth - bytesToRead, 0), SeekOrigin.Current);
                     }
-                  
+
                     tiles.Add(new Tile(SaveTile(Path.Combine(folderPath, i + "-" + lineNumber), tileData),
                                        new System.Drawing.Point(i * tileSize.Width, lineNumber * tileSize.Height), tileSize));
-                    
+
                 }
             }
             return tiles;
@@ -394,74 +194,13 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return path;
         }
 
-        protected virtual byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, float normalizationFactor, TileOutputType outputType)
-        {
-            byte[] line = new byte[signalDataLength * tileHeight];
-            float[] fLine = new float[line.Length / 4];
-            byte[] normalizedLine = new byte[fLine.Length];
-
-            int index = 0;
-
-            //if (normalizationFactor > _maxValue)
-            //{
-            //    _maxValue = normalizationFactor;
-            //}
-
-            float border = normalizationFactor / 9f * 7;// *3;
-
-           
-            while (index != line.Length && s.Position != s.Length)
-            {
-                s.Seek(strHeaderLength, SeekOrigin.Current);
-                index += s.Read(line, index, signalDataLength);
-            }
-
-            Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
-
-            switch (outputType)
-            {
-                case TileOutputType.Linear:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / normalizationFactor * 255)).ToArray();
-                    break;
-                case TileOutputType.Logarithmic:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLogarithmicValue(x, _maxValue))).ToArray();
-                    break;
-                case TileOutputType.LinearLogarithmic:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, _maxValue, normalizationFactor))).ToArray();
-                    break;
-                default:
-                    break;
-
-            }
-
-            return normalizedLine;
-        }
-
-       
-
-
-        /// <summary>
-        /// Gets unique name for tile directory
-        /// </summary>
-        /// <param name="fileName">Initial input file name</param>
-        /// <returns></returns>
-        public static string GetDirectoryName(string filePath)
-        {
-            string dirPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
-                Path.GetFileNameWithoutExtension(filePath), Path.GetExtension(filePath),
-                File.GetCreationTime(filePath).ToFileTime().ToString());
-            return dirPath;
-        }
-
-        private void CreateTileFolder(string path)
+        protected void CreateTileFolder(string path)
         {
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
         }
-        
+
     }
 }

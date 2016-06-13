@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Xml;
+using System.IO;
 
 namespace RlViewer.Settings
 {
     public static class SettingsSerializationExt
     {
-        private static string _settingsXmlPath = "settings.xml";
+        private static string _settingsXmlPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "settings.xml");
 
 
         public static void ToXml(this Settings settings)

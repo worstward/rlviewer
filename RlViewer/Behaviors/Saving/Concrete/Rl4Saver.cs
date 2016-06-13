@@ -100,7 +100,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        protected void SaveAsRl4(string path, Rectangle area, string newExt)
+        protected virtual void SaveAsRl4(string path, Rectangle area, string newExt)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {

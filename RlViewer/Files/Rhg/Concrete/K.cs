@@ -11,9 +11,9 @@ using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rhg.Concrete
 {
-    public class RhgK : RhgFile
+    public class K : RhgFile
     {
-        public RhgK(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+        public K(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {
             _header = header as KHeader;

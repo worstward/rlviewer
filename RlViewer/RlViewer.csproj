@@ -53,6 +53,10 @@
     <ApplicationIcon>Untitled-28-64.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -90,12 +94,19 @@
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
     <Compile Include="Behaviors\Navigation\Abstract\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Brl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\Concrete\KPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Rl4PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\Rl8PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\RPointFinder.cs" />
+    <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
+    <Compile Include="Behaviors\ReportGenerator\Concrete\DocFileReporter.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
+    <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\ShortSampleTileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\KTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Raw8TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl8TileCreator.cs" />
@@ -128,14 +139,17 @@
     <Compile Include="Factories\File\Concrete\KFactory.cs" />
     <Compile Include="Factories\File\Concrete\Rl8Factory.cs" />
     <Compile Include="Factories\Header\Concrete\Rl8HeaderFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\KNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Rl8NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Abstract\PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Brl4PointFinderFactory.cs" />
+    <Compile Include="Factories\NavigationSearcher\Concrete\KPointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\RawPointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl4PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl8PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\RPointFinderFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Rl8SaverFactory.cs" />
+    <Compile Include="Factories\TileCreator\Concrete\KTileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl8TileCreatorFactory.cs" />
     <Compile Include="Files\Rli\Concrete\Rl8.cs" />
@@ -163,7 +177,6 @@
     <Compile Include="Factories\NavigationContainer\Abstract\NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Brl4NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\RawNavigationContainerFactory.cs" />
-    <Compile Include="Factories\NavigationContainer\Concrete\RhgKNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Rl4NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\RNavigationContainerFactory.cs" />
     <Compile Include="Factories\Saver\RSaverFactory.cs" />
@@ -200,7 +213,7 @@
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\RawSaverFactory.cs" />
-    <Compile Include="Factories\Saver\Concrete\RhgKSaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\KSaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Rl4SaverFactory.cs" />
     <Compile Include="Forms\SaveForm.cs">
       <SubType>Form</SubType>
@@ -222,10 +235,9 @@
     <Compile Include="Behaviors\Filters\Concrete\GammaCorrectionFilter.cs" />
     <Compile Include="Behaviors\Filters\ILuTable.cs" />
     <Compile Include="Behaviors\Filters\Abstract\ImageFiltering.cs" />
-    <Compile Include="Behaviors\INormalizable.cs" />
     <Compile Include="Behaviors\PointSelector\PointSelector.cs" />
     <Compile Include="Behaviors\PointSelector\SelectedPoint.cs" />
-    <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
+    <Compile Include="Behaviors\TileCreator\Abstract\FloatSampleTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Raw4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl4TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Tile.cs" />
@@ -295,13 +307,13 @@
     <Compile Include="Files\LoadedFile.cs" />
     <Compile Include="Files\LocatorFile.cs" />
     <Compile Include="Files\Rhg\Abstract\RhgFile.cs" />
-    <Compile Include="Files\Rhg\Concrete\RhgK.cs" />
+    <Compile Include="Files\Rhg\Concrete\K.cs" />
     <Compile Include="Files\Rli\Abstract\RliFile.cs" />
     <Compile Include="Files\Rli\Concrete\Brl4.cs" />
     <Compile Include="Files\Rli\Concrete\Rl4.cs" />
     <Compile Include="Navigation\Concrete\Brl4NavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RawNavigationContainer.cs" />
-    <Compile Include="Navigation\Concrete\RhgKNavigationContainer.cs" />
+    <Compile Include="Navigation\Concrete\KNavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\Rl4NavigationContainer.cs" />
     <Compile Include="Navigation\NavigationString.cs" />
     <Compile Include="Navigation\NaviStringExt.cs" />

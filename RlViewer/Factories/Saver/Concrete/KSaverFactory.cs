@@ -7,11 +7,11 @@ using RlViewer.Behaviors.Saving.Concrete;
 
 namespace RlViewer.Factories.Saver.Concrete
 {
-    class RhgKSaverFactory : RlViewer.Factories.Saver.Abstract.SaverFactory
+    class KSaverFactory : RlViewer.Factories.Saver.Abstract.SaverFactory
     {
         public override Behaviors.Saving.Abstract.Saver Create(Files.LocatorFile file)
         {
-            throw new NotImplementedException();
+            return new KSaver(file);
         }
     }
 }

@@ -69,70 +69,67 @@ namespace RlViewer.Behaviors
         }
 
 
-        public static short ToShortSample(this byte[] sampleBytes, int sampleSize)
+        public static T ToSample<T>(this byte[] sampleBytes, int sampleSize)
         {
-            return BitConverter.ToInt16(sampleBytes, 0);
-        }
-
-        public static short[] ToShortArea(this byte[] areaBytes, int sampleSize)
-        {
-            var sampleShorts = new short[areaBytes.Length / sampleSize];
-            Buffer.BlockCopy(areaBytes, 0, sampleShorts, 0, areaBytes.Length);
-            return sampleShorts;
-        }
-
-
-        public static float ToFloatSample(this byte[] sampleBytes, int sampleSize)
-        {
-            switch (sampleSize)
+            if (sampleSize == 8)
             {
-                case 4:
-                    {
-                        return BitConverter.ToSingle(sampleBytes, 0);
-                    }
-                case 8:
-                    {
-                        var re = BitConverter.ToSingle(sampleBytes, 0);
-                        var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
-
-                        return (float)(Math.Sqrt(re * re + im * im));
-                    }
-                default:
-                    throw new NotSupportedException("Unsupported sample size");
+                var re = BitConverter.ToSingle(sampleBytes, 0);
+                var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
+                return (T)(object)(float)(Math.Sqrt(re * re + im * im));
             }
-        }
-        
-
-        public static float[] ToFloatArea(this byte[] areaBytes, int sampleSize)
-        {
-            switch (sampleSize)
+            else if (sampleSize == 2)
             {
-                case 4:
-                    {
-                        var sampleFloats = new float[areaBytes.Length / sampleSize];
-                        Buffer.BlockCopy(areaBytes, 0, sampleFloats, 0, areaBytes.Length);
-                        return sampleFloats;
-                    }
-                case 8:
-                    {
-                        var sampleFloats = new float[areaBytes.Length / sizeof(float)];
-                        var complexFloats = new float[areaBytes.Length / sampleSize];
-
-                        Buffer.BlockCopy(areaBytes, 0, sampleFloats, 0, areaBytes.Length);
-
-                        for (int i = 0; i < sampleFloats.Length; i += 2)
-                        {
-                            var re = sampleFloats[i];
-                            var im = sampleFloats[i + 1];
-                            complexFloats[i / 2] = (float)(Math.Sqrt(re * re + im * im));
-                        }
-
-                        return complexFloats;
-                    }
-                default:
-                    throw new NotSupportedException("Unsupported sample size");
+                var re = BitConverter.ToSingle(sampleBytes, 0);
+                var im = BitConverter.ToSingle(sampleBytes, sizeof(short));
+                return (T)(object)(short)(Math.Sqrt(re * re + im * im));
             }
+
+
+            var sampleShorts = new T[sampleBytes.Length / sampleSize];
+            Buffer.BlockCopy(sampleBytes, 0, sampleShorts, 0, sampleBytes.Length);
+            return sampleShorts.First();
         }
+
+        public static T[] ToArea<T>(this byte[] areaBytes, int sampleSize)
+        {
+            if (sampleSize == 8)
+            {
+                var complexFloats = new float[areaBytes.Length / sampleSize];
+                var sampleFloats = new float[areaBytes.Length / sizeof(float)];
+                        
+                Buffer.BlockCopy(areaBytes, 0, sampleFloats, 0, areaBytes.Length);
+
+                for (int i = 0; i < sampleFloats.Length; i += 2)
+                {
+                    var re = sampleFloats[i];
+                    var im = sampleFloats[i + 1];
+                    complexFloats[i / 2] = (float)(Math.Sqrt(re * re + im * im));
+                }
+                return (T[])(object)(complexFloats);
+            }
+            else if (sampleSize == 2)
+            {
+                var complexShorts = new short[areaBytes.Length / sampleSize];
+                var sampleShorts = new short[areaBytes.Length / sizeof(short)];
+
+                Buffer.BlockCopy(areaBytes, 0, sampleShorts, 0, areaBytes.Length);
+
+                for (int i = 0; i < sampleShorts.Length; i += 2)
+                {
+                    var re = sampleShorts[i];
+                    var im = sampleShorts[i + 1];
+                    complexShorts[i / 2] = (short)(Math.Sqrt(re * re + im * im));
+                }
+                return (T[])(object)(complexShorts);
+            }
+
+            var samples = new T[areaBytes.Length / sampleSize];
+            Buffer.BlockCopy(areaBytes, 0, samples, 0, areaBytes.Length);
+            return samples;
+        }
+
+
+       
 
         public static Point GetMaxSampleLocation(this RlViewer.Files.LocatorFile file, Rectangle area)
         {
@@ -140,7 +137,7 @@ namespace RlViewer.Behaviors
 
             if (file.Header.BytesPerSample == 2)
             {
-                short[] sample = file.GetArea(area).ToShortArea(file.Header.BytesPerSample);
+                short[] sample = file.GetArea(area).ToArea<short>(file.Header.BytesPerSample);
                 short max = sample.Max();
                 var maxIndex = sample.Select((v, i) => new { Index = i, Value = v})
                                         .Where(v => v.Value == max)
@@ -153,7 +150,7 @@ namespace RlViewer.Behaviors
             }
             else if (file.Header.BytesPerSample == 4 || file.Header.BytesPerSample == 8)
             {
-                float[] sample = file.GetArea(area).ToFloatArea(file.Header.BytesPerSample);
+                float[] sample = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
                 float max = sample.Max();
                 var maxIndex = sample.Select((v, i) => new { Index = i, Value = v })
                                         .Where(v => v.Value == max)

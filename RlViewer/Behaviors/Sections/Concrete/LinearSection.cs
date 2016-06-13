@@ -42,7 +42,7 @@ namespace RlViewer.Behaviors.Sections.Concrete
                         continue;
                     }
 
-                    coordPairList.Add(new PointF(i, file.GetSample(pointToGetSample).ToFloatSample(file.Header.BytesPerSample)));
+                    coordPairList.Add(new PointF(i, file.GetSample(pointToGetSample).ToSample<float>(file.Header.BytesPerSample)));
                 }
 
 
@@ -67,7 +67,7 @@ namespace RlViewer.Behaviors.Sections.Concrete
                         continue;
                     }
 
-                    coordPairList.Add(new PointF(i, file.GetSample(pointToGetSample).ToFloatSample(file.Header.BytesPerSample)));
+                    coordPairList.Add(new PointF(i, file.GetSample(pointToGetSample).ToSample<float>(file.Header.BytesPerSample)));
                 }
 
             }          

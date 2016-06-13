@@ -12,7 +12,7 @@ namespace RlViewer.Factories.TileCreator.Abstract
 {
     public abstract class TileCreatorFactory
     {
-        public abstract RlViewer.Behaviors.TileCreator.Abstract.TileCreator Create(RlViewer.Files.LocatorFile rli, Behaviors.TileCreator.TileOutputType type);
+        public abstract RlViewer.Behaviors.TileCreator.Abstract.ITileCreator Create(RlViewer.Files.LocatorFile rli, Behaviors.TileCreator.TileOutputType type);
 
         public static TileCreatorFactory GetFactory(LocatorFile file)
         {
@@ -36,7 +36,7 @@ namespace RlViewer.Factories.TileCreator.Abstract
                 case FileType.rl8:
                     return new Rl8TileCreatorFactory();
                 case FileType.k:
-                    throw new NotSupportedException("Implement me");
+                    return new KTileCreatorFactory();
                 default:
                     throw new NotSupportedException("Unsupported format");
             }
