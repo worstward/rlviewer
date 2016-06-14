@@ -22,23 +22,14 @@ namespace RlViewer.Behaviors.Draw
         private object _locker = new object();
 
 
-        public Image DrawItems(Image canvas, Point leftTopPointOfView, Size screenSize)
+        public void DrawItems(Graphics g, Point leftTopPointOfView, Size screenSize)
         {
-            GC.Collect(0, GCCollectionMode.Forced);
-            Image img;
-
             var screen = new RectangleF(leftTopPointOfView.X, leftTopPointOfView.Y,
                 screenSize.Width / Scaler.ScaleFactor, screenSize.Height / Scaler.ScaleFactor);
-            lock (_locker)
-            {
-                img = (Image)canvas.Clone();
-                using (var g = Graphics.FromImage(img))
-                {
-                    DrawPoints(g, screen);
-                    DrawArea(g, screen);             
-                }
-            }
-            return img;
+
+
+            DrawPoints(g, screen);
+            DrawArea(g, screen);
         }
 
 

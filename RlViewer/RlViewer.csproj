@@ -82,6 +82,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\Analyzing\Abstract\SampleAnalyzer.cs" />
+    <Compile Include="Behaviors\Analyzing\Concrete\ShortSampleAnalyzer.cs" />
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
@@ -125,7 +127,7 @@
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface4Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface5Points.cs" />
     <Compile Include="Behaviors\Navigation\NavigationComputing.cs" />
-    <Compile Include="Behaviors\Analyzing\PointAnalyzer.cs" />
+    <Compile Include="Behaviors\Analyzing\Concrete\FloatSampleAnalyzer.cs" />
     <Compile Include="Behaviors\FileReaderExt.cs" />
     <Compile Include="Behaviors\Ruler\Ruler.cs" />
     <Compile Include="Behaviors\Ruler\RulerFacade.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Behaviors\Sections\Concrete\HorizontalSection.cs" />
     <Compile Include="Behaviors\Sections\Abstract\Section.cs" />
     <Compile Include="Behaviors\Sections\Concrete\VerticalSection.cs" />
+    <Compile Include="Factories\Analyzer\AnalyzerFactory.cs" />
     <Compile Include="Factories\File\Concrete\KFactory.cs" />
     <Compile Include="Factories\File\Concrete\Rl8Factory.cs" />
     <Compile Include="Factories\Header\Concrete\Rl8HeaderFactory.cs" />

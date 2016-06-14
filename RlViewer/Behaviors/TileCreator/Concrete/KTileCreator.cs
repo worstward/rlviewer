@@ -262,7 +262,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFile(string filePath)
         {
-            return GetTilesFromFile(filePath, _rhg, null, OutputType);
+            return GetTilesFromFile(filePath, _rhg, new Headers.Concrete.K.KStrHeaderStruct(), OutputType);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// <returns></returns>
         protected override Tile[] GetTilesFromFileAsync(string filePath)
         {
-            return GetTilesFromFileAsync(filePath, _rhg, null, OutputType);
+            return GetTilesFromFileAsync(filePath, _rhg, new Headers.Concrete.K.KStrHeaderStruct(), OutputType);
         }
 
     }

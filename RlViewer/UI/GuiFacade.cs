@@ -36,13 +36,19 @@ namespace RlViewer.UI
 
             _filterFacade = new Behaviors.Filters.ImageFilterFacade();
             _scaler = new Behaviors.Scaling.Scaler();
-            _analyzer = new Behaviors.Analyzing.PointAnalyzer();
             _drag = new Behaviors.DragController();
             _histogram = new Behaviors.Draw.HistContainer();
 
             _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
                 () => Save(), () => ShowFileInfo(), () => ShowLog());
             _win = _form.Canvas;
+
+            _form.Canvas.Paint += (s, e) =>
+                {
+                    DrawItems(e.Graphics);
+                };
+
+            SetDoubleBuffered(_form.Canvas);
 
             InitializeWindow();
         }
@@ -55,7 +61,7 @@ namespace RlViewer.UI
         private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
         private Behaviors.Scaling.Scaler _scaler;
-        private Behaviors.Analyzing.PointAnalyzer _analyzer;
+        private Behaviors.Analyzing.Abstract.SampleAnalyzer _analyzer;
         private Behaviors.Ruler.RulerFacade _ruler;
         private Behaviors.ImageAligning.Aligning _aligner;
         private Behaviors.Sections.Abstract.Section _section;
@@ -302,6 +308,7 @@ namespace RlViewer.UI
                     vertValue = vertValue > _form.Vertical.Maximum ? _form.Vertical.Maximum : vertValue;
 
                     _form.Vertical.Value = vertValue;
+                    _form.Canvas.Invalidate();
                 }
                 else
                 {
@@ -309,7 +316,7 @@ namespace RlViewer.UI
                 }
             }
 
-            DrawImage();
+
             InitProgressControls(false);
         }
 
@@ -437,6 +444,7 @@ namespace RlViewer.UI
             _ruler = new Behaviors.Ruler.RulerFacade(_file);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
+            _analyzer = Factories.Analyzer.AnalyzerFactory.Create(_file);
         }
 
 
@@ -566,7 +574,9 @@ namespace RlViewer.UI
                 {
                     _areaSelector.ResetArea();
                 }
-                DrawItems();
+
+
+                _form.Canvas.Invalidate();
             }
         }
 
@@ -580,10 +590,10 @@ namespace RlViewer.UI
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed, _settings.IsPaletteGroupped);
                 InitScrollBars(_scaler.ScaleFactor);
+                
                 DrawImage();
             }
         }
-
 
         private void InvalidateCanvas()
         {
@@ -603,30 +613,46 @@ namespace RlViewer.UI
             });
         }
 
-
         private System.Collections.Concurrent.BlockingCollection<Func<Image>> _messageList = new System.Collections.Concurrent.BlockingCollection<Func<Image>>();
+
+        protected static void SetDoubleBuffered(System.Windows.Forms.Control c)
+        {
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
+
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
+
+            aProp.SetValue(c, true, null);
+        }
 
         public void DrawImage()
         {
             if (_tiles != null)
-            {                
-                Task.Run(() => _form.Canvas.Image = _drawer.Draw(_tiles,
-                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled)).Wait();
+            {
+                Task.Run(() =>
+                    {
+                        _form.Canvas.Image = _drawer.Draw(_tiles,
+                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
+                    }).Wait();
+
                 //Task.Run(() =>
                 //    { 
                 //        _messageList.Add(() => _drawer.Draw(_tiles,
                 //               new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled));
                 //    });
-                RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
+                //RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
             }
         }
 
-        private void DrawItems()
+        private void DrawItems(Graphics g)
         {
             if (_drawer != null)
             {
-                Task.Run(() => _form.Canvas.Image = _drawer.Draw(
-                    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value))).Wait();
+               _drawer.Draw(g, new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
         }
 
@@ -891,7 +917,7 @@ namespace RlViewer.UI
         {
             _filterFacade.ChangeFilterValue(_form.FilterTrackBar.Value);
             _form.FilterValueLabel.Text = string.Format("Уровень фильтра: {0}", _form.FilterTrackBar.Value);
-            DrawImage();
+
         }
 
         public void GetFilter(string filterType, int filterDelta)
@@ -1060,7 +1086,8 @@ namespace RlViewer.UI
                     newHor = newHor > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : newHor;
                     _form.Horizontal.Value = newHor;
 
-                    DrawImage();
+                   DrawImage();
+
                 }
                 else if (_form.MarkAreaRb.Checked && _areaSelector != null)
                 {
@@ -1068,7 +1095,7 @@ namespace RlViewer.UI
                     if (_areaSelector.ResizeArea(new Point((int)(e.X / _scaler.ScaleFactor),
                                 (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
                     {
-                        DrawItems();
+                        _form.Canvas.Invalidate();
                     }
                 }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)

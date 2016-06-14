@@ -68,6 +68,58 @@ namespace RlViewer.Behaviors
             }
         }
 
+        public static float ToFloatSample(this byte[] sampleBytes, int sampleSize)
+        {
+            switch (sampleSize)
+            {
+                case 4:
+                    return sampleBytes.ToFloatSample();
+                case 8:
+                    return sampleBytes.ToFloatSampleModulus();
+
+                default:
+                    throw new ArgumentException("sampleSize");
+            }
+        }
+
+        private static float ToFloatSampleModulus(this byte[] sampleBytes)
+        {
+            var re = BitConverter.ToSingle(sampleBytes, 0);
+            var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
+            return (float)(Math.Sqrt(re * re + im * im));
+        }
+        private static float ToFloatSample(this byte[] sampleBytes)
+        {
+            return BitConverter.ToSingle(sampleBytes, 0);
+        }
+
+
+        public static short ToShortSample(this byte[] sampleBytes, int sampleSize)
+        {
+            switch (sampleSize)
+            {
+                case 2:
+                    return sampleBytes.ToShortSample();
+                case 4:
+                    return sampleBytes.ToShortSampleModulus();
+
+                default:
+                    throw new ArgumentException("sampleSize");
+            }
+        }
+
+        private static short ToShortSampleModulus(this byte[] sampleBytes)
+        {
+            var re = BitConverter.ToInt16(sampleBytes, 0);
+            var im = BitConverter.ToInt16(sampleBytes, sizeof(short));
+            return (short)(Math.Sqrt(re * re + im * im));
+        }
+        private static short ToShortSample(this byte[] sampleBytes)
+        {
+            return BitConverter.ToInt16(sampleBytes, 0);
+        }
+
+
 
         public static T ToSample<T>(this byte[] sampleBytes, int sampleSize)
         {
@@ -77,10 +129,10 @@ namespace RlViewer.Behaviors
                 var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
                 return (T)(object)(float)(Math.Sqrt(re * re + im * im));
             }
-            else if (sampleSize == 2)
+            else if (typeof(T) == typeof(short))
             {
-                var re = BitConverter.ToSingle(sampleBytes, 0);
-                var im = BitConverter.ToSingle(sampleBytes, sizeof(short));
+                var re = BitConverter.ToInt16(sampleBytes, 0);
+                var im = BitConverter.ToInt16(sampleBytes, sizeof(short));
                 return (T)(object)(short)(Math.Sqrt(re * re + im * im));
             }
 
@@ -107,7 +159,7 @@ namespace RlViewer.Behaviors
                 }
                 return (T[])(object)(complexFloats);
             }
-            else if (sampleSize == 2)
+            else if (typeof(T) == typeof(short))
             {
                 var complexShorts = new short[areaBytes.Length / sampleSize];
                 var sampleShorts = new short[areaBytes.Length / sizeof(short)];

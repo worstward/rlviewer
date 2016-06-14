@@ -99,7 +99,48 @@ namespace RlViewer.Headers.Concrete.R
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SynchronizerHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public enum Board : byte
+        {
+            Right = 1,
+            Left = 2,
+            RightLeft = 3,
+            LeftRight
+        }
+        public enum Polarization : byte
+        {
+            Vertical = 0,
+            Horizontal = 2,
+            F2 = 3,
+            F4 = 3
+        }
+
+        public enum OverviewModes : byte
+        {
+            SDC1 = 0,
+            SDC2,
+            Relef,
+            NoniusGG,
+            NoniusGV,
+            NoniusVG,
+            NoniusVV
+        }
+
+
+        public byte version;
+        public OverviewModes mode;
+        public Board board;
+        public Polarization polar;
+        public float initialRange;
+        public byte freqDivisor;
+        public byte emission;
+        public byte lchm;
+        public byte channel;
+        public byte antennaEquivalent;
+        public byte noiseGenerator;
+        public byte pilot;
+        public byte internalGenerator;
+        public byte freqDivGenerator;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 47)]
         public byte[] reserved;
     };
 

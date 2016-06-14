@@ -17,6 +17,7 @@ namespace RlViewer.Files.Rhg.Concrete
             : base(properties, header, navi)
         {
             _header = header as KHeader;
+            _navi = navi;
         }
 
 
@@ -26,11 +27,13 @@ namespace RlViewer.Files.Rhg.Concrete
             get { return _header; }
         }
 
+
+        private Navigation.NavigationContainer _navi;
         public override Navigation.NavigationContainer Navigation
         {
             get
             {
-                return null;
+                return _navi;
             }
         }
 

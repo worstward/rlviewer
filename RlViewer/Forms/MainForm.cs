@@ -299,7 +299,10 @@ namespace RlViewer.Forms
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Text = _guiFacade.OpenFile();
+            
         }
+        
+        
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
@@ -316,9 +319,15 @@ namespace RlViewer.Forms
             _guiFacade.InitDrawImage();
         }
 
+        
+
+
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             _guiFacade.TraceMouseMovement(e);
+
+            //_guiFacade.DrawImage();
+
             _guiFacade.ShowMousePosition(e);
             _guiFacade.ShowNavigation(e);
         }

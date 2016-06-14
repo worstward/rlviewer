@@ -24,9 +24,8 @@ namespace RlViewer.Behaviors.Draw
         private ItemDrawer _iDrawer;
         private TileDrawer _tDrawer;
         private Size _screenSize;
+        
         private Image _canvas;
-
-
 
         public void GetPalette(float R, float G, float B, bool reversed, bool logarithmic)
         {
@@ -36,12 +35,12 @@ namespace RlViewer.Behaviors.Draw
         public Image Draw(Tile[] tiles, Point pointOfView, bool highRes = false)
         {
             _canvas = _tDrawer.DrawImage(_screenSize.Width, _screenSize.Height, tiles, pointOfView, _screenSize, highRes);
-            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize);
+            return _canvas;
         }
 
-        public Image Draw(Point pointOfView)
+        public void Draw(Graphics g, Point pointOfView)
         {
-            return _iDrawer.DrawItems(_canvas, pointOfView, _screenSize);
+            _iDrawer.DrawItems(g, pointOfView, _screenSize);
         }
 
 

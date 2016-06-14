@@ -8,25 +8,22 @@ namespace RlViewer.Navigation.Concrete
 {
     class KNavigationContainer : NavigationContainer
     {
-        public KNavigationContainer()
-        { }
-
-        public KNavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
+        public KNavigationContainer(string path, float initialRange, float rangeStep, byte board, int fileHeaderLength, int strDataLength)
         {
             _path = path;
             _initialRange = initialRange;
-            _step = step;
+            _rangeStep = rangeStep;
             _board = board;
-            _headerLength = headerLength;
-            _dataLength = dataLength;
+            _fileHeaderLength = fileHeaderLength;
+            _strDataLength = strDataLength;
         }
 
         private string _path;
         private float _initialRange;
-        private float _step;
+        private float _rangeStep;
         private byte _board;
-        private int _headerLength;
-        private int _dataLength;
+        private int _fileHeaderLength;
+        private int _strDataLength;
 
 
 
@@ -59,8 +56,8 @@ namespace RlViewer.Navigation.Concrete
             {
                 NaviStrings =
                     ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
-                    _path, _headerLength, _dataLength));
-                _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+                    _path, _fileHeaderLength, _strDataLength));
+                _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _rangeStep);
             }
             catch (ArgumentNullException)
             {
