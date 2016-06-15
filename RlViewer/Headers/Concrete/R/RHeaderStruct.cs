@@ -52,19 +52,19 @@ namespace RlViewer.Headers.Concrete.R
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct FlightHeader
     {
-        public byte version;							//< номер версии 
-        long timeARM;							//< Время АРМ в  милисекундах с 1970
-        long timeUTC;							//< Время UTC в  милисекундах с 1970
-        public uint numberMission;						//< номер миссии
-        public uint numberFlight;						//< номер полета 
-        public uint numberPeriod;						//< номер периода наблюдения 
-        public uint numberFile;							//< номер файла
+        public byte version;							
+        public double timeARM;							//< Время АРМ в  милисекундах с 1970
+        public double timeUTC;							//< Время UTC в  милисекундах с 1970
+        public uint missionNum;						
+        public uint flightNum;						
+        public uint periodNum;						
+        public uint fileNum;							
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public byte[] country;				//< Cтрока в CP-1251 c нулем на конце
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] terrain;				//< Cтрока в CP-1251 c нулем на конце
+        public byte[] territory;				//< Cтрока в CP-1251 c нулем на конце
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 63)]
         public byte[] reserved;
@@ -138,7 +138,7 @@ namespace RlViewer.Headers.Concrete.R
         public byte antennaEquivalent;
         public byte noiseGenerator;
         public byte pilot;
-        public byte internalGenerator;
+        public byte isExternalGenerator;
         public byte freqDivGenerator;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 47)]
         public byte[] reserved;
@@ -161,14 +161,32 @@ namespace RlViewer.Headers.Concrete.R
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct AntennaSystemHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte version;
+        public float antennaAngle;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 59)]
         public byte[] reserved;
     };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct AdcHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
+        public byte version;
+        public float adcFreq;
+        public byte freqDivisor;
+        public uint rhgStrSize;
+        public uint adcDelay;
+        public byte isExternalGenerator;
+        public uint externalGeneratorFreq;
+        public uint externalFreqDivCoef;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte[] firmWareName;
+        public byte format;
+
+
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
         public byte[] reserved;
     };
 

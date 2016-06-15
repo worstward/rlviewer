@@ -13,7 +13,7 @@ namespace RlViewer.Behaviors.PointSelector
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location, float rcs)
         {
             _location = location;
-            _value = file.GetSample(location).ToSample<float>(file.Header.BytesPerSample);
+            _value = file.GetSample(location).ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
             _rcs = rcs;
         }
 
@@ -27,7 +27,7 @@ namespace RlViewer.Behaviors.PointSelector
         public SelectedPoint(RlViewer.Files.LocatorFile file, Point location)
         {      
             _location = location;
-            _value = file.GetSample(location).ToSample<float>(file.Header.BytesPerSample);
+            _value = file.GetSample(location).ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
         }
 
 

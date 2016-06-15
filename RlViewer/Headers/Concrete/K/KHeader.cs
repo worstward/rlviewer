@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RlViewer.Behaviors.Converters;
 
 namespace RlViewer.Headers.Concrete.K
 {
@@ -97,17 +98,63 @@ namespace RlViewer.Headers.Concrete.K
                 throw;
             }
 
-            var rhgHeader = new List<Tuple<string, string>>();
+            var adcHeader = new List<Tuple<string, string>>();
+            adcHeader.Add(new Tuple<string, string>("Задержка АЦП, мс", headerStruct.adcHeader.adcDelay.ToString()));
+            adcHeader.Add(new Tuple<string, string>("Частота АЦП, МГц", headerStruct.adcHeader.adcFreq.ToString()));
+            adcHeader.Add(new Tuple<string, string>("Делитель частоты АЦП", headerStruct.adcHeader.freqDivisor.ToString()));
+            adcHeader.Add(new Tuple<string, string>("Размер строки РГГ", headerStruct.adcHeader.rhgStrSize.ToString()));        
+            var firmwareString = Encoding.UTF8.GetString(headerStruct.adcHeader.firmWareName);
+            firmwareString = firmwareString.Substring(0, firmwareString.IndexOf('\0'));
+            adcHeader.Add(new Tuple<string, string>("Имя файла прошивки", firmwareString));
+            adcHeader.Add(new Tuple<string, string>("Частота внешнего генератора, МГц", headerStruct.adcHeader.externalGeneratorFreq.ToString()));
+            adcHeader.Add(new Tuple<string, string>("Коэффициент деления внешней частоты", headerStruct.adcHeader.externalFreqDivCoef.ToString()));
+            adcHeader.Add(new Tuple<string, string>("Генератор частоты", headerStruct.adcHeader.isExternalGenerator == 0 ? "Внутренний" : "Внешний"));
+            adcHeader.Add(new Tuple<string, string>("Формат данных", headerStruct.adcHeader.format == 0 ? "16 бит/отсчет" : "8 бит/отсчет"));
+            
+
+            var synchronizerHeader = new List<Tuple<string, string>>();
+            synchronizerHeader.Add(new Tuple<string, string>("Режим", headerStruct.synchronizerHeader.mode.ToOverviewMode()));
+            synchronizerHeader.Add(new Tuple<string, string>("Борт", ((byte)headerStruct.synchronizerHeader.board).ToSynchronizerBoard()));            
+            synchronizerHeader.Add(new Tuple<string, string>("Поляризация", ((byte)headerStruct.synchronizerHeader.polar).ToPolarizationType()));
+            synchronizerHeader.Add(new Tuple<string, string>("Начальная дальность, м", (headerStruct.synchronizerHeader.initialRange * 1000).ToString()));
+            synchronizerHeader.Add(new Tuple<string, string>("Знак ЛЧМ по дальности", headerStruct.synchronizerHeader.lchm ==  0 ? "+" : "-"));
+           
+
+            var locatorHeader = new List<Tuple<string, string>>();
+            locatorHeader.Add(new Tuple<string, string>("Номер канала", headerStruct.locatorHeader.channelNumber.ToString()));
+            locatorHeader.Add(new Tuple<string, string>("Режим оператора", headerStruct.locatorHeader.operatorMode.ToString()));
+            locatorHeader.Add(new Tuple<string, string>("Версия", headerStruct.locatorHeader.version.ToString()));
 
 
-            var synthHeader = new List<Tuple<string, string>>();
-            synthHeader.Add(new Tuple<string, string>("Номер канала", headerStruct.locatorHeader.channelNumber.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Режим оператора", headerStruct.locatorHeader.operatorMode.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Версия", headerStruct.locatorHeader.version.ToString()));
+            var flightParamHeader = new List<Tuple<string, string>>();
+            flightParamHeader.Add(new Tuple<string, string>("Время АРМ", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeARM).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Время UTC", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeUTC).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Номер миссии", headerStruct.flightHeader.missionNum.ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Номер полета", headerStruct.flightHeader.flightNum.ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Номер периода", headerStruct.flightHeader.periodNum.ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Номер файла", headerStruct.flightHeader.fileNum.ToString()));
+
+
+            var country = Encoding.UTF8.GetString(headerStruct.flightHeader.country);
+            country = firmwareString.Substring(0, country.IndexOf('\0'));
+            flightParamHeader.Add(new Tuple<string, string>("Страна полета", country));
+
+            var territory = Encoding.UTF8.GetString(headerStruct.flightHeader.territory);
+            territory = firmwareString.Substring(0, territory.IndexOf('\0'));
+            flightParamHeader.Add(new Tuple<string, string>("Территория полета", territory));
+         
+            var antennaHeader = new List<Tuple<string, string>>();
+            antennaHeader.Add(new Tuple<string, string>("Угол раскрыва антенны, град", headerStruct.antennaSystemHeader.antennaAngle.ToString()));
+
+
 
             return new HeaderInfoOutput[]
             {
-                new HeaderInfoOutput("Параметры локатора", synthHeader),
+                new HeaderInfoOutput("Параметры АЦП", adcHeader),
+                new HeaderInfoOutput("Параметры синхронизатора", synchronizerHeader),
+                new HeaderInfoOutput("Параметры локатора", locatorHeader),
+                new HeaderInfoOutput("Параметры полета", flightParamHeader),
+                new HeaderInfoOutput("Параметры антенной системы", antennaHeader)
             };
         }
 

@@ -23,6 +23,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         // дальность
         public float D0;
         public float dD;
+
         public byte board;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]

@@ -81,6 +81,74 @@ namespace RlViewer
         }
 
 
+        public static string ToSynchronizerBoard(this byte board)
+        {
+            string sType;
+
+            switch (board)
+            {
+                case 1:
+                    sType = "Правый";
+                    break;
+                case 2:
+                    sType = "Левый";
+                    break;
+                case 3:
+                    sType = "Попеременно с правого";
+                    break;
+                case 4:
+                    sType = "Попеременно с левого";
+                    break;
+                default:
+                    sType = "Не определено";
+                    break;
+            }
+            return sType;
+        }
+
+        public static DateTime UnixTimeStampToDateTime(this double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
+
+        public static string ToOverviewMode(this RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes mode)
+        {
+            string sType;
+            switch (mode)
+            {
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.SDC1:
+                    sType = "СДЦ1";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.SDC2:
+                    sType = "СДЦ2";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.Relef:
+                    sType = "Рельеф";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.NoniusGG:
+                    sType = "НониусГГ";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.NoniusGV:
+                    sType = "НониусГВ";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.NoniusVG:
+                    sType = "НониусВГ";
+                    break;
+                case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.NoniusVV:
+                    sType = "НониусВВ";
+                    break;
+                default:
+                    sType = "Не определено";
+                    break;
+            }
+            return sType;
+        }
+
+
         public static string ToRliFileType(this byte type)
         {
             string sType;

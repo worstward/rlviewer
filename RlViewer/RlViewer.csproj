@@ -86,6 +86,12 @@
     <Compile Include="Behaviors\Analyzing\Concrete\ShortSampleAnalyzer.cs" />
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Abstract\SizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\KSizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\RawSizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\Rl4SizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\Rl8SizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\RSizeCalculator.cs" />
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />

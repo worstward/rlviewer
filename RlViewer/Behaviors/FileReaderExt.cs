@@ -82,6 +82,37 @@ namespace RlViewer.Behaviors
             }
         }
 
+
+        public static float ToFileSample(this byte[] sample, FileType type, int sampleSize)
+        {
+            switch (type)
+            {
+                case FileType.brl4:
+                case FileType.rl4:
+                case FileType.r:
+                    return ToFloatSample(sample, sampleSize);               
+                case FileType.rl8:
+                    return ToFloatSampleModulus(sample);
+                case FileType.raw:
+                    if (sampleSize == 4)
+                    {
+                        return ToFloatSample(sample, sampleSize);
+                    }
+                    else if(sampleSize == 8)
+                    {
+                        return ToFloatSampleModulus(sample);
+                    }
+                    break;
+                case FileType.k:
+                    return ToShortSampleModulus(sample);
+            }
+
+
+            throw new NotSupportedException("file type");
+        }
+
+
+
         private static float ToFloatSampleModulus(this byte[] sampleBytes)
         {
             var re = BitConverter.ToSingle(sampleBytes, 0);
@@ -92,6 +123,7 @@ namespace RlViewer.Behaviors
         {
             return BitConverter.ToSingle(sampleBytes, 0);
         }
+
 
 
         public static short ToShortSample(this byte[] sampleBytes, int sampleSize)
@@ -117,29 +149,6 @@ namespace RlViewer.Behaviors
         private static short ToShortSample(this byte[] sampleBytes)
         {
             return BitConverter.ToInt16(sampleBytes, 0);
-        }
-
-
-
-        public static T ToSample<T>(this byte[] sampleBytes, int sampleSize)
-        {
-            if (sampleSize == 8)
-            {
-                var re = BitConverter.ToSingle(sampleBytes, 0);
-                var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
-                return (T)(object)(float)(Math.Sqrt(re * re + im * im));
-            }
-            else if (typeof(T) == typeof(short))
-            {
-                var re = BitConverter.ToInt16(sampleBytes, 0);
-                var im = BitConverter.ToInt16(sampleBytes, sizeof(short));
-                return (T)(object)(short)(Math.Sqrt(re * re + im * im));
-            }
-
-
-            var sampleShorts = new T[sampleBytes.Length / sampleSize];
-            Buffer.BlockCopy(sampleBytes, 0, sampleShorts, 0, sampleBytes.Length);
-            return sampleShorts.First();
         }
 
         public static T[] ToArea<T>(this byte[] areaBytes, int sampleSize)

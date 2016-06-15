@@ -37,7 +37,7 @@ namespace RlViewer.Behaviors.ResolutionAnalyzer
             for (int i = fromInclusive; i < toInclusive; i++)
             {
                 amplitudes.Add(_file.GetSample(
-                    new System.Drawing.Point(i, initialPoint.Y)).ToSample<float>(_file.Header.BytesPerSample));
+                    new System.Drawing.Point(i, initialPoint.Y)).ToFileSample(_file.Properties.Type, _file.Header.BytesPerSample));
             }
 
 
@@ -68,7 +68,7 @@ namespace RlViewer.Behaviors.ResolutionAnalyzer
             for (int i = fromInclusive; i < toInclusive; i++)
             {
                 amplitudes.Add(_file.GetSample(
-                    new System.Drawing.Point(initialPoint.X, i)).ToSample<float>(_file.Header.BytesPerSample));
+                    new System.Drawing.Point(initialPoint.X, i)).ToFileSample(_file.Properties.Type, _file.Header.BytesPerSample));
             }
 
             float interpolationStep = _analyzedSamples / (float)_interpolationRange;

@@ -470,7 +470,7 @@ namespace RlViewer.UI
             else
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
-                    _file.GetType().Name, _file.Properties.FilePath));
+                    _file.Properties.Type, _file.Properties.FilePath));
                 GetImage();
             }
         }
@@ -694,17 +694,15 @@ namespace RlViewer.UI
 
 
 
-        private string GetSaveFilter(Files.LocatorFile file)
+        private string GetSaveDialogFilter(Files.LocatorFile file)
         {
-            Type fileType = file.GetType();
             string filter = Resources.SaveFilter;
             
-            if(fileType  == typeof(RlViewer.Files.Rli.Concrete.Raw) ||
-                fileType == typeof(RlViewer.Files.Rli.Concrete.R))
+            if(file.Properties.Type == FileType.raw || file.Properties.Type == FileType.r)
             {
                 filter = Resources.RawSaveFilter;
             }
-            else if (fileType == typeof(RlViewer.Files.Rli.Concrete.Rl8))
+            else if (file.Properties.Type == FileType.rl8)
             {
                 filter = Resources.Rl8SaveFilter;
             }
@@ -714,13 +712,13 @@ namespace RlViewer.UI
         
         public void Save()
         {
-            if (_file != null)
+            if (_file != null && _file.Properties.Type != FileType.k)
             {
                 using (var sfd = new SaveFileDialog())
                 {
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
 
-                    sfd.Filter = GetSaveFilter(_file);
+                    sfd.Filter = GetSaveDialogFilter(_file);
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
