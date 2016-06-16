@@ -915,7 +915,7 @@ namespace RlViewer.UI
         {
             _filterFacade.ChangeFilterValue(_form.FilterTrackBar.Value);
             _form.FilterValueLabel.Text = string.Format("Уровень фильтра: {0}", _form.FilterTrackBar.Value);
-
+            DrawImage();
         }
 
         public void GetFilter(string filterType, int filterDelta)
@@ -1317,7 +1317,28 @@ namespace RlViewer.UI
             }
         }
 
-
+        public void MakeReport()
+        {
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Multiselect = true;
+                ofd.Filter = Resources.OpenFilter;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    var reporter = Factories.Reporter.Abstract.ReporterFactory
+                        .GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx)
+                        .Create(ofd.FileNames);
+                    using (var fsd = new SaveFileDialog())
+                    {
+                        fsd.Filter = "*Файл .docx|.docx";
+                        if (fsd.ShowDialog() == DialogResult.OK)
+                        {
+                            reporter.GenerateReport(fsd.FileName);
+                        }
+                    }
+                }
+            }
+        }
 
     }
 }

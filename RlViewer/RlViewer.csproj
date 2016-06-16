@@ -107,6 +107,7 @@
     <Compile Include="Behaviors\Navigation\Concrete\Rl8PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\Concrete\RPointFinder.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
+    <Compile Include="Behaviors\ReportGenerator\Abstract\ReporterTypes.cs" />
     <Compile Include="Behaviors\ReportGenerator\Concrete\DocFileReporter.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
@@ -157,6 +158,8 @@
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl4PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\Rl8PointFinderFactory.cs" />
     <Compile Include="Factories\NavigationSearcher\Concrete\RPointFinderFactory.cs" />
+    <Compile Include="Factories\Reporter\Abstract\ReporterFactory.cs" />
+    <Compile Include="Factories\Reporter\Concrete\DocReporterFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Rl8SaverFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\KTileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />

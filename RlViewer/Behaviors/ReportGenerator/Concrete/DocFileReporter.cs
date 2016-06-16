@@ -11,36 +11,79 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 {
     class DocFileReporter : Abstract.Reporter
     {
-        public DocFileReporter(Files.LocatorFile file)
-            : base(file)
+        public DocFileReporter(params string[] fileNames)
+            : base(fileNames)
         { }
 
 
-        public override void GenerateReport(string fileName)
+
+        public override void GenerateReport(string reportFilePath)
         {
-            using (DocX document = DocX.Create(fileName))
+            using (DocX document = DocX.Create(reportFilePath))
             {
-                Paragraph p = document.InsertParagraph();
-                p.Alignment = Alignment.center;
-                p.Append(System.IO.Path.GetFileName(File.Properties.FilePath)).Bold().FontSize(20)
-                .Append(Environment.NewLine)
-                .Append(Environment.NewLine);
-                
-                Table t = document.AddTable(2, 3);
-                // Specify some properties for this Table.
-                t.Alignment = Alignment.center;
-                t.Design = TableDesign.TableGrid;
-                // Add content to this Table.
-                t.Rows[0].Cells[0].Paragraphs.First().Append("A");
-                t.Rows[0].Cells[1].Paragraphs.First().Append("B");
-                t.Rows[0].Cells[2].Paragraphs.First().Append("C");
-                t.Rows[1].Cells[0].Paragraphs.First().Append("D");
-                t.Rows[1].Cells[1].Paragraphs.First().Append("E");
-                t.Rows[1].Cells[2].Paragraphs.First().Append("F");
-                // Insert the Table into the document.
-                document.InsertTable(t);
+                for (int i = 0; i < FilePaths.Length; i++)
+                {
+                    var docToInsert = PrepareReport(reportFilePath, FilePaths[i]);
+                    document.InsertDocument(docToInsert);
+                    docToInsert.Dispose();
+                }
                 document.Save();
             }
         }
+
+
+
+        
+
+
+        private DocX PrepareReport(string reportFilePath, string locatorFilePath)
+        {
+                DocX document = DocX.Create(reportFilePath);
+            
+                var fileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(
+                    new Files.FileProperties(locatorFilePath)).Create(locatorFilePath);
+
+                Paragraph p = document.InsertParagraph();
+                p.Alignment = Alignment.center;
+                p.Append(System.IO.Path.GetFileName(locatorFilePath)).Bold().FontSize(20)
+                .Append(Environment.NewLine)
+                .Append(Environment.NewLine);
+
+                foreach (var subHeaderInfo in fileHeader.HeaderInfo)
+                {
+                    Paragraph subHeader = document.InsertParagraph();
+                    subHeader.Alignment = Alignment.center;
+                    subHeader.Append(System.IO.Path.GetFileName(subHeaderInfo.HeaderName)).Bold().FontSize(14);
+
+
+                    Table subHeaderTable = document.AddTable(subHeaderInfo.Params.Count(), 2);
+                    subHeaderTable.Alignment = Alignment.center;
+                    subHeaderTable.Design = TableDesign.TableGrid;
+
+                    int index = 0;
+                    foreach (var entry in subHeaderInfo.Params)
+                    {
+                        subHeaderTable.Rows[index].Cells[0].Paragraphs.First().Append(entry.Item1);
+                        subHeaderTable.Rows[index].Cells[1].Paragraphs.First().Append(entry.Item2);
+                        index++;
+                    }
+
+                    document.InsertTable(subHeaderTable);
+                }
+
+                return document;
+
+            
+        }
+
+
+        
+
+        private void GenerateMultipleFilesReport()
+        {
+ 
+        }
+
+
     }
 }

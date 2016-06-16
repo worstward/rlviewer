@@ -117,9 +117,13 @@ namespace RlViewer.Forms
             {
                 this.Close();
             }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                ClearFileCache();
+            }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ClearFileCache()
         {
             if (dataGridView1.SelectedRows != null && dataGridView1.SelectedRows.Count != 0)
             {
@@ -132,7 +136,7 @@ namespace RlViewer.Forms
                     foreach (var r in dataGridView1.SelectedRows)
                     {
                         var row = r as DataGridViewRow;
-                        
+
                         try
                         {
                             var deletionPath = Path.Combine(_tileDir, row.Cells[0].Value.ToString(),
@@ -142,7 +146,7 @@ namespace RlViewer.Forms
 
                             //if (Directory.GetDirectories(Directory.GetParent(deletionPath)).Select(x => Directory.GetFiles(x)).SelectMany(x => x).Count() == 0)
                             //{
- 
+
                             //}
                             dataGridView1.Rows.Remove(row);
                             Logging.Logger.Log(Logging.SeverityGrades.Info,
@@ -155,6 +159,14 @@ namespace RlViewer.Forms
                     }
                 }
             }
+        }
+
+
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ClearFileCache();
         }
 
         private void OpenInExplorer()

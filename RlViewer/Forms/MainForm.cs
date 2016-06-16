@@ -493,6 +493,11 @@ namespace RlViewer.Forms
             _guiFacade.ScaleImage(1);
         }
 
+        private void создатьОтчетToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _guiFacade.MakeReport();
+        }
+
 
     }
 }

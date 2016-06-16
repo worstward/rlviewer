@@ -9,7 +9,7 @@ using RlViewer.Behaviors.Draw;
 
 namespace RlViewer.Files.Rli.Abstract
 {
-    public abstract class RliFile : LocatorFile, IHeader
+    public abstract class RliFile : LocatorFile
     {
         protected RliFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header,
             RlViewer.Navigation.NavigationContainer navi) : base(properties, header, navi)

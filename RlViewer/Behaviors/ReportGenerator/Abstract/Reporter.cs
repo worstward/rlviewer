@@ -8,23 +8,21 @@ namespace RlViewer.Behaviors.ReportGenerator.Abstract
 {
     public abstract class Reporter
     {
-        public Reporter(Files.LocatorFile file)
+        public Reporter(params string[] filePaths)
         {
-            _file = file;
+            _filePaths = filePaths;
         }
 
-        private Files.LocatorFile _file;
-        protected Files.LocatorFile File
+        private string[] _filePaths;
+        protected string[] FilePaths
         {
             get
             {
-                return _file;
+                return _filePaths;
             }
         }
 
-
-        public abstract void GenerateReport(string fileName);
-
-
+        public abstract void GenerateReport(string reportFilePath);
+    
     }
 }
