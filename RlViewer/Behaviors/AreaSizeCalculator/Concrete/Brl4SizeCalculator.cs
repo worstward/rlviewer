@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
 {
-    class RSizeCalculator : RlViewer.Behaviors.AreaSizeCalculator.Abstract.SizeCalculator
+    class Brl4SizeCalculator : RlViewer.Behaviors.AreaSizeCalculator.Abstract.SizeCalculator
     {
-        public RSizeCalculator(Headers.Abstract.LocatorFileHeader header)
+        public Brl4SizeCalculator(Headers.Abstract.LocatorFileHeader header)
         {
-            var fileHead = header as Headers.Concrete.R.RHeader;
-            _dx = fileHead.HeaderStruct.synthesisHeader.dx;
-            _dy = fileHead.HeaderStruct.synthesisHeader.dy;
+            var fileHead = header as Headers.Concrete.Brl4.Brl4Header;
+            _dx = fileHead.HeaderStruct.rlParams.dx;
+            _dy = fileHead.HeaderStruct.rlParams.dy;
         }
 
 

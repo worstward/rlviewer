@@ -8,11 +8,11 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
 {
     class Rl4SizeCalculator : RlViewer.Behaviors.AreaSizeCalculator.Abstract.SizeCalculator
     {
-        public Rl4SizeCalculator(Files.LocatorFile file)
+        public Rl4SizeCalculator(Headers.Abstract.LocatorFileHeader header)
         {
-            var header = file.Header as Headers.Concrete.Rl4.Rl4Header;
-            _dx = header.HeaderStruct.rlParams.dx;
-            _dy = header.HeaderStruct.rlParams.dy;
+            var fileHead = header as Headers.Concrete.Rl4.Rl4Header;
+            _dx = fileHead.HeaderStruct.rlParams.dx;
+            _dy = fileHead.HeaderStruct.rlParams.dy;
         }
 
 

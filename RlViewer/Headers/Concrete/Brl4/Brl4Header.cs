@@ -141,7 +141,7 @@ namespace RlViewer.Headers.Concrete.Brl4
             synthHeader.Add(new Tuple<string, string>("Угол зондирования",          string.Format("{0}°",headerStruct.synthParams.angle_zond.ToString())));
             
             var comments = new List<Tuple<string, string>>();
-            comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments)));
+            comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments).Trim('\0')));
 
             return new HeaderInfoOutput[]
             {

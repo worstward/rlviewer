@@ -8,10 +8,10 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
 {
     class KSizeCalculator : RlViewer.Behaviors.AreaSizeCalculator.Abstract.SizeCalculator
     {
-        public KSizeCalculator(Files.LocatorFile file)
+        public KSizeCalculator(Headers.Abstract.LocatorFileHeader header)
         {
-            var header = file.Header as Headers.Concrete.K.KHeader;
-            _dx = 300 / (2 * header.HeaderStruct.adcHeader.adcFreq);
+            var fileHead = header as Headers.Concrete.K.KHeader;
+            _dx = 300 / (2 * fileHead.HeaderStruct.adcHeader.adcFreq);
             _dy = _dx;
         }
 

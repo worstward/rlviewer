@@ -10,16 +10,16 @@ namespace RlViewer.Factories.Reporter.Abstract
     {
         public abstract Behaviors.ReportGenerator.Abstract.Reporter Create(params string[] filePaths);
 
-        public static ReporterFactory GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes type)
+        public static ReporterFactory GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes reporterType)
         {
-            switch(type)
+            switch(reporterType)
             {
                 case Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx:
                     return new Concrete.DocReporterFactory();
                 
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException("reporterType");
         }
     }
 }

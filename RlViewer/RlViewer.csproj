@@ -87,6 +87,7 @@
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\AreaSizeCalculator\Abstract\SizeCalculator.cs" />
+    <Compile Include="Behaviors\AreaSizeCalculator\Concrete\Brl4SizeCalculator.cs" />
     <Compile Include="Behaviors\AreaSizeCalculator\Concrete\KSizeCalculator.cs" />
     <Compile Include="Behaviors\AreaSizeCalculator\Concrete\RawSizeCalculator.cs" />
     <Compile Include="Behaviors\AreaSizeCalculator\Concrete\Rl4SizeCalculator.cs" />
@@ -128,7 +129,14 @@
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\LinearLeastSquares.cs" />
     <Compile Include="Behaviors\ImageAligning\Normalizer.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\Surface.cs" />
-    <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\SurfaceFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Abstract\AreaSizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\Brl4SizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\KSizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\RawSizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\Rl4SizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\Rl8SizeCalcFactory.cs" />
+    <Compile Include="Factories\AreaSizeCalc\Concrete\RSizeCalcFactory.cs" />
+    <Compile Include="Factories\Surface\SurfaceFactory.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface16Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface3Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface4Points.cs" />

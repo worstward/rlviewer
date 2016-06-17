@@ -78,8 +78,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     byte[] strHeader = new byte[SourceFile.Header.StrHeaderLength];
 
-                    int strDataLength = _file.Width * _file.Header.BytesPerSample;
-                    byte[] frameData = new byte[area.Width * _file.Header.BytesPerSample];
+                    byte[] strData = new byte[area.Width * _file.Header.BytesPerSample];
 
                     var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
                     var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
@@ -99,14 +98,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         fw.Write(strHeader, 0, SourceFile.Header.StrHeaderLength);
 
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
-                        fr.Read(frameData, 0, frameData.Length);
+                        fr.Read(strData, 0, strData.Length);
 
-                        var floatSamples = new float[frameData.Length / sizeof(float)];
+                        var floatSamples = new float[strData.Length / sizeof(float)];
                         var amplitudes = new float[floatSamples.Length / 2];
 
                         var amplitudeBytes = new byte[amplitudes.Length * sizeof(float)];
                         int index = 0;
-                        Buffer.BlockCopy(frameData, 0, floatSamples, 0, frameData.Length);
+                        Buffer.BlockCopy(strData, 0, floatSamples, 0, strData.Length);
 
                         for (int j = 0; j < floatSamples.Length; j += 2)
                         {
@@ -118,7 +117,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                         
                         fw.Write(amplitudeBytes, 0, amplitudeBytes.Length);
-                        fr.Seek(strDataLength - frameData.Length - sampleToStartSaving, SeekOrigin.Current);
+                        fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                     }
 
                 }
@@ -126,9 +125,59 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        public override void SaveAsAligned(string fileName, Rectangle area, byte[] image)
+        /// <summary>
+        /// Saves aligned image as .brl4 file
+        /// </summary>
+        /// <param name="fileName">Name of new file</param>
+        /// <param name="area">Selected area to save</param>
+        /// <param name="image">Byte array containing aligned image</param>
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image)
         {
-            throw new NotImplementedException();
+            
+            alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
+
+            Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
+            int bytesPerSample = _file.Header.BytesPerSample / 2;
+            
+            byte[] strHeader = new byte[SourceFile.Header.StrHeaderLength];
+            byte[] strData = new byte[area.Width * bytesPerSample];
+
+            var rlHead = _file.Header as Headers.Concrete.Rl4.Rl4Header;
+
+            brlHeadStruct = rlHead.HeaderStruct.ToBrl4(1, 1, 1);
+
+            //angle_zond = arccos(height) * initialRange
+            var rlParams = brlHeadStruct.rlParams
+                .ChangeFragmentShift(area.X, area.Y).ChangeImgDimensions(area.Width, area.Height);
+            brlHeadStruct = new Headers.Concrete.Brl4.Brl4RliFileHeader(brlHeadStruct.fileSign,
+                brlHeadStruct.fileVersion, brlHeadStruct.rhgParams, rlParams, brlHeadStruct.synthParams, brlHeadStruct.reserved);
+
+
+            using (var ms = new MemoryStream(image))
+            {
+                using (var fr = File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    {
+                        var headBytes = RlViewer.Files.LocatorFile.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
+                        fw.Write(headBytes, 0, headBytes.Length);
+                        fr.Seek(_file.Header.FileHeaderLength, SeekOrigin.Current);
+                        fr.Seek((strHeader.Length + _file.Width * bytesPerSample) * area.Y, SeekOrigin.Current);
+
+                        for (int i = 0; i < area.Height; i++)
+                        {
+                            fr.Read(strHeader, 0, strHeader.Length);
+                            fr.Seek(_file.Width * _file.Header.BytesPerSample, SeekOrigin.Current);
+                            ms.Read(strData, 0, strData.Length);
+
+                            fw.Write(strHeader, 0, strHeader.Length);
+                            fw.Write(strData, 0, strData.Length);
+
+                        }
+                    }
+                }
+            }
+
         }
 
 

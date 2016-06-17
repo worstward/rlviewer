@@ -394,14 +394,16 @@ namespace RlViewer.UI
 
         private void loaderWorker_AlignImage(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            var args = (object[])e.Argument;
+            var fileName = (string)args[0];
+
             _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
             _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
             _cancellableAction = _aligner;
-            string fileName = Path.GetFileName(_file.Properties.FilePath);
             _aligner.Resample(fileName);
 
             e.Cancel = _aligner.Cancelled;
-            e.Result = Path.GetFileNameWithoutExtension(fileName) + "_aligned" + Path.GetExtension(fileName);
+            e.Result = fileName;
         }
 
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -1269,10 +1271,17 @@ namespace RlViewer.UI
         public void AlignImage()
         {
             //new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector)
-
-            _aligner = new Behaviors.ImageAligning.Aligning(_file,
-                _pointSelector, new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(_pointSelector), _saver);
-            StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted);
+            using (var alignedSaveDlg = new SaveFileDialog())
+            {
+                alignedSaveDlg.Filter = "Обработанные файлы|.brl4";
+                if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
+                { 
+                    _aligner = new Behaviors.ImageAligning.Aligning(_file,
+                        _pointSelector, new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(_pointSelector), _saver);
+                    StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
+                        new object[] { alignedSaveDlg.FileName });
+                }
+            }
         }
 
         public void ShowFindPoint()

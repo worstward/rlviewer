@@ -147,7 +147,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             //synthHeader.Add(new Tuple<string, string>("Поляризация",                     headerStruct.synthParams.polarization.ToString()));
             
             var comments = new List<Tuple<string, string>>();
-            comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments)));
+            comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments).Trim('\0')));
 
             return new HeaderInfoOutput[]
             {

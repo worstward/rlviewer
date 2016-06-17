@@ -23,9 +23,10 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             {
                 for (int i = 0; i < FilePaths.Length; i++)
                 {
-                    var docToInsert = PrepareReport(reportFilePath, FilePaths[i]);
-                    document.InsertDocument(docToInsert);
-                    docToInsert.Dispose();
+                    using (var docToInsert = PrepareReport(reportFilePath, FilePaths[i]))
+                    { 
+                        document.InsertDocument(docToInsert);
+                    }
                 }
                 document.Save();
             }
@@ -33,21 +34,27 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
 
 
-        
-
-
         private DocX PrepareReport(string reportFilePath, string locatorFilePath)
         {
                 DocX document = DocX.Create(reportFilePath);
             
-                var fileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(
-                    new Files.FileProperties(locatorFilePath)).Create(locatorFilePath);
+            var prop = new Files.FileProperties(locatorFilePath);
+            var fileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(prop)
+                .Create(locatorFilePath);
+
+            var file = Factories.File.Abstract.FileFactory.GetFactory(prop)
+                .Create(prop, fileHeader, null);
+
 
                 Paragraph p = document.InsertParagraph();
                 p.Alignment = Alignment.center;
                 p.Append(System.IO.Path.GetFileName(locatorFilePath)).Bold().FontSize(20)
                 .Append(Environment.NewLine)
-                .Append(Environment.NewLine);
+                .Append(Environment.NewLine)
+                .Append(string.Format("Площадь засвеченной поверхности: {0}м2",
+                Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
+                .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
+                .ToString(".################################")));
 
                 foreach (var subHeaderInfo in fileHeader.HeaderInfo)
                 {
@@ -70,18 +77,9 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
                     document.InsertTable(subHeaderTable);
                 }
-
+                document.InsertSectionPageBreak();
                 return document;
-
-            
-        }
-
-
-        
-
-        private void GenerateMultipleFilesReport()
-        {
- 
+          
         }
 
 

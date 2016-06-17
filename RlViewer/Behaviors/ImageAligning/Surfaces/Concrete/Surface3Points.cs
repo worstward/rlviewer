@@ -78,12 +78,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
+
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newAmplVal = GetPlaneValue(i, j, AmplitudeSolution.First());
                     var newRcsVal = GetPlaneValue(i, j, RcsSolution.First());
                     var diff = oldAmplVal / newAmplVal * newRcsVal;
                     //var ls = RcsProvider.GetValueAt(diff);
                     //diff *= ls;
+
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }

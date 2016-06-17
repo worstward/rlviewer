@@ -8,7 +8,7 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
 {
     class RawSizeCalculator : RlViewer.Behaviors.AreaSizeCalculator.Abstract.SizeCalculator
     {
-        public RawSizeCalculator(Files.LocatorFile file)
+        public RawSizeCalculator(Headers.Abstract.LocatorFileHeader header)
         {
             _dx = _dy = 1;
         }

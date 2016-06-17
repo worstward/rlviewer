@@ -53,10 +53,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image)
         {
-            var alignedFileName = Path.GetFileNameWithoutExtension(fileName) + "_aligned";
-
+            
             alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
           
             Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
@@ -91,6 +90,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                             fr.Seek(_file.Width * _file.Header.BytesPerSample, SeekOrigin.Current);
                             ms.Read(strData, 0, strData.Length);
                             fw.Write(strHeader, 0, strHeader.Length);
+                            
                             fw.Write(strData, 0, strData.Length);
                         }
                     }

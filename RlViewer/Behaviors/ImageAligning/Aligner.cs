@@ -15,7 +15,7 @@ namespace RlViewer.Behaviors.ImageAligning
             _file = file;     
             _selector = selector;
             _saver = saver;
-            _surface = Surfaces.Abstract.SurfaceFactory.CreateSurface(_selector, rcsProvider);
+            _surface = Factories.Surface.SurfaceFactory.CreateSurface(_selector, rcsProvider);
         }
 
         public override bool Cancelled
@@ -61,7 +61,7 @@ namespace RlViewer.Behaviors.ImageAligning
             var resampledImage = _surface.ResampleImage(_file, area);
 
             if(resampledImage != null)
-            { 
+            {           
                 _saver.SaveAsAligned(fileName, area, resampledImage);
             }
         }
