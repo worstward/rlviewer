@@ -172,4 +172,19 @@
   <data name="ZoomOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ZoomOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Grayscale" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grayscale.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LightBlues" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LightBlues.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pinks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pinks.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rainbow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Rainbow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellows" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Yellows.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

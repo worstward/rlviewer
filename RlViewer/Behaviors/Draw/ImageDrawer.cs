@@ -30,7 +30,8 @@ namespace RlViewer.Behaviors.Draw
         {
             get
             {
-                return _colorPalette = _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B, PaletteParams.Reversed);
+                return _colorPalette = _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B,
+                    PaletteParams.Reversed, PaletteParams.UseTemperaturePalette);
             }
         }
 
@@ -39,10 +40,30 @@ namespace RlViewer.Behaviors.Draw
         /// Initializes look-up palette for 8bpp image
         /// </summary>
         /// <returns>Color palette</returns>
-        private ColorPalette InitPalette(float rFactor, float gFactor, float bFactor, bool isReversed)
+        private ColorPalette InitPalette(float rFactor, float gFactor, float bFactor, bool isReversed, bool useTemperaturePalette)
         {
             //TODO: REWRITE PALETTE INIT
             ColorPalette colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+
+
+            if (useTemperaturePalette)
+            {
+                for (int i = 0; i < 256; i++)
+                {
+                    if (isReversed)
+                    {
+                        colorPalette.Entries[256 - i] = ColorFromHSV(256 - i, 1, 0.5f);
+                    }
+                    else
+                    {
+                        colorPalette.Entries[i] = ColorFromHSV(256 - i, 1, 0.5f);
+                    }
+                }
+
+                return colorPalette;
+            }
+
+
 
             const int alpha = 255;
 
@@ -70,13 +91,40 @@ namespace RlViewer.Behaviors.Draw
                     }
                     else
                     {
+                        var color = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
                         colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                     }
                 }
             }
 
 
+
             return colorPalette;
+        }
+
+        private Color ColorFromHSV(double hue, double saturation, double value)
+        {
+            int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
+            double f = hue / 60 - Math.Floor(hue / 60);
+
+            value = value * 255;
+            int v = Convert.ToInt32(value);
+            int p = Convert.ToInt32(value * (1 - saturation));
+            int q = Convert.ToInt32(value * (1 - f * saturation));
+            int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
+
+            if (hi == 0)
+                return Color.FromArgb(255, v, t, p);
+            else if (hi == 1)
+                return Color.FromArgb(255, q, v, p);
+            else if (hi == 2)
+                return Color.FromArgb(255, p, v, t);
+            else if (hi == 3)
+                return Color.FromArgb(255, p, q, v);
+            else if (hi == 4)
+                return Color.FromArgb(255, t, p, v);
+            else
+                return Color.FromArgb(255, v, p, q);
         }
 
 
@@ -102,7 +150,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="B">Blue channel</param>
         /// <param name="reversed">Determines if colors in color table are reversed</param>
         /// <param name="logarithmic">Determines if palette uses grouped colors</param>
-        public void GetPalette(float R, float G, float B, bool reversed, bool grouped)
+        public void GetPalette(float R, float G, float B, bool reversed, bool grouped, bool useTemperaturePalette)
         {
             _colorPalette = null;
             PaletteParams.R = R;
@@ -110,6 +158,7 @@ namespace RlViewer.Behaviors.Draw
             PaletteParams.B = B;
             PaletteParams.Reversed = reversed;
             PaletteParams.IsGroupped = grouped;
+            PaletteParams.UseTemperaturePalette = useTemperaturePalette;
         }
 
         private static class PaletteParams
@@ -143,7 +192,19 @@ namespace RlViewer.Behaviors.Draw
                 }
             }
 
+            private static bool _useTemperaturePalette = false;
 
+            public static bool UseTemperaturePalette
+            {
+                get 
+                { 
+                    return PaletteParams._useTemperaturePalette;
+                }
+                set 
+                { 
+                    PaletteParams._useTemperaturePalette = value;
+                }
+            }
 
             private static float _red = 1;
             public static float R

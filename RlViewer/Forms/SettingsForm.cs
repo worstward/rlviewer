@@ -18,8 +18,11 @@ namespace RlViewer.Forms
             _settings = settings;
 
             InitializeComponent();
-            comboBox1.SelectedItem = _settings.Palette.Select(x => x.ToString())
-                .Aggregate((x, y) => x.ToString() + " " + y.ToString());
+            FillComboBox();
+
+            comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
+                .Where(item => item.Text == _settings.Palette.Select(x => x.ToString())
+                .Aggregate((x, y) => x.ToString() + " " + y.ToString())).FirstOrDefault();
             inverseCheckBox.Checked = _settings.IsPaletteReversed;
             allowViewCheckBox.Checked = _settings.AllowViewWhileLoading;
             forceTileGenCheckBox.Checked = _settings.ForceTileGeneration;
@@ -29,9 +32,10 @@ namespace RlViewer.Forms
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
             highResCb.Checked = _settings.HighResForDownScaled;
-
+            compressCoefTb.Text = _settings.CompressionCoef.ToString();
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areaSizeTextBox.PromptChar = ' ';
+
         }
 
         private Settings.Settings _settings;
@@ -45,6 +49,16 @@ namespace RlViewer.Forms
         private Behaviors.TileCreator.TileOutputType _outputType;
         private bool _highRes;
 
+
+        private void FillComboBox()
+        {
+            comboBoxPics1.Items.Add(new CboItem("1 1 1", Properties.Resources.Grayscale));
+            comboBoxPics1.Items.Add(new CboItem("-1 -1 -1", Properties.Resources.Rainbow));
+            comboBoxPics1.Items.Add(new CboItem("1 1 0", Properties.Resources.Yellows));
+            comboBoxPics1.Items.Add(new CboItem("1 0 1", Properties.Resources.Pinks));
+            comboBoxPics1.Items.Add(new CboItem("0 1 1", Properties.Resources.LightBlues));
+        }
+
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             _allowViewWhileLoading = ((CheckBox)sender).Checked;
@@ -55,20 +69,6 @@ namespace RlViewer.Forms
             _forceTileGen = ((CheckBox)sender).Checked;
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                _palette = ((ComboBox)sender).GetItemText(comboBox1.SelectedItem).Split(' ')
-                    .Select(x => Convert.ToSingle(x)).ToArray();
-            }
-            catch (Exception ex)
-            {
-                _palette = new float[] { 1, 1, 1 };
-                Logging.Logger.Log(Logging.SeverityGrades.Warning, 
-                    string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
-            }
-        }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -91,6 +91,22 @@ namespace RlViewer.Forms
             }
             else return;
 
+            float compressCoef;
+            if (Single.TryParse(compressCoefTb.Text, out compressCoef))
+            {
+                _settings.CompressionCoef = compressCoef == 0 ? 1 : compressCoef;
+            }
+            else return;
+
+
+            if ((_palette[0] == _palette[1]) && (_palette[1] == _palette[2]) && (_palette[0] == -1))
+            {
+                _settings.UseTemperaturePalette = true;
+            }
+            else
+            {
+                _settings.UseTemperaturePalette = false;
+            }
             
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
@@ -148,5 +164,21 @@ namespace RlViewer.Forms
             _highRes = ((CheckBox)sender).Checked;
         }
 
+        private void comboBoxPics1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _palette = ((ComboBox)sender).GetItemText(((CboItem)comboBoxPics1.SelectedItem).Text).Split(' ')
+                    .Select(x => Convert.ToSingle(x)).ToArray();
+            }
+            catch (Exception ex)
+            {
+                _palette = new float[] { 1, 1, 1 };
+                Logging.Logger.Log(Logging.SeverityGrades.Warning,
+                    string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
+            }
+        }
+
     }
+
 }

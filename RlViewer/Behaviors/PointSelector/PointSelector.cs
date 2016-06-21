@@ -8,7 +8,6 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class PointSelector : IEnumerable<SelectedPoint>
     {
-        private IList<SelectedPoint> _selectedPoints = new List<SelectedPoint>();
 
         public PointSelector()
         {
@@ -21,17 +20,26 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
+        private IList<SelectedPoint> _selectedPoints = new List<SelectedPoint>();
+
+        protected IList<SelectedPoint> SelectedPoints
+        {
+            get { return _selectedPoints; }
+            set { _selectedPoints = value; }
+        }
+
+
         public SelectedPoint this[int index]
         {
             get
             {
-                return _selectedPoints[index];
+                return SelectedPoints[index];
             }
         }
 
         public IEnumerator<SelectedPoint> GetEnumerator()
         {
-            return _selectedPoints.GetEnumerator();
+            return SelectedPoints.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -45,7 +53,7 @@ namespace RlViewer.Behaviors.PointSelector
         /// </summary>
         /// <param name="selectedPoints">Selected points list</param>
         /// <returns>Ordered in matrix order list</returns>
-        private IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
+        protected IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
         {
             var sortedList = new List<SelectedPoint>();
             var matrixDimension = (int)Math.Sqrt(selectedPoints.Count);
@@ -88,9 +96,9 @@ namespace RlViewer.Behaviors.PointSelector
 
 
 
-        public void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
+        public virtual void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
         {
-            if (_selectedPoints.Count < 16)
+            if (SelectedPoints.Count < 16)
             {
                 if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
                 {
@@ -131,28 +139,28 @@ namespace RlViewer.Behaviors.PointSelector
                             
                             System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
 
-                            _selectedPoints.Add(new SelectedPoint(file,
+                            SelectedPoints.Add(new SelectedPoint(file,
                                 file.GetMaxSampleLocation(area), epr.EprValue));
                         }
                     }
                 }
-                if (_selectedPoints.Count == 4 || _selectedPoints.Count == 16)
+                if (SelectedPoints.Count == 4 || SelectedPoints.Count == 16)
                 {
-                    _selectedPoints = OrderAsMatrix(_selectedPoints);
+                    SelectedPoints = OrderAsMatrix(SelectedPoints);
                 }
             }
         }
 
         public void Add(SelectedPoint selectedPoint)
         {
-            _selectedPoints.Add(selectedPoint);
+            SelectedPoints.Add(selectedPoint);
         }
 
         public void RemoveLast()
         {
-            if (_selectedPoints.Count > 0)
+            if (SelectedPoints.Count > 0)
             {
-                _selectedPoints.RemoveAt(_selectedPoints.Count - 1);
+                SelectedPoints.RemoveAt(SelectedPoints.Count - 1);
             }
         }
 

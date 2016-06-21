@@ -33,7 +33,6 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
         }
 
 
-
         private DocX PrepareReport(string reportFilePath, string locatorFilePath)
         {
                 DocX document = DocX.Create(reportFilePath);
@@ -56,31 +55,40 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                 .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
                 .ToString(".################################")));
 
-                foreach (var subHeaderInfo in fileHeader.HeaderInfo)
+                foreach (var subHeaderInfo in file.Header.HeaderInfo)
                 {
-                    Paragraph subHeader = document.InsertParagraph();
-                    subHeader.Alignment = Alignment.center;
-                    subHeader.Append(System.IO.Path.GetFileName(subHeaderInfo.HeaderName)).Bold().FontSize(14);
-
-
-                    Table subHeaderTable = document.AddTable(subHeaderInfo.Params.Count(), 2);
-                    subHeaderTable.Alignment = Alignment.center;
-                    subHeaderTable.Design = TableDesign.TableGrid;
-
-                    int index = 0;
-                    foreach (var entry in subHeaderInfo.Params)
-                    {
-                        subHeaderTable.Rows[index].Cells[0].Paragraphs.First().Append(entry.Item1);
-                        subHeaderTable.Rows[index].Cells[1].Paragraphs.First().Append(entry.Item2);
-                        index++;
-                    }
-
-                    document.InsertTable(subHeaderTable);
+                    var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
+                    document.InsertTable(headerTable);
+                    document.InsertSectionPageBreak();
                 }
-                document.InsertSectionPageBreak();
+
                 return document;
-          
         }
+
+
+
+        private Table PrepareHeaderInfoTable(DocX document, HeaderInfoOutput headerInfo)
+        {
+            Paragraph subHeader = document.InsertParagraph();
+            subHeader.Alignment = Alignment.center;
+            subHeader.Append(System.IO.Path.GetFileName(headerInfo.HeaderName)).Bold().FontSize(14);
+
+
+            Table subHeaderTable = document.AddTable(headerInfo.Params.Count(), 2);
+            subHeaderTable.Alignment = Alignment.center;
+            subHeaderTable.Design = TableDesign.TableGrid;
+
+            int index = 0;
+            foreach (var entry in headerInfo.Params)
+            {
+                subHeaderTable.Rows[index].Cells[0].Paragraphs.First().Append(entry.Item1);
+                subHeaderTable.Rows[index].Cells[1].Paragraphs.First().Append(entry.Item2);
+                index++;
+            }
+
+            return subHeaderTable;
+        }
+
 
 
     }

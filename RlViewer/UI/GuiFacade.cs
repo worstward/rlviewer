@@ -48,10 +48,11 @@ namespace RlViewer.UI
                     DrawItems(e.Graphics);
                 };
 
-            SetDoubleBuffered(_form.Canvas);
+            //SetDoubleBuffered(_form.Canvas);
 
             InitializeWindow();
         }
+
 
 
         private Settings.Settings _settings;
@@ -132,6 +133,7 @@ namespace RlViewer.UI
             string caption;
             using (var openFileDlg = new OpenFileDialog() { Filter = Resources.OpenFilter })
             {
+                openFileDlg.Title = "Радиолокационный файл";
                 if (openFileDlg.ShowDialog() == DialogResult.OK)
                 {
                     return OpenFile(openFileDlg.FileName);
@@ -273,7 +275,8 @@ namespace RlViewer.UI
             }
             else
             {
-                e.Result = _searcher.GetCoordinates(NaviStringExt.ParseToRadians(xy.Item1), NaviStringExt.ParseToRadians(xy.Item2));
+                e.Result = _searcher.GetCoordinates(NaviStringConverters.ParseToRadians(xy.Item1),
+                    NaviStringConverters.ParseToRadians(xy.Item2));
             }
 
         }
@@ -523,7 +526,7 @@ namespace RlViewer.UI
                 }
 
 
-                _pointSelector = new Behaviors.PointSelector.PointSelector();
+                _pointSelector = new Behaviors.PointSelector.CompressedPointSelectorWrapper((int)_settings.CompressionCoef);
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 InitProgressControls(false);
                 InitDrawImage();
@@ -590,32 +593,33 @@ namespace RlViewer.UI
                 var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
-                ChangePalette(_settings.Palette, _settings.IsPaletteReversed, _settings.IsPaletteGroupped);
+                ChangePalette(_settings.Palette, _settings.IsPaletteReversed,
+                    _settings.IsPaletteGroupped, _settings.UseTemperaturePalette);
                 InitScrollBars(_scaler.ScaleFactor);
                 
                 DrawImage();
             }
         }
 
-        private void InvalidateCanvas()
-        {
-            Task.Run(() =>
-            {
-                while(true)
-                {
-                    if (_messageList.Count != 0)
-                    {
-                        _form.Canvas.Image = _messageList.Take()();
-                        while (_messageList.Count > 0)
-                        {
-                            var obj = _messageList.Take();
-                        }
-                    }
-                }
-            });
-        }
+        //private void InvalidateCanvas()
+        //{
+        //    Task.Run(() =>
+        //    {
+        //        while(true)
+        //        {
+        //            if (_messageList.Count != 0)
+        //            {
+        //                _form.Canvas.Image = _messageList.Take()();
+        //                while (_messageList.Count > 0)
+        //                {
+        //                    var obj = _messageList.Take();
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
 
-        private System.Collections.Concurrent.BlockingCollection<Func<Image>> _messageList = new System.Collections.Concurrent.BlockingCollection<Func<Image>>();
+        //private System.Collections.Concurrent.BlockingCollection<Func<Image>> _messageList = new System.Collections.Concurrent.BlockingCollection<Func<Image>>();
 
         protected static void SetDoubleBuffered(System.Windows.Forms.Control c)
         {
@@ -646,7 +650,7 @@ namespace RlViewer.UI
                 //        _messageList.Add(() => _drawer.Draw(_tiles,
                 //               new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled));
                 //    });
-                //RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
+                RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone());
             }
         }
 
@@ -658,11 +662,11 @@ namespace RlViewer.UI
             }
         }
 
-        public void ChangePalette(float[] rgb, bool isReversed, bool isGrouped)
+        public void ChangePalette(float[] rgb, bool isReversed, bool isGrouped, bool useTemperaturePalette)
         {
             if (_drawer != null)
             {
-                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, isGrouped);
+                _drawer.GetPalette(rgb[0], rgb[1], rgb[2], isReversed, isGrouped, useTemperaturePalette);
             }
         }
 
@@ -718,6 +722,7 @@ namespace RlViewer.UI
             {
                 using (var sfd = new SaveFileDialog())
                 {
+                    sfd.Title = "Имя сохраняемого файла";
                     sfd.FileName = Path.GetFileNameWithoutExtension(_file.Properties.FilePath).ToString();
 
                     sfd.Filter = GetSaveDialogFilter(_file);
@@ -1273,7 +1278,7 @@ namespace RlViewer.UI
             //new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector)
             using (var alignedSaveDlg = new SaveFileDialog())
             {
-                alignedSaveDlg.Filter = "Обработанные файлы|.brl4";
+                alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
                 if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
                 { 
                     _aligner = new Behaviors.ImageAligning.Aligning(_file,
@@ -1330,6 +1335,7 @@ namespace RlViewer.UI
         {
             using (var ofd = new OpenFileDialog())
             {
+                ofd.Title = "Файлы для формирования отчета";
                 ofd.Multiselect = true;
                 ofd.Filter = Resources.OpenFilter;
                 if (ofd.ShowDialog() == DialogResult.OK)
@@ -1339,10 +1345,22 @@ namespace RlViewer.UI
                         .Create(ofd.FileNames);
                     using (var fsd = new SaveFileDialog())
                     {
-                        fsd.Filter = "*Файл .docx|.docx";
+                        fsd.Title = "Имя для файла отчета";
+                        fsd.Filter = "Документ MS Word|.docx";
                         if (fsd.ShowDialog() == DialogResult.OK)
                         {
-                            reporter.GenerateReport(fsd.FileName);
+                            try
+                            {
+                                reporter.GenerateReport(fsd.FileName);
+                                Logging.Logger.Log(Logging.SeverityGrades.Info, 
+                                    string.Format("Report file generated: {0}", fsd.FileName));
+                            }
+                            catch (Exception ex)
+                            {
+                                ErrorGuiMessage("Ошибка при создании отчета");
+                                Logging.Logger.Log(Logging.SeverityGrades.Error, 
+                                    string.Format("Unable to make report: {0}", ex.Message));
+                            }
                         }
                     }
                 }

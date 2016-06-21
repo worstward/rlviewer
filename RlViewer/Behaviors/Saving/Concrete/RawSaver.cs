@@ -46,10 +46,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image)
         {
-            var alignedFileName = Path.GetFileNameWithoutExtension(fileName) + "_aligned";
-
             alignedFileName = Path.ChangeExtension(alignedFileName, "raw");
             File.WriteAllBytes(alignedFileName, image);                    
         }

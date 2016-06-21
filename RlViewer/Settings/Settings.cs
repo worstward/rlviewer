@@ -58,8 +58,16 @@ namespace RlViewer.Settings
             set { isGrouped = value; }
         }
 
+        private bool _useTemperaturePalette;
 
-        private int _sectionSize = 500;
+        [DataMember]
+        public bool UseTemperaturePalette
+        {
+            get { return _useTemperaturePalette; }
+            set { _useTemperaturePalette = value; }
+        }
+
+        private int _sectionSize = 50;
 
         /// <summary>
         /// Amount of points for section graph
@@ -71,7 +79,7 @@ namespace RlViewer.Settings
             set { _sectionSize = value; }
         }
 
-        private int _areaSize = 1;
+        private int _areaSize = 3;
         /// <summary>
         /// Rectangle area side length
         /// </summary>
@@ -89,6 +97,15 @@ namespace RlViewer.Settings
         {
             get { return _highResForDownScaled; }
             set { _highResForDownScaled = value; }
+        }
+
+        private float _compressionCoef = 1f;
+
+        [DataMember]
+        public float CompressionCoef
+        {
+            get { return _compressionCoef; }
+            set { _compressionCoef = value; }
         }
 
 

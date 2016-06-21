@@ -12,8 +12,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
         public KSaver(Files.LocatorFile file)
             : base(file)
         {
- 
+            _source = file as Files.Rhg.Concrete.K;
         }
+
+        private Files.LocatorFile _source;
 
         public override void Save(string path, FileType destinationType, System.Drawing.Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue)
         {
@@ -27,7 +29,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         public override Files.LocatorFile SourceFile
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return _source;    
+            }
         }
 
     }

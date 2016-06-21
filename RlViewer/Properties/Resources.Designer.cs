@@ -153,9 +153,29 @@ namespace RlViewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Grayscale {
+            get {
+                object obj = ResourceManager.GetObject("Grayscale", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap HSection {
             get {
                 object obj = ResourceManager.GetObject("HSection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LightBlues {
+            get {
+                object obj = ResourceManager.GetObject("LightBlues", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,6 +213,26 @@ namespace RlViewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Pinks {
+            get {
+                object obj = ResourceManager.GetObject("Pinks", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Rainbow {
+            get {
+                object obj = ResourceManager.GetObject("Rainbow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ruler {
             get {
                 object obj = ResourceManager.GetObject("Ruler", resourceCulture);
@@ -216,6 +256,16 @@ namespace RlViewer.Properties {
         internal static System.Drawing.Bitmap VSection {
             get {
                 object obj = ResourceManager.GetObject("VSection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Yellows {
+            get {
+                object obj = ResourceManager.GetObject("Yellows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

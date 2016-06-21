@@ -29,22 +29,63 @@ namespace RlViewer.Behaviors.Draw
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
 
 
+        /// <summary>
+        /// Creates image from visible parts of tiles
+        /// </summary>
+        /// <param name="canvas">Bitmap to draw on</param>
+        /// <param name="screenSize">Size of output window (picturebox)</param>
+        /// <param name="tiles">Array of Tile objects</param>
+        /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
+        /// <returns></returns>       
+        public Image DrawImage(int width, int height, Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
+        {
+            IEnumerable<TileImageWrapper> wrappers;
+
+            if (Scaler.ScaleFactor == 1)
+            {
+                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize);
+            }
+            else if (Scaler.ScaleFactor > 1)
+            {
+                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize);
+            }
+            else
+            {
+                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
+            }
+
+            return DrawWrappers(wrappers, screenSize);
+        }
+
+
+        /// <summary>
+        /// Draws imageWrapper with given image and its location
+        /// </summary>
+        /// <param name="tilesToDraw"></param>
+        /// <param name="screenSize"></param>
+        /// <returns></returns>
         private Image DrawWrappers(IEnumerable<TileImageWrapper> tilesToDraw, Size screenSize)
         {
             Bitmap canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
-
-            foreach (var t in tilesToDraw)
+            using (var g = Graphics.FromImage(canvas))
             {
-                using (var g = Graphics.FromImage(canvas))
-                {
+                foreach (var t in tilesToDraw)
+                {      
                     g.DrawImage(t.TileImage, t.Location);
                 }
             }
-
             return canvas;
         }
 
 
+        /// <summary>
+        /// Returns image from visible tiles with scale factor < 1
+        /// </summary>
+        /// <param name="tiles"></param>
+        /// <param name="leftTopPointOfView"></param>
+        /// <param name="screenSize"></param>
+        /// <param name="highRes">Determines if algorithm uses averaging to get downscaled image (true if it uses)</param>
+        /// <returns></returns>
         private IEnumerable<TileImageWrapper> ScaleDown(Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
         {
 
@@ -103,6 +144,13 @@ namespace RlViewer.Behaviors.Draw
             return tileImgWrappers;
         }
 
+        /// <summary>
+        /// Returns image from visible tiles with scale factor > 1
+        /// </summary>
+        /// <param name="tiles"></param>
+        /// <param name="leftTopPointOfView"></param>
+        /// <param name="screenSize"></param>
+        /// <returns></returns>
         private IEnumerable<TileImageWrapper> ScaleUp(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
@@ -170,7 +218,13 @@ namespace RlViewer.Behaviors.Draw
             return tileImgWrappers;
         }
 
-
+        /// <summary>
+        /// Returns image from visible tiles with 1:1 scale
+        /// </summary>
+        /// <param name="tiles"></param>
+        /// <param name="leftTopPointOfView"></param>
+        /// <param name="screenSize"></param>
+        /// <returns></returns>
         private IEnumerable<TileImageWrapper> ScaleNormal(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
 
@@ -190,42 +244,30 @@ namespace RlViewer.Behaviors.Draw
             return tileImgWrappers;
         }
 
-
         /// <summary>
-        /// Creates image from visible parts of tiles
+        /// Returns rectangular part of image
         /// </summary>
-        /// <param name="canvas">Bitmap to draw on</param>
-        /// <param name="screenSize">Size of output window (picturebox)</param>
-        /// <param name="tiles">Array of Tile objects</param>
-        /// <param name="leftTopPointOfView">Left-top corner coordinates of the visible image</param>
-        /// <returns></returns>       
-        public Image DrawImage(int width, int height, Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
-        {
-            IEnumerable<TileImageWrapper> wrappers;
-
-            if (Scaler.ScaleFactor == 1)
-            {
-                wrappers =  ScaleNormal(tiles, leftTopPointOfView, screenSize);
-            }
-            else if (Scaler.ScaleFactor > 1)
-            {
-                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize);
-            }
-            else
-            {
-                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
-            }
-
-            return DrawWrappers(wrappers, screenSize);       
-        }
-
+        /// <param name="bmp">Source image</param>
+        /// <param name="x">Left top X coord of rectangle</param>
+        /// <param name="y">Left top Y coord of rectangle</param>
+        /// <param name="w">Width of rectangle</param>
+        /// <param name="h">Height of rectangle</param>
+        /// <returns></returns>
         private Bitmap Crop(Bitmap bmp, int x, int y, int w, int h)
         {
             Rectangle rect = new Rectangle(x, y, w, h);
             return bmp.Clone(rect, bmp.PixelFormat);
         }
 
-        private Bitmap Resize(Bitmap bmp, Size newSize, InterpolationMode mode)
+
+        /// <summary>
+        /// Returns image of given size from provided Bitmap
+        /// </summary>
+        /// <param name="bmp">Bitmap to resize</param>
+        /// <param name="newSize">Size to set</param>
+        /// <param name="mode"></param>
+        /// <returns>Resized bitmap</returns>
+        private Bitmap Resize(Bitmap bmp, Size newSize, InterpolationMode mode = InterpolationMode.NearestNeighbor)
         {
             Bitmap newBmp = new Bitmap(newSize.Width, newSize.Height);
             

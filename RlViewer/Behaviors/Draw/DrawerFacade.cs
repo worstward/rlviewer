@@ -27,9 +27,9 @@ namespace RlViewer.Behaviors.Draw
         
         private Image _canvas;
 
-        public void GetPalette(float R, float G, float B, bool reversed, bool logarithmic)
+        public void GetPalette(float R, float G, float B, bool reversed, bool isGroupped, bool useTemperaturePalette)
         {
-            _tDrawer.GetPalette(R, G, B, reversed, logarithmic);
+            _tDrawer.GetPalette(R, G, B, reversed, isGroupped, useTemperaturePalette);
         }
 
         public Image Draw(Tile[] tiles, Point pointOfView, bool highRes = false)

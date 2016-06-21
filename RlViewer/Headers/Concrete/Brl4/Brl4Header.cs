@@ -116,7 +116,6 @@ namespace RlViewer.Headers.Concrete.Brl4
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по азимуту",         headerStruct.rhgParams.height.ToString()));
         
             var rliHeader = new List<Tuple<string, string>>();
-            //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 
@@ -127,6 +126,8 @@ namespace RlViewer.Headers.Concrete.Brl4
             rliHeader.Add(new Tuple<string, string>("Тип дальности",                     headerStruct.rlParams.rangeType == 0 ? "Наклонная" : "Не определено"));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м",    headerStruct.rlParams.dx.ToString()));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",      headerStruct.rlParams.dy.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по X, пикс",    headerStruct.rlParams.sx.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по Y, пикс",    headerStruct.rlParams.sy.ToString()));
 
             var synthHeader = new List<Tuple<string, string>>();
             synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthParams.processAlgorithm == 255 ? "Омега-К" : "Не определено"));           

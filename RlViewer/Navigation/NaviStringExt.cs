@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Navigation
 {
-    public static class NaviStringExt
+    public static class NaviStringConverters
     {
 
         public static Tuple<string, string>[] NaviInfo(this NavigationString s)

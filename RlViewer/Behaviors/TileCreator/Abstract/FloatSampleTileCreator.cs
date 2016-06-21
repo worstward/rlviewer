@@ -23,7 +23,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         {
             if (file.Width == 0 || file.Height == 0)
             {
-                return new Tile[0];
+                throw new ArgumentException("File size");
             }
 
             var tileFolder = GetDirectoryName(filePath);
