@@ -59,16 +59,22 @@ namespace RlViewer.Behaviors.PointSelector
                             System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
                             var maxSampleLoc = file.GetMaxSampleLocation(area);
                             var xCompressionGroup = maxSampleLoc.X / _decompositionStepCoef * _decompositionStepCoef;
+                            var yCompressionGroup = maxSampleLoc.Y / _decompositionStepCoef * _decompositionStepCoef;
+
                             float compressedSample = 0;
 
-                            for (int i = xCompressionGroup; i < xCompressionGroup + _decompositionStepCoef; i++)
-                            {
-                                compressedSample += file.GetSample(new System.Drawing.Point(i, maxSampleLoc.Y))
-                                    .ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
+                            for (int j = yCompressionGroup; j < yCompressionGroup + _decompositionStepCoef; j++)
+                            { 
+                                for (int i = xCompressionGroup; i < xCompressionGroup + _decompositionStepCoef; i++)
+                                {
+                                    compressedSample += file.GetSample(new System.Drawing.Point(i, j))
+                                        .ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
+                                }
                             }
-                            compressedSample /= _decompositionStepCoef;
+                            compressedSample /= (_decompositionStepCoef * _decompositionStepCoef);
 
-                            SelectedPoints.Add(new SelectedPoint(maxSampleLoc, compressedSample, epr.EprValue));
+                            SelectedPoints.Add(new SelectedPoint(new System.Drawing.Point(maxSampleLoc.X / _decompositionStepCoef, maxSampleLoc.Y / _decompositionStepCoef)
+                                , compressedSample, epr.EprValue));
                         }
                     }
                 }

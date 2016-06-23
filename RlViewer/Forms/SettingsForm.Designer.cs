@@ -31,6 +31,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.highResCb = new System.Windows.Forms.CheckBox();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
@@ -40,15 +41,14 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.compressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.compressCoefTb = new System.Windows.Forms.MaskedTextBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -90,6 +90,17 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
+            // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // highResCb
             // 
@@ -201,6 +212,23 @@
             this.tabPage3.Text = "Инструменты";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 108);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(181, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Коэф. сжатия (для выравнивания)";
+            // 
+            // compressCoefTb
+            // 
+            this.compressCoefTb.Location = new System.Drawing.Point(9, 124);
+            this.compressCoefTb.Mask = "0";
+            this.compressCoefTb.Name = "compressCoefTb";
+            this.compressCoefTb.Size = new System.Drawing.Size(100, 20);
+            this.compressCoefTb.TabIndex = 5;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -255,34 +283,6 @@
             this.button3.Text = "Отмена";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 108);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(255, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Коэф. сжатия по дальности  (для выравнивания)";
-            // 
-            // compressCoefTb
-            // 
-            this.compressCoefTb.Location = new System.Drawing.Point(9, 124);
-            this.compressCoefTb.Mask = "0";
-            this.compressCoefTb.Name = "compressCoefTb";
-            this.compressCoefTb.Size = new System.Drawing.Size(100, 20);
-            this.compressCoefTb.TabIndex = 5;
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // SettingsForm
             // 
