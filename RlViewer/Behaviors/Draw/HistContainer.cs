@@ -6,10 +6,21 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.Draw
 {
+
+    /// <summary>
+    /// Incapsulates data generation and drawing for image histogram
+    /// </summary>
     public class HistContainer
     {
         private long[] histogram = new long[256];
 
+        /// <summary>
+        /// Asynchronously gets histogram data from visible part of image
+        /// </summary>
+        /// <param name="img">Source image</param>
+        /// <param name="visibleWidth">Visible rectangle (screen) width</param>
+        /// <param name="visibleHeight">Visible rectangle (screen) height</param>
+        /// <returns>Histogram data</returns>
         public async Task<long[]> GetHistogramAsync(System.Drawing.Image img, int visibleWidth, int visibleHeight)
         {
             return await Task.Run(() =>
@@ -28,7 +39,12 @@ namespace RlViewer.Behaviors.Draw
                 });
         }
 
-        public async Task<long[]> GetHistogramAsync(Files.LocatorFile file, TileCreator.Tile[] tiles)
+        /// <summary>
+        ///  Asynchronously gets histogram data from whole file
+        /// </summary>
+        /// <param name="tiles">Image tiles</param>
+        /// <returns>Histogram data</returns>
+        public async Task<long[]> GetHistogramAsync(TileCreator.Tile[] tiles)
         {
             return await Task.Run(() =>
                 {

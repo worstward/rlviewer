@@ -28,8 +28,7 @@ namespace RlViewer.Forms
             {
                 for (int i = 0; i < headers.Length; i++)
                 {
-                    var dgv = GetDataGrid();
-
+                    var dgv = FormsHelper.GetDataGrid(this, "Параметр", "Значение");
                     infoTabsControl.TabPages.Add(headers[i].HeaderName);
                     infoTabsControl.TabPages[i].Controls.Add(dgv);
                     ShowInfo(headers[i].Params, dgv);
@@ -38,43 +37,7 @@ namespace RlViewer.Forms
         }
 
 
-        /// <summary>
-        /// Initializes DataGrid containing file info
-        /// </summary>
-        /// <returns></returns>
-        private DataGridView GetDataGrid()
-        {
-            var dgv = new DataGridView()
-            {
-                Size = infoTabsControl.Size,
-                Location = Location,
-                BackgroundColor = Color.White,
-                RowHeadersVisible = false,
-                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
-                AllowUserToResizeColumns = false,
-                AllowUserToAddRows = false,
-                AllowUserToResizeRows = false,
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-                
-            };
-
-            dgv.Columns.AddRange(new DataGridViewColumn[]
-                {
-                    new DataGridViewTextBoxColumn() { HeaderText = "Параметр", Name = "paramColumn", ReadOnly = true },
-                    new DataGridViewTextBoxColumn() { HeaderText = "Значение", Name = "valueColumn", ReadOnly = true }
-                });
-
-            dgv.SelectionChanged += (s, e) => dgv.ClearSelection();
-
-            for (int i = 0; i < dgv.Columns.Count; i++)
-            {
-                dgv.Columns[i].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dgv.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
-                dgv.Columns[i].Width = dgv.Width / dgv.Columns.Count;
-            }
-            return dgv;
-        }
-
+       
 
         private void ShowInfo(IEnumerable<Tuple<string, string>> hInfo, DataGridView dgv)
         {

@@ -28,29 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.linSectionRb = new System.Windows.Forms.RadioButton();
-            this.findPointBtn = new System.Windows.Forms.Button();
-            this.rulerRb = new System.Windows.Forms.RadioButton();
-            this.alignBtn = new System.Windows.Forms.Button();
-            this.verSection = new System.Windows.Forms.RadioButton();
-            this.horSection = new System.Windows.Forms.RadioButton();
-            this.analyzeRb = new System.Windows.Forms.RadioButton();
-            this.markAreaRb = new System.Windows.Forms.RadioButton();
-            this.dragRb = new System.Windows.Forms.RadioButton();
-            this.markPointRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.создатьОтчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,16 +50,11 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.resetFilterBtn = new System.Windows.Forms.Button();
-            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
-            this.contrastRb = new System.Windows.Forms.RadioButton();
-            this.brightnessRb = new System.Windows.Forms.RadioButton();
             this.filterLbl = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.percentageLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -88,7 +74,22 @@
             this.zoomInBtn = new System.Windows.Forms.Button();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
-            this.создатьОтчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statisticsBtn = new System.Windows.Forms.Button();
+            this.linSectionRb = new System.Windows.Forms.RadioButton();
+            this.findPointBtn = new System.Windows.Forms.Button();
+            this.rulerRb = new System.Windows.Forms.RadioButton();
+            this.alignBtn = new System.Windows.Forms.Button();
+            this.verSection = new System.Windows.Forms.RadioButton();
+            this.horSection = new System.Windows.Forms.RadioButton();
+            this.analyzeRb = new System.Windows.Forms.RadioButton();
+            this.markAreaRb = new System.Windows.Forms.RadioButton();
+            this.dragRb = new System.Windows.Forms.RadioButton();
+            this.markPointRb = new System.Windows.Forms.RadioButton();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.resetFilterBtn = new System.Windows.Forms.Button();
+            this.gammaCorrRb = new System.Windows.Forms.RadioButton();
+            this.contrastRb = new System.Windows.Forms.RadioButton();
+            this.brightnessRb = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -101,11 +102,11 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // hScrollBar1
@@ -130,6 +131,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.statisticsBtn);
             this.groupBox1.Controls.Add(this.linSectionRb);
             this.groupBox1.Controls.Add(this.findPointBtn);
             this.groupBox1.Controls.Add(this.rulerRb);
@@ -142,177 +144,10 @@
             this.groupBox1.Controls.Add(this.markPointRb);
             this.groupBox1.Location = new System.Drawing.Point(20, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(352, 58);
+            this.groupBox1.Size = new System.Drawing.Size(393, 58);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Инструменты";
-            // 
-            // linSectionRb
-            // 
-            this.linSectionRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.linSectionRb.BackColor = System.Drawing.Color.Transparent;
-            this.linSectionRb.BackgroundImage = global::RlViewer.Properties.Resources.LinearSection;
-            this.linSectionRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.linSectionRb.FlatAppearance.BorderSize = 0;
-            this.linSectionRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.linSectionRb.Location = new System.Drawing.Point(244, 15);
-            this.linSectionRb.Name = "linSectionRb";
-            this.linSectionRb.Size = new System.Drawing.Size(30, 30);
-            this.linSectionRb.TabIndex = 14;
-            this.linSectionRb.TabStop = true;
-            this.linSectionRb.UseVisualStyleBackColor = false;
-            // 
-            // findPointBtn
-            // 
-            this.findPointBtn.BackgroundImage = global::RlViewer.Properties.Resources.FindPoint;
-            this.findPointBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.findPointBtn.FlatAppearance.BorderSize = 0;
-            this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.findPointBtn.Location = new System.Drawing.Point(313, 15);
-            this.findPointBtn.Name = "findPointBtn";
-            this.findPointBtn.Size = new System.Drawing.Size(30, 30);
-            this.findPointBtn.TabIndex = 13;
-            this.findPointBtn.UseVisualStyleBackColor = true;
-            this.findPointBtn.Click += new System.EventHandler(this.findPointBtn_Click);
-            // 
-            // rulerRb
-            // 
-            this.rulerRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rulerRb.BackColor = System.Drawing.Color.Transparent;
-            this.rulerRb.BackgroundImage = global::RlViewer.Properties.Resources.Ruler;
-            this.rulerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.rulerRb.FlatAppearance.BorderSize = 0;
-            this.rulerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rulerRb.Location = new System.Drawing.Point(280, 15);
-            this.rulerRb.Name = "rulerRb";
-            this.rulerRb.Size = new System.Drawing.Size(30, 30);
-            this.rulerRb.TabIndex = 12;
-            this.rulerRb.TabStop = true;
-            this.rulerRb.UseVisualStyleBackColor = false;
-            this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
-            // 
-            // alignBtn
-            // 
-            this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
-            this.alignBtn.FlatAppearance.BorderSize = 0;
-            this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.alignBtn.Location = new System.Drawing.Point(77, 15);
-            this.alignBtn.Name = "alignBtn";
-            this.alignBtn.Size = new System.Drawing.Size(30, 30);
-            this.alignBtn.TabIndex = 11;
-            this.alignBtn.UseVisualStyleBackColor = true;
-            this.alignBtn.Click += new System.EventHandler(this.alignBtn_Click);
-            // 
-            // verSection
-            // 
-            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.verSection.BackColor = System.Drawing.Color.Transparent;
-            this.verSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("verSection.BackgroundImage")));
-            this.verSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.verSection.FlatAppearance.BorderSize = 0;
-            this.verSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.verSection.Location = new System.Drawing.Point(209, 15);
-            this.verSection.Name = "verSection";
-            this.verSection.Size = new System.Drawing.Size(30, 30);
-            this.verSection.TabIndex = 10;
-            this.verSection.TabStop = true;
-            this.verSection.UseVisualStyleBackColor = false;
-            // 
-            // horSection
-            // 
-            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.horSection.BackColor = System.Drawing.Color.Transparent;
-            this.horSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("horSection.BackgroundImage")));
-            this.horSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.horSection.FlatAppearance.BorderSize = 0;
-            this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.horSection.Location = new System.Drawing.Point(176, 15);
-            this.horSection.Name = "horSection";
-            this.horSection.Size = new System.Drawing.Size(30, 30);
-            this.horSection.TabIndex = 9;
-            this.horSection.TabStop = true;
-            this.horSection.UseVisualStyleBackColor = false;
-            // 
-            // analyzeRb
-            // 
-            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.analyzeRb.BackColor = System.Drawing.Color.Transparent;
-            this.analyzeRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("analyzeRb.BackgroundImage")));
-            this.analyzeRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.analyzeRb.FlatAppearance.BorderSize = 0;
-            this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeRb.Location = new System.Drawing.Point(143, 15);
-            this.analyzeRb.Name = "analyzeRb";
-            this.analyzeRb.Size = new System.Drawing.Size(30, 30);
-            this.analyzeRb.TabIndex = 8;
-            this.analyzeRb.TabStop = true;
-            this.analyzeRb.UseVisualStyleBackColor = false;
-            // 
-            // markAreaRb
-            // 
-            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.markAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.markAreaRb.FlatAppearance.BorderSize = 0;
-            this.markAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
-            this.markAreaRb.Location = new System.Drawing.Point(110, 15);
-            this.markAreaRb.Name = "markAreaRb";
-            this.markAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.markAreaRb.TabIndex = 7;
-            this.markAreaRb.TabStop = true;
-            this.markAreaRb.UseVisualStyleBackColor = false;
-            // 
-            // dragRb
-            // 
-            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.dragRb.BackColor = System.Drawing.Color.Transparent;
-            this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
-            this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.dragRb.FlatAppearance.BorderSize = 0;
-            this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.dragRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.dragRb.Location = new System.Drawing.Point(11, 15);
-            this.dragRb.Name = "dragRb";
-            this.dragRb.Size = new System.Drawing.Size(30, 30);
-            this.dragRb.TabIndex = 5;
-            this.dragRb.TabStop = true;
-            this.dragRb.UseVisualStyleBackColor = false;
-            // 
-            // markPointRb
-            // 
-            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markPointRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.markPointRb.FlatAppearance.BorderSize = 0;
-            this.markPointRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.markPointRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.markPointRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.markPointRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.markPointRb.Image = ((System.Drawing.Image)(resources.GetObject("markPointRb.Image")));
-            this.markPointRb.Location = new System.Drawing.Point(44, 15);
-            this.markPointRb.Name = "markPointRb";
-            this.markPointRb.Size = new System.Drawing.Size(30, 30);
-            this.markPointRb.TabIndex = 6;
-            this.markPointRb.TabStop = true;
-            this.markPointRb.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
             // 
@@ -339,16 +174,23 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
+            // 
+            // создатьОтчетToolStripMenuItem
+            // 
+            this.создатьОтчетToolStripMenuItem.Name = "создатьОтчетToolStripMenuItem";
+            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.создатьОтчетToolStripMenuItem.Text = "Создать отчет";
+            this.создатьОтчетToolStripMenuItem.Click += new System.EventHandler(this.создатьОтчетToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -372,33 +214,33 @@
             // оФайлеToolStripMenuItem
             // 
             this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.оФайлеToolStripMenuItem.Text = "О файле";
             this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
             // 
             // логToolStripMenuItem1
             // 
             this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.логToolStripMenuItem1.Text = "Лог";
             this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
             // статусКешаToolStripMenuItem
             // 
             this.статусКешаToolStripMenuItem.Name = "статусКешаToolStripMenuItem";
-            this.статусКешаToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.статусКешаToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.статусКешаToolStripMenuItem.Text = "Статус кеша";
             this.статусКешаToolStripMenuItem.Click += new System.EventHandler(this.статусКешаToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
             // 
             // оПрограммеToolStripMenuItem
             // 
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
@@ -416,73 +258,6 @@
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Фильтр";
-            // 
-            // resetFilterBtn
-            // 
-            this.resetFilterBtn.BackColor = System.Drawing.Color.Transparent;
-            this.resetFilterBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetFilterBtn.BackgroundImage")));
-            this.resetFilterBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.resetFilterBtn.FlatAppearance.BorderSize = 0;
-            this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.resetFilterBtn.Location = new System.Drawing.Point(274, 35);
-            this.resetFilterBtn.Name = "resetFilterBtn";
-            this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
-            this.resetFilterBtn.TabIndex = 13;
-            this.resetFilterBtn.UseVisualStyleBackColor = false;
-            this.resetFilterBtn.Click += new System.EventHandler(this.resetFilterBtn_Click);
-            // 
-            // gammaCorrRb
-            // 
-            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
-            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
-            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gammaCorrRb.Location = new System.Drawing.Point(77, 35);
-            this.gammaCorrRb.Name = "gammaCorrRb";
-            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
-            this.gammaCorrRb.TabIndex = 2;
-            this.gammaCorrRb.TabStop = true;
-            this.gammaCorrRb.UseVisualStyleBackColor = true;
-            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
-            // 
-            // contrastRb
-            // 
-            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
-            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.contrastRb.FlatAppearance.BorderSize = 0;
-            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.contrastRb.Location = new System.Drawing.Point(44, 35);
-            this.contrastRb.Name = "contrastRb";
-            this.contrastRb.Size = new System.Drawing.Size(30, 30);
-            this.contrastRb.TabIndex = 1;
-            this.contrastRb.TabStop = true;
-            this.contrastRb.UseVisualStyleBackColor = true;
-            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
-            // 
-            // brightnessRb
-            // 
-            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
-            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.brightnessRb.Checked = true;
-            this.brightnessRb.FlatAppearance.BorderSize = 0;
-            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.brightnessRb.Location = new System.Drawing.Point(11, 35);
-            this.brightnessRb.Name = "brightnessRb";
-            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
-            this.brightnessRb.TabIndex = 0;
-            this.brightnessRb.TabStop = true;
-            this.brightnessRb.UseVisualStyleBackColor = true;
-            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
             // filterLbl
             // 
@@ -532,7 +307,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(875, 401);
-            this.splitContainer1.SplitterDistance = 676;
+            this.splitContainer1.SplitterDistance = 672;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -555,27 +330,11 @@
             this.splitContainer2.Panel2.Controls.Add(this.trackBar2);
             this.splitContainer2.Panel2.Controls.Add(this.chart1);
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer2.Size = new System.Drawing.Size(676, 401);
-            this.splitContainer2.SplitterDistance = 273;
+            this.splitContainer2.Size = new System.Drawing.Size(672, 401);
+            this.splitContainer2.SplitterDistance = 269;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(670, 267);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
-            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
-            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
-            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
-            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
             // 
             // trackBar2
             // 
@@ -777,7 +536,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(381, 44);
+            this.filterPanelCb.Location = new System.Drawing.Point(419, 44);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -802,12 +561,269 @@
             this.naviPanelCb.UseVisualStyleBackColor = true;
             this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
             // 
-            // создатьОтчетToolStripMenuItem
+            // statisticsBtn
             // 
-            this.создатьОтчетToolStripMenuItem.Name = "создатьОтчетToolStripMenuItem";
-            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.создатьОтчетToolStripMenuItem.Text = "Создать отчет";
-            this.создатьОтчетToolStripMenuItem.Click += new System.EventHandler(this.создатьОтчетToolStripMenuItem_Click);
+            this.statisticsBtn.BackgroundImage = global::RlViewer.Properties.Resources.stat;
+            this.statisticsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.statisticsBtn.FlatAppearance.BorderSize = 0;
+            this.statisticsBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.statisticsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.statisticsBtn.Location = new System.Drawing.Point(352, 15);
+            this.statisticsBtn.Name = "statisticsBtn";
+            this.statisticsBtn.Size = new System.Drawing.Size(30, 30);
+            this.statisticsBtn.TabIndex = 15;
+            this.statisticsBtn.UseVisualStyleBackColor = true;
+            this.statisticsBtn.Click += new System.EventHandler(this.statisticsBtn_Click);
+            // 
+            // linSectionRb
+            // 
+            this.linSectionRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.linSectionRb.BackColor = System.Drawing.Color.Transparent;
+            this.linSectionRb.BackgroundImage = global::RlViewer.Properties.Resources.LinearSection;
+            this.linSectionRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.linSectionRb.FlatAppearance.BorderSize = 0;
+            this.linSectionRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.linSectionRb.Location = new System.Drawing.Point(244, 15);
+            this.linSectionRb.Name = "linSectionRb";
+            this.linSectionRb.Size = new System.Drawing.Size(30, 30);
+            this.linSectionRb.TabIndex = 14;
+            this.linSectionRb.TabStop = true;
+            this.linSectionRb.UseVisualStyleBackColor = false;
+            // 
+            // findPointBtn
+            // 
+            this.findPointBtn.BackgroundImage = global::RlViewer.Properties.Resources.FindPoint;
+            this.findPointBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.findPointBtn.FlatAppearance.BorderSize = 0;
+            this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.findPointBtn.Location = new System.Drawing.Point(316, 15);
+            this.findPointBtn.Name = "findPointBtn";
+            this.findPointBtn.Size = new System.Drawing.Size(30, 30);
+            this.findPointBtn.TabIndex = 13;
+            this.findPointBtn.UseVisualStyleBackColor = true;
+            this.findPointBtn.Click += new System.EventHandler(this.findPointBtn_Click);
+            // 
+            // rulerRb
+            // 
+            this.rulerRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rulerRb.BackColor = System.Drawing.Color.Transparent;
+            this.rulerRb.BackgroundImage = global::RlViewer.Properties.Resources.Ruler;
+            this.rulerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.rulerRb.FlatAppearance.BorderSize = 0;
+            this.rulerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.rulerRb.Location = new System.Drawing.Point(280, 15);
+            this.rulerRb.Name = "rulerRb";
+            this.rulerRb.Size = new System.Drawing.Size(30, 30);
+            this.rulerRb.TabIndex = 12;
+            this.rulerRb.TabStop = true;
+            this.rulerRb.UseVisualStyleBackColor = false;
+            this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
+            // 
+            // alignBtn
+            // 
+            this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
+            this.alignBtn.FlatAppearance.BorderSize = 0;
+            this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.alignBtn.Location = new System.Drawing.Point(77, 15);
+            this.alignBtn.Name = "alignBtn";
+            this.alignBtn.Size = new System.Drawing.Size(30, 30);
+            this.alignBtn.TabIndex = 11;
+            this.alignBtn.UseVisualStyleBackColor = true;
+            this.alignBtn.Click += new System.EventHandler(this.alignBtn_Click);
+            // 
+            // verSection
+            // 
+            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.verSection.BackColor = System.Drawing.Color.Transparent;
+            this.verSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("verSection.BackgroundImage")));
+            this.verSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.verSection.FlatAppearance.BorderSize = 0;
+            this.verSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.verSection.Location = new System.Drawing.Point(209, 15);
+            this.verSection.Name = "verSection";
+            this.verSection.Size = new System.Drawing.Size(30, 30);
+            this.verSection.TabIndex = 10;
+            this.verSection.TabStop = true;
+            this.verSection.UseVisualStyleBackColor = false;
+            // 
+            // horSection
+            // 
+            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.horSection.BackColor = System.Drawing.Color.Transparent;
+            this.horSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("horSection.BackgroundImage")));
+            this.horSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.horSection.FlatAppearance.BorderSize = 0;
+            this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.horSection.Location = new System.Drawing.Point(176, 15);
+            this.horSection.Name = "horSection";
+            this.horSection.Size = new System.Drawing.Size(30, 30);
+            this.horSection.TabIndex = 9;
+            this.horSection.TabStop = true;
+            this.horSection.UseVisualStyleBackColor = false;
+            // 
+            // analyzeRb
+            // 
+            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.analyzeRb.BackColor = System.Drawing.Color.Transparent;
+            this.analyzeRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("analyzeRb.BackgroundImage")));
+            this.analyzeRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.analyzeRb.FlatAppearance.BorderSize = 0;
+            this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.analyzeRb.Location = new System.Drawing.Point(143, 15);
+            this.analyzeRb.Name = "analyzeRb";
+            this.analyzeRb.Size = new System.Drawing.Size(30, 30);
+            this.analyzeRb.TabIndex = 8;
+            this.analyzeRb.TabStop = true;
+            this.analyzeRb.UseVisualStyleBackColor = false;
+            // 
+            // markAreaRb
+            // 
+            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.markAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markAreaRb.FlatAppearance.BorderSize = 0;
+            this.markAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
+            this.markAreaRb.Location = new System.Drawing.Point(110, 15);
+            this.markAreaRb.Name = "markAreaRb";
+            this.markAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.markAreaRb.TabIndex = 7;
+            this.markAreaRb.TabStop = true;
+            this.markAreaRb.UseVisualStyleBackColor = false;
+            // 
+            // dragRb
+            // 
+            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.dragRb.BackColor = System.Drawing.Color.Transparent;
+            this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
+            this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.dragRb.FlatAppearance.BorderSize = 0;
+            this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dragRb.Location = new System.Drawing.Point(11, 15);
+            this.dragRb.Name = "dragRb";
+            this.dragRb.Size = new System.Drawing.Size(30, 30);
+            this.dragRb.TabIndex = 5;
+            this.dragRb.TabStop = true;
+            this.dragRb.UseVisualStyleBackColor = false;
+            // 
+            // markPointRb
+            // 
+            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markPointRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markPointRb.FlatAppearance.BorderSize = 0;
+            this.markPointRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markPointRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.markPointRb.Image = ((System.Drawing.Image)(resources.GetObject("markPointRb.Image")));
+            this.markPointRb.Location = new System.Drawing.Point(44, 15);
+            this.markPointRb.Name = "markPointRb";
+            this.markPointRb.Size = new System.Drawing.Size(30, 30);
+            this.markPointRb.TabIndex = 6;
+            this.markPointRb.TabStop = true;
+            this.markPointRb.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(666, 263);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
+            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
+            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
+            // 
+            // resetFilterBtn
+            // 
+            this.resetFilterBtn.BackColor = System.Drawing.Color.Transparent;
+            this.resetFilterBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetFilterBtn.BackgroundImage")));
+            this.resetFilterBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.resetFilterBtn.FlatAppearance.BorderSize = 0;
+            this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resetFilterBtn.Location = new System.Drawing.Point(274, 35);
+            this.resetFilterBtn.Name = "resetFilterBtn";
+            this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
+            this.resetFilterBtn.TabIndex = 13;
+            this.resetFilterBtn.UseVisualStyleBackColor = false;
+            this.resetFilterBtn.Click += new System.EventHandler(this.resetFilterBtn_Click);
+            // 
+            // gammaCorrRb
+            // 
+            this.gammaCorrRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.gammaCorrRb.BackgroundImage = global::RlViewer.Properties.Resources.Gamma;
+            this.gammaCorrRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.gammaCorrRb.FlatAppearance.BorderSize = 0;
+            this.gammaCorrRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.gammaCorrRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gammaCorrRb.Location = new System.Drawing.Point(77, 35);
+            this.gammaCorrRb.Name = "gammaCorrRb";
+            this.gammaCorrRb.Size = new System.Drawing.Size(30, 30);
+            this.gammaCorrRb.TabIndex = 2;
+            this.gammaCorrRb.TabStop = true;
+            this.gammaCorrRb.UseVisualStyleBackColor = true;
+            this.gammaCorrRb.CheckedChanged += new System.EventHandler(this.gammaCorrRb_CheckedChanged);
+            // 
+            // contrastRb
+            // 
+            this.contrastRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.contrastRb.BackgroundImage = global::RlViewer.Properties.Resources.Contrast;
+            this.contrastRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.contrastRb.FlatAppearance.BorderSize = 0;
+            this.contrastRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.contrastRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.contrastRb.Location = new System.Drawing.Point(44, 35);
+            this.contrastRb.Name = "contrastRb";
+            this.contrastRb.Size = new System.Drawing.Size(30, 30);
+            this.contrastRb.TabIndex = 1;
+            this.contrastRb.TabStop = true;
+            this.contrastRb.UseVisualStyleBackColor = true;
+            this.contrastRb.CheckedChanged += new System.EventHandler(this.contrastRb_CheckedChanged);
+            // 
+            // brightnessRb
+            // 
+            this.brightnessRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.brightnessRb.BackgroundImage = global::RlViewer.Properties.Resources.Brightness;
+            this.brightnessRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.brightnessRb.Checked = true;
+            this.brightnessRb.FlatAppearance.BorderSize = 0;
+            this.brightnessRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.brightnessRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.brightnessRb.Location = new System.Drawing.Point(11, 35);
+            this.brightnessRb.Name = "brightnessRb";
+            this.brightnessRb.Size = new System.Drawing.Size(30, 30);
+            this.brightnessRb.TabIndex = 0;
+            this.brightnessRb.TabStop = true;
+            this.brightnessRb.UseVisualStyleBackColor = true;
+            this.brightnessRb.CheckedChanged += new System.EventHandler(this.brightnessRb_CheckedChanged);
             // 
             // MainForm
             // 
@@ -852,12 +868,12 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -920,6 +936,7 @@
         private System.Windows.Forms.Button zoomInBtn;
         private System.Windows.Forms.Button zoomOutBtn;
         private System.Windows.Forms.ToolStripMenuItem создатьОтчетToolStripMenuItem;
+        private System.Windows.Forms.Button statisticsBtn;
     }
 }
 

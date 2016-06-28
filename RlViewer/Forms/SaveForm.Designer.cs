@@ -315,6 +315,7 @@
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.Name = "SaveForm";
             this.Text = "SaveSizeForm";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SaveSizeForm_KeyDown);

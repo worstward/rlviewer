@@ -498,6 +498,11 @@ namespace RlViewer.Forms
             _guiFacade.MakeReport();
         }
 
+        private void statisticsBtn_Click(object sender, EventArgs e)
+        {
+            _guiFacade.GetAreaStatistics();
+        }
+
 
     }
 }

@@ -73,8 +73,8 @@ namespace RlViewer.Behaviors.PointSelector
                             }
                             compressedSample /= (_decompositionStepCoef * _decompositionStepCoef);
 
-                            SelectedPoints.Add(new SelectedPoint(new System.Drawing.Point(maxSampleLoc.X / _decompositionStepCoef, maxSampleLoc.Y / _decompositionStepCoef)
-                                , compressedSample, epr.EprValue));
+                            SelectedPoints.Add(new SelectedPoint(new System.Drawing.Point(maxSampleLoc.X / _decompositionStepCoef,
+                                maxSampleLoc.Y / _decompositionStepCoef), compressedSample, epr.EprValue));
                         }
                     }
                 }

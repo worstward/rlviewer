@@ -1,6 +1,6 @@
 ﻿namespace RlViewer.Forms
 {
-    partial class InfoForm
+    partial class StatisticsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,38 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.infoTabsControl = new System.Windows.Forms.TabControl();
             this.SuspendLayout();
             // 
-            // infoTabsControl
-            // 
-            this.infoTabsControl.Location = new System.Drawing.Point(12, 12);
-            this.infoTabsControl.Name = "infoTabsControl";
-            this.infoTabsControl.SelectedIndex = 0;
-            this.infoTabsControl.Size = new System.Drawing.Size(545, 351);
-            this.infoTabsControl.TabIndex = 0;
-            // 
-            // InfoForm
+            // StatisticsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 370);
-            this.Controls.Add(this.infoTabsControl);
+            this.ClientSize = new System.Drawing.Size(377, 358);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(585, 409);
-            this.Name = "InfoForm";
+            this.Name = "StatisticsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Информация о файле";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InfoForm_KeyDown);
+            this.Text = "Статистика области";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StatisticsForm_KeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl infoTabsControl;
-
     }
 }

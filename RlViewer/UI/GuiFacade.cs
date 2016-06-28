@@ -13,6 +13,7 @@ using RlViewer.Factories.File.Abstract;
 using RlViewer.Factories.Saver.Abstract;
 using RlViewer.Navigation;
 using RlViewer.Settings;
+using RlViewer.Behaviors;
 
 namespace RlViewer.UI
 {
@@ -896,7 +897,7 @@ namespace RlViewer.UI
         {
             c.ChartAreas[0].AxisY.Maximum = _file.Width * _file.Height / 4;
             c.Series[0].Points.DataBindXY(new List<int>(Enumerable.Range(0, 256)), "bits",
-              await _histogram.GetHistogramAsync(_file, _tiles), "values");
+              await _histogram.GetHistogramAsync(_tiles), "values");
         }
 
         private void ErrorGuiMessage(string message)
@@ -1330,6 +1331,68 @@ namespace RlViewer.UI
                 _keyboardFacade.ProceedKeyPress(e);
             }
         }
+
+        public void GetAreaStatistics()
+        {
+            if (_file != null)
+            {
+                if (_areaSelector.Area != null && _areaSelector.Area.Width != 0
+                    && _areaSelector.Area.Width < 3000 && _areaSelector.Area.Height < 3000)
+                {
+                    var maxSample = _file.GetMaxSample(
+                            new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                            _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                    var minSample = _file.GetMinSample(
+                            new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                            _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                    var maxSampleLoc = _file.GetMaxSampleLocation(
+                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                            _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                    var minSampleLoc = _file.GetMinSampleLocation(
+                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                            _areaSelector.Area.Width, _areaSelector.Area.Height));
+                    
+                    var avgSample = _file.GetAvgSample(
+                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                            _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+
+                    List<Tuple<string, string>> statistics = new List<Tuple<string, string>>()
+                    {
+                        new Tuple<string, string>("Имя файла", Path.GetFileName(_file.Properties.FilePath)),
+                        new Tuple<string, string>("X1", _areaSelector.Area.Location.X.ToString()),
+                        new Tuple<string, string>("Y1", _areaSelector.Area.Location.Y.ToString()),
+                        new Tuple<string, string>("X2", (_areaSelector.Area.Location.X + _areaSelector.Area.Width).ToString()),
+                        new Tuple<string, string>("Y2", (_areaSelector.Area.Location.Y + _areaSelector.Area.Height).ToString()),
+                        new Tuple<string, string>("Ширина фрагмента", _areaSelector.Area.Width.ToString()),
+                        new Tuple<string, string>("Высота фрагмента", _areaSelector.Area.Height.ToString()),
+                        new Tuple<string, string>("Максимальная амплитуда", maxSample.ToString()),
+                        new Tuple<string, string>("Xmax", maxSampleLoc.X.ToString()),
+                        new Tuple<string, string>("Ymax", maxSampleLoc.Y.ToString()),
+                        new Tuple<string, string>("Минимальная амплитуда", minSample.ToString()),
+                        new Tuple<string, string>("Xmin", minSampleLoc.X.ToString()),
+                        new Tuple<string, string>("Ymin", minSampleLoc.Y.ToString()),
+                        new Tuple<string, string>("Средняя амплитуда", avgSample.ToString())
+                    };
+
+
+                    using (var statFrm = new Forms.StatisticsForm(statistics))
+                    {
+                        statFrm.ShowDialog();
+                    }
+                }
+                else
+                {
+                    ErrorGuiMessage("Невозможно построить статистику области");
+                }
+
+            }
+        }
+
+
 
         public void MakeReport()
         {

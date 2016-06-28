@@ -64,16 +64,17 @@
             this.tabControl1.Location = new System.Drawing.Point(13, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(278, 176);
+            this.tabControl1.Size = new System.Drawing.Size(278, 188);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.groupBox3);
+            this.tabPage1.Controls.Add(this.highResCb);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(270, 150);
+            this.tabPage1.Size = new System.Drawing.Size(270, 162);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Отображение";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -81,12 +82,11 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.comboBoxPics1);
-            this.groupBox3.Controls.Add(this.highResCb);
             this.groupBox3.Controls.Add(this.logPaletteCb);
             this.groupBox3.Controls.Add(this.inverseCheckBox);
             this.groupBox3.Location = new System.Drawing.Point(6, 29);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 115);
+            this.groupBox3.Size = new System.Drawing.Size(258, 94);
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
@@ -106,7 +106,7 @@
             // 
             this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.highResCb.AutoSize = true;
-            this.highResCb.Location = new System.Drawing.Point(6, 92);
+            this.highResCb.Location = new System.Drawing.Point(11, 129);
             this.highResCb.Name = "highResCb";
             this.highResCb.Size = new System.Drawing.Size(253, 17);
             this.highResCb.TabIndex = 16;
@@ -294,6 +294,7 @@
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(319, 384);
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -301,6 +302,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SettingsForm_KeyDown);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage2.ResumeLayout(false);

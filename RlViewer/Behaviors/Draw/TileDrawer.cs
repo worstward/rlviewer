@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.Draw
 {
 
     /// <summary>
-    /// Incapsulates image output functions
+    /// Incapsulates tile output functions
     /// </summary>
     public class TileDrawer : ImageDrawer
     {

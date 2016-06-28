@@ -183,6 +183,13 @@
     <Compile Include="Forms\FindPointForm.Designer.cs">
       <DependentUpon>FindPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormsHelper.cs" />
+    <Compile Include="Forms\StatisticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StatisticsForm.Designer.cs">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TileStatusForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,6 +375,9 @@
     <EmbeddedResource Include="Forms\FindPointForm.resx">
       <DependentUpon>FindPointForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StatisticsForm.resx">
+      <DependentUpon>StatisticsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\TileStatusForm.resx">
       <DependentUpon>TileStatusForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -476,6 +486,7 @@
     <None Include="Resources\Pinks.png" />
     <None Include="Resources\LightBlues.png" />
     <Content Include="FodyWeavers.xml" />
+    <None Include="Resources\stat.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

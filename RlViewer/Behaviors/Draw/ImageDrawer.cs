@@ -8,6 +8,10 @@ using System.Drawing.Imaging;
 
 namespace RlViewer.Behaviors.Draw
 {
+
+    /// <summary>
+    /// Base class for drawing locator image
+    /// </summary>
     public abstract class ImageDrawer
     {
         public ImageDrawer(Scaling.Scaler scaler)

@@ -7,6 +7,10 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Draw
 {
+
+    /// <summary>
+    /// Incapsulates drawing of tools
+    /// </summary>
     public class ItemDrawer : ImageDrawer
     {
         public ItemDrawer(PointSelector.PointSelector pointSelector,

@@ -16,6 +16,11 @@ namespace RlViewer.Behaviors
             FileStream fs = null;
             try
             {
+                var areaLocX = areaBorders.X < 0 ? 0 : areaBorders.X;
+                var areaLocY = areaBorders.Y < 0 ? 0 : areaBorders.Y;
+                areaLocX = areaLocX > file.Width ? 0 : areaLocX;
+                areaLocY = areaLocY > file.Height ? 0 : areaLocY;
+
                 fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 byte[] area = new byte[file.Header.BytesPerSample * areaBorders.Width * areaBorders.Height];
@@ -25,8 +30,8 @@ namespace RlViewer.Behaviors
                 int areaLineLength = file.Header.BytesPerSample * width;
 
                 int headersOffset = file.Header.FileHeaderLength;
-                int xOffset = ((file.Width - areaBorders.X) < 0 ? 0 : areaBorders.X) * file.Header.BytesPerSample;
-                int yOffset = ((file.Height - areaBorders.Y) < 0 ? 0 : areaBorders.Y) * 
+                int xOffset = ((file.Width - areaLocX) < 0 ? 0 : areaLocX) * file.Header.BytesPerSample;
+                int yOffset = ((file.Height - areaLocY) < 0 ? 0 : areaLocY) * 
                     (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength);
 
                 fs.Seek(headersOffset, SeekOrigin.Current);
@@ -190,6 +195,97 @@ namespace RlViewer.Behaviors
         }
 
 
+
+        public static float GetMaxSample(this RlViewer.Files.LocatorFile file, Rectangle area)
+        {
+            Point p = area.Location;
+
+            if (file.Header.BytesPerSample == 2)
+            {
+                short[] sample = file.GetArea(area).ToArea<short>(file.Header.BytesPerSample);
+                return (float)sample.Max();
+            }
+            else if (file.Header.BytesPerSample == 4 || file.Header.BytesPerSample == 8)
+            {
+                float[] sample = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
+                return sample.Max();
+            }
+
+            throw new NotSupportedException("Unsupported sample size");
+        }
+
+        public static float GetMinSample(this RlViewer.Files.LocatorFile file, Rectangle area)
+        {
+            Point p = area.Location;
+
+            if (file.Header.BytesPerSample == 2)
+            {
+                short[] sample = file.GetArea(area).ToArea<short>(file.Header.BytesPerSample);
+                return (float)sample.Min();
+            }
+            else if (file.Header.BytesPerSample == 4 || file.Header.BytesPerSample == 8)
+            {
+                float[] sample = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
+                return sample.Min();
+            }
+
+            throw new NotSupportedException("Unsupported sample size");
+        }
+
+        public static float GetAvgSample(this RlViewer.Files.LocatorFile file, Rectangle area)
+        {
+            Point p = area.Location;
+
+            if (file.Header.BytesPerSample == 2)
+            {
+                short[] sample = file.GetArea(area).ToArea<short>(file.Header.BytesPerSample);
+                return (float)sample.Average(x => x);
+            }
+            else if (file.Header.BytesPerSample == 4 || file.Header.BytesPerSample == 8)
+            {
+                float[] sample = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
+                return sample.Average(x => x);
+            }
+
+            throw new NotSupportedException("Unsupported sample size");
+        }
+
+
+
+        public static Point GetMinSampleLocation(this RlViewer.Files.LocatorFile file, Rectangle area)
+        {
+            Point p = area.Location;
+
+            if (file.Header.BytesPerSample == 2)
+            {
+                short[] sample = file.GetArea(area).ToArea<short>(file.Header.BytesPerSample);
+                short min = sample.Min();
+                var minIndex = sample.Select((v, i) => new { Index = i, Value = v })
+                                        .Where(v => v.Value == min)
+                                        .First()
+                                        .Index;
+                var y = minIndex / area.Width;
+                var x = minIndex - y * area.Width;
+
+                return new Point(area.Location.X + x, area.Location.Y + y);
+            }
+            else if (file.Header.BytesPerSample == 4 || file.Header.BytesPerSample == 8)
+            {
+                float[] sample = file.GetArea(area).ToArea<float>(file.Header.BytesPerSample);
+                float min = sample.Min();
+                var minIndex = sample.Select((v, i) => new { Index = i, Value = v })
+                                        .Where(v => v.Value == min)
+                                        .First()
+                                        .Index;
+                var y = minIndex / area.Width;
+                var x = minIndex - y * area.Width;
+
+
+                return new Point(area.Location.X + x, area.Location.Y + y);
+            }
+
+            throw new NotSupportedException("Unsupported sample size");
+        }
        
 
         public static Point GetMaxSampleLocation(this RlViewer.Files.LocatorFile file, Rectangle area)
