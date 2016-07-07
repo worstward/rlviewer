@@ -40,8 +40,7 @@ namespace RlViewer.UI
             _drag = new Behaviors.DragController();
             _histogram = new Behaviors.Draw.HistContainer();
 
-            _keyboardFacade = new KeyboardFacade(() => Undo(), () => OpenFile(),
-                () => Save(), () => ShowFileInfo(), () => ShowLog());
+
             _win = _form.Canvas;
 
             _form.Canvas.Paint += (s, e) =>
@@ -60,7 +59,6 @@ namespace RlViewer.UI
         private ITileCreator _creator;
 
         private Behaviors.Filters.ImageFilterFacade _filterFacade;
-        private KeyboardFacade _keyboardFacade;
         private Behaviors.Saving.Abstract.Saver _saver;
         private Behaviors.Scaling.Scaler _scaler;
         private Behaviors.Analyzing.Abstract.SampleAnalyzer _analyzer;
@@ -184,7 +182,7 @@ namespace RlViewer.UI
 
         public void CancelLoading()
         {
-            if (_worker != null)
+            if (_worker != null && _cancellableAction != null)
             {
                 _cancellableAction.Cancelled = true;
             }
@@ -464,13 +462,22 @@ namespace RlViewer.UI
 
             if (e.Cancelled)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Navigation reading cancelled"));
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("File opening cancelled"));
                 InitializeWindow();
             }
             else if (e.Error != null)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error opening file: {0}", e.Error.Message));
-                ErrorGuiMessage("Unable to open file");
+                string errMess = string.Format("File opening cancelled");
+                Logging.SeverityGrades grade = Logging.SeverityGrades.Info;
+
+                if (e.Error.GetType() != typeof(OperationCanceledException))
+                {
+                    grade = Logging.SeverityGrades.Blocking;
+                    errMess = string.Format("Error opening file: {0}", e.Error.Message);
+                    ErrorGuiMessage("Unable to open file");
+                }
+
+                Logging.Logger.Log(grade, errMess);
                 InitializeWindow();
             }
             else
@@ -527,7 +534,7 @@ namespace RlViewer.UI
                 }
 
 
-                _pointSelector = new Behaviors.PointSelector.CompressedPointSelectorWrapper((int)_settings.CompressionCoef);
+                _pointSelector = new Behaviors.PointSelector.PointSelector();
                 _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 InitProgressControls(false);
                 InitDrawImage();
@@ -559,7 +566,7 @@ namespace RlViewer.UI
             { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
 
-        private void Undo()
+        public void Undo()
         {
             if (_file != null)
             {
@@ -1253,7 +1260,6 @@ namespace RlViewer.UI
                 {
                     InitDrawImage();
                 }
-
             }
         }
 
@@ -1281,9 +1287,13 @@ namespace RlViewer.UI
             {
                 alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
                 if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
-                { 
-                    _aligner = new Behaviors.ImageAligning.Aligning(_file,
-                        _pointSelector, new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(_pointSelector), _saver);
+                {
+
+                    var compressedSelector = new Behaviors.PointSelector.CompressedPointSelectorWrapper(_file,
+                       _pointSelector, (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
+
+                    _aligner = new Behaviors.ImageAligning.Aligning(_file, compressedSelector,
+                        new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector), _saver);
                     StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         new object[] { alignedSaveDlg.FileName });
                 }
@@ -1324,13 +1334,6 @@ namespace RlViewer.UI
         }
 
 
-        public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs e)
-        {
-            if (_keyboardFacade != null)
-            {
-                _keyboardFacade.ProceedKeyPress(e);
-            }
-        }
 
         public void GetAreaStatistics()
         {

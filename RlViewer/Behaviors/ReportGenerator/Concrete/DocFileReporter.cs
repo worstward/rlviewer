@@ -26,6 +26,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                     using (var docToInsert = PrepareReport(reportFilePath, FilePaths[i]))
                     { 
                         document.InsertDocument(docToInsert);
+                        document.InsertSectionPageBreak();
                     }
                 }
                 document.Save();
@@ -59,7 +60,6 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                 {
                     var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
                     document.InsertTable(headerTable);
-                    document.InsertSectionPageBreak();
                 }
 
                 return document;

@@ -3,89 +3,195 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace RlViewer.Behaviors.PointSelector
 {
-    class CompressedPointSelectorWrapper : PointSelector
+    public class CompressedPointSelectorWrapper : IEnumerable<SelectedPoint>
     {
-        public CompressedPointSelectorWrapper(int decompositionStepCoef)
+        public CompressedPointSelectorWrapper(Files.LocatorFile file, PointSelector selector, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
-            _decompositionStepCoef = decompositionStepCoef;
+            _file = file;
+            _selector = selector;
+            _rangeCompressionCoef = rangeCompressionCoef;
+            _azimuthCompressionCoef = azimuthCompressionCoef;
+
+            var compressed = new List<SelectedPoint>();
+            compressed.AddRange(_selector.Select(x =>
+                new SelectedPoint(new Point(x.Location.X / rangeCompressionCoef, x.Location.Y / azimuthCompressionCoef),
+                    GetAverageValue(_file, _rangeCompressionCoef, _azimuthCompressionCoef, x.Location), x.Rcs)));
+
+            _compressedSelector = new PointSelector(compressed);
+
         }
 
-        private int _decompositionStepCoef;
-
-        public override void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
+        public IEnumerator<SelectedPoint> GetEnumerator()
         {
-            if (SelectedPoints.Count < 16)
+            return CompessedSelector.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public SelectedPoint this[int index]
+        {
+            get
             {
-                if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
-                {
-                    using (Forms.EprInputForm epr = new Forms.EprInputForm())
-                    {
-                        if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-
-                            int width = selectorSize.Width;
-                            int height = selectorSize.Height;
-
-
-                            int x = (location.X - (selectorSize.Width / 2));
-
-                            if (x < 0)
-                            {
-                                width = width + x;
-                                x = 0;
-                            }
-
-                            if (x + width > file.Width)
-                            {
-                                width = file.Width - x;
-                            }
-
-                            int y = (location.Y - (selectorSize.Height / 2));
-
-                            if (y < 0)
-                            {
-                                height = height + y;
-                                y = 0;
-                            }
-
-                            if (y + height > file.Height)
-                            {
-                                height = file.Height - y;
-                            }
-
-                            System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
-                            var maxSampleLoc = file.GetMaxSampleLocation(area);
-                            var xCompressionGroup = maxSampleLoc.X / _decompositionStepCoef * _decompositionStepCoef;
-                            var yCompressionGroup = maxSampleLoc.Y / _decompositionStepCoef * _decompositionStepCoef;
-
-                            float compressedSample = 0;
-
-                            for (int j = yCompressionGroup; j < yCompressionGroup + _decompositionStepCoef; j++)
-                            { 
-                                for (int i = xCompressionGroup; i < xCompressionGroup + _decompositionStepCoef; i++)
-                                {
-                                    compressedSample += file.GetSample(new System.Drawing.Point(i, j))
-                                        .ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
-                                }
-                            }
-                            compressedSample /= (_decompositionStepCoef * _decompositionStepCoef);
-
-                            SelectedPoints.Add(new SelectedPoint(new System.Drawing.Point(maxSampleLoc.X / _decompositionStepCoef,
-                                maxSampleLoc.Y / _decompositionStepCoef), compressedSample, epr.EprValue));
-                        }
-                    }
-                }
-                if (SelectedPoints.Count == 4 || SelectedPoints.Count == 16)
-                {
-                    SelectedPoints = OrderAsMatrix(SelectedPoints);
-                }
+                return CompessedSelector[index];
             }
         }
 
+        private Files.LocatorFile _file;
+        private PointSelector _selector;
+        private PointSelector _compressedSelector;
 
+        public PointSelector CompessedSelector
+        {
+            get 
+            {
+                return _compressedSelector;
+            }
+        }
+
+        private int _rangeCompressionCoef;
+
+        public int RangeCompressionCoef
+        {
+            get { return _rangeCompressionCoef; }
+        }
+
+        private int _azimuthCompressionCoef;
+
+        public int AzimuthCompressionCoef
+        {
+            get { return _azimuthCompressionCoef; }
+        }
+
+
+
+        private float GetAverageValue(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
+        {
+            float avgValue = 0;
+            if (rangeCompressionCoef % 2 != 0 && azimuthCompressionCoef % 2 != 0)
+            {
+                avgValue = GetOddStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, centerPoint);
+            }
+            else if(rangeCompressionCoef % 2 == 0 && azimuthCompressionCoef == 0)
+            {
+                avgValue = GetEvenStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, centerPoint);
+            }
+            else if (rangeCompressionCoef % 2 == 0 && azimuthCompressionCoef != 0)
+            {
+                avgValue = GetEvenOddStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, centerPoint);
+            }
+            else if (rangeCompressionCoef % 2 != 0 && azimuthCompressionCoef == 0)
+            {
+                avgValue = GetOddEvenStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, centerPoint);
+            }
+            return avgValue;
+        }
+
+        /// <summary>
+        /// Compresses area to 1 point with both 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="rangeCompressionCoef"></param>
+        /// <param name="azimuthCompressionCoef"></param>
+        /// <param name="centerPoint">Clicked point (center of area)</param>
+        /// <returns></returns>
+        private float GetEvenStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
+        {
+            var leftBorder = new Point(centerPoint.X - rangeCompressionCoef + 1, centerPoint.Y - azimuthCompressionCoef + 1);
+            List<float> samples = new List<float>();
+
+            for (int startingFrameX = leftBorder.X; startingFrameX < leftBorder.X + rangeCompressionCoef; startingFrameX++)
+            {
+                for (int startingFrameY = leftBorder.Y; startingFrameY < leftBorder.Y + azimuthCompressionCoef; startingFrameY++)
+                {
+                    samples.Add(GetOddStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, new Point(startingFrameX, startingFrameY)));
+                }
+            }
+            return samples.Max();
+        }
+
+
+        /// <summary>
+        /// Compresses area to 1 point with both odd range and azimuth compression coefs
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="rangeCompressionCoef"></param>
+        /// <param name="azimuthCompressionCoef"></param>
+        /// <param name="centerPoint">leftTopPoint of clicked area</param>
+        /// <returns></returns>
+        private float GetOddStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point leftTopOfArea)
+        {
+            
+            float compressedSample = 0;
+            int checkedSamplesNum = 0;
+
+            for (int j = leftTopOfArea.Y; j < leftTopOfArea.Y + azimuthCompressionCoef; j++)
+            {
+                for (int i = leftTopOfArea.X; i < leftTopOfArea.X + rangeCompressionCoef; i++)
+                {
+                    if (i < 0 || j < 0 || i > file.Width || j > file.Height)
+                    {
+                        continue;
+                    }
+
+                    checkedSamplesNum++;
+                    compressedSample += file.GetSample(new System.Drawing.Point(i, j))
+                        .ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
+                }
+            }
+            compressedSample /= checkedSamplesNum;
+
+            return compressedSample;
+        }
+
+
+
+        /// <summary>
+        /// Compresses area to 1 point with even range coef and odd azimuth coef 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="rangeCompressionCoef"></param>
+        /// <param name="azimuthCompressionCoef"></param>
+        /// <param name="centerPoint">Clicked point (center of area)</param>
+        /// <returns></returns>
+        private float GetEvenOddStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
+        {
+            var leftBorder = new Point(centerPoint.X - rangeCompressionCoef + 1, centerPoint.Y - azimuthCompressionCoef + 1);
+            List<float> samples = new List<float>();
+
+            for (int startingFrameX = leftBorder.X; startingFrameX < leftBorder.X + rangeCompressionCoef; startingFrameX++)
+            {
+               samples.Add(GetOddStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, new Point(startingFrameX, centerPoint.Y)));
+            }
+            return samples.Max();
+        }
+
+        /// <summary>
+        /// Compresses area to 1 point with odd range coef and even azimuth coef 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="rangeCompressionCoef"></param>
+        /// <param name="azimuthCompressionCoef"></param>
+        /// <param name="centerPoint">Clicked point (center of area)</param>
+        /// <returns></returns>
+        private float GetOddEvenStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
+        {
+            var leftBorder = new Point(centerPoint.X - rangeCompressionCoef + 1, centerPoint.Y - azimuthCompressionCoef + 1);
+            List<float> samples = new List<float>();
+
+            for (int startingFrameY = leftBorder.Y; startingFrameY < leftBorder.Y + azimuthCompressionCoef; startingFrameY++)
+            {
+                samples.Add(GetOddStepAverage(file, rangeCompressionCoef, azimuthCompressionCoef, new Point(centerPoint.X, startingFrameY)));
+            }
+            
+            return samples.Max();
+        }
 
 
     }

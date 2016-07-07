@@ -14,7 +14,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface4Points : Surface3Points
     {
-        public Surface4Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
+        public Surface4Points(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
             : base(selector, rcsProvider)
         {
             _rcsProvider = rcsProvider;
@@ -78,8 +78,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newAmplVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), AmplitudeSolution));
-                    var newRcsVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), RcsSolution));
+                    var newAmplVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef,
+                        PointToPlane(new System.Drawing.Point(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef),
+                        AmplitudeSolution));
+                    var newRcsVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef,
+                        PointToPlane(new System.Drawing.Point(i / Selector.RangeCompressionCoef,
+                            j / Selector.AzimuthCompressionCoef), RcsSolution));
                     var diff = (float)(Math.Round(oldAmplVal, 2) / Math.Round(newAmplVal, 2) * newRcsVal);
 
                     diff = diff < 0 ? 0 : diff;

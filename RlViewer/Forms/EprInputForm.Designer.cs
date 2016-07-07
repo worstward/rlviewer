@@ -34,6 +34,7 @@
             // 
             // maskedTextBox1
             // 
+            this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox1.Location = new System.Drawing.Point(12, 12);
             this.maskedTextBox1.Mask = "000000000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
@@ -65,8 +66,8 @@
             this.Name = "EprInputForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ЭПР в точке";
+            this.Shown += new System.EventHandler(this.EprInputForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EprInputForm_KeyDown);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EprInputForm_KeyPress);
             this.ResumeLayout(false);
             this.PerformLayout();
 

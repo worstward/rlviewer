@@ -32,7 +32,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Files.Rli.Concrete.Brl4 _file;
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
-        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue)
+        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+            Filters.ImageFilterFacade filter, float normalization, float maxValue)
         {
             switch (destinationType)
             {
@@ -54,7 +55,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image)
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image,
+            int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
             
@@ -68,7 +70,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
             var rlParams = brlHead.HeaderStruct.rlParams
                 .ChangeFragmentShift(area.X, area.Y).ChangeImgDimensions(area.Width, area.Height);
             brlHeadStruct = new Headers.Concrete.Brl4.Brl4RliFileHeader(brlHead.HeaderStruct.fileSign, brlHead.HeaderStruct.fileVersion,
-                brlHead.HeaderStruct.rhgParams, rlParams, brlHead.HeaderStruct.synthParams, brlHead.HeaderStruct.reserved);
+                brlHead.HeaderStruct.rhgParams, rlParams, brlHead.HeaderStruct.synthParams, aligningPointsCount, rangeCompressionCoef,
+                azimuthCompressionCoef, brlHead.HeaderStruct.reserved);
 
             using (var ms = new MemoryStream(image))
             {
@@ -112,7 +115,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader brl4Header =
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
-                            _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
+                            _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, 0, 0, 0, _head.HeaderStruct.reserved);
 
                     var rl4Header = brl4Header.ToRl4(); 
 
@@ -172,7 +175,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader rl4Header =
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
-                            _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
+                            _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams,
+                            _head.HeaderStruct.aligningPointsCount, _head.HeaderStruct.rangeCompressionCoef, 
+                            _head.HeaderStruct.azimuthCompressionCoef, _head.HeaderStruct.reserved);
 
                     fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(rl4Header),
                     0, Marshal.SizeOf(rl4Header));

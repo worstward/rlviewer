@@ -19,7 +19,13 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
         public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue);
 
-        public abstract void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image);
+        public virtual void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
+        {
+            SaveAsAligned(fileName, area, image, 0, 0, 0);
+        }
+
+        public abstract void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image,
+            int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef);
 
         protected virtual void SaveAsRaw(string path, Rectangle area)
         {

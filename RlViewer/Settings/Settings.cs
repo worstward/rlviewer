@@ -90,7 +90,7 @@ namespace RlViewer.Settings
             set { _areaSize = value; }
         }
 
-        private bool _highResForDownScaled;
+        private bool _highResForDownScaled = true;
         
         [DataMember]
         public bool HighResForDownScaled
@@ -99,15 +99,23 @@ namespace RlViewer.Settings
             set { _highResForDownScaled = value; }
         }
 
-        private float _compressionCoef = 1f;
+        private float _rangeCompressionCoef = 1f;
 
         [DataMember]
-        public float CompressionCoef
+        public float RangeCompressionCoef
         {
-            get { return _compressionCoef; }
-            set { _compressionCoef = value; }
+            get { return _rangeCompressionCoef; }
+            set { _rangeCompressionCoef = value; }
         }
 
+
+        private float _azimuthCompressionCoef = 1f;
+        [DataMember]
+        public float AzimuthCompressionCoef
+        {
+            get { return _azimuthCompressionCoef; }
+            set { _azimuthCompressionCoef = value; }
+        }
 
         private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
         [DataMember]

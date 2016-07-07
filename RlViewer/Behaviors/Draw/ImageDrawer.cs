@@ -56,11 +56,11 @@ namespace RlViewer.Behaviors.Draw
                 {
                     if (isReversed)
                     {
-                        colorPalette.Entries[256 - i] = ColorFromHSV(256 - i, 1, 0.5f);
+                        colorPalette.Entries[255 - i] = ColorFromHSV(255 - i, 1, 0.5f);
                     }
                     else
                     {
-                        colorPalette.Entries[i] = ColorFromHSV(256 - i, 1, 0.5f);
+                        colorPalette.Entries[i] = ColorFromHSV(255 - i, 1, 0.5f);
                     }
                 }
 

@@ -17,12 +17,14 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private Files.LocatorFile _source;
 
-        public override void Save(string path, FileType destinationType, System.Drawing.Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue)
+        public override void Save(string path, FileType destinationType, System.Drawing.Rectangle area,
+            Filters.ImageFilterFacade filter, float normalization, float maxValue)
         {
             throw new NotImplementedException();
         }
 
-        public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
+        public override void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image,
+            int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             throw new NotImplementedException();
         }

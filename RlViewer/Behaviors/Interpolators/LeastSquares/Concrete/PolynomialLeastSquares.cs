@@ -9,7 +9,7 @@ namespace RlViewer.Behaviors.Interpolators.LeastSquares.Concrete
 {
     class PolynomialLeastSquares : Abstract.LeastSquares
     {
-        public PolynomialLeastSquares(Behaviors.PointSelector.PointSelector selector)
+        public PolynomialLeastSquares(Behaviors.PointSelector.CompressedPointSelectorWrapper selector)
             : base(selector)
         {
             

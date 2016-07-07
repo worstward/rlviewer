@@ -15,15 +15,13 @@ namespace RlViewer.Forms
     {
         public MainForm()
         {
-
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(this);
-            Text = string.Empty;
-            naviPanelCb.Checked = false;
-            filterPanelCb.Checked = false;
+            _keyboardFacade = new UI.KeyboardFacade(() => _guiFacade.Undo(), () => this.Text = _guiFacade.OpenFile(),
+                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(), () => _guiFacade.MakeReport());
         }
 
-
+        UI.KeyboardFacade _keyboardFacade;
         UI.GuiFacade _guiFacade;
 
         #region ISuitableForm controls
@@ -298,8 +296,7 @@ namespace RlViewer.Forms
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Text = _guiFacade.OpenFile();
-            
+            Text = _guiFacade.OpenFile();           
         }
         
         
@@ -319,15 +316,9 @@ namespace RlViewer.Forms
             _guiFacade.InitDrawImage();
         }
 
-        
-
-
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             _guiFacade.TraceMouseMovement(e);
-
-            //_guiFacade.DrawImage();
-
             _guiFacade.ShowMousePosition(e);
             _guiFacade.ShowNavigation(e);
         }
@@ -395,7 +386,7 @@ namespace RlViewer.Forms
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            _guiFacade.ProceedKeyPress(e);
+            _keyboardFacade.ProceedKeyPress(e);
         }
 
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
@@ -422,6 +413,7 @@ namespace RlViewer.Forms
         {
             _guiFacade.ToggleNavigation();
         }
+
         private void filterPanelCb_CheckedChanged(object sender, EventArgs e)
         {
             _guiFacade.ToggleFilters();

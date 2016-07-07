@@ -18,16 +18,6 @@ namespace RlViewer.Forms
             maskedTextBox1.PromptChar = ' ';
         }
 
-
-
-        /// <summary>
-        /// Pressed keys (0-9). 1st char after empty input are disappearing for some reason,
-        /// so now all pressed digit keys are stored while maskedTextbox is focused.
-        /// Then maskedTextBox.Text property is set to all pressed keys value
-        /// REFACTOR ASAP
-        /// </summary>
-        string _keys = string.Empty;
-
         private float _eprValue;
 
         public float EprValue
@@ -41,7 +31,7 @@ namespace RlViewer.Forms
         private void SubmitEprValue()
         {
             
-            if (!Single.TryParse(_keys, out _eprValue))
+            if (!Single.TryParse(maskedTextBox1.Text, out _eprValue))
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 maskedTextBox1.Focus();
@@ -49,7 +39,7 @@ namespace RlViewer.Forms
             }
                         
             DialogResult = DialogResult.OK;
-            Close();
+            this.Close();
             
         }
 
@@ -61,12 +51,6 @@ namespace RlViewer.Forms
 
         private void EprInputForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Back && _keys.Length > 0)
-            {
-
-                _keys = _keys.Substring(0, _keys.Length - 1);
-            }
-
             if (e.KeyCode == Keys.Escape)
             {
                 Close();
@@ -77,14 +61,9 @@ namespace RlViewer.Forms
             }
         }
 
-        private void EprInputForm_KeyPress(object sender, KeyPressEventArgs e)
+        private void EprInputForm_Shown(object sender, EventArgs e)
         {
-            if (char.IsDigit(e.KeyChar))
-            {
-                maskedTextBox1.Text = _keys;
-                _keys += e.KeyChar;
-            }
-            
+            maskedTextBox1.Focus();
         }
 
     }

@@ -14,7 +14,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface5Points : Surface3Points
     {
-        public Surface5Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
+        public Surface5Points(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
             : base(selector, rcsProvider)
         {
             _rcsProvider = rcsProvider;
@@ -108,12 +108,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             // i1    i2
             //  \ 2 /
             //   \ /
-            // 3  X  1 plane
+            // 3  o  1 plane
             //   / \
             //  / 4 \
             //i3     i4
-            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-i4
+            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-o
             bool secondLineRelative = GeometryHelper.MutualPosition(Selector[1].Location, Selector[2].Location, p);//i2-i3
+
+
 
             if (!firstLineRelative && !secondLineRelative)
             {

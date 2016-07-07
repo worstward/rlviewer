@@ -14,7 +14,7 @@ namespace RlViewer.Behaviors.PointSelector
  
         }
 
-        private PointSelector(IList<SelectedPoint> points)
+        public PointSelector(IList<SelectedPoint> points)
         {
             _selectedPoints = points;
         }
@@ -57,11 +57,11 @@ namespace RlViewer.Behaviors.PointSelector
         {
             var sortedList = new List<SelectedPoint>();
             var matrixDimension = (int)Math.Sqrt(selectedPoints.Count);
+
             if (matrixDimension * matrixDimension != selectedPoints.Count)
             {
                 throw new ArgumentOutOfRangeException("selectedPoints.Count");
             }
-
 
             for (int i = 0; i < matrixDimension; i++)
             {

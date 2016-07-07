@@ -12,7 +12,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     class Surface16Points : Surfaces.Abstract.Surface
     {
-        public Surface16Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
+        public Surface16Points(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
             : base(selector)
         {
             _rcsProvider = rcsProvider;

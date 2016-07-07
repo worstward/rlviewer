@@ -32,9 +32,9 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
-            this.highResCb = new System.Windows.Forms.CheckBox();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
+            this.highResCb = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.tileOutputCb = new System.Windows.Forms.ComboBox();
@@ -42,13 +42,15 @@
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label4 = new System.Windows.Forms.Label();
-            this.compressCoefTb = new System.Windows.Forms.MaskedTextBox();
+            this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.azimuthCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -64,7 +66,7 @@
             this.tabControl1.Location = new System.Drawing.Point(13, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(278, 188);
+            this.tabControl1.Size = new System.Drawing.Size(278, 221);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
@@ -102,18 +104,6 @@
             this.comboBoxPics1.TabIndex = 17;
             this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
-            // highResCb
-            // 
-            this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.highResCb.AutoSize = true;
-            this.highResCb.Location = new System.Drawing.Point(11, 129);
-            this.highResCb.Name = "highResCb";
-            this.highResCb.Size = new System.Drawing.Size(253, 17);
-            this.highResCb.TabIndex = 16;
-            this.highResCb.Text = "Высокое разрешение при масштабировании";
-            this.highResCb.UseVisualStyleBackColor = true;
-            this.highResCb.CheckedChanged += new System.EventHandler(this.highResCb_CheckedChanged);
-            // 
             // logPaletteCb
             // 
             this.logPaletteCb.AutoSize = true;
@@ -137,6 +127,18 @@
             this.inverseCheckBox.UseVisualStyleBackColor = true;
             this.inverseCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // highResCb
+            // 
+            this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.highResCb.AutoSize = true;
+            this.highResCb.Location = new System.Drawing.Point(11, 129);
+            this.highResCb.Name = "highResCb";
+            this.highResCb.Size = new System.Drawing.Size(253, 17);
+            this.highResCb.TabIndex = 16;
+            this.highResCb.Text = "Высокое разрешение при масштабировании";
+            this.highResCb.UseVisualStyleBackColor = true;
+            this.highResCb.CheckedChanged += new System.EventHandler(this.highResCb_CheckedChanged);
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.label3);
@@ -146,7 +148,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(270, 150);
+            this.tabPage2.Size = new System.Drawing.Size(270, 162);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Подготовка вывода";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -198,8 +200,10 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label5);
+            this.tabPage3.Controls.Add(this.azimuthCompressCoefTb);
             this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.compressCoefTb);
+            this.tabPage3.Controls.Add(this.rangeCompressCoefTb);
             this.tabPage3.Controls.Add(this.label2);
             this.tabPage3.Controls.Add(this.areaSizeTextBox);
             this.tabPage3.Controls.Add(this.label1);
@@ -207,7 +211,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(270, 150);
+            this.tabPage3.Size = new System.Drawing.Size(270, 195);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Инструменты";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -217,17 +221,17 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 108);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(181, 13);
+            this.label4.Size = new System.Drawing.Size(148, 13);
             this.label4.TabIndex = 6;
-            this.label4.Text = "Коэф. сжатия (для выравнивания)";
+            this.label4.Text = "Коэф. сжатия по дальности";
             // 
-            // compressCoefTb
+            // rangeCompressCoefTb
             // 
-            this.compressCoefTb.Location = new System.Drawing.Point(9, 124);
-            this.compressCoefTb.Mask = "0";
-            this.compressCoefTb.Name = "compressCoefTb";
-            this.compressCoefTb.Size = new System.Drawing.Size(100, 20);
-            this.compressCoefTb.TabIndex = 5;
+            this.rangeCompressCoefTb.Location = new System.Drawing.Point(9, 124);
+            this.rangeCompressCoefTb.Mask = "0";
+            this.rangeCompressCoefTb.Name = "rangeCompressCoefTb";
+            this.rangeCompressCoefTb.Size = new System.Drawing.Size(100, 20);
+            this.rangeCompressCoefTb.TabIndex = 5;
             // 
             // label2
             // 
@@ -284,6 +288,23 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 156);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(136, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Коэф. сжатия по азимуту";
+            // 
+            // azimuthCompressCoefTb
+            // 
+            this.azimuthCompressCoefTb.Location = new System.Drawing.Point(9, 172);
+            this.azimuthCompressCoefTb.Mask = "0";
+            this.azimuthCompressCoefTb.Name = "azimuthCompressCoefTb";
+            this.azimuthCompressCoefTb.Size = new System.Drawing.Size(100, 20);
+            this.azimuthCompressCoefTb.TabIndex = 7;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,6 +356,8 @@
         private System.Windows.Forms.CheckBox highResCb;
         private Settings.ComboBoxPics comboBoxPics1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.MaskedTextBox compressCoefTb;
+        private System.Windows.Forms.MaskedTextBox rangeCompressCoefTb;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.MaskedTextBox azimuthCompressCoefTb;
     }
 }

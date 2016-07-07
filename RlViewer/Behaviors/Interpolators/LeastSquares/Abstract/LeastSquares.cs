@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.Interpolators.LeastSquares.Abstract
     /// </summary>
     public abstract class LeastSquares : RlViewer.Behaviors.ImageAligning.IInterpolationProvider
     {
-        public LeastSquares(Behaviors.PointSelector.PointSelector selector)
+        public LeastSquares(Behaviors.PointSelector.CompressedPointSelectorWrapper selector)
         {
             _selector = selector;
         }
@@ -21,8 +21,8 @@ namespace RlViewer.Behaviors.Interpolators.LeastSquares.Abstract
             
         }
 
-        private Behaviors.PointSelector.PointSelector _selector;
-        protected Behaviors.PointSelector.PointSelector Selector
+        private Behaviors.PointSelector.CompressedPointSelectorWrapper _selector;
+        protected Behaviors.PointSelector.CompressedPointSelectorWrapper Selector
         {
             get
             {

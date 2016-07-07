@@ -49,6 +49,8 @@
             // 
             // maskedTextBox1
             // 
+            this.maskedTextBox1.HidePromptOnLeave = true;
+            this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox1.Location = new System.Drawing.Point(75, 12);
             this.maskedTextBox1.Mask = "000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
@@ -57,6 +59,8 @@
             // 
             // maskedTextBox2
             // 
+            this.maskedTextBox2.HidePromptOnLeave = true;
+            this.maskedTextBox2.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox2.Location = new System.Drawing.Point(75, 38);
             this.maskedTextBox2.Mask = "000000";
             this.maskedTextBox2.Name = "maskedTextBox2";
@@ -120,6 +124,7 @@
             this.Name = "SizeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Размер изображения";
+            this.Shown += new System.EventHandler(this.SizeForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SizeForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

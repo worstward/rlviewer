@@ -12,7 +12,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
     /// </summary>
     public class Surface3Points : Surfaces.Abstract.Surface
     {
-        public Surface3Points(PointSelector.PointSelector selector, IInterpolationProvider rcsProvider)
+        public Surface3Points(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
             : base(selector)
         {
 
@@ -80,12 +80,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
 
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newAmplVal = GetPlaneValue(i, j, AmplitudeSolution.First());
-                    var newRcsVal = GetPlaneValue(i, j, RcsSolution.First());
+                    var newAmplVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef, AmplitudeSolution.First());
+                    var newRcsVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef, RcsSolution.First());
                     var diff = oldAmplVal / newAmplVal * newRcsVal;
                     //var ls = RcsProvider.GetValueAt(diff);
                     //diff *= ls;
-
+                    
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }

@@ -11,7 +11,14 @@ namespace RlViewer.Factories.Header.Concrete
     {
         public override Headers.Abstract.LocatorFileHeader Create(string path)
         {
-            return new RawHeader(path);
+            using (var sizeFrm = new Forms.SizeForm())
+            {
+                if (sizeFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    return new RawHeader(path, sizeFrm.ImgSize, sizeFrm.BytesPerSample);
+                }
+                else throw new OperationCanceledException("raw imgSize");
+            }
         }
     }
 }

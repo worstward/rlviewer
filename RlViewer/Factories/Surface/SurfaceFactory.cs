@@ -11,9 +11,10 @@ namespace RlViewer.Factories.Surface
     public class SurfaceFactory
     {
         public static Behaviors.ImageAligning.Surfaces.Abstract.Surface CreateSurface
-            (RlViewer.Behaviors.PointSelector.PointSelector selector, Behaviors.ImageAligning.IInterpolationProvider rcsProvider)
+            (Behaviors.PointSelector.CompressedPointSelectorWrapper selector,
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider)
         {
-            switch (selector.Count())
+            switch (selector.CompessedSelector.Count())
             {
                 case 3:
                     return new Surface3Points(selector, rcsProvider);

@@ -10,7 +10,8 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file, PointSelector.PointSelector selector, Behaviors.ImageAligning.IInterpolationProvider rcsProvider, Saving.Abstract.Saver saver)
+        public Aligning(Files.LocatorFile file, PointSelector.CompressedPointSelectorWrapper selector, 
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, Saving.Abstract.Saver saver)
         {
             _file = file;     
             _selector = selector;
@@ -52,7 +53,7 @@ namespace RlViewer.Behaviors.ImageAligning
 
         private Saving.Abstract.Saver _saver;
         private Surfaces.Abstract.Surface _surface;
-        private PointSelector.PointSelector _selector;
+        private PointSelector.CompressedPointSelectorWrapper _selector;
 
 
         public void Resample(string fileName)
@@ -62,7 +63,8 @@ namespace RlViewer.Behaviors.ImageAligning
 
             if(resampledImage != null)
             {           
-                _saver.SaveAsAligned(fileName, area, resampledImage);
+                _saver.SaveAsAligned(fileName, area, resampledImage, _selector.Count(),
+                    _selector.RangeCompressionCoef, _selector.AzimuthCompressionCoef);
             }
         }
 
@@ -71,7 +73,7 @@ namespace RlViewer.Behaviors.ImageAligning
 
         private const int _workingAreaSize = 4000;
 
-        private System.Drawing.Rectangle GetArea(PointSelector.PointSelector selector)
+        private System.Drawing.Rectangle GetArea(IEnumerable<PointSelector.SelectedPoint> selector)
         {
 
             var minX = selector.Min(p => p.Location.X);

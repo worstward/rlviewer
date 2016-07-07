@@ -11,12 +11,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
     /// </summary>
     public abstract class Surface : WorkerEventController
     {
-        public Surface(PointSelector.PointSelector selector)
+        public Surface(PointSelector.CompressedPointSelectorWrapper selector)
         {
             Selector = selector;
         }
 
-        protected PointSelector.PointSelector Selector
+        protected PointSelector.CompressedPointSelectorWrapper Selector
         {
             get;
             private set;

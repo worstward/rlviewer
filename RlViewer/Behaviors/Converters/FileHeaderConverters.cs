@@ -56,8 +56,11 @@ namespace RlViewer.Behaviors.Converters
         {
             return new RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader(rl4RliFileHeader.fileSign, rl4RliFileHeader.fileVersion,
                 rl4RliFileHeader.rhgParams.ToBrl4RhgSubHeader(),
-                rl4RliFileHeader.rlParams.ToBrl4RliSubHeader(calibration),
+                rl4RliFileHeader.rlParams.ToBrl4RliSubHeader(calibration), 
                 rl4RliFileHeader.synthParams.ToBrl4SynthSubHeader(polarization, angle_zond),
+                0,
+                0,
+                0,
                 rl4RliFileHeader.reserved);
         }
 

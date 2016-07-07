@@ -53,9 +53,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image)
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image,
+            int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
-            
             alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
           
             Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
@@ -70,7 +70,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
             var rlParams = brlHeadStruct.rlParams
                 .ChangeFragmentShift(area.X, area.Y).ChangeImgDimensions(area.Width, area.Height);
             brlHeadStruct = new Headers.Concrete.Brl4.Brl4RliFileHeader(brlHeadStruct.fileSign,
-                brlHeadStruct.fileVersion, brlHeadStruct.rhgParams, rlParams, brlHeadStruct.synthParams, brlHeadStruct.reserved);
+                brlHeadStruct.fileVersion, brlHeadStruct.rhgParams, rlParams, brlHeadStruct.synthParams,
+                aligningPointsCount, rangeCompressionCoef, azimuthCompressionCoef, brlHeadStruct.reserved);
 
 
             using (var ms = new MemoryStream(image))

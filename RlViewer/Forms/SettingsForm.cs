@@ -19,7 +19,6 @@ namespace RlViewer.Forms
 
             InitializeComponent();
             FillComboBox();
-
             comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
                 .Where(item => item.Text == _settings.Palette.Select(x => x.ToString())
                 .Aggregate((x, y) => x.ToString() + " " + y.ToString())).FirstOrDefault();
@@ -32,11 +31,14 @@ namespace RlViewer.Forms
             sectionSizeTextBox.Text = _settings.SectionSize.ToString();
             sectionSizeTextBox.PromptChar = ' ';
             highResCb.Checked = _settings.HighResForDownScaled;
-            compressCoefTb.Text = _settings.CompressionCoef.ToString();
+            rangeCompressCoefTb.Text = _settings.RangeCompressionCoef.ToString();
+            azimuthCompressCoefTb.Text = _settings.AzimuthCompressionCoef.ToString();
+
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areaSizeTextBox.PromptChar = ' ';
 
         }
+
 
         private Settings.Settings _settings;
 
@@ -49,6 +51,8 @@ namespace RlViewer.Forms
         private Behaviors.TileCreator.TileOutputType _outputType;
         private bool _highRes;
 
+
+        
 
         private void FillComboBox()
         {
@@ -77,6 +81,11 @@ namespace RlViewer.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            ConfirmSettings();
+        }
+
+        private void ConfirmSettings()
+        {
             int sectionSize;
             if (Int32.TryParse(sectionSizeTextBox.Text, out sectionSize))
             {
@@ -91,10 +100,17 @@ namespace RlViewer.Forms
             }
             else return;
 
-            float compressCoef;
-            if (Single.TryParse(compressCoefTb.Text, out compressCoef))
+            float rangeCompressCoef;
+            if (Single.TryParse(rangeCompressCoefTb.Text, out rangeCompressCoef))
             {
-                _settings.CompressionCoef = compressCoef == 0 ? 1 : compressCoef;
+                _settings.RangeCompressionCoef = rangeCompressCoef == 0 ? 1 : rangeCompressCoef;
+            }
+            else return;
+
+            float azimuthCompressCoef;
+            if (Single.TryParse(azimuthCompressCoefTb.Text, out azimuthCompressCoef))
+            {
+                _settings.AzimuthCompressionCoef = azimuthCompressCoef == 0 ? 1 : azimuthCompressCoef;
             }
             else return;
 
@@ -107,7 +123,7 @@ namespace RlViewer.Forms
             {
                 _settings.UseTemperaturePalette = false;
             }
-            
+
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
@@ -133,6 +149,10 @@ namespace RlViewer.Forms
             if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                ConfirmSettings();
             }
         }
 

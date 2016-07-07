@@ -90,6 +90,10 @@ namespace RlViewer.Forms
             }
         }
 
+        private void SizeForm_Shown(object sender, EventArgs e)
+        {
+            maskedTextBox1.Focus();
+        }
 
     }
 }

@@ -117,6 +117,9 @@ namespace RlViewer.Headers.Concrete.Brl4
         
             var rliHeader = new List<Tuple<string, string>>();
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
+            rliHeader.Add(new Tuple<string, string>("Точек при выравнивании",            headerStruct.aligningPointsCount == 0 ? "Не определено" : headerStruct.aligningPointsCount.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Коэф сжатия по дальности при выравнивании",      headerStruct.rangeCompressionCoef == 0 ? "Не определено" : headerStruct.rangeCompressionCoef.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Коэф сжатия по азимуту при выравнивании", headerStruct.azimuthCompressionCoef == 0 ? "Не определено" : headerStruct.azimuthCompressionCoef.ToString()));      
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 
             rliHeader.Add(new Tuple<string, string>("Ширина кадра, отсчетов",            headerStruct.rlParams.cadrWidth.ToString()));

@@ -12,7 +12,8 @@ namespace RlViewer.Headers.Concrete.Brl4
     public struct Brl4RliFileHeader
     {
         public Brl4RliFileHeader(byte[] fileSign, int fileVersion, Brl4RhgSubHeaderStruct rhgParams,
-            Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, byte[] reserved)
+            Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, int aligningPointsCount, 
+            float rangeCompressionCoef, float azimuthCompressionCoef, byte[] reserved)
         {
             this.fileSign = fileSign;
             this.fileVersion = fileVersion;
@@ -20,6 +21,9 @@ namespace RlViewer.Headers.Concrete.Brl4
             this.rlParams = rlParams;
             this.synthParams = synthParams;
             this.reserved = reserved;
+            this.aligningPointsCount = aligningPointsCount;
+            this.rangeCompressionCoef = rangeCompressionCoef;
+            this.azimuthCompressionCoef = azimuthCompressionCoef;
         }
 
 
@@ -42,12 +46,15 @@ namespace RlViewer.Headers.Concrete.Brl4
         [MarshalAs(UnmanagedType.Struct)]
         public Brl4SynthesisSubHeaderStruct synthParams;
 
-        //
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4088)]
+        public int aligningPointsCount;
+
+        public float rangeCompressionCoef;
+
+        public float azimuthCompressionCoef;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4076)]
         public byte[] reserved;
 
-       
-
-
+        
     }
 }

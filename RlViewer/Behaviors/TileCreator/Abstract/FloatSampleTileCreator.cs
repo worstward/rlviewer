@@ -117,8 +117,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     var localMax = fRliString.Max();
 
                     Array.Clear(fRliString, 0, fRliString.Length);
-
-                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
+                    if (!float.IsInfinity(localMax))
+                    { 
+                        maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
+                    }
                 }
             }
 

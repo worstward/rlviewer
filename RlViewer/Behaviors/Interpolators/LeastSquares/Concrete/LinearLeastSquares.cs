@@ -10,7 +10,7 @@ namespace RlViewer.Behaviors.Interpolators.LeastSquares.Concrete
 
     public class LinearLeastSquares : Abstract.LeastSquares
     {
-        public LinearLeastSquares(Behaviors.PointSelector.PointSelector selector) : base(selector)
+        public LinearLeastSquares(Behaviors.PointSelector.CompressedPointSelectorWrapper selector) : base(selector)
         {
 
 
