@@ -19,6 +19,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
         public override void GenerateReport(string reportFilePath)
         {
+
             using (DocX document = DocX.Create(reportFilePath))
             {
                 for (int i = 0; i < FilePaths.Length; i++)
@@ -26,7 +27,11 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                     using (var docToInsert = PrepareReport(reportFilePath, FilePaths[i]))
                     { 
                         document.InsertDocument(docToInsert);
-                        document.InsertSectionPageBreak();
+
+                        if (i != FilePaths.Length - 1)
+                        {
+                            document.InsertSectionPageBreak();
+                        }             
                     }
                 }
                 document.Save();
@@ -36,7 +41,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
         private DocX PrepareReport(string reportFilePath, string locatorFilePath)
         {
-                DocX document = DocX.Create(reportFilePath);
+            DocX document = DocX.Create(reportFilePath);
             
             var prop = new Files.FileProperties(locatorFilePath);
             var fileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(prop)
@@ -46,23 +51,23 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                 .Create(prop, fileHeader, null);
 
 
-                Paragraph p = document.InsertParagraph();
-                p.Alignment = Alignment.center;
-                p.Append(System.IO.Path.GetFileName(locatorFilePath)).Bold().FontSize(20)
-                .Append(Environment.NewLine)
-                .Append(Environment.NewLine)
-                .Append(string.Format("Площадь засвеченной поверхности: {0}м2",
-                Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
-                .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
-                .ToString(".################################")));
+            Paragraph p = document.InsertParagraph();
+            p.Alignment = Alignment.center;
+            p.Append(System.IO.Path.GetFileName(locatorFilePath)).Bold().FontSize(20)
+            .Append(Environment.NewLine)
+            .Append(Environment.NewLine)
+            .Append(string.Format("Площадь засвеченной поверхности: {0}м2",
+            Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
+            .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
+            .ToString(".################################")));
 
-                foreach (var subHeaderInfo in file.Header.HeaderInfo)
-                {
-                    var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
-                    document.InsertTable(headerTable);
-                }
+            foreach (var subHeaderInfo in file.Header.HeaderInfo)
+            {
+                var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
+                document.InsertTable(headerTable);
+            }
 
-                return document;
+            return document;
         }
 
 
@@ -72,7 +77,6 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             Paragraph subHeader = document.InsertParagraph();
             subHeader.Alignment = Alignment.center;
             subHeader.Append(System.IO.Path.GetFileName(headerInfo.HeaderName)).Bold().FontSize(14);
-
 
             Table subHeaderTable = document.AddTable(headerInfo.Params.Count(), 2);
             subHeaderTable.Alignment = Alignment.center;

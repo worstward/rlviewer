@@ -1341,48 +1341,8 @@ namespace RlViewer.UI
             {
                 if (_areaSelector.Area != null && _areaSelector.Area.Width != 0
                     && _areaSelector.Area.Width < 3000 && _areaSelector.Area.Height < 3000)
-                {
-                    var maxSample = _file.GetMaxSample(
-                            new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
-                            _areaSelector.Area.Width, _areaSelector.Area.Height));
-
-                    var minSample = _file.GetMinSample(
-                            new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
-                            _areaSelector.Area.Width, _areaSelector.Area.Height));
-
-                    var maxSampleLoc = _file.GetMaxSampleLocation(
-                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
-                            _areaSelector.Area.Width, _areaSelector.Area.Height));
-
-                    var minSampleLoc = _file.GetMinSampleLocation(
-                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
-                            _areaSelector.Area.Width, _areaSelector.Area.Height));
-                    
-                    var avgSample = _file.GetAvgSample(
-                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
-                            _areaSelector.Area.Width, _areaSelector.Area.Height));
-
-
-                    List<Tuple<string, string>> statistics = new List<Tuple<string, string>>()
-                    {
-                        new Tuple<string, string>("Имя файла", Path.GetFileName(_file.Properties.FilePath)),
-                        new Tuple<string, string>("X1", _areaSelector.Area.Location.X.ToString()),
-                        new Tuple<string, string>("Y1", _areaSelector.Area.Location.Y.ToString()),
-                        new Tuple<string, string>("X2", (_areaSelector.Area.Location.X + _areaSelector.Area.Width).ToString()),
-                        new Tuple<string, string>("Y2", (_areaSelector.Area.Location.Y + _areaSelector.Area.Height).ToString()),
-                        new Tuple<string, string>("Ширина фрагмента", _areaSelector.Area.Width.ToString()),
-                        new Tuple<string, string>("Высота фрагмента", _areaSelector.Area.Height.ToString()),
-                        new Tuple<string, string>("Максимальная амплитуда", maxSample.ToString()),
-                        new Tuple<string, string>("Xmax", maxSampleLoc.X.ToString()),
-                        new Tuple<string, string>("Ymax", maxSampleLoc.Y.ToString()),
-                        new Tuple<string, string>("Минимальная амплитуда", minSample.ToString()),
-                        new Tuple<string, string>("Xmin", minSampleLoc.X.ToString()),
-                        new Tuple<string, string>("Ymin", minSampleLoc.Y.ToString()),
-                        new Tuple<string, string>("Средняя амплитуда", avgSample.ToString())
-                    };
-
-
-                    using (var statFrm = new Forms.StatisticsForm(statistics))
+                {           
+                    using (var statFrm = new Forms.StatisticsForm(_file, _areaSelector))
                     {
                         statFrm.ShowDialog();
                     }
@@ -1406,9 +1366,20 @@ namespace RlViewer.UI
                 ofd.Filter = Resources.OpenFilter;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
+                    FileType type;
+                    var validFiles = ofd.FileNames.Where(
+                        x => Enum.TryParse<FileType>(System.IO.Path.GetExtension(x).Replace(".", ""), out type) && type != FileType.raw);
+
+                    if (validFiles.Count() == 0)
+                    {
+                        Logging.Logger.Log(Logging.SeverityGrades.Error, "Unsuitable files selected");
+                        ErrorGuiMessage("Unsuitable files selected");
+                        return;
+                    }
+
                     var reporter = Factories.Reporter.Abstract.ReporterFactory
                         .GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx)
-                        .Create(ofd.FileNames);
+                        .Create(validFiles.ToArray());
                     using (var fsd = new SaveFileDialog())
                     {
                         fsd.Title = "Имя для файла отчета";

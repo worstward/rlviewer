@@ -70,7 +70,6 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-
         private float GetAverageValue(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
         {
             float avgValue = 0;
