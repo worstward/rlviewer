@@ -112,7 +112,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             //   / \
             //  / 4 \
             //i3     i4
-            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-o
+            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-i4
             bool secondLineRelative = GeometryHelper.MutualPosition(Selector[1].Location, Selector[2].Location, p);//i2-i3
 
 

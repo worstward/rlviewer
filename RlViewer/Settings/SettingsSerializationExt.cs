@@ -20,8 +20,9 @@ namespace RlViewer.Settings
 
             try
             {
-                using (var stream = new System.IO.FileStream(_settingsXmlPath,
-                    System.IO.FileMode.Create, System.IO.FileAccess.Write))
+                var xmlSettings = new XmlWriterSettings() { Indent = true };
+
+                using (var stream = XmlWriter.Create(_settingsXmlPath, xmlSettings))
                 {
                     dcs.WriteObject(stream, settings);
                 }
@@ -37,9 +38,8 @@ namespace RlViewer.Settings
             DataContractSerializer dcs = new DataContractSerializer(typeof(Settings));
 
             try
-            { 
-                using (var stream = new System.IO.FileStream(_settingsXmlPath,
-                    System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite))
+            {
+                using (var stream = XmlReader.Create(_settingsXmlPath))
                 {
                     return (Settings)dcs.ReadObject(stream);
                 }

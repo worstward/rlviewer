@@ -1228,11 +1228,6 @@ namespace RlViewer.UI
             var mark = section.InitialPointMark;
             var caption = GetSectionFormCaption(section);
 
-
-            //var a = new Behaviors.ResolutionAnalyzer.ResolutionAnalyzer(_file, 256, 16);
-            //var c = a.GetAzimuthResolution(p);
-            //var d = c.ToArray();
-
             using (var sectionForm = new Forms.SectionGraphForm(points, mark, caption))
             {
                 sectionForm.ShowDialog();
