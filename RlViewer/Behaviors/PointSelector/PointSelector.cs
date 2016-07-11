@@ -48,37 +48,6 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-        /// <summary>
-        /// Orders selected point list as a square matrix
-        /// </summary>
-        /// <param name="selectedPoints">Selected points list</param>
-        /// <returns>Ordered in matrix order list</returns>
-        protected IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
-        {
-            var sortedList = new List<SelectedPoint>();
-            var matrixDimension = (int)Math.Sqrt(selectedPoints.Count);
-
-            if (matrixDimension * matrixDimension != selectedPoints.Count)
-            {
-                throw new ArgumentOutOfRangeException("selectedPoints.Count");
-            }
-
-            for (int i = 0; i < matrixDimension; i++)
-            {
-                //take each sqrt(elementCount) topmost elements from original list, order them by X coordinate,
-                //add to new list and remove from original
-                sortedList.AddRange(
-                    selectedPoints
-                    .OrderBy(point => point.Location.Y)
-                    .Take(matrixDimension)
-                    .OrderBy(point => point.Location.X));
-                foreach(var item in sortedList)
-                {
-                    selectedPoints.Remove(item);
-                }           
-            }
-            return sortedList;
-        }
 
         //public PointSelector AverageAmplitudes()
         //{
@@ -139,15 +108,16 @@ namespace RlViewer.Behaviors.PointSelector
                             
                             System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
 
-                            SelectedPoints.Add(new SelectedPoint(file,
-                                file.GetMaxSampleLocation(area), epr.EprValue));
+                            var selectedPoint = new SelectedPoint(file, file.GetMaxSampleLocation(area), epr.EprValue);
+
+                            if (!SelectedPoints.Any(p => p.Equals(selectedPoint.Location)))
+                            {
+                                SelectedPoints.Add(selectedPoint);
+                            }        
                         }
                     }
                 }
-                if (SelectedPoints.Count == 4 || SelectedPoints.Count == 16)
-                {
-                    SelectedPoints = OrderAsMatrix(SelectedPoints);
-                }
+
             }
         }
 

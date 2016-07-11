@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using RlViewer.Behaviors;
-
+using RlViewer.Behaviors.PointSelector;
 
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
@@ -56,8 +56,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            Parallel.For(area.Location.X, toInclusiveX, (i,loopState) =>
+            for (int i = area.Location.X; i < toInclusiveX; i++)
             {
+
+
+
+
+            //Parallel.For(area.Location.X, toInclusiveX, (i,loopState) =>
+            //{
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
@@ -71,10 +77,14 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    loopState.Break();
+                    break;    
+                    //loopState.Break();
                 }
 
-            });
+
+            }
+
+            //});
 
             if (Cancelled)
             {
@@ -100,40 +110,168 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
 
+        protected override IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
+        {
+            var centralPoint = GetCentralPoint(selectedPoints);
+            var selectedNoCentral = selectedPoints.Where(x => !x.Equals(centralPoint)).ToList();
+            var matrix = base.OrderAsMatrix(selectedNoCentral).ToList();
+
+            matrix.Add(centralPoint);
+
+            return matrix;
+        }
+
+
+        private SelectedPoint GetCentralPoint(IEnumerable<SelectedPoint> selectedPoints)
+        {
+            var initialPoints = selectedPoints.Select(x => x).ToList();
+            var maxAngles = new List<double>();
+            var vectors = new List<System.Windows.Vector>();
+            var angles = new List<double>();
+
+            //build up vectors from 1 selected point to all others, repeat for each point
+            for(int i = 0; i < initialPoints.Count - 1; i++)
+            {
+                vectors.Clear();
+                angles.Clear();
+
+                foreach (var sidePoint in initialPoints.Where(x => !x.Equals(initialPoints[i])))
+                {
+                    vectors.Add(new System.Windows.Vector(sidePoint.Location.X - initialPoints[i].Location.X, sidePoint.Location.Y - initialPoints[i].Location.Y));
+                }
+
+                //get angle between each two co-bordered vectors 
+                for (int j = 0; j < vectors.Count; j++)
+                {
+                    if (j == vectors.Count - 1)
+                    {
+                        angles.Add(System.Windows.Vector.AngleBetween(vectors[j], vectors[0]));
+                        break;
+                    }
+
+                    angles.Add(System.Windows.Vector.AngleBetween(vectors[j], vectors[j + 1]));
+                }
+                angles = angles.Select(x => x < 0 ? 180 - x : x).ToList();
+
+
+                maxAngles.Add(angles.Max());
+            }
+
+            //assuming that least max angle will give more average angles overall
+            var minMaxAngle = maxAngles.Min();
+
+            //take center point with that angle combination
+            var centerPointIndex = maxAngles.IndexOf(minMaxAngle);
+
+            return selectedPoints.Skip(centerPointIndex).Take(1).FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// Builds a plane through each 3 selected points
+        /// </summary>
+        /// <returns></returns>
+        protected override float[][] InitAmplitudePlanes()
+        {
+            var centerPoint = Selector.Last();
+
+            var planes = Selector.Combinations<PointSelector.SelectedPoint>(3)
+                .Where(x => x.Contains(centerPoint))
+                .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[3])))
+                .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[2])))
+                .ToList();
+
+            float[][] solution = new float[planes.Count][];
+
+            for (int i = 0; i < planes.Count; i++)
+            {
+                solution[i] = SolveAmplitude(planes[i].ToList());
+            }
+            return solution;
+        }
+
+        /// <summary>
+        /// Builds a plane through center and every 2 combinations point
+        /// </summary>
+        /// <returns></returns>
+        protected override float[][] InitRcsPlanes()
+        {
+            var centerPoint = Selector.Last();
+
+            var planes = Selector.Combinations<PointSelector.SelectedPoint>(3)
+               .Where(x => x.Contains(centerPoint))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[3])))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[2])))
+               .ToList();
+
+
+            float[][] solution = new float[planes.Count][];
+
+            for (int i = 0; i < planes.Count; i++)
+            {                
+                solution[i] = SolveRcs(planes[i].ToList());
+            }
+
+            return solution;
+        }
+
+        private bool IsInsideAngle(System.Windows.Vector v1, System.Windows.Vector v2, Point p)
+        {
+
+            var center = Selector.Last().Location;
+
+            var angle = Math.Abs(System.Windows.Vector.AngleBetween(v1, v2));
+            var halfAngle = angle / 2;
+
+            v1.Normalize();
+            v2.Normalize();
+
+            var bisector = v1 + v2;
+            bisector.Normalize();
+
+            var vectorToPoint = new System.Windows.Vector(p.X - center.X, p.Y - center.Y);
+            vectorToPoint.Normalize();
+
+            var AngleBetweenBisectorAndVectorToPoint = Math.Abs(System.Windows.Vector.AngleBetween(bisector, vectorToPoint));
+
+            return AngleBetweenBisectorAndVectorToPoint <= halfAngle; 
+        }
+
+
         private float[] PointToPlane(Point p)
         {
-           
-            //in order to belong to plane 1, point has to be to the left of (i1-i4) and to the left of (i2-i3)
-            //same method applies for other combinations
-            // i1    i2
-            //  \ 2 /
-            //   \ /
-            // 3  o  1 plane
-            //   / \
-            //  / 4 \
-            //i3     i4
-            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-i4
-            bool secondLineRelative = GeometryHelper.MutualPosition(Selector[1].Location, Selector[2].Location, p);//i2-i3
+            var initialPoints = Selector.Select(x => x).ToList();
+            var vectors = new List<System.Windows.Vector>();
+
+            var centerPoint = Selector.Last();
+
+            foreach (var sidePoint in initialPoints.Where(x => !x.Equals(centerPoint)))
+            {
+                vectors.Add(new System.Windows.Vector(sidePoint.Location.X - centerPoint.Location.X, sidePoint.Location.Y - centerPoint.Location.Y));
+            }
 
 
-
-            if (!firstLineRelative && !secondLineRelative)
+            if (IsInsideAngle(vectors[0], vectors[1], p))
             {
                 return Solution[0];
             }
-            else if (firstLineRelative && !secondLineRelative)
+            else if (IsInsideAngle(vectors[1], vectors[2], p))
             {
                 return Solution[1];
             }
-            else if (firstLineRelative && secondLineRelative)
+            else if (IsInsideAngle(vectors[2], vectors[3], p))
             {
                 return Solution[2];
             }
-            else if (!firstLineRelative && secondLineRelative)
+            else if (IsInsideAngle(vectors[3], vectors[0], p))
             {
                 return Solution[3];
             }
-            throw new ArgumentException();
+
+
+
+            return Solution[0];
+            
         }
 
     }

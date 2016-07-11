@@ -20,6 +20,8 @@ namespace RlViewer.Factories.Surface
                     return new Surface3Points(selector, rcsProvider);
                 case 4:
                     return new Surface4Points(selector, rcsProvider);
+                case 5:
+                    return new Surface5Points(selector, rcsProvider);
                 case 16:
                     return new Surface16Points(selector, rcsProvider);
                 default:

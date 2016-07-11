@@ -12,17 +12,10 @@ namespace RlViewer.Behaviors.PointSelector
         public CompressedPointSelectorWrapper(Files.LocatorFile file, PointSelector selector, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             _file = file;
-            _selector = selector;
             _rangeCompressionCoef = rangeCompressionCoef;
             _azimuthCompressionCoef = azimuthCompressionCoef;
 
-            var compressed = new List<SelectedPoint>();
-            compressed.AddRange(_selector.Select(x =>
-                new SelectedPoint(new Point(x.Location.X / rangeCompressionCoef, x.Location.Y / azimuthCompressionCoef),
-                    GetAverageValue(_file, _rangeCompressionCoef, _azimuthCompressionCoef, x.Location), x.Rcs)));
-
-            _compressedSelector = new PointSelector(compressed);
-
+            SetSelector(selector);
         }
 
         public IEnumerator<SelectedPoint> GetEnumerator()
@@ -44,7 +37,8 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
         private Files.LocatorFile _file;
-        private PointSelector _selector;
+
+
         private PointSelector _compressedSelector;
 
         public PointSelector CompessedSelector
@@ -67,6 +61,17 @@ namespace RlViewer.Behaviors.PointSelector
         public int AzimuthCompressionCoef
         {
             get { return _azimuthCompressionCoef; }
+        }
+
+
+        public void SetSelector(PointSelector selector)
+        {
+            var compressed = new List<SelectedPoint>();
+            compressed.AddRange(selector.Select(x =>
+                new SelectedPoint(new Point(x.Location.X / _rangeCompressionCoef, x.Location.Y / _rangeCompressionCoef),
+                    GetAverageValue(_file, _rangeCompressionCoef, _azimuthCompressionCoef, x.Location), x.Rcs)));
+
+            _compressedSelector = new PointSelector(compressed);
         }
 
 

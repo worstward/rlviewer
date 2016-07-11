@@ -117,7 +117,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         /// Builds a plane through each 3 selected points
         /// </summary>
         /// <returns></returns>
-        protected float[][] InitAmplitudePlanes()
+        protected virtual float[][] InitAmplitudePlanes()
         {
             var planes = Selector.Combinations<PointSelector.SelectedPoint>(3).ToList();
 
@@ -134,7 +134,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         /// Builds a plane through each 3 selected points
         /// </summary>
         /// <returns></returns>
-        protected float[][] InitRcsPlanes()
+        protected virtual float[][] InitRcsPlanes()
         {
             var planes = Selector.Combinations<PointSelector.SelectedPoint>(3).ToList();
 

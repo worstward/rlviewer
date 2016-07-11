@@ -1022,7 +1022,7 @@ namespace RlViewer.UI
                             new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
 
-                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 16)
+                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 5 || _pointSelector.Count() == 16)
                         {
                             _form.AlignBtn.Enabled = true;
                         }
@@ -1203,7 +1203,7 @@ namespace RlViewer.UI
         private string GetSectionFormCaption(Behaviors.Sections.Abstract.Section section)
         {
             var type = section.GetType();
-
+            
 
             if (type == typeof(Behaviors.Sections.Concrete.HorizontalSection))
             {
@@ -1217,7 +1217,7 @@ namespace RlViewer.UI
             {
                 return "Произвольное сечение";
             }
-
+            
             throw new NotSupportedException("unsupported section type");
         }
 

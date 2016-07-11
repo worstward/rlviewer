@@ -78,6 +78,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <HintPath>..\packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
       <Private>True</Private>
@@ -100,7 +101,6 @@
     <Compile Include="Behaviors\DecompositionStepChanger\DecompositionStepChanger.cs" />
     <Compile Include="Behaviors\DragController.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />
-    <Compile Include="Behaviors\ImageAligning\CoarseningMatrix.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />

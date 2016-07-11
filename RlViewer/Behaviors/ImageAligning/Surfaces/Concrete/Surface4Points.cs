@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
     /// <summary>
@@ -58,6 +57,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             }
 
         }
+
+
+
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {

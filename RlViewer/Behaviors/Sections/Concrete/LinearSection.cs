@@ -13,7 +13,6 @@ namespace RlViewer.Behaviors.Sections.Concrete
         public LinearSection(int sectionLength, Point p) : base(sectionLength, p)
         {
             InitialPoint = p;
-
         }
 
         public override IEnumerable<PointF> GetValues(Files.LocatorFile file, Point p)
@@ -61,8 +60,8 @@ namespace RlViewer.Behaviors.Sections.Concrete
                 for (int i = fromInclusive; i < toInclusive; i++)
                 {
                     var pointToGetSample = new Point(GeometryHelper.GetX(InitialPoint, p, i), i);
-                    if (pointToGetSample.X < 0 || pointToGetSample.X > file.Width ||
-                        pointToGetSample.Y < 0 || pointToGetSample.Y > file.Height)
+                    if (pointToGetSample.X < 0 || pointToGetSample.X >= file.Width ||
+                        pointToGetSample.Y < 0 || pointToGetSample.Y >= file.Height)
                     {
                         continue;
                     }

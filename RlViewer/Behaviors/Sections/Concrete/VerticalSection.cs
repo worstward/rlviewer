@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.Sections.Concrete
 
             for (int i = p1.Y - SectionLength / 2; i < p1.Y + SectionLength / 2; i++)
             {
-                if (i < 0 || i > file.Height) continue;
+                if (i < 0 || i >= file.Height) continue;
 
                 coordPairList.Add(new PointF(i,
                     file.GetSample(new Point(p1.X, i)).ToFileSample(file.Properties.Type, file.Header.BytesPerSample)));
