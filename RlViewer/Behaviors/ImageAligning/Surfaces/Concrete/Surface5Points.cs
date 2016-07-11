@@ -20,17 +20,20 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             _rcsProvider = rcsProvider;
         }
 
-        private float[][] _solution;
-        /// <summary>
-        /// Contains coefficients for 4 planes
-        /// </summary>
-        private float[][] Solution
+        private object _amplitudeSolutionLocker = new object();
+
+        private float[][] _amplitudeSolution;
+        private float[][] AmplitudeSolution
         {
             get
             {
-                return _solution = _solution ?? InitAmplitudePlanes();
+                lock (_amplitudeSolutionLocker)
+                {
+                    return _amplitudeSolution = _amplitudeSolution ?? InitAmplitudePlanes();
+                }
             }
         }
+
 
         private IInterpolationProvider _rcsProvider;
         protected override IInterpolationProvider RcsProvider
@@ -41,6 +44,22 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             }
         
         }
+
+        private object _rscSolutionLocker = new object();
+
+        private float[][] _rcsSolution;
+        private float[][] RcsSolution
+        {
+            get
+            {
+                lock (_rscSolutionLocker)
+                {
+                    return _rcsSolution = _rcsSolution ?? InitRcsPlanes();
+                }
+            }
+        }
+
+
 
 
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
@@ -56,14 +75,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            for (int i = area.Location.X; i < toInclusiveX; i++)
+            Parallel.For(area.Location.X, toInclusiveX, (i,loopState) =>
             {
-
-
-
-
-            //Parallel.For(area.Location.X, toInclusiveX, (i,loopState) =>
-            //{
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
                     var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
@@ -77,14 +90,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    break;    
-                    //loopState.Break();
+                    loopState.Break();
                 }
 
-
-            }
-
-            //});
+            });
 
             if (Cancelled)
             {
@@ -253,24 +262,24 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             if (IsInsideAngle(vectors[0], vectors[1], p))
             {
-                return Solution[0];
+                return AmplitudeSolution[0];
             }
             else if (IsInsideAngle(vectors[1], vectors[2], p))
             {
-                return Solution[1];
+                return AmplitudeSolution[1];
             }
             else if (IsInsideAngle(vectors[2], vectors[3], p))
             {
-                return Solution[2];
+                return AmplitudeSolution[2];
             }
             else if (IsInsideAngle(vectors[3], vectors[0], p))
             {
-                return Solution[3];
+                return AmplitudeSolution[3];
             }
 
 
 
-            return Solution[0];
+            return AmplitudeSolution[0];
             
         }
 
