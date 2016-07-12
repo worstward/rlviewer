@@ -25,6 +25,10 @@ namespace RlViewer.Behaviors.ImageAligning
             {
                 return _surface.Cancelled;
             }
+            set
+            {
+                _surface.Cancelled = value;
+            }
         }
 
         public override event ReportProgress Report

@@ -14,8 +14,7 @@ namespace RlViewer.Behaviors.PointSelector
             _file = file;
             _rangeCompressionCoef = rangeCompressionCoef;
             _azimuthCompressionCoef = azimuthCompressionCoef;
-
-            SetSelector(selector);
+            SetCompressedSelector(selector);
         }
 
         public IEnumerator<SelectedPoint> GetEnumerator()
@@ -64,11 +63,21 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
+        public void SetCompressedSelector(PointSelector selector)
+        {
+            var compressed = new List<SelectedPoint>();
+            compressed.AddRange(selector.Select(x =>
+                new SelectedPoint(new Point(x.Location.X / _rangeCompressionCoef, x.Location.Y / _azimuthCompressionCoef),
+                    GetAverageValue(_file, _rangeCompressionCoef, _azimuthCompressionCoef, x.Location), x.Rcs)));
+
+            _compressedSelector = new PointSelector(compressed);
+        }
+
         public void SetSelector(PointSelector selector)
         {
             var compressed = new List<SelectedPoint>();
             compressed.AddRange(selector.Select(x =>
-                new SelectedPoint(new Point(x.Location.X / _rangeCompressionCoef, x.Location.Y / _rangeCompressionCoef),
+                new SelectedPoint(new Point(x.Location.X, x.Location.Y),
                     GetAverageValue(_file, _rangeCompressionCoef, _azimuthCompressionCoef, x.Location), x.Rcs)));
 
             _compressedSelector = new PointSelector(compressed);
@@ -139,7 +148,7 @@ namespace RlViewer.Behaviors.PointSelector
             {
                 for (int i = leftTopOfArea.X; i < leftTopOfArea.X + rangeCompressionCoef; i++)
                 {
-                    if (i < 0 || j < 0 || i > file.Width || j > file.Height)
+                    if (i < 0 || j < 0 || i >= file.Width || j >= file.Height)
                     {
                         continue;
                     }

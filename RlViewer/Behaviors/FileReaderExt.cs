@@ -345,7 +345,7 @@ namespace RlViewer.Behaviors
             catch (FileNotFoundException)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking,
-                    string.Format("Analyzed file not found: {0}", file.Properties.FilePath));
+                    string.Format("Analyzing file not found: {0}", file.Properties.FilePath));
                 throw;
             }
             catch (IOException)

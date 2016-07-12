@@ -156,18 +156,30 @@ namespace RlViewer.UI
                 CancelLoading();
             }
 
-            _file = null;
-            _tiles = null;
-            _drawer = null;
 
-            _form.NavigationDgv.Rows.Clear();
+            if (_worker != null && _worker.IsBusy)
+            {
+                var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
+                                "Подтвердите отмену",
+                                MessageBoxButtons.YesNo);
+                if (confirmation == DialogResult.Yes)
+                {
+                    CancelLoading();
+                }
+                else
+                {
+                    DrawImage();
+                    return _file.Properties.FilePath;
+                }
+            }
+
+
             InitializeWindow();
-
-            caption = _caption = fileName;
-
             StartTask("Чтение навигации", loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);
+            _form.NavigationDgv.Rows.Clear();
+            caption = _caption = fileName;
+            return caption; 
 
-            return caption;
         }
         #endregion
 
@@ -191,19 +203,6 @@ namespace RlViewer.UI
         private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
             System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
         {
-
-            if (_worker != null && _worker.IsBusy)
-            {
-                var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
-                                "Подтвердите отмену",
-                                MessageBoxButtons.YesNo);
-                if (confirmation == DialogResult.Yes)
-                {
-                    CancelLoading();
-                }
-                else return;
-            }
-
 
             InitProgressControls(true, caption);
             _worker = ThreadHelper.InitWorker(d, c);
@@ -403,7 +402,6 @@ namespace RlViewer.UI
             _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
             _cancellableAction = _aligner;
             _aligner.Resample(fileName);
-
             e.Cancel = _aligner.Cancelled;
             e.Result = fileName;
         }
@@ -686,12 +684,12 @@ namespace RlViewer.UI
             if (isPanelOpen)
             {
                 sp.Panel2Collapsed = false;
-                sp.Panel2.Show();
+                //sp.Panel2.Show();
             }
             else
             {
                 sp.Panel2Collapsed = true;
-                sp.Panel2.Hide();
+                //sp.Panel2.Hide();
             }
             InitDrawImage();
         }
@@ -1224,7 +1222,18 @@ namespace RlViewer.UI
 
         private void ShowSection(Behaviors.Sections.Abstract.Section section, Point p)
         {
-            var points = section.GetValues(_file, p);
+            List<PointF> points = null;
+            
+            try
+            {
+                points = section.GetValues(_file, p).ToList();
+            }
+            catch
+            {
+                ErrorGuiMessage("Невозможно построить сечение");
+                return;
+            }
+
             var mark = section.InitialPointMark;
             var caption = GetSectionFormCaption(section);
 

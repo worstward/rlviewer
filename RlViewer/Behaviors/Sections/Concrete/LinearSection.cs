@@ -41,7 +41,14 @@ namespace RlViewer.Behaviors.Sections.Concrete
                         continue;
                     }
 
-                    coordPairList.Add(new PointF(i, (float)file.GetSample(pointToGetSample).ToFileSample(file.Properties.Type, file.Header.BytesPerSample)));
+                    try
+                    {
+                        coordPairList.Add(new PointF(i, (float)file.GetSample(pointToGetSample).ToFileSample(file.Properties.Type, file.Header.BytesPerSample)));
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
 
 

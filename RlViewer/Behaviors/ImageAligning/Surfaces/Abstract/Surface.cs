@@ -50,7 +50,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
 
             if (matrixDimension * matrixDimension != selected.Count)
             {
-                throw new ArgumentOutOfRangeException("selectedPoints.Count");
+                return selectedPoints;
             }
 
             for (int i = 0; i < matrixDimension; i++)

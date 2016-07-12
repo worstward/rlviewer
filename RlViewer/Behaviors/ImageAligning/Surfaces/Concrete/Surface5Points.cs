@@ -42,7 +42,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 return _rcsProvider;
             }
-        
+
         }
 
         private object _rscSolutionLocker = new object();
@@ -75,13 +75,18 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            Parallel.For(area.Location.X, toInclusiveX, (i,loopState) =>
+            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //{
+
+            for (int i = area.Location.X; i < toInclusiveX; i++)
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-                    var oldVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newVal = GetAmplitude(i, j);
-                    var diff = oldVal / newVal * RcsProvider.GetValueAt(oldVal);
+                    var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
+                    var newAmplVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), AmplitudeSolution));
+                    var newRcsVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), RcsSolution));
+                    var diff = (float)(Math.Round(oldAmplVal, 2) / Math.Round(newAmplVal, 2) * newRcsVal);
+
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -90,10 +95,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    loopState.Break();
+                    // loopState.Break();
                 }
 
-            });
+            }
+            //});
 
             if (Cancelled)
             {
@@ -107,17 +113,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             return imageB;
         }
 
-        /// <summary>
-        /// Gets Z coordinate of a point
-        /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
-        /// <returns></returns>
-        protected float GetAmplitude(int x, int y)
-        {
-            return GetPlaneValue(x, y, PointToPlane(new System.Drawing.Point(x, y)));
-        }
-
 
         protected override IList<SelectedPoint> OrderAsMatrix(IList<SelectedPoint> selectedPoints)
         {
@@ -125,26 +120,35 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             var selectedNoCentral = selectedPoints.Where(x => !x.Equals(centralPoint)).ToList();
             var matrix = base.OrderAsMatrix(selectedNoCentral).ToList();
 
+            //swap last and second to last elements to order points clockwise
+            var elementToSwap = matrix.Last();
+            matrix.Remove(elementToSwap);
+            matrix.Insert(matrix.Count - 1, elementToSwap);
+
             matrix.Add(centralPoint);
 
             return matrix;
         }
-
-
+        
         private SelectedPoint GetCentralPoint(IEnumerable<SelectedPoint> selectedPoints)
         {
             var initialPoints = selectedPoints.Select(x => x).ToList();
             var maxAngles = new List<double>();
-            var vectors = new List<System.Windows.Vector>();
-            var angles = new List<double>();
-
+           
             //build up vectors from 1 selected point to all others, repeat for each point
-            for(int i = 0; i < initialPoints.Count - 1; i++)
+            for (int i = 0; i < initialPoints.Count; i++)
             {
-                vectors.Clear();
-                angles.Clear();
+                var vectors = new List<System.Windows.Vector>();
+                var angles = new List<double>();
 
-                foreach (var sidePoint in initialPoints.Where(x => !x.Equals(initialPoints[i])))
+                var selectedNoCentral = base.OrderAsMatrix(initialPoints.Where(x => !x.Equals(initialPoints[i])).ToList());
+
+                //order points clockwise to make vectors
+                var elementToSwap = selectedNoCentral.Last();
+                selectedNoCentral.Remove(elementToSwap);
+                selectedNoCentral.Insert(selectedNoCentral.Count - 1, elementToSwap);
+
+                foreach (var sidePoint in selectedNoCentral)
                 {
                     vectors.Add(new System.Windows.Vector(sidePoint.Location.X - initialPoints[i].Location.X, sidePoint.Location.Y - initialPoints[i].Location.Y));
                 }
@@ -172,7 +176,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             //take center point with that angle combination
             var centerPointIndex = maxAngles.IndexOf(minMaxAngle);
 
-            return selectedPoints.Skip(centerPointIndex).Take(1).FirstOrDefault();
+            return selectedPoints.Skip(centerPointIndex).Take(1).First();
         }
 
 
@@ -184,10 +188,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             var centerPoint = Selector.Last();
 
+            //take planes with center point and no crosses only
             var planes = Selector.Combinations<PointSelector.SelectedPoint>(3)
                 .Where(x => x.Contains(centerPoint))
-                .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[3])))
-                .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[2])))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[2])))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[3])))
                 .ToList();
 
             float[][] solution = new float[planes.Count][];
@@ -207,17 +212,18 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             var centerPoint = Selector.Last();
 
+            //take planes with center point and no crosses only
             var planes = Selector.Combinations<PointSelector.SelectedPoint>(3)
                .Where(x => x.Contains(centerPoint))
-               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[3])))
-               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[2])))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[0]) && x.Contains(Selector[2])))
+               .Where(x => !(x.Contains(centerPoint) && x.Contains(Selector[1]) && x.Contains(Selector[3])))
                .ToList();
 
 
             float[][] solution = new float[planes.Count][];
 
             for (int i = 0; i < planes.Count; i++)
-            {                
+            {
                 solution[i] = SolveRcs(planes[i].ToList());
             }
 
@@ -226,28 +232,31 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         private bool IsInsideAngle(System.Windows.Vector v1, System.Windows.Vector v2, Point p)
         {
-
             var center = Selector.Last().Location;
 
-            var angle = Math.Abs(System.Windows.Vector.AngleBetween(v1, v2));
+            //make angle with 2 vectors
+            var angle = System.Windows.Vector.AngleBetween(v1, v2);
             var halfAngle = angle / 2;
 
             v1.Normalize();
             v2.Normalize();
 
+            //vector that bisects angle between v1 and v2
             var bisector = v1 + v2;
             bisector.Normalize();
+
 
             var vectorToPoint = new System.Windows.Vector(p.X - center.X, p.Y - center.Y);
             vectorToPoint.Normalize();
 
             var AngleBetweenBisectorAndVectorToPoint = Math.Abs(System.Windows.Vector.AngleBetween(bisector, vectorToPoint));
 
-            return AngleBetweenBisectorAndVectorToPoint <= halfAngle; 
+            //if angle between bisector and vector to point p is less than half of angle v1v2 then point lies inside the angle
+            return AngleBetweenBisectorAndVectorToPoint <= halfAngle;
         }
 
 
-        private float[] PointToPlane(Point p)
+        private float[] PointToPlane(Point p, float[][] solution)
         {
             var initialPoints = Selector.Select(x => x).ToList();
             var vectors = new List<System.Windows.Vector>();
@@ -256,31 +265,29 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             foreach (var sidePoint in initialPoints.Where(x => !x.Equals(centerPoint)))
             {
-                vectors.Add(new System.Windows.Vector(sidePoint.Location.X - centerPoint.Location.X, sidePoint.Location.Y - centerPoint.Location.Y));
+                vectors.Add(new System.Windows.Vector(sidePoint.Location.X * Selector.RangeCompressionCoef - centerPoint.Location.X *
+                    Selector.RangeCompressionCoef,
+                    sidePoint.Location.Y * Selector.AzimuthCompressionCoef - centerPoint.Location.Y * Selector.AzimuthCompressionCoef));
             }
-
 
             if (IsInsideAngle(vectors[0], vectors[1], p))
             {
-                return AmplitudeSolution[0];
+                return solution[0];
             }
             else if (IsInsideAngle(vectors[1], vectors[2], p))
             {
-                return AmplitudeSolution[1];
+                return solution[2];
             }
             else if (IsInsideAngle(vectors[2], vectors[3], p))
             {
-                return AmplitudeSolution[2];
+                return solution[3];
             }
             else if (IsInsideAngle(vectors[3], vectors[0], p))
             {
-                return AmplitudeSolution[3];
+                return solution[1];
             }
 
-
-
-            return AmplitudeSolution[0];
-            
+            return solution[0];
         }
 
     }
