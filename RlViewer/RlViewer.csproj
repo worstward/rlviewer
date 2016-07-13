@@ -115,6 +115,13 @@
     <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\ReporterTypes.cs" />
     <Compile Include="Behaviors\ReportGenerator\Concrete\DocFileReporter.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Abstract\CornerCoordinateComputer.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Brl4CornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\KCornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\RawCornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\RCornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl4CornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
@@ -140,6 +147,13 @@
     <Compile Include="Factories\AreaSizeCalc\Concrete\Rl4SizeCalcFactory.cs" />
     <Compile Include="Factories\AreaSizeCalc\Concrete\Rl8SizeCalcFactory.cs" />
     <Compile Include="Factories\AreaSizeCalc\Concrete\RSizeCalcFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Abstract\CornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\Brl4CornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\KCornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\RawCornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\RCornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\Rl4CornerCoordFactory.cs" />
+    <Compile Include="Factories\CornerCoords\Concrete\Rl8CornerCoordFactory.cs" />
     <Compile Include="Factories\Surface\SurfaceFactory.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface16Points.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\Surface3Points.cs" />

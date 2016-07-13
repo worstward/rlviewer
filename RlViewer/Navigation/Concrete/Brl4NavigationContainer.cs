@@ -12,11 +12,9 @@ namespace RlViewer.Navigation.Concrete
     {
 
         public Brl4NavigationContainer(string path, float initialRange, float step, byte board,
-            int headerLength, int dataLength, int sx, int sy)
+            int headerLength, int dataLength, int sx, int sy) : base(initialRange, step)
         {
             _path = path;
-            _initialRange = initialRange;
-            _step = step;
             _board = board;
             _headerLength = headerLength;
             _dataLength = dataLength;
@@ -24,30 +22,21 @@ namespace RlViewer.Navigation.Concrete
         }
 
         private string _path;
-        private float _initialRange;
-        private float _step;
+
         private byte _board;
         private int _headerLength;
         private int _dataLength;
         private int _sx;
 
 
-
-        private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
-        public override RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        public override NavigationString[] ConvertToCommonNavigation(Headers.Abstract.IStrHeader[] strCollection)
         {
-            get { return _computer; }
-        }
-
-        
-
-        private NavigationString[] ConvertToCommonNavigation(
-            RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] strCollection)
-        {
+            RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct[] rStrColl = strCollection.Select(x => (RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct)x).ToArray();
             IEnumerable<NavigationString> naviStrings;
+
             try
             {
-                naviStrings = strCollection.Select
+                naviStrings = rStrColl.Select
                     (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, _board));
             }
             catch (ArgumentNullException)
@@ -62,9 +51,10 @@ namespace RlViewer.Navigation.Concrete
             try
             {
                 NaviStrings =
-                    ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(
-                    _path, _headerLength, _dataLength));
-                _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+                    ConvertToCommonNavigation(
+                    GetNaviStrings<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(_path, _headerLength, _dataLength)
+                    .Cast<Headers.Abstract.IStrHeader>().ToArray());
+               
             }
             catch (ArgumentException)
             {
@@ -93,7 +83,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return NaviStrings[stringNumber].NaviInfo((sampleNumber + _sx), _computer);    //.NaviInfo();          
+                return NaviStrings[stringNumber].NaviInfo((sampleNumber + _sx), Computer);    //.NaviInfo();          
             }
         }       
 

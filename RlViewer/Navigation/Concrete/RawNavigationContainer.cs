@@ -9,18 +9,18 @@ namespace RlViewer.Navigation.Concrete
     class RawNavigationContainer : NavigationContainer
     {
         public RawNavigationContainer(string path)
+            : base(0, 0)
         {
-        }
-
-
-        public override Behaviors.Navigation.NavigationComputing Computer
-        {
-            get { throw new NotImplementedException(); }
         }
 
         public override void GetNavigation()
         {
             
+        }
+
+        public override NavigationString[] ConvertToCommonNavigation(Headers.Abstract.IStrHeader[] strCollection)
+        {
+            throw new NotImplementedException();
         }
 
         public override NavigationString this[int stringNumber]

@@ -40,6 +40,7 @@ namespace RlViewer.UI
             _drag = new Behaviors.DragController();
             _histogram = new Behaviors.Draw.HistContainer();
 
+            _form.DragRb.Checked = true;
 
             _win = _form.Canvas;
 
@@ -148,7 +149,6 @@ namespace RlViewer.UI
 
         private string OpenFile(string fileName)
         {
-
             string caption;
 
             if (_worker != null && _worker.IsBusy)
@@ -447,6 +447,8 @@ namespace RlViewer.UI
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
             _analyzer = Factories.Analyzer.AnalyzerFactory.Create(_file);
+            _pointSelector = new Behaviors.PointSelector.PointSelector();
+            _areaSelector = new Behaviors.AreaSelector.AreaSelector();
         }
 
 
@@ -531,9 +533,6 @@ namespace RlViewer.UI
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Missing tiles for {0} detected", _file.Properties.FilePath));
                 }
 
-
-                _pointSelector = new Behaviors.PointSelector.PointSelector();
-                _areaSelector = new Behaviors.AreaSelector.AreaSelector();
                 InitProgressControls(false);
                 InitDrawImage();
             }
@@ -593,7 +592,7 @@ namespace RlViewer.UI
 
         public void InitDrawImage()
         {
-            if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null)
+            if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null && _file != null)
             {
                 var tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter, _scaler);
                 var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
@@ -643,7 +642,7 @@ namespace RlViewer.UI
 
         public void DrawImage()
         {
-            if (_tiles != null)
+            if (_tiles != null && _drawer != null)
             {
                 Task.Run(() =>
                     {
@@ -662,7 +661,7 @@ namespace RlViewer.UI
 
         private void DrawItems(Graphics g)
         {
-            if (_drawer != null)
+            if (_tiles != null && _drawer != null)
             {
                _drawer.Draw(g, new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
             }
@@ -801,6 +800,8 @@ namespace RlViewer.UI
             _drawer = null;
             _pointSelector = null;
             _areaSelector = null;
+            _tiles = null;
+
 
             ThreadHelper.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
             ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
@@ -814,7 +815,7 @@ namespace RlViewer.UI
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
-            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            //ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
             ThreadHelper.ThreadSafeUpdate<Chart>(_form.HistogramChart).Series[0].Points.Clear();
 

@@ -62,6 +62,18 @@ namespace RlViewer.Behaviors.Filters.Abstract
             return arr;
         }
 
+        public System.Drawing.Imaging.ColorPalette ApplyColorFilters(System.Drawing.Imaging.ColorPalette palette)
+        {
+            byte[] lut = MergeLut();
+
+            for (int i = 0; i < palette.Entries.Length; i++)
+            {
+                palette.Entries[i] = System.Drawing.Color.FromArgb(255, lut[palette.Entries[i].R], lut[palette.Entries[i].G], lut[palette.Entries[i].B]);
+            }
+
+            return palette;
+        }
+
 
         public byte[] ApplyFilters(byte[] imgData)
         {

@@ -9,36 +9,28 @@ namespace RlViewer.Navigation.Concrete
     public class RNavigationContainer : NavigationContainer
     {
         public RNavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
+            : base(initialRange, step)
         {
             _path = path;
-            _initialRange = initialRange;
-            _step = step;
             _board = board;
             _headerLength = headerLength;
             _dataLength = dataLength;
         }
 
         private string _path;
-        private float _initialRange;
-        private float _step;
         private byte _board;
         private int _headerLength;
         private int _dataLength;
 
 
-
-        private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
-        public override RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        public override NavigationString[] ConvertToCommonNavigation(Headers.Abstract.IStrHeader[] strCollection)
         {
-            get { return _computer; }
-        }
+            RlViewer.Headers.Concrete.R.RStrHeaderStruct[] rStrColl = strCollection.Select(x => (RlViewer.Headers.Concrete.R.RStrHeaderStruct)x).ToArray();
 
-        private NavigationString[] ConvertToCommonNavigation(RlViewer.Headers.Concrete.R.RStrHeaderStruct[] strCollection)
-        {
             IEnumerable<NavigationString> naviStrings;
             try
             {
-                naviStrings = strCollection.Select
+                naviStrings = rStrColl.Select
                     (x => new NavigationString((float)(x.navigationHeader.longtitudeInsSns / 180f * Math.PI),
                         (float)(x.navigationHeader.latitudeInsSns / 180f * Math.PI), (float)x.navigationHeader.heightInsSns,
                         (float)(x.navigationHeader.realTraceInsSns / 180f * Math.PI), _board));
@@ -56,8 +48,7 @@ namespace RlViewer.Navigation.Concrete
             {
                 NaviStrings =
                     ConvertToCommonNavigation(GetNaviStrings<RlViewer.Headers.Concrete.R.RStrHeaderStruct>(
-                    _path, _headerLength, _dataLength));
-                _computer = new Behaviors.Navigation.NavigationComputing(_initialRange, _step);
+                    _path, _headerLength, _dataLength).Cast<Headers.Abstract.IStrHeader>().ToArray());
             }
             catch (ArgumentNullException)
             {
@@ -86,7 +77,7 @@ namespace RlViewer.Navigation.Concrete
         {
             get
             {
-                return NaviStrings[stringNumber].NaviInfo(sampleNumber, _computer);    //.NaviInfo();          
+                return NaviStrings[stringNumber].NaviInfo(sampleNumber, Computer);    //.NaviInfo();          
             }
         }  
 

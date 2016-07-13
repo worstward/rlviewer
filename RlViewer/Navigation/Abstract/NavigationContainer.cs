@@ -10,23 +10,44 @@ namespace RlViewer.Navigation
     public abstract class NavigationContainer : WorkerEventController, IEnumerable<NavigationString>
     {
 
+        public NavigationContainer(float initialRange, float step)
+        {
+            _computer = new Behaviors.Navigation.NavigationComputing(initialRange, step);
+        }
+
         public abstract NavigationString this[int stringNumber] { get; }
         public abstract Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0] { get; }
         public abstract void GetNavigation();
 
-        protected NavigationString[] NaviStrings;
+        private NavigationString[] _naviStrings;
+
+        public NavigationString[] NaviStrings
+        {
+            get { return _naviStrings; }
+            set { _naviStrings = value; }
+        }
 
         public IEnumerator<NavigationString> GetEnumerator()
         {
             return NaviStrings.AsEnumerable<NavigationString>().GetEnumerator();
         }
 
+        public abstract NavigationString[] ConvertToCommonNavigation(Headers.Abstract.IStrHeader[] strCollection);
+
+
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
 
-        public abstract RlViewer.Behaviors.Navigation.NavigationComputing Computer { get; }
+        private RlViewer.Behaviors.Navigation.NavigationComputing _computer;
+        public RlViewer.Behaviors.Navigation.NavigationComputing Computer
+        {
+            get
+            {
+                return _computer;
+            }
+        }
 
         protected virtual T[] GetNaviStrings<T>(string path, int fileHeaderLength, int strDataLength) where T : struct
         {

@@ -21,12 +21,12 @@ namespace RlViewer.Behaviors
         public static Point Intersection(Point p1, Point p2, Point p3, Point p4)
         {
             var u1 = ((p4.X - p3.X) * (p1.Y - p3.Y) - (p4.Y - p3.Y) * (p1.X - p3.X)) /
-                ((p4.Y - p3.Y) * (p2.X - p1.X) - (p4.X - p3.X) * (p2.Y - p1.Y));
+                (float)((p4.Y - p3.Y) * (p2.X - p1.X) - (p4.X - p3.X) * (p2.Y - p1.Y));
 
             var u2 = ((p2.X - p1.X) * (p1.Y - p3.Y) - (p2.Y - p1.Y) * (p1.X - p3.X)) /
-               ((p4.Y - p3.Y) * (p2.X - p1.X) - (p4.X - p3.X) * (p2.Y - p1.Y));
+               (float)((p4.Y - p3.Y) * (p2.X - p1.X) - (p4.X - p3.X) * (p2.Y - p1.Y));
 
-            return new Point(p1.X + u1 * (p2.X - p1.X), p1.Y + u2 * (p2.Y - p1.Y));
+            return new Point((int)(p1.X + u1 * (p2.X - p1.X)), (int)(p1.Y + u2 * (p2.Y - p1.Y)));
         }
 
 
@@ -47,6 +47,32 @@ namespace RlViewer.Behaviors
 
             return valueToAnalyze > 0;
         }
+
+        public static bool IsInsideAngle(Point vectorOriginPoint, System.Windows.Vector v1, System.Windows.Vector v2, Point p)
+        {
+            var center = vectorOriginPoint;
+
+            //make angle with 2 vectors
+            var angle = System.Windows.Vector.AngleBetween(v1, v2);
+            var halfAngle = angle / 2;
+
+            v1.Normalize();
+            v2.Normalize();
+
+            //vector that bisects angle between v1 and v2
+            var bisector = v1 + v2;
+            bisector.Normalize();
+
+
+            var vectorToPoint = new System.Windows.Vector(p.X - center.X, p.Y - center.Y);
+            vectorToPoint.Normalize();
+
+            var AngleBetweenBisectorAndVectorToPoint = Math.Abs(System.Windows.Vector.AngleBetween(bisector, vectorToPoint));
+
+            //if angle between bisector and vector to point p is less than half of angle v1v2 then point lies inside the angle
+            return AngleBetweenBisectorAndVectorToPoint <= halfAngle;
+        }
+
 
 
         /// <summary>

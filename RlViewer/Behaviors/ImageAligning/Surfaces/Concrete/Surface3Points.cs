@@ -73,18 +73,19 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
             
    
-            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //{
+            for (int i = area.Location.X; i < toInclusiveX; i++)
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newAmplVal = GetPlaneValue(i, j, AmplitudeSolution.First());
-                    var newRcsVal = GetPlaneValue(i, j, RcsSolution.First());
+                    var newAmplVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef, AmplitudeSolution.First());
+                    var newRcsVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef, RcsSolution.First());
                     var diff = oldAmplVal / newAmplVal * newRcsVal;
                     //var ls = RcsProvider.GetValueAt(diff);
                     //diff *= ls;
-                    
+
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -94,10 +95,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                 if (OnCancelWorker())
                 {
-                    loopState.Break();
+                    // loopState.Break();
                 }
 
-            });
+            }
 
             if (Cancelled)
             {

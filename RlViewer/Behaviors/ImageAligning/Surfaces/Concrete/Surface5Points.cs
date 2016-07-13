@@ -230,31 +230,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             return solution;
         }
 
-        private bool IsInsideAngle(System.Windows.Vector v1, System.Windows.Vector v2, Point p)
-        {
-            var center = Selector.Last().Location;
-
-            //make angle with 2 vectors
-            var angle = System.Windows.Vector.AngleBetween(v1, v2);
-            var halfAngle = angle / 2;
-
-            v1.Normalize();
-            v2.Normalize();
-
-            //vector that bisects angle between v1 and v2
-            var bisector = v1 + v2;
-            bisector.Normalize();
-
-
-            var vectorToPoint = new System.Windows.Vector(p.X - center.X, p.Y - center.Y);
-            vectorToPoint.Normalize();
-
-            var AngleBetweenBisectorAndVectorToPoint = Math.Abs(System.Windows.Vector.AngleBetween(bisector, vectorToPoint));
-
-            //if angle between bisector and vector to point p is less than half of angle v1v2 then point lies inside the angle
-            return AngleBetweenBisectorAndVectorToPoint <= halfAngle;
-        }
-
 
         private float[] PointToPlane(Point p, float[][] solution)
         {
@@ -270,19 +245,19 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                     sidePoint.Location.Y * Selector.AzimuthCompressionCoef - centerPoint.Location.Y * Selector.AzimuthCompressionCoef));
             }
 
-            if (IsInsideAngle(vectors[0], vectors[1], p))
+            if (GeometryHelper.IsInsideAngle(centerPoint.Location, vectors[0], vectors[1], p))
             {
                 return solution[0];
             }
-            else if (IsInsideAngle(vectors[1], vectors[2], p))
+            else if (GeometryHelper.IsInsideAngle(centerPoint.Location, vectors[1], vectors[2], p))
             {
                 return solution[2];
             }
-            else if (IsInsideAngle(vectors[2], vectors[3], p))
+            else if (GeometryHelper.IsInsideAngle(centerPoint.Location, vectors[2], vectors[3], p))
             {
                 return solution[3];
             }
-            else if (IsInsideAngle(vectors[3], vectors[0], p))
+            else if (GeometryHelper.IsInsideAngle(centerPoint.Location, vectors[3], vectors[0], p))
             {
                 return solution[1];
             }

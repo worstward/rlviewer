@@ -8,7 +8,7 @@ namespace RlViewer.Factories.Reporter.Concrete
 {
     class DocReporterFactory : Abstract.ReporterFactory
     {
-        public override Behaviors.ReportGenerator.Abstract.Reporter Create( params string[] filePaths)
+        public override Behaviors.ReportGenerator.Abstract.Reporter Create(params string[] filePaths)
         {
             return new Behaviors.ReportGenerator.Concrete.DocFileReporter(filePaths);
         }

@@ -143,14 +143,25 @@ namespace RlViewer.Forms
                             ((DateTime)row.Cells[1].Value).ToFileTime().ToString());
                             Directory.Delete(deletionPath, true);
 
-
-                            //if (Directory.GetDirectories(Directory.GetParent(deletionPath)).Select(x => Directory.GetFiles(x)).SelectMany(x => x).Count() == 0)
-                            //{
-
-                            //}
                             dataGridView1.Rows.Remove(row);
                             Logging.Logger.Log(Logging.SeverityGrades.Info,
                                 string.Format("Successfully deleted file cache: {0}", deletionPath));
+
+                            var parentDir = Path.GetDirectoryName(deletionPath);
+
+                            if (!Directory.EnumerateFileSystemEntries(parentDir).Any())
+                            {
+                                Directory.Delete(parentDir, true);
+
+                                var upperParentDir = Path.GetDirectoryName(parentDir);
+                                if (!Directory.EnumerateFileSystemEntries(upperParentDir).Any())
+                                {
+                                    Directory.Delete(upperParentDir, true);
+                                }
+                            }
+
+                            
+
                         }
                         catch (Exception ex)
                         {

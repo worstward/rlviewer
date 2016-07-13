@@ -49,7 +49,6 @@ namespace RlViewer.Behaviors.Draw
             //TODO: REWRITE PALETTE INIT
             ColorPalette colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
 
-
             if (useTemperaturePalette)
             {
                 for (int i = 0; i < 256; i++)

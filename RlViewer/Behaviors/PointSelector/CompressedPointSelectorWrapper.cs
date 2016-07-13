@@ -136,17 +136,17 @@ namespace RlViewer.Behaviors.PointSelector
         /// <param name="file"></param>
         /// <param name="rangeCompressionCoef"></param>
         /// <param name="azimuthCompressionCoef"></param>
-        /// <param name="centerPoint">leftTopPoint of clicked area</param>
+        /// <param name="centerPoint">Clicked point (center of area)</param>
         /// <returns></returns>
-        private float GetOddStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point leftTopOfArea)
+        private float GetOddStepAverage(RlViewer.Files.LocatorFile file, int rangeCompressionCoef, int azimuthCompressionCoef, Point centerPoint)
         {
-            
+           
             float compressedSample = 0;
             int checkedSamplesNum = 0;
 
-            for (int j = leftTopOfArea.Y; j < leftTopOfArea.Y + azimuthCompressionCoef; j++)
+            for (int j = centerPoint.Y - azimuthCompressionCoef / 2; j <= centerPoint.Y + azimuthCompressionCoef / 2; j++)
             {
-                for (int i = leftTopOfArea.X; i < leftTopOfArea.X + rangeCompressionCoef; i++)
+                for (int i = centerPoint.X - rangeCompressionCoef / 2; i <= centerPoint.X + rangeCompressionCoef / 2; i++)
                 {
                     if (i < 0 || j < 0 || i >= file.Width || j >= file.Height)
                     {

@@ -115,36 +115,41 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
         private float[] PointToPlane(Point p, float[][] solution)
         {
-           
-            //in order to belong to plane 1, point has to be to the left of (i1-i4) and to the left of (i2-i3)
-            //same method applies for other combinations
-            // i1    i2
-            //  \ 2 /
-            //   \ /
-            // 3  X  1 plane
-            //   / \
-            //  / 4 \
-            //i3     i4
-            bool firstLineRelative =  GeometryHelper.MutualPosition(Selector[0].Location, Selector[3].Location, p);//i1-i4
-            bool secondLineRelative = GeometryHelper.MutualPosition(Selector[1].Location, Selector[2].Location, p);//i2-i3
+            var initialPoints = Selector.Select(x => x).ToList();
+            //order points clockwise to make vectors
+            var elementToSwap = initialPoints.Last();
+            initialPoints.Remove(elementToSwap);
+            initialPoints.Insert(initialPoints.Count - 1, elementToSwap);
+    
+            var vectors = new List<System.Windows.Vector>();
+            var centerPoint = GeometryHelper.Intersection(Selector[0].Location, Selector[3].Location, Selector[1].Location, Selector[2].Location);
 
-            if (!firstLineRelative && !secondLineRelative)
+            foreach (var sidePoint in initialPoints)
+            {
+                vectors.Add(new System.Windows.Vector(sidePoint.Location.X * Selector.RangeCompressionCoef - centerPoint.X *
+                    Selector.RangeCompressionCoef,
+                    sidePoint.Location.Y * Selector.AzimuthCompressionCoef - centerPoint.Y * Selector.AzimuthCompressionCoef));
+            }
+
+            if (GeometryHelper.IsInsideAngle(centerPoint, vectors[0], vectors[1], p))
             {
                 return solution[0];
             }
-            else if (firstLineRelative && !secondLineRelative)
-            {
-                return solution[1];
-            }
-            else if (firstLineRelative && secondLineRelative)
+            else if (GeometryHelper.IsInsideAngle(centerPoint, vectors[1], vectors[2], p))
             {
                 return solution[2];
             }
-            else if (!firstLineRelative && secondLineRelative)
+            else if (GeometryHelper.IsInsideAngle(centerPoint, vectors[2], vectors[3], p))
             {
                 return solution[3];
             }
-            throw new ArgumentException();
+            else if (GeometryHelper.IsInsideAngle(centerPoint, vectors[3], vectors[0], p))
+            {
+                return solution[1];
+            }
+
+            return solution[0];
+
         }
 
     }

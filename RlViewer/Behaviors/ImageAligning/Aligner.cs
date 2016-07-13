@@ -104,7 +104,6 @@ namespace RlViewer.Behaviors.ImageAligning
             }
 
             return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
-
         }
 
     }

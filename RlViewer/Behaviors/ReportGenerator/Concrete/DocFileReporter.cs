@@ -13,9 +13,9 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
     {
         public DocFileReporter(params string[] fileNames)
             : base(fileNames)
-        { }
-
-
+        {
+            
+        }
 
         public override void GenerateReport(string reportFilePath)
         {
@@ -60,6 +60,19 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
             .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
             .ToString(".################################")));
+
+
+
+            var cornerCoord = Factories.CornerCoords.Abstract.CornerCoordFactory.GetFactory(file.Properties).Create(file);
+
+            Paragraph cornersParagraph = document.InsertParagraph();
+            cornersParagraph.Alignment = Alignment.center;
+            foreach (var entry in cornerCoord.GetCoornerCoordinates())
+            {
+                cornersParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
+                cornersParagraph.Append(Environment.NewLine);
+            }
+
 
             foreach (var subHeaderInfo in file.Header.HeaderInfo)
             {
