@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace RlViewer.Forms
 {
     public partial class MainForm : Form, RlViewer.UI.ISuitableForm
@@ -290,7 +289,13 @@ namespace RlViewer.Forms
                 return zoomOutBtn;
             }
         }
-
+        public Button StatisticsBtn
+        {
+            get
+            {
+                return statisticsBtn;
+            }
+        }
 
         #endregion
 
@@ -299,8 +304,6 @@ namespace RlViewer.Forms
             Text = _guiFacade.OpenFile();           
         }
         
-        
-
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             _guiFacade.DrawImage();
@@ -494,7 +497,6 @@ namespace RlViewer.Forms
         {
             _guiFacade.GetAreaStatistics();
         }
-
 
     }
 }

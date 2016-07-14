@@ -19,7 +19,6 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
         public override void GenerateReport(string reportFilePath)
         {
-
             using (DocX document = DocX.Create(reportFilePath))
             {
                 for (int i = 0; i < FilePaths.Length; i++)
@@ -55,18 +54,31 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             p.Alignment = Alignment.center;
             p.Append(System.IO.Path.GetFileName(locatorFilePath)).Bold().FontSize(20)
             .Append(Environment.NewLine)
-            .Append(Environment.NewLine)
-            .Append(string.Format("Площадь засвеченной поверхности: {0}м2",
+            .Append(Environment.NewLine);
+
+
+            p.Append(string.Format("Площадь засвеченной поверхности: {0}м2",
             Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
             .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
-            .ToString(".################################")));
+            .ToString(".################################")))
+            .Append(Environment.NewLine);
 
 
 
             var cornerCoord = Factories.CornerCoords.Abstract.CornerCoordFactory.GetFactory(file.Properties).Create(file);
 
+
+            Paragraph timesParagraph = document.InsertParagraph();
+            timesParagraph.Alignment = Alignment.left;
+            foreach (var entry in cornerCoord.GetZoneStartAndEndTimes())
+            {
+                timesParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
+                timesParagraph.Append(Environment.NewLine);
+            }
+
+
             Paragraph cornersParagraph = document.InsertParagraph();
-            cornersParagraph.Alignment = Alignment.center;
+            cornersParagraph.Alignment = Alignment.left;
             foreach (var entry in cornerCoord.GetCoornerCoordinates())
             {
                 cornersParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
@@ -77,6 +89,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             foreach (var subHeaderInfo in file.Header.HeaderInfo)
             {
                 var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
+                headerTable.AutoFit = AutoFit.Window;
                 document.InsertTable(headerTable);
             }
 

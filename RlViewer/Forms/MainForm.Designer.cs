@@ -536,7 +536,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Panel2Collapsed = true;
             this.splitContainer1.Size = new System.Drawing.Size(872, 519);
-            this.splitContainer1.SplitterDistance = 655;
+            this.splitContainer1.SplitterDistance = 649;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 19;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -602,9 +602,6 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
@@ -626,7 +623,8 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 4);
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -639,7 +637,7 @@
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(205, 931);
+            this.dataGridView1.Size = new System.Drawing.Size(96, 100);
             this.dataGridView1.TabIndex = 0;
             // 
             // paramColumn
@@ -668,7 +666,7 @@
             // 
             // scaleLabel
             // 
-            this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.scaleLabel.AutoSize = true;
             this.scaleLabel.Location = new System.Drawing.Point(551, 11);
             this.scaleLabel.Name = "scaleLabel";
@@ -737,6 +735,7 @@
             // 
             // zoomOutBtn
             // 
+            this.zoomOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.zoomOutBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomOut;
             this.zoomOutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.zoomOutBtn.FlatAppearance.BorderSize = 0;
@@ -751,6 +750,7 @@
             // 
             // zoomInBtn
             // 
+            this.zoomInBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.zoomInBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomIn;
             this.zoomInBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.zoomInBtn.FlatAppearance.BorderSize = 0;
@@ -780,6 +780,7 @@
             // 
             // naviPanelCb
             // 
+            this.naviPanelCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.naviPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
             this.naviPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
             this.naviPanelCb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
@@ -813,7 +814,7 @@
             this.flowLayoutPanel1.Controls.Add(this.filterPanelCb);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(687, 36);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(672, 36);
             this.flowLayoutPanel1.TabIndex = 27;
             // 
             // flowLayoutPanel2

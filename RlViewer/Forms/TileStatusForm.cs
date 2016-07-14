@@ -159,9 +159,7 @@ namespace RlViewer.Forms
                                     Directory.Delete(upperParentDir, true);
                                 }
                             }
-
-                            
-
+                 
                         }
                         catch (Exception ex)
                         {

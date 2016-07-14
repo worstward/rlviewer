@@ -60,6 +60,12 @@ namespace RlViewer.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            SubmitFileSize();
+        }
+
+
+        private void SubmitFileSize()
+        {
             if (ImgWidth == 0 || ImgHeight == 0)
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -87,6 +93,10 @@ namespace RlViewer.Forms
             if (e.KeyCode == Keys.Escape)
             {
                 Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                SubmitFileSize();
             }
         }
 

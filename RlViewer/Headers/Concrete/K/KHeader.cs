@@ -110,7 +110,7 @@ namespace RlViewer.Headers.Concrete.K
             adcHeader.Add(new Tuple<string, string>("Коэффициент деления внешней частоты", headerStruct.adcHeader.externalFreqDivCoef.ToString()));
             adcHeader.Add(new Tuple<string, string>("Генератор частоты", headerStruct.adcHeader.isExternalGenerator == 0 ? "Внутренний" : "Внешний"));
             adcHeader.Add(new Tuple<string, string>("Формат данных", headerStruct.adcHeader.format == 0 ? "16 бит/отсчет" : "8 бит/отсчет"));
-            
+
 
             var synchronizerHeader = new List<Tuple<string, string>>();
             synchronizerHeader.Add(new Tuple<string, string>("Режим", headerStruct.synchronizerHeader.mode.ToOverviewMode()));
@@ -127,8 +127,8 @@ namespace RlViewer.Headers.Concrete.K
 
 
             var flightParamHeader = new List<Tuple<string, string>>();
-            flightParamHeader.Add(new Tuple<string, string>("Время АРМ", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeARM).ToString()));
-            flightParamHeader.Add(new Tuple<string, string>("Время UTC", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeUTC).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Время АРМ", new DateTime().AddMilliseconds(headerStruct.flightHeader.timeArm).AddYears(1970).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Время UTC", new DateTime().AddMilliseconds(headerStruct.flightHeader.timeUtc).AddYears(1970).ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер миссии", headerStruct.flightHeader.missionNum.ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер полета", headerStruct.flightHeader.flightNum.ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер периода", headerStruct.flightHeader.periodNum.ToString()));

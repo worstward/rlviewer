@@ -132,8 +132,8 @@ namespace RlViewer.Headers.Concrete.R
 
 
             var flightParamHeader = new List<Tuple<string, string>>();
-            flightParamHeader.Add(new Tuple<string, string>("Время АРМ", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeARM).ToString()));
-            flightParamHeader.Add(new Tuple<string, string>("Время UTC", new DateTime().AddYears(1970).AddSeconds(headerStruct.flightHeader.timeUTC).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Время АРМ", new DateTime().AddMilliseconds(headerStruct.flightHeader.timeArm).AddYears(1970).ToString()));
+            flightParamHeader.Add(new Tuple<string, string>("Время UTC", new DateTime().AddMilliseconds(headerStruct.flightHeader.timeUtc).AddYears(1970).ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер миссии", headerStruct.flightHeader.missionNum.ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер полета", headerStruct.flightHeader.flightNum.ToString()));
             flightParamHeader.Add(new Tuple<string, string>("Номер периода", headerStruct.flightHeader.periodNum.ToString()));
@@ -153,8 +153,8 @@ namespace RlViewer.Headers.Concrete.R
           
             var synthHeader = new List<Tuple<string, string>>();
             synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthesisHeader.processAlgorithm == 1 ? "ЕОК" : "Не определено"));
-            synthHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м", headerStruct.synthesisHeader.dx.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м", headerStruct.synthesisHeader.dy.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м",  headerStruct.synthesisHeader.dx.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",    headerStruct.synthesisHeader.dy.ToString()));
             synthHeader.Add(new Tuple<string, string>("Начальная дальность, м",          headerStruct.synthesisHeader.initialRange.ToString()));
             synthHeader.Add(new Tuple<string, string>("Борт",                            headerStruct.synthesisHeader.sideObservation == 0 ? "Левый" : "Правый"));
 

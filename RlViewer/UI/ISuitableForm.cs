@@ -35,6 +35,7 @@ namespace RlViewer.UI
         Button ResetFilter { get; }
         Button AlignBtn { get; }
         Button FindPointBtn { get; }
+        Button StatisticsBtn { get; }
         CheckBox NavigationPanelCb { get; }
         DataGridView NavigationDgv { get; }
         CheckBox FilterPanelCb { get; }

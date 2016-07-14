@@ -54,6 +54,11 @@ namespace RlViewer.Behaviors.Converters
         public static RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader ToBrl4
             (this Rl4RliFileHeader rl4RliFileHeader, byte calibration, byte polarization, float angle_zond)
         {
+
+            //3 = aligning, range, azimuth coefs from brl4Header
+            var bytesToSkip = sizeof(int) * 3;
+            var reserved = rl4RliFileHeader.reserved.Skip(bytesToSkip).Take(rl4RliFileHeader.reserved.Count() - bytesToSkip).ToArray();
+
             return new RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader(rl4RliFileHeader.fileSign, rl4RliFileHeader.fileVersion,
                 rl4RliFileHeader.rhgParams.ToBrl4RhgSubHeader(),
                 rl4RliFileHeader.rlParams.ToBrl4RliSubHeader(calibration), 
@@ -61,17 +66,24 @@ namespace RlViewer.Behaviors.Converters
                 0,
                 0,
                 0,
-                rl4RliFileHeader.reserved);
+                reserved);
         }
 
 
         public static RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader ToRl4(this Brl4RliFileHeader brl4RliFileHeader)
         {
+            var reserved = new List<byte>();
+            reserved.AddRange(BitConverter.GetBytes(brl4RliFileHeader.aligningPointsCount));
+            reserved.AddRange(BitConverter.GetBytes(brl4RliFileHeader.rangeCompressionCoef));
+            reserved.AddRange(BitConverter.GetBytes(brl4RliFileHeader.azimuthCompressionCoef));
+            reserved.AddRange(brl4RliFileHeader.reserved);
+
+
             return new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader(brl4RliFileHeader.fileSign, brl4RliFileHeader.fileVersion,
                 brl4RliFileHeader.rhgParams.ToRhgSubHeader<Rl4RhgSubHeaderStruct>(),
                 brl4RliFileHeader.rlParams.ToRliSubHeader<Rl4RliSubHeaderStruct>(),
                 brl4RliFileHeader.synthParams.ToSynthSubHeader<Rl4SynthesisSubHeaderStruct>(),
-                brl4RliFileHeader.reserved);
+                reserved.ToArray());
         }
 
 

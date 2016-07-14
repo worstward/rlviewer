@@ -15,7 +15,8 @@ namespace RlViewer.Navigation
             {
                 new Tuple<string, string>("Широта",  ParseLatitude(s.AircraftLatitude)),
                 new Tuple<string, string>("Долгота", ParseLongitude(s.AircraftLongitude)),
-                new Tuple<string, string>("Курс",    ParseToDegrees(s.Track))
+                new Tuple<string, string>("Курс",    ParseToDegrees(s.Track)),
+                new Tuple<string, string>("Время",    s.TimeArm.ToString())
             };
         }
 
@@ -25,7 +26,8 @@ namespace RlViewer.Navigation
             {
                 new Tuple<string, string>("Широта", ParseLatitude(computer.InterpolateLatitude(sampleNum, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
                 new Tuple<string, string>("Долгота",ParseLongitude(computer.InterpolateLongtitude(sampleNum, s.AircraftLongitude, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
-                new Tuple<string, string>("Курс", ParseToDegrees(s.Track))
+                new Tuple<string, string>("Курс", ParseToDegrees(s.Track)),
+                new Tuple<string, string>("Время",    s.TimeArm.ToString())
             };
         }
 

@@ -49,6 +49,8 @@
             // 
             // maskedTextBox1
             // 
+            this.maskedTextBox1.HidePromptOnLeave = true;
+            this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox1.Location = new System.Drawing.Point(6, 27);
             this.maskedTextBox1.Mask = "00° 00\' 00\'\' ";
             this.maskedTextBox1.Name = "maskedTextBox1";
@@ -58,6 +60,8 @@
             // 
             // maskedTextBox2
             // 
+            this.maskedTextBox2.HidePromptOnLeave = true;
+            this.maskedTextBox2.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox2.Location = new System.Drawing.Point(6, 78);
             this.maskedTextBox2.Mask = "000° 00\' 00\'\' ";
             this.maskedTextBox2.Name = "maskedTextBox2";
@@ -163,6 +167,8 @@
             // 
             // maskedTextBox3
             // 
+            this.maskedTextBox3.HidePromptOnLeave = true;
+            this.maskedTextBox3.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox3.Location = new System.Drawing.Point(3, 27);
             this.maskedTextBox3.Mask = "000000";
             this.maskedTextBox3.Name = "maskedTextBox3";
@@ -172,6 +178,8 @@
             // 
             // maskedTextBox4
             // 
+            this.maskedTextBox4.HidePromptOnLeave = true;
+            this.maskedTextBox4.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox4.Location = new System.Drawing.Point(6, 72);
             this.maskedTextBox4.Mask = "000000";
             this.maskedTextBox4.Name = "maskedTextBox4";
@@ -219,6 +227,7 @@
             this.Name = "FindPointForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Поиск точки";
+            this.Shown += new System.EventHandler(this.FindPointForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindPointForm_KeyDown);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();

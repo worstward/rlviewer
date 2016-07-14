@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Concrete
         {
             var container = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(File.Properties).Create(File.Properties, File.Header);
 
-            var naviStringsBrl = GetNaviStrings<Headers.Concrete.Brl4.Brl4StrHeaderStruct>
+            var naviStringsBrl = GetFirstAndLastNaviStrings<Headers.Concrete.Brl4.Brl4StrHeaderStruct>
                 (File.Properties.FilePath, File.Header.FileHeaderLength, File.Width * File.Header.BytesPerSample);
 
             var naviStrings = container.ConvertToCommonNavigation(naviStringsBrl.Cast<Headers.Abstract.IStrHeader>().ToArray());

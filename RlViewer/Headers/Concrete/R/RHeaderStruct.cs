@@ -53,8 +53,8 @@ namespace RlViewer.Headers.Concrete.R
     public struct FlightHeader
     {
         public byte version;							
-        public double timeARM;							//< Время АРМ в  милисекундах с 1970
-        public double timeUTC;							//< Время UTC в  милисекундах с 1970
+        public long timeArm;							//< Время АРМ в  милисекундах с 1970
+        public long timeUtc;							//< Время UTC в  милисекундах с 1970
         public uint missionNum;						
         public uint flightNum;						
         public uint periodNum;						

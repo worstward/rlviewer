@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RlViewer.Behaviors.Converters;
 
 namespace RlViewer.Navigation.Concrete
 {
@@ -35,7 +36,7 @@ namespace RlViewer.Navigation.Concrete
             try
             {
                 naviStrings = rStrColl.Select
-                    (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, _board));
+                    (x => new NavigationString((float)x.longtitude, (float)x.latitude, (float)x.H, (float)x.a, _board, x.time[0] == 0 ? default(DateTime) : x.time.ToDateTime()));
             }
             catch (ArgumentNullException)
             {
@@ -70,7 +71,7 @@ namespace RlViewer.Navigation.Concrete
                 {
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, "Wrong navigation data");
                     NaviStrings = null;
-                    return new NavigationString(1, 1, 1, 1, 1);
+                    return new NavigationString(1, 1, 1, 1, 1, default(DateTime));
                 }
             }
         }

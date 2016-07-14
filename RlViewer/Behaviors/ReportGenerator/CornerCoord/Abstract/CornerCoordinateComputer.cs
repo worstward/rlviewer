@@ -12,7 +12,6 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
         public CornerCoordinates(RlViewer.Files.LocatorFile file)
         {
             _file = file;
-            _container = GetContainer();
         }
 
         RlViewer.Files.LocatorFile _file;
@@ -23,11 +22,28 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
         }
 
 
-        RlViewer.Navigation.NavigationContainer _container;
+        private RlViewer.Navigation.NavigationContainer _container;
+
+        private RlViewer.Navigation.NavigationContainer Container
+        {
+            get 
+            {
+                return _container = _container ?? GetContainer();
+            }
+        }
+
         protected abstract RlViewer.Navigation.NavigationContainer GetContainer();
 
 
-        protected virtual T[] GetNaviStrings<T>(string path, int fileHeaderLength, int strDataLength) where T : struct
+        /// <summary>
+        /// Gets first and last navigation strings from a selected file
+        /// </summary>
+        /// <typeparam name="T">String header type</typeparam>
+        /// <param name="path">Path to locator file to read</param>
+        /// <param name="fileHeaderLength">File header size in bytes</param>
+        /// <param name="strDataLength">Data</param>
+        /// <returns></returns>
+        protected virtual T[] GetFirstAndLastNaviStrings<T>(string path, int fileHeaderLength, int strDataLength) where T : Headers.Abstract.IStrHeader
         {
             var header = new byte[System.Runtime.InteropServices.Marshal.SizeOf(typeof(T))];
             List<T> naviCollection = new List<T>();
@@ -41,7 +57,6 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
                 for (int i = 0; i < File.Height - 2; i++)
                 {
                     fs.Seek(File.Width * File.Header.BytesPerSample + File.Header.StrHeaderLength, SeekOrigin.Current);
-
                 }
 
                 naviCollection.Add(RlViewer.Files.LocatorFile.ReadStruct<T>(fs));    
@@ -51,12 +66,28 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
         }
 
 
+        public IEnumerable<Tuple<string, string>> GetZoneStartAndEndTimes()
+        {
+            var Top = Container[0];
+            var Bottom = Container[Container.Count() - 1];
+
+            var zoneStart = Top.TimeArm.ToLongTimeString();
+            var zoneEnd = Bottom.TimeArm.ToLongTimeString();
+
+            var lst = new List<Tuple<string, string>>();
+            lst.Add(new Tuple<string, string>("Время начала зоны", zoneStart));
+            lst.Add(new Tuple<string, string>("Время конца зоны", zoneEnd));
+
+            return lst;
+        }
+
+
         public IEnumerable<Tuple<string, string>> GetCoornerCoordinates()
         {
-            var leftTop = _container[0, 0];
-            var rightTop = _container[0, _file.Width - 1];
-            var leftBottom = _container[1, 0];
-            var rightBottom = _container[1, _file.Width - 1];
+            var leftTop = Container[0, 0];
+            var rightTop = Container[0, _file.Width - 1];
+            var leftBottom = Container[Container.Count() - 1, 0];
+            var rightBottom = Container[Container.Count() - 1, _file.Width - 1];
 
 
             var naviData = new List<Tuple<string, string>>();

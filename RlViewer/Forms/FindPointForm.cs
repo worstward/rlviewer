@@ -95,5 +95,10 @@ namespace RlViewer.Forms
             }
         }
 
+        private void FindPointForm_Shown(object sender, EventArgs e)
+        {
+            maskedTextBox3.Focus();
+        }
+
     }
 }

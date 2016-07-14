@@ -815,7 +815,7 @@ namespace RlViewer.UI
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
-            //ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
             ThreadHelper.ThreadSafeUpdate<Chart>(_form.HistogramChart).Series[0].Points.Clear();
 
@@ -855,6 +855,7 @@ namespace RlViewer.UI
             AddToolTip(frm.FilterPanelCb, "Панель фильтров");
             AddToolTip(frm.ZoomInBtn, "Увеличить масштаб");
             AddToolTip(frm.ZoomOutBtn, "Уменьшить масштаб");
+            AddToolTip(frm.StatisticsBtn, "Статистика");
         }
 
         private void AddToolTip(Control c, string caption)
@@ -1210,7 +1211,7 @@ namespace RlViewer.UI
             }
             else if (type == typeof(Behaviors.Sections.Concrete.VerticalSection))
             {
-                return "Ветикальное сечение";
+                return "Вертикальное сечение";
             }
             else if (type == typeof(Behaviors.Sections.Concrete.LinearSection))
             {
@@ -1293,7 +1294,6 @@ namespace RlViewer.UI
                 alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
                 if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
                 {
-
                     var compressedSelector = new Behaviors.PointSelector.CompressedPointSelectorWrapper(_file,
                        _pointSelector, (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
 
@@ -1311,9 +1311,9 @@ namespace RlViewer.UI
             {
                 using (var ff = new Forms.FindPointForm(_file.Navigation != null))
                 {
+                    MessageBox.Show("Функция работает в тестовом режиме!");
                     if (ff.ShowDialog() == DialogResult.OK)
                     {
-
                         StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
                             new Tuple<string, string>(ff.XLat, ff.YLon));
                     };
