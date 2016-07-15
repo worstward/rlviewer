@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.fileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fileTimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tileNumberColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.fileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileTimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tileNumberColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,29 +43,13 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.fileNameColumn,
+            this.fileTypeColumn,
             this.fileTimeColumn,
             this.tileNumberColumn});
             this.dataGridView1.Location = new System.Drawing.Point(13, 13);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(465, 214);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // fileNameColumn
-            // 
-            this.fileNameColumn.HeaderText = "Имя файла";
-            this.fileNameColumn.Name = "fileNameColumn";
-            this.fileNameColumn.ReadOnly = true;
-            // 
-            // fileTimeColumn
-            // 
-            this.fileTimeColumn.HeaderText = "Время создания файла";
-            this.fileTimeColumn.Name = "fileTimeColumn";
-            // 
-            // tileNumberColumn
-            // 
-            this.tileNumberColumn.HeaderText = "Количество тайлов";
-            this.tileNumberColumn.Name = "tileNumberColumn";
-            this.tileNumberColumn.ReadOnly = true;
             // 
             // button1
             // 
@@ -85,6 +70,28 @@
             this.button2.Text = "Отмена";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // fileNameColumn
+            // 
+            this.fileNameColumn.HeaderText = "Имя файла";
+            this.fileNameColumn.Name = "fileNameColumn";
+            this.fileNameColumn.ReadOnly = true;
+            // 
+            // fileTypeColumn
+            // 
+            this.fileTypeColumn.HeaderText = "Тип файла";
+            this.fileTypeColumn.Name = "fileTypeColumn";
+            // 
+            // fileTimeColumn
+            // 
+            this.fileTimeColumn.HeaderText = "Время создания файла";
+            this.fileTimeColumn.Name = "fileTimeColumn";
+            // 
+            // tileNumberColumn
+            // 
+            this.tileNumberColumn.HeaderText = "Количество тайлов";
+            this.tileNumberColumn.Name = "tileNumberColumn";
+            this.tileNumberColumn.ReadOnly = true;
             // 
             // TileStatusForm
             // 
@@ -112,6 +119,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataGridViewTextBoxColumn fileNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fileTypeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn fileTimeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn tileNumberColumn;
     }

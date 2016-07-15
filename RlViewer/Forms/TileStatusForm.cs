@@ -41,7 +41,7 @@ namespace RlViewer.Forms
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
             {
                 dataGridView1.Columns[i].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
                 dataGridView1.Columns[i].ReadOnly = true;
             }
 
@@ -53,7 +53,7 @@ namespace RlViewer.Forms
 
             foreach (DataGridViewTextBoxColumn column in dataGridView1.Columns)
             {
-                column.Width = dataGridView1.Width / 3 - 1;
+                column.Width = dataGridView1.Width / dataGridView1.Columns.Count - 1;
             }
         }
 
@@ -61,8 +61,6 @@ namespace RlViewer.Forms
 
         private void FillDataGrid(string tileDir)
         {
-
-
             var currFileTilePath = _currFile == string.Empty ? string.Empty : Path.Combine(
                 Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
@@ -84,12 +82,13 @@ namespace RlViewer.Forms
                         }
 
 
-                        var tilePath = Path.Combine(Path.GetFileName(fileNameDirectory), Path.GetFileName(extensionDirectory));
+                        var tilePath = Path.GetFileName(fileNameDirectory);
+                        var tileExt = Path.GetFileName(extensionDirectory);
 
-                        dataGridView1.Rows.Add(tilePath, creationTime,
+                        dataGridView1.Rows.Add(tilePath, tileExt, creationTime,
                             Directory.GetFiles(imgDirectory).Where(x => Path.GetExtension(x).ToLowerInvariant() == ".tl").Count());
 
-                        var b = Path.Combine(tilePath, creationTime.ToFileTime().ToString());
+                        var b = Path.Combine(tilePath, tileExt, creationTime.ToFileTime().ToString());
                         if (currFileTilePath == imgDirectory)
                         {
                             var style = new DataGridViewCellStyle();
@@ -127,7 +126,6 @@ namespace RlViewer.Forms
         {
             if (dataGridView1.SelectedRows != null && dataGridView1.SelectedRows.Count != 0)
             {
-
                 var confirmation = MessageBox.Show("Вы уверены, что хотите удалить кеш выбранных файлов?",
                                      "Подтвердите удаление",
                                      MessageBoxButtons.YesNo);
@@ -140,7 +138,8 @@ namespace RlViewer.Forms
                         try
                         {
                             var deletionPath = Path.Combine(_tileDir, row.Cells[0].Value.ToString(),
-                            ((DateTime)row.Cells[1].Value).ToFileTime().ToString());
+                                row.Cells[1].Value.ToString(),
+                            ((DateTime)row.Cells[2].Value).ToFileTime().ToString());
                             Directory.Delete(deletionPath, true);
 
                             dataGridView1.Rows.Remove(row);
@@ -184,7 +183,8 @@ namespace RlViewer.Forms
             {
                 var selectedRow = (dataGridView1.SelectedRows.Cast<DataGridViewRow>()).FirstOrDefault();
                 var path = Path.Combine(_tileDir, selectedRow.Cells[0].Value.ToString(),
-                    ((DateTime)selectedRow.Cells[1].Value).ToFileTime().ToString());
+                    selectedRow.Cells[1].Value.ToString(),
+                    ((DateTime)selectedRow.Cells[2].Value).ToFileTime().ToString());
 
                 System.Diagnostics.Process.Start("explorer.exe", path);
             }

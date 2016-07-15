@@ -71,11 +71,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int toInclusiveY = area.Location.Y + area.Height;
             toInclusiveY = toInclusiveY > file.Height ? file.Height : toInclusiveY;
             int counter = 0;
-            
-   
-            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
-            //{
-            for (int i = area.Location.X; i < toInclusiveX; i++)
+
+
+            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
@@ -95,10 +93,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                 if (OnCancelWorker())
                 {
-                    // loopState.Break();
+                    loopState.Break();
                 }
 
-            }
+            });
 
             if (Cancelled)
             {

@@ -75,11 +75,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
-            //{
-
-            for (int i = area.Location.X; i < toInclusiveX; i++)
+            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
+
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
@@ -95,11 +93,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                    // loopState.Break();
+                     loopState.Break();
                 }
 
-            }
-            //});
+            
+            });
 
             if (Cancelled)
             {

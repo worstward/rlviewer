@@ -59,8 +59,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         }
 
 
-
-
         public override byte[] ResampleImage(RlViewer.Files.LocatorFile file, System.Drawing.Rectangle area)
         {
             float[] image = new float[area.Width * area.Height];
