@@ -14,14 +14,17 @@ namespace RlViewer.Behaviors.Draw
     public class ItemDrawer : ImageDrawer
     {
         public ItemDrawer(PointSelector.PointSelector pointSelector,
-            AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
+            AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler,
+            AreaSelector.AreaSelectorsAlignerContainer areaAlignerWrapper) : base(scaler)
         {
             _pointSelector = pointSelector;
             _areaSelector = areaSelector;
+            _areaAlignerWrapper = areaAlignerWrapper;
         }
 
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
+        private AreaSelector.AreaSelectorsAlignerContainer _areaAlignerWrapper;
 
         private object _locker = new object();
 
@@ -31,9 +34,10 @@ namespace RlViewer.Behaviors.Draw
             var screen = new RectangleF(leftTopPointOfView.X, leftTopPointOfView.Y,
                 screenSize.Width / Scaler.ScaleFactor, screenSize.Height / Scaler.ScaleFactor);
 
-
-            DrawPoints(g, screen);
+            DrawAreas(g, screen);
+            DrawPoints(g, screen, _pointSelector);
             DrawArea(g, screen);
+
         }
 
 
@@ -56,9 +60,28 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
-        private void DrawPoints(Graphics g, RectangleF screen)
+        private void DrawAreas(Graphics g, RectangleF screen)
         {
-            foreach (var point in _pointSelector)
+            foreach (var area in _areaAlignerWrapper)
+            {
+                var areaRect = new RectangleF(area.Area.Location.X, area.Area.Location.Y, area.Area.Width, area.Area.Height);
+
+                if (areaRect.IntersectsWith(screen))
+                {
+                    using(Pen p = new Pen(Color.Red))
+                    {
+                        g.DrawRectangle(p, (int)(areaRect.X - screen.X) * Scaler.ScaleFactor,
+                           (int)(areaRect.Y - screen.Y) * Scaler.ScaleFactor,
+                           areaRect.Width * Scaler.ScaleFactor, areaRect.Height * Scaler.ScaleFactor);
+                    }                   
+                }
+            }
+            DrawPoints(g, screen, _areaAlignerWrapper.Where(x => x.SelectedPoint != null).Select(x => x.SelectedPoint));
+        }
+
+        private void DrawPoints(Graphics g, RectangleF screen, IEnumerable<PointSelector.SelectedPoint> points)
+        {
+            foreach (var point in points)
             {
                 if (screen.Contains(point.Location))
                 {
@@ -68,6 +91,7 @@ namespace RlViewer.Behaviors.Draw
                         5 < Scaler.ScaleFactor ? Scaler.ScaleFactor : 5);                    
                 }
             }
+            
         }
 
         private void DrawArea(Graphics g, RectangleF screen)

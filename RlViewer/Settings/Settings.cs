@@ -22,7 +22,6 @@ namespace RlViewer.Settings
 
 
         private bool _forceTileGen;
-
         [DataMember]
         public bool ForceTileGeneration
         {
@@ -99,8 +98,30 @@ namespace RlViewer.Settings
             set { _highResForDownScaled = value; }
         }
 
-        private float _rangeCompressionCoef = 1f;
+        /// <summary>
+        /// False to use areas, true to use points
+        /// </summary>
+        private bool _areasOrPointsForAligning = false;
 
+        [DataMember]
+        public bool AreasOrPointsForAligning
+        {
+            get { return _areasOrPointsForAligning; }
+            set { _areasOrPointsForAligning = value; }
+        }
+
+        private int _maxAlignerAreaSize = 500;
+
+        [DataMember]
+        public int MaxAlignerAreaSize
+        {
+            get { return _maxAlignerAreaSize; }
+            set { _maxAlignerAreaSize = value; }
+        }
+        
+
+
+        private float _rangeCompressionCoef = 1f;
         [DataMember]
         public float RangeCompressionCoef
         {

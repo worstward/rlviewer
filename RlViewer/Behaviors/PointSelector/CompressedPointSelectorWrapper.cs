@@ -9,7 +9,7 @@ namespace RlViewer.Behaviors.PointSelector
 {
     public class CompressedPointSelectorWrapper : IEnumerable<SelectedPoint>
     {
-        public CompressedPointSelectorWrapper(Files.LocatorFile file, PointSelector selector, int rangeCompressionCoef, int azimuthCompressionCoef)
+        public CompressedPointSelectorWrapper(Files.LocatorFile file, IEnumerable<SelectedPoint> selector, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             _file = file;
             _rangeCompressionCoef = rangeCompressionCoef;
@@ -63,7 +63,7 @@ namespace RlViewer.Behaviors.PointSelector
         }
 
 
-        public void SetCompressedSelector(PointSelector selector)
+        public void SetCompressedSelector(IEnumerable<SelectedPoint> selector)
         {
             var compressed = new List<SelectedPoint>();
             compressed.AddRange(selector.Select(x =>
@@ -73,7 +73,7 @@ namespace RlViewer.Behaviors.PointSelector
             _compressedSelector = new PointSelector(compressed);
         }
 
-        public void SetSelector(PointSelector selector)
+        public void SetSelector(IEnumerable<SelectedPoint> selector)
         {
             var compressed = new List<SelectedPoint>();
             compressed.AddRange(selector.Select(x =>

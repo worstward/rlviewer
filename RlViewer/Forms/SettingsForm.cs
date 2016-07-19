@@ -13,12 +13,19 @@ namespace RlViewer.Forms
 {
     public partial class  SettingsForm : Form
     {
-        public SettingsForm(Settings.Settings settings)
+        public SettingsForm(Settings.Settings settings, int selectedPointsCount)
         {
             _settings = settings;
 
             InitializeComponent();
             FillComboBox();
+            if (selectedPointsCount != 0)
+            {
+                areasOrPointsForAligningCb.Enabled = false;
+            }
+            else areasOrPointsForAligningCb.Enabled = true;
+
+
             comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
                 .Where(item => item.Text == _settings.Palette.Select(x => x.ToString())
                 .Aggregate((x, y) => x.ToString() + " " + y.ToString())).FirstOrDefault();
@@ -36,7 +43,7 @@ namespace RlViewer.Forms
 
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areaSizeTextBox.PromptChar = ' ';
-
+            areasOrPointsForAligningCb.Checked = settings.AreasOrPointsForAligning;
         }
 
 
@@ -50,7 +57,7 @@ namespace RlViewer.Forms
         private bool _forceTileGen;
         private Behaviors.TileCreator.TileOutputType _outputType;
         private bool _highRes;
-
+        private bool _areasOrPointsForAligning;
 
         
 
@@ -131,7 +138,7 @@ namespace RlViewer.Forms
             _settings.IsPaletteGroupped = _isGrouped;
             _settings.TileOutputAlgorithm = _outputType;
             _settings.HighResForDownScaled = _highRes;
-
+            _settings.AreasOrPointsForAligning = _areasOrPointsForAligning;
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -197,6 +204,11 @@ namespace RlViewer.Forms
                 Logging.Logger.Log(Logging.SeverityGrades.Warning,
                     string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
             }
+        }
+
+        private void pointsOrAreasForAligningCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _areasOrPointsForAligning = ((CheckBox)sender).Checked;
         }
 
     }

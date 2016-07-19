@@ -87,6 +87,8 @@
   <ItemGroup>
     <Compile Include="Behaviors\Analyzing\Abstract\SampleAnalyzer.cs" />
     <Compile Include="Behaviors\Analyzing\Concrete\ShortSampleAnalyzer.cs" />
+    <Compile Include="Behaviors\AreaSelector\AreaSelectorAlignerContainer.cs" />
+    <Compile Include="Behaviors\AreaSelector\AreaSelectorWrapper.cs" />
     <Compile Include="Behaviors\AreaSelector\SelectedArea.cs" />
     <Compile Include="Behaviors\AreaSelector\AreaSelector.cs" />
     <Compile Include="Behaviors\AreaSizeCalculator\Abstract\SizeCalculator.cs" />

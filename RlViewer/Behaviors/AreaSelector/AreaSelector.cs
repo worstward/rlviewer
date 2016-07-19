@@ -9,9 +9,16 @@ namespace RlViewer.Behaviors.AreaSelector
 {
     public class AreaSelector
     {
+        public AreaSelector(Files.LocatorFile file)
+        {
+            _file = file;
+        }
+
+        private Files.LocatorFile _file;
+        
         private Point _initialLocation;
         private Point _pointOfView;
-        private bool _canResize;
+        protected bool _canResize;
 
         /// <summary>
         /// Resizes selected area
@@ -55,8 +62,37 @@ namespace RlViewer.Behaviors.AreaSelector
 
                 //we add 1 to avoid need of full pixel envelopment to take it into area
                 //so even if we cover part of pixel it will get inside
-                Area.Width = width + 1;
-                Area.Height = height + 1;
+                width += 1;
+                height += 1;
+
+                if (Area.Location.X < 0)
+                {
+                    Area.Location = new Point(0, Area.Location.Y);
+                }
+                if (Area.Location.Y < 0)
+                {
+                    Area.Location = new Point(Area.Location.X, 0);
+                }
+
+                if (Area.Location.X + width > _file.Width)
+                {
+                    width = _file.Width - Area.Location.X;
+                }
+
+                if (Area.Location.Y + height > _file.Height)
+                {
+                    height = _file.Height - Area.Location.Y;
+                }
+
+
+                if (Area.Location.X >= _file.Width || Area.Location.Y >= _file.Height)
+                {
+                    Area = null;
+                }
+
+                Area.Width = width;
+                Area.Height = height;
+            
             }
             return _canResize;
         }

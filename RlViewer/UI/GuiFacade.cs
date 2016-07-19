@@ -78,6 +78,9 @@ namespace RlViewer.UI
         private Behaviors.TileCreator.Tile[] _tiles;
         private Behaviors.Draw.DrawerFacade _drawer;
         private Behaviors.PointSelector.PointSelector _pointSelector;
+        private Behaviors.AreaSelector.AreaSelectorWrapper _selectedPointArea;
+        private Behaviors.AreaSelector.AreaSelectorsAlignerContainer _areaAligningWrapper;
+
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
 
@@ -448,7 +451,8 @@ namespace RlViewer.UI
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
             _analyzer = Factories.Analyzer.AnalyzerFactory.Create(_file);
             _pointSelector = new Behaviors.PointSelector.PointSelector();
-            _areaSelector = new Behaviors.AreaSelector.AreaSelector();
+            _areaSelector = new Behaviors.AreaSelector.AreaSelector(_file);
+            _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
         }
 
 
@@ -563,22 +567,31 @@ namespace RlViewer.UI
             { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
 
+        private void BlockAlignButton()
+        {
+            var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
+
+            if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 16)
+            {
+                _form.AlignBtn.Enabled = true;
+            }
+            else
+            {
+                _form.AlignBtn.Enabled = false;
+            }
+        }
+
+
         public void Undo()
         {
             if (_file != null)
             {
                 if (_form.MarkPointRb.Checked)
                 {
+                    _areaAligningWrapper.RemoveArea();
                     _pointSelector.RemoveLast();
-
-                    if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 16)
-                    {
-                        _form.AlignBtn.Enabled = true;
-                    }
-                    else
-                    {
-                        _form.AlignBtn.Enabled = false;
-                    }
+                    BlockAlignButton();
+                   
                 }
                 else if (_form.MarkAreaRb.Checked)
                 {
@@ -595,7 +608,7 @@ namespace RlViewer.UI
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null && _file != null)
             {
                 var tDrawer = new Behaviors.Draw.TileDrawer(_filterFacade.Filter, _scaler);
-                var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler);
+                var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler, _areaAligningWrapper);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed,
@@ -1018,18 +1031,24 @@ namespace RlViewer.UI
                     }
                     else if (_form.MarkPointRb.Checked)
                     {
-                        _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
-                            new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
-
-                        if (_pointSelector.Count() == 3 || _pointSelector.Count() == 4 || _pointSelector.Count() == 5 || _pointSelector.Count() == 16)
+                        if (!_settings.AreasOrPointsForAligning)
                         {
-                            _form.AlignBtn.Enabled = true;
+
+                            _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
+                                new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                    (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
+
                         }
                         else
                         {
-                            _form.AlignBtn.Enabled = false;
+                            _selectedPointArea = new Behaviors.AreaSelector.AreaSelectorWrapper(_file, _settings.MaxAlignerAreaSize);
+                            _areaAligningWrapper.AddArea(_selectedPointArea);
+                            _selectedPointArea.ResetArea();
+                            _selectedPointArea.StartArea(new Point((int)Math.Ceiling(e.X / _scaler.ScaleFactor), (int)Math.Ceiling(e.Y / _scaler.ScaleFactor)),
+                                new Point((int)(_form.Horizontal.Value), (int)(_form.Vertical.Value)));                        
                         }
+
+                        BlockAlignButton();
                     }
                     else if (_form.AnalyzePointRb.Checked)
                     {
@@ -1111,6 +1130,17 @@ namespace RlViewer.UI
                         _form.Canvas.Invalidate();
                     }
                 }
+                else if (_form.MarkPointRb.Checked && _selectedPointArea != null)
+                {
+                    if (_settings.AreasOrPointsForAligning)
+                    {
+                        if (_selectedPointArea.ResizeArea(new Point((int)(e.X / _scaler.ScaleFactor),
+                                     (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
+                        {
+                            _form.Canvas.Invalidate();
+                        }
+                    }
+                }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
                     AnalyzePoint(e);
@@ -1187,14 +1217,29 @@ namespace RlViewer.UI
                     _areaSelector.StopResizing();
                     _analyzer.StopTracing();
                     _toolTip.Hide(_win);
+
+                    if (_settings.AreasOrPointsForAligning)
+                    {
+                        if (_form.MarkPointRb.Checked)
+                        {
+                            _selectedPointArea.StopResizing();
+
+                            if (_selectedPointArea.SelectedPoint == null)
+                            {
+                                _areaAligningWrapper.RemoveArea();
+                            }
+                        }
+                    }
                     if (_form.LinearSectionRb.Checked)
                     {
                         ShowSection(_section, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
                 }
-
+                
+                _form.Canvas.Invalidate();
             }
+
         }
 
         #endregion
@@ -1260,7 +1305,14 @@ namespace RlViewer.UI
 
         public void ShowSettings()
         {
-            using (var settgingsForm = new Forms.SettingsForm(_settings))
+            int pointsCount = 0;
+
+            if (_areaAligningWrapper != null && _pointSelector != null)
+            {
+                pointsCount = _areaAligningWrapper.Select(x => x.SelectedPoint).Union(_pointSelector).Count();
+            }
+
+            using (var settgingsForm = new Forms.SettingsForm(_settings, pointsCount))
             {
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -1294,8 +1346,11 @@ namespace RlViewer.UI
                 alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
                 if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
                 {
+                    var selectedPoints = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint));
+
+
                     var compressedSelector = new Behaviors.PointSelector.CompressedPointSelectorWrapper(_file,
-                       _pointSelector, (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
+                       selectedPoints, (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
 
                     _aligner = new Behaviors.ImageAligning.Aligning(_file, compressedSelector,
                         new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector), _saver);
