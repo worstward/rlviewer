@@ -31,6 +31,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -51,12 +52,13 @@
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -93,6 +95,17 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
+            // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -190,11 +203,8 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Controls.Add(this.areasOrPointsForAligningCb);
-            this.tabPage3.Controls.Add(this.label5);
-            this.tabPage3.Controls.Add(this.azimuthCompressCoefTb);
-            this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.rangeCompressCoefTb);
             this.tabPage3.Controls.Add(this.label2);
             this.tabPage3.Controls.Add(this.areaSizeTextBox);
             this.tabPage3.Controls.Add(this.label1);
@@ -210,7 +220,7 @@
             // areasOrPointsForAligningCb
             // 
             this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 138);
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 72);
             this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
             this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
             this.areasOrPointsForAligningCb.TabIndex = 9;
@@ -221,7 +231,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 111);
+            this.label5.Location = new System.Drawing.Point(3, 40);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(136, 13);
             this.label5.TabIndex = 8;
@@ -230,7 +240,7 @@
             // azimuthCompressCoefTb
             // 
             this.azimuthCompressCoefTb.AllowPromptAsInput = false;
-            this.azimuthCompressCoefTb.Location = new System.Drawing.Point(161, 108);
+            this.azimuthCompressCoefTb.Location = new System.Drawing.Point(157, 39);
             this.azimuthCompressCoefTb.Mask = "0";
             this.azimuthCompressCoefTb.Name = "azimuthCompressCoefTb";
             this.azimuthCompressCoefTb.PromptChar = ' ';
@@ -242,7 +252,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 81);
+            this.label4.Location = new System.Drawing.Point(3, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(148, 13);
             this.label4.TabIndex = 6;
@@ -251,7 +261,7 @@
             // rangeCompressCoefTb
             // 
             this.rangeCompressCoefTb.AllowPromptAsInput = false;
-            this.rangeCompressCoefTb.Location = new System.Drawing.Point(161, 78);
+            this.rangeCompressCoefTb.Location = new System.Drawing.Point(157, 13);
             this.rangeCompressCoefTb.Mask = "0";
             this.rangeCompressCoefTb.Name = "rangeCompressCoefTb";
             this.rangeCompressCoefTb.PromptChar = ' ';
@@ -324,16 +334,18 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // comboBoxPics1
+            // groupBox1
             // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
+            this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
+            this.groupBox1.Location = new System.Drawing.Point(4, 88);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(265, 67);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Visible = false;
             // 
             // SettingsForm
             // 
@@ -360,6 +372,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -390,5 +404,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.MaskedTextBox azimuthCompressCoefTb;
         private System.Windows.Forms.CheckBox areasOrPointsForAligningCb;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

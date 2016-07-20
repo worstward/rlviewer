@@ -121,7 +121,7 @@ namespace RlViewer.Settings
 
 
         private float _rangeCompressionCoef = 1f;
-        [DataMember]
+        //[DataMember]
         public float RangeCompressionCoef
         {
             get { return _rangeCompressionCoef; }
@@ -130,7 +130,7 @@ namespace RlViewer.Settings
 
 
         private float _azimuthCompressionCoef = 1f;
-        [DataMember]
+        //[DataMember]
         public float AzimuthCompressionCoef
         {
             get { return _azimuthCompressionCoef; }

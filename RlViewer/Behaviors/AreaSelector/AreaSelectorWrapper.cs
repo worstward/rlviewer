@@ -43,7 +43,7 @@ namespace RlViewer.Behaviors.AreaSelector
         }
 
 
-        public new void StopResizing()
+        public new void StopResizing(float rcsValue)
         {
             _canResize = false;
 
@@ -57,16 +57,12 @@ namespace RlViewer.Behaviors.AreaSelector
                 return;
             }
 
-            using (Forms.EprInputForm epr = new Forms.EprInputForm())
-            {
-                if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    var area = new System.Drawing.Rectangle(
-                        Area.Location.X, Area.Location.Y, Area.Width, Area.Height);
-                    _selectedPoint = new PointSelector.SelectedPoint(_file.GetMaxSampleLocation(area),
-                        _file.GetMaxSample(area), GetSplashedRcs(epr.EprValue));
-                }
-            }
+            
+            var area = new System.Drawing.Rectangle(
+                Area.Location.X, Area.Location.Y, Area.Width, Area.Height);
+            _selectedPoint = new PointSelector.SelectedPoint(_file.GetMaxSampleLocation(area),
+                _file.GetMaxSample(area), GetSplashedRcs(rcsValue));
+            
 
            
         }

@@ -1222,8 +1222,13 @@ namespace RlViewer.UI
                     {
                         if (_form.MarkPointRb.Checked)
                         {
-                            _selectedPointArea.StopResizing();
-
+                            using (Forms.EprInputForm epr = new Forms.EprInputForm())
+                            {
+                                if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                                {
+                                    _selectedPointArea.StopResizing(epr.EprValue);
+                                }
+                            }
                             if (_selectedPointArea.SelectedPoint == null)
                             {
                                 _areaAligningWrapper.RemoveArea();
