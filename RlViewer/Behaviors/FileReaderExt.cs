@@ -30,9 +30,9 @@ namespace RlViewer.Behaviors
                 int areaLineLength = file.Header.BytesPerSample * width;
 
                 int headersOffset = file.Header.FileHeaderLength;
-                int xOffset = ((file.Width - areaLocX) < 0 ? 0 : areaLocX) * file.Header.BytesPerSample;
-                int yOffset = ((file.Height - areaLocY) < 0 ? 0 : areaLocY) * 
-                    (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength);
+                long xOffset = ((file.Width - areaLocX) < 0 ? 0 : areaLocX) * file.Header.BytesPerSample;
+                long yOffset = (long)((file.Height - areaLocY) < 0 ? 0 : areaLocY) * 
+                    (long)(file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength);
 
                 fs.Seek(headersOffset, SeekOrigin.Current);
                 fs.Seek(yOffset, SeekOrigin.Current);
@@ -332,10 +332,10 @@ namespace RlViewer.Behaviors
                 byte[] sampleBytes = new byte[file.Header.BytesPerSample];
 
                 int headersOffset = file.Header.FileHeaderLength;
-                int xOffset = p.X * file.Header.BytesPerSample;
-                int yOffset = p.Y * (file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength) + file.Header.StrHeaderLength;
+                long xOffset = p.X * file.Header.BytesPerSample;
+                long yOffset = ((long)p.Y * (long)(file.Width * file.Header.BytesPerSample + file.Header.StrHeaderLength)) + file.Header.StrHeaderLength;
 
-                int offset = headersOffset + xOffset + yOffset;
+                long offset = headersOffset + xOffset + yOffset;
                 
                 fs.Seek(offset, SeekOrigin.Begin);
                 fs.Read(sampleBytes, 0, sampleBytes.Length);

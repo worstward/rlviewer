@@ -111,7 +111,6 @@ namespace RlViewer.Settings
         }
 
         private int _maxAlignerAreaSize = 500;
-
         [DataMember]
         public int MaxAlignerAreaSize
         {

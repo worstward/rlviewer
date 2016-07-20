@@ -15,7 +15,6 @@ namespace RlViewer.Forms
         public EprInputForm()
         {
             InitializeComponent();
-            maskedTextBox1.PromptChar = ' ';
         }
 
         private float _eprValue;
@@ -64,6 +63,12 @@ namespace RlViewer.Forms
         private void EprInputForm_Shown(object sender, EventArgs e)
         {
             maskedTextBox1.Focus();
+        }
+
+        private void maskedTextBox1_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
         }
 
     }

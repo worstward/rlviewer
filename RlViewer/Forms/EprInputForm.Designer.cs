@@ -34,14 +34,17 @@
             // 
             // maskedTextBox1
             // 
+            this.maskedTextBox1.AllowPromptAsInput = false;
+            this.maskedTextBox1.HidePromptOnLeave = true;
             this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox1.Location = new System.Drawing.Point(12, 12);
             this.maskedTextBox1.Mask = "000000000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.PromptChar = ' ';
             this.maskedTextBox1.ResetOnPrompt = false;
-            this.maskedTextBox1.ResetOnSpace = false;
             this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);
             this.maskedTextBox1.TabIndex = 1;
+            this.maskedTextBox1.Click += new System.EventHandler(this.maskedTextBox1_Click);
             // 
             // button1
             // 

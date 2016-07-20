@@ -31,7 +31,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -41,6 +40,7 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.azimuthCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -51,7 +51,7 @@
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -93,17 +93,6 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -218,6 +207,17 @@
             this.tabPage3.Text = "Инструменты";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // areasOrPointsForAligningCb
+            // 
+            this.areasOrPointsForAligningCb.AutoSize = true;
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 138);
+            this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
+            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
+            this.areasOrPointsForAligningCb.TabIndex = 9;
+            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
+            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
+            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -229,11 +229,15 @@
             // 
             // azimuthCompressCoefTb
             // 
+            this.azimuthCompressCoefTb.AllowPromptAsInput = false;
             this.azimuthCompressCoefTb.Location = new System.Drawing.Point(161, 108);
             this.azimuthCompressCoefTb.Mask = "0";
             this.azimuthCompressCoefTb.Name = "azimuthCompressCoefTb";
+            this.azimuthCompressCoefTb.PromptChar = ' ';
+            this.azimuthCompressCoefTb.ResetOnPrompt = false;
             this.azimuthCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.azimuthCompressCoefTb.TabIndex = 7;
+            this.azimuthCompressCoefTb.Click += new System.EventHandler(this.azimuthCompressCoefTb_Click);
             // 
             // label4
             // 
@@ -246,11 +250,15 @@
             // 
             // rangeCompressCoefTb
             // 
+            this.rangeCompressCoefTb.AllowPromptAsInput = false;
             this.rangeCompressCoefTb.Location = new System.Drawing.Point(161, 78);
             this.rangeCompressCoefTb.Mask = "0";
             this.rangeCompressCoefTb.Name = "rangeCompressCoefTb";
+            this.rangeCompressCoefTb.PromptChar = ' ';
+            this.rangeCompressCoefTb.ResetOnPrompt = false;
             this.rangeCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.rangeCompressCoefTb.TabIndex = 5;
+            this.rangeCompressCoefTb.Click += new System.EventHandler(this.rangeCompressCoefTb_Click);
             // 
             // label2
             // 
@@ -263,11 +271,15 @@
             // 
             // areaSizeTextBox
             // 
+            this.areaSizeTextBox.AllowPromptAsInput = false;
             this.areaSizeTextBox.Location = new System.Drawing.Point(161, 46);
             this.areaSizeTextBox.Mask = "0";
             this.areaSizeTextBox.Name = "areaSizeTextBox";
+            this.areaSizeTextBox.PromptChar = ' ';
+            this.areaSizeTextBox.ResetOnPrompt = false;
             this.areaSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.areaSizeTextBox.TabIndex = 3;
+            this.areaSizeTextBox.Click += new System.EventHandler(this.areaSizeTextBox_Click);
             // 
             // label1
             // 
@@ -280,11 +292,16 @@
             // 
             // sectionSizeTextBox
             // 
+            this.sectionSizeTextBox.AllowPromptAsInput = false;
+            this.sectionSizeTextBox.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.sectionSizeTextBox.Location = new System.Drawing.Point(161, 15);
             this.sectionSizeTextBox.Mask = "0000";
             this.sectionSizeTextBox.Name = "sectionSizeTextBox";
+            this.sectionSizeTextBox.PromptChar = ' ';
+            this.sectionSizeTextBox.ResetOnPrompt = false;
             this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.sectionSizeTextBox.TabIndex = 0;
+            this.sectionSizeTextBox.Click += new System.EventHandler(this.sectionSizeTextBox_Click);
             // 
             // button1
             // 
@@ -307,16 +324,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // pointsOrAreasForAligningCb
+            // comboBoxPics1
             // 
-            this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 138);
-            this.areasOrPointsForAligningCb.Name = "pointsOrAreasForAligningCb";
-            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
-            this.areasOrPointsForAligningCb.TabIndex = 9;
-            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
-            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
-            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // SettingsForm
             // 

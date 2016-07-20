@@ -42,7 +42,6 @@ namespace RlViewer.Forms
             azimuthCompressCoefTb.Text = _settings.AzimuthCompressionCoef.ToString();
 
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
-            areaSizeTextBox.PromptChar = ' ';
             areasOrPointsForAligningCb.Checked = settings.AreasOrPointsForAligning;
         }
 
@@ -209,6 +208,30 @@ namespace RlViewer.Forms
         private void pointsOrAreasForAligningCb_CheckedChanged(object sender, EventArgs e)
         {
             _areasOrPointsForAligning = ((CheckBox)sender).Checked;
+        }
+
+        private void sectionSizeTextBox_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
+        }
+
+        private void areaSizeTextBox_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
+        }
+
+        private void rangeCompressCoefTb_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
+        }
+
+        private void azimuthCompressCoefTb_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
         }
 
     }

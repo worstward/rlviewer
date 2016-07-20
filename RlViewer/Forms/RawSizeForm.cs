@@ -15,8 +15,6 @@ namespace RlViewer.Forms
         public SizeForm()
         {
             InitializeComponent();
-            maskedTextBox1.PromptChar = ' ';
-            maskedTextBox2.PromptChar = ' ';
             comboBox1.SelectedIndex = 0;
         }
 
@@ -103,6 +101,18 @@ namespace RlViewer.Forms
         private void SizeForm_Shown(object sender, EventArgs e)
         {
             maskedTextBox1.Focus();
+        }
+
+        private void maskedTextBox1_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
+        }
+
+        private void maskedTextBox2_Click(object sender, EventArgs e)
+        {
+            var tb = ((MaskedTextBox)sender);
+            tb.Select(tb.Text.Length, 0);
         }
 
     }

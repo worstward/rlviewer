@@ -150,11 +150,11 @@ namespace RlViewer.Headers.Concrete.K
 
             return new HeaderInfoOutput[]
             {
-                new HeaderInfoOutput("Параметры АЦП", adcHeader),
-                new HeaderInfoOutput("Параметры синхронизатора", synchronizerHeader),
-                new HeaderInfoOutput("Параметры локатора", locatorHeader),
-                new HeaderInfoOutput("Параметры полета", flightParamHeader),
-                new HeaderInfoOutput("Параметры антенной системы", antennaHeader)
+                new HeaderInfoOutput("АЦП", adcHeader),
+                new HeaderInfoOutput("Синхронизатор", synchronizerHeader),
+                new HeaderInfoOutput("Локатор", locatorHeader),
+                new HeaderInfoOutput("Полет", flightParamHeader),
+                new HeaderInfoOutput("Антенная система", antennaHeader)
             };
         }
 

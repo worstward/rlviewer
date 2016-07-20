@@ -49,23 +49,31 @@
             // 
             // maskedTextBox1
             // 
+            this.maskedTextBox1.AllowPromptAsInput = false;
             this.maskedTextBox1.HidePromptOnLeave = true;
             this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox1.Location = new System.Drawing.Point(75, 12);
             this.maskedTextBox1.Mask = "000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.PromptChar = ' ';
+            this.maskedTextBox1.ResetOnPrompt = false;
             this.maskedTextBox1.Size = new System.Drawing.Size(181, 20);
             this.maskedTextBox1.TabIndex = 1;
+            this.maskedTextBox1.Click += new System.EventHandler(this.maskedTextBox1_Click);
             // 
             // maskedTextBox2
             // 
+            this.maskedTextBox2.AllowPromptAsInput = false;
             this.maskedTextBox2.HidePromptOnLeave = true;
             this.maskedTextBox2.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
             this.maskedTextBox2.Location = new System.Drawing.Point(75, 38);
             this.maskedTextBox2.Mask = "000000";
             this.maskedTextBox2.Name = "maskedTextBox2";
+            this.maskedTextBox2.PromptChar = ' ';
+            this.maskedTextBox2.ResetOnPrompt = false;
             this.maskedTextBox2.Size = new System.Drawing.Size(181, 20);
             this.maskedTextBox2.TabIndex = 2;
+            this.maskedTextBox2.Click += new System.EventHandler(this.maskedTextBox2_Click);
             // 
             // label1
             // 

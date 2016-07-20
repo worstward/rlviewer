@@ -52,6 +52,10 @@ namespace RlViewer.Behaviors.AreaSelector
                 return;
             }
 
+            if (Area.Location.X > _file.Width || Area.Location.Y > _file.Height || Area.Width <= 0 || Area.Height <= 0)
+            {
+                return;
+            }
 
             using (Forms.EprInputForm epr = new Forms.EprInputForm())
             {
