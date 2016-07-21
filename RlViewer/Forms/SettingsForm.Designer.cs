@@ -31,7 +31,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -41,18 +40,19 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.azimuthCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.azimuthCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
+            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -95,17 +95,6 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -203,7 +192,6 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Controls.Add(this.areasOrPointsForAligningCb);
             this.tabPage3.Controls.Add(this.label2);
             this.tabPage3.Controls.Add(this.areaSizeTextBox);
@@ -217,16 +205,18 @@
             this.tabPage3.Text = "Инструменты";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // areasOrPointsForAligningCb
+            // groupBox1
             // 
-            this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 72);
-            this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
-            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
-            this.areasOrPointsForAligningCb.TabIndex = 9;
-            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
-            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
-            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
+            this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
+            this.groupBox1.Location = new System.Drawing.Point(118, 234);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(57, 67);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Visible = false;
             // 
             // label5
             // 
@@ -236,6 +226,15 @@
             this.label5.Size = new System.Drawing.Size(136, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "Коэф. сжатия по азимуту";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(148, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Коэф. сжатия по дальности";
             // 
             // azimuthCompressCoefTb
             // 
@@ -249,15 +248,6 @@
             this.azimuthCompressCoefTb.TabIndex = 7;
             this.azimuthCompressCoefTb.Click += new System.EventHandler(this.azimuthCompressCoefTb_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(148, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Коэф. сжатия по дальности";
-            // 
             // rangeCompressCoefTb
             // 
             this.rangeCompressCoefTb.AllowPromptAsInput = false;
@@ -269,6 +259,17 @@
             this.rangeCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.rangeCompressCoefTb.TabIndex = 5;
             this.rangeCompressCoefTb.Click += new System.EventHandler(this.rangeCompressCoefTb_Click);
+            // 
+            // areasOrPointsForAligningCb
+            // 
+            this.areasOrPointsForAligningCb.AutoSize = true;
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 72);
+            this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
+            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
+            this.areasOrPointsForAligningCb.TabIndex = 9;
+            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
+            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
+            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
             // 
             // label2
             // 
@@ -283,7 +284,7 @@
             // 
             this.areaSizeTextBox.AllowPromptAsInput = false;
             this.areaSizeTextBox.Location = new System.Drawing.Point(161, 46);
-            this.areaSizeTextBox.Mask = "0";
+            this.areaSizeTextBox.Mask = "00";
             this.areaSizeTextBox.Name = "areaSizeTextBox";
             this.areaSizeTextBox.PromptChar = ' ';
             this.areaSizeTextBox.ResetOnPrompt = false;
@@ -334,18 +335,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // groupBox1
+            // comboBoxPics1
             // 
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
-            this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
-            this.groupBox1.Location = new System.Drawing.Point(4, 88);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(265, 67);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Visible = false;
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // SettingsForm
             // 
@@ -355,6 +354,7 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
             this.MaximizeBox = false;

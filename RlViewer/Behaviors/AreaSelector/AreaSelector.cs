@@ -18,7 +18,13 @@ namespace RlViewer.Behaviors.AreaSelector
         
         private Point _initialLocation;
         private Point _pointOfView;
-        protected bool _canResize;
+        private bool _isActive;
+
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set { _isActive = value; }
+        }
 
         /// <summary>
         /// Resizes selected area
@@ -28,7 +34,7 @@ namespace RlViewer.Behaviors.AreaSelector
         /// <returns>Value, that determines if resizing was successful</returns>
         public bool ResizeArea(Point mouseLocation, Point pointOfView)
         {
-            if (_canResize)
+            if (_isActive)
             {
                 int width = mouseLocation.X + pointOfView.X - _initialLocation.X;
                 int height = mouseLocation.Y + pointOfView.Y - _initialLocation.Y;
@@ -94,7 +100,7 @@ namespace RlViewer.Behaviors.AreaSelector
                 Area.Height = height;
             
             }
-            return _canResize;
+            return _isActive;
         }
 
         public void ResetArea()
@@ -119,7 +125,7 @@ namespace RlViewer.Behaviors.AreaSelector
 
         public void StartArea(Point location, Point pointOfView)
         {
-            _canResize = true;
+            _isActive = true;
             _pointOfView = pointOfView;
 
             //we substract 1 to get area started from clicked pixel
@@ -128,7 +134,7 @@ namespace RlViewer.Behaviors.AreaSelector
 
         public void StopResizing()
         {
-            _canResize = false;
+            _isActive = false;
         }
 
     }

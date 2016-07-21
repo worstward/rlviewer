@@ -90,6 +90,7 @@
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -136,7 +137,7 @@
             this.statisticsBtn.FlatAppearance.BorderSize = 0;
             this.statisticsBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.statisticsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.statisticsBtn.Location = new System.Drawing.Point(363, 3);
+            this.statisticsBtn.Location = new System.Drawing.Point(399, 3);
             this.statisticsBtn.Name = "statisticsBtn";
             this.statisticsBtn.Size = new System.Drawing.Size(30, 30);
             this.statisticsBtn.TabIndex = 15;
@@ -154,7 +155,7 @@
             this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.linSectionRb.Location = new System.Drawing.Point(255, 3);
+            this.linSectionRb.Location = new System.Drawing.Point(291, 3);
             this.linSectionRb.Name = "linSectionRb";
             this.linSectionRb.Size = new System.Drawing.Size(30, 30);
             this.linSectionRb.TabIndex = 14;
@@ -168,7 +169,7 @@
             this.findPointBtn.FlatAppearance.BorderSize = 0;
             this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.findPointBtn.Location = new System.Drawing.Point(327, 3);
+            this.findPointBtn.Location = new System.Drawing.Point(363, 3);
             this.findPointBtn.Name = "findPointBtn";
             this.findPointBtn.Size = new System.Drawing.Size(30, 30);
             this.findPointBtn.TabIndex = 13;
@@ -186,7 +187,7 @@
             this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rulerRb.Location = new System.Drawing.Point(291, 3);
+            this.rulerRb.Location = new System.Drawing.Point(327, 3);
             this.rulerRb.Name = "rulerRb";
             this.rulerRb.Size = new System.Drawing.Size(30, 30);
             this.rulerRb.TabIndex = 12;
@@ -218,7 +219,7 @@
             this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.verSection.Location = new System.Drawing.Point(183, 3);
+            this.verSection.Location = new System.Drawing.Point(219, 3);
             this.verSection.Name = "verSection";
             this.verSection.Size = new System.Drawing.Size(30, 30);
             this.verSection.TabIndex = 10;
@@ -235,7 +236,7 @@
             this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.horSection.Location = new System.Drawing.Point(219, 3);
+            this.horSection.Location = new System.Drawing.Point(255, 3);
             this.horSection.Name = "horSection";
             this.horSection.Size = new System.Drawing.Size(30, 30);
             this.horSection.TabIndex = 9;
@@ -252,7 +253,7 @@
             this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeRb.Location = new System.Drawing.Point(147, 3);
+            this.analyzeRb.Location = new System.Drawing.Point(183, 3);
             this.analyzeRb.Name = "analyzeRb";
             this.analyzeRb.Size = new System.Drawing.Size(30, 30);
             this.analyzeRb.TabIndex = 8;
@@ -771,7 +772,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(399, 3);
+            this.filterPanelCb.Location = new System.Drawing.Point(435, 3);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -804,6 +805,7 @@
             this.flowLayoutPanel1.Controls.Add(this.markPointRb);
             this.flowLayoutPanel1.Controls.Add(this.alignBtn);
             this.flowLayoutPanel1.Controls.Add(this.markAreaRb);
+            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
             this.flowLayoutPanel1.Controls.Add(this.analyzeRb);
             this.flowLayoutPanel1.Controls.Add(this.verSection);
             this.flowLayoutPanel1.Controls.Add(this.horSection);
@@ -831,6 +833,24 @@
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(639, 36);
             this.flowLayoutPanel2.TabIndex = 28;
+            // 
+            // squareAreaRb
+            // 
+            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.squareAreaRb.FlatAppearance.BorderSize = 0;
+            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.squareAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("squareAreaRb.Image")));
+            this.squareAreaRb.Location = new System.Drawing.Point(147, 3);
+            this.squareAreaRb.Name = "squareAreaRb";
+            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.squareAreaRb.TabIndex = 25;
+            this.squareAreaRb.TabStop = true;
+            this.squareAreaRb.UseVisualStyleBackColor = false;
+            this.squareAreaRb.CheckedChanged += new System.EventHandler(this.squareAreaRb_CheckedChanged);
             // 
             // MainForm
             // 
@@ -941,6 +961,7 @@
         private System.Windows.Forms.Button statisticsBtn;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.RadioButton squareAreaRb;
     }
 }
 

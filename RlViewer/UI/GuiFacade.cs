@@ -80,6 +80,7 @@ namespace RlViewer.UI
         private Behaviors.PointSelector.PointSelector _pointSelector;
         private Behaviors.AreaSelector.AreaSelectorWrapper _selectedPointArea;
         private Behaviors.AreaSelector.AreaSelectorsAlignerContainer _areaAligningWrapper;
+        private Behaviors.SquareAreaSelector.SquareArea _squareArea;
 
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
@@ -800,11 +801,7 @@ namespace RlViewer.UI
 
             _form.Horizontal.Value = (int)newHorizontalValue;
             _form.Vertical.Value = (int)newVerticalValue;
-
         }
-
-
-
 
 
         private void InitializeWindow()
@@ -814,7 +811,6 @@ namespace RlViewer.UI
             _pointSelector = null;
             _areaSelector = null;
             _tiles = null;
-
 
             ThreadHelper.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
             ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
@@ -869,6 +865,7 @@ namespace RlViewer.UI
             AddToolTip(frm.ZoomInBtn, "Увеличить масштаб");
             AddToolTip(frm.ZoomOutBtn, "Уменьшить масштаб");
             AddToolTip(frm.StatisticsBtn, "Статистика");
+            AddToolTip(frm.SquareAreaRb, "Трехмерный график");
         }
 
         private void AddToolTip(Control c, string caption)
@@ -1059,18 +1056,10 @@ namespace RlViewer.UI
                     {
                         _section = new Behaviors.Sections.Concrete.VerticalSection(_settings.SectionSize, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-
-                        ShowSection(_section,
-                            new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
                     else if (_form.HorizontalSectionRb.Checked)
                     {
                         _section = new Behaviors.Sections.Concrete.HorizontalSection(_settings.SectionSize, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-
-                        ShowSection(_section,
-                                new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
                     else if (_form.LinearSectionRb.Checked)
@@ -1090,6 +1079,12 @@ namespace RlViewer.UI
                             _ruler.Pt2 = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
                         }
+                    }
+                    else if (_form.SquareAreaRb.Checked)
+                    {
+                        _squareArea = new Behaviors.SquareAreaSelector.SquareArea(new Point((int)(e.X / _scaler.ScaleFactor - (int)(_settings.SelectorAreaSize / 2)) + _form.Horizontal.Value,
+                                                               (int)(e.Y / _scaler.ScaleFactor - (int)(_settings.SelectorAreaSize / 2)) + _form.Vertical.Value), _settings.SelectorAreaSize);
+                        Show3dPlot(_squareArea);
                     }
 
                 }
@@ -1141,6 +1136,11 @@ namespace RlViewer.UI
                         }
                     }
                 }
+                else if (_form.SquareAreaRb.Checked)
+                {
+                    var leftTop = new Point(e.X - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2), e.Y - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2));
+                    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
+                }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
                     AnalyzePoint(e);
@@ -1175,7 +1175,7 @@ namespace RlViewer.UI
                         var endPoint = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
-                        _form.Canvas.Image = _drawer.DrawRuler(
+                        _form.Canvas.Image = _drawer.DrawLinearSection(
                             new Point((int)((_section.InitialPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                              (int)((_section.InitialPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
                             new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
@@ -1214,7 +1214,11 @@ namespace RlViewer.UI
                 _drag.StopTracing();
                 if (e.Button == MouseButtons.Left && _areaSelector != null && _analyzer != null)
                 {
-                    _areaSelector.StopResizing();
+                    if (_areaSelector.IsActive)
+                    {
+                        _areaSelector.StopResizing();
+                    }
+                 
                     _analyzer.StopTracing();
                     _toolTip.Hide(_win);
 
@@ -1235,11 +1239,13 @@ namespace RlViewer.UI
                             }
                         }
                     }
-                    if (_form.LinearSectionRb.Checked)
+
+                    if (_form.LinearSectionRb.Checked || _form.VerticalSectionRb.Checked || _form.HorizontalSectionRb.Checked)
                     {
                         ShowSection(_section, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                 (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
                     }
+
                 }
                 
                 _form.Canvas.Invalidate();
@@ -1248,6 +1254,17 @@ namespace RlViewer.UI
         }
 
         #endregion
+
+        private void Show3dPlot(Behaviors.SquareAreaSelector.SquareArea area)
+        {
+            Rectangle areaRect = new Rectangle(area.Location.X, area.Location.Y, area.BorderSize, area.BorderSize);
+            float[] areaData = _file.GetArea(areaRect).ToArea<float>(_file.Header.BytesPerSample);
+
+            using (var plotFrm = new Forms.Plot3dForm(area.Location.X, area.Location.X + area.BorderSize, area.Location.Y, area.Location.Y + area.BorderSize, areaData))
+            {
+                plotFrm.ShowDialog();
+            }
+        }
 
 
         private string GetSectionFormCaption(Behaviors.Sections.Abstract.Section section)
@@ -1310,14 +1327,8 @@ namespace RlViewer.UI
 
         public void ShowSettings()
         {
-            int pointsCount = 0;
 
-            if (_areaAligningWrapper != null && _pointSelector != null)
-            {
-                pointsCount = _areaAligningWrapper.Select(x => x.SelectedPoint).Union(_pointSelector).Count();
-            }
-
-            using (var settgingsForm = new Forms.SettingsForm(_settings, pointsCount))
+            using (var settgingsForm = new Forms.SettingsForm(_settings))
             {
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -1334,6 +1345,8 @@ namespace RlViewer.UI
                 cacheForm.ShowDialog();
             }
         }
+
+        
 
         public void ShowLog()
         {

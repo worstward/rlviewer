@@ -297,6 +297,15 @@ namespace RlViewer.Forms
             }
         }
 
+        public RadioButton SquareAreaRb 
+        {
+            get
+            {
+                return squareAreaRb;
+            }
+        }
+
+
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -496,6 +505,11 @@ namespace RlViewer.Forms
         private void statisticsBtn_Click(object sender, EventArgs e)
         {
             _guiFacade.GetAreaStatistics();
+        }
+
+        private void squareAreaRb_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
     }

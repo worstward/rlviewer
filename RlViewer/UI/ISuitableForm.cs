@@ -43,6 +43,7 @@ namespace RlViewer.UI
         SplitContainer FilterSplitter { get; }
         Button ZoomInBtn { get; }
         Button ZoomOutBtn { get; }
+        RadioButton SquareAreaRb { get; }
         System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart { get; }
     }
 }

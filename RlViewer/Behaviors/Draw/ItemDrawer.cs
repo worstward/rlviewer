@@ -122,5 +122,24 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
+        public Image DrawSquareArea(Image canvas, Point leftTop, int borderSize)
+        {
+            Image img;
+            lock (_locker)
+            {
+                img = (Image)canvas.Clone();
+                using (var g = Graphics.FromImage(img))
+                {
+                    using (var pen = new Pen(Palette.Entries[240]))
+                    {
+                        g.DrawRectangle(pen, new Rectangle(leftTop,
+                            new Size((int)(borderSize * Scaler.ScaleFactor), (int)(borderSize * Scaler.ScaleFactor))));
+                    }
+                }
+            }
+            return img;
+        }
+
+
     }
 }

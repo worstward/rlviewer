@@ -57,6 +57,9 @@
       <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ILNumerics.Computing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=8d9bf50ef854734d" />
+    <Reference Include="ILNumerics.Core, Version=4.11.0.0, Culture=neutral, PublicKeyToken=9651adc37f12bb00" />
+    <Reference Include="ILNumerics.Drawing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=e22c8a010c3b081a" />
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -128,6 +131,7 @@
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
+    <Compile Include="Behaviors\SquareAreaSelector\SquareArea.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ShortSampleTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
@@ -193,6 +197,12 @@
     <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl8TileCreatorFactory.cs" />
     <Compile Include="Files\Rli\Concrete\Rl8.cs" />
+    <Compile Include="Forms\Plot3dForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Plot3dForm.Designer.cs">
+      <DependentUpon>Plot3dForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FindPointForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,6 +257,7 @@
     <Compile Include="Headers\Concrete\Rl8\Rl8Header.cs" />
     <Compile Include="Headers\Concrete\R\RHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
+    <Compile Include="ILNumerics_deploy\ILNHelper.cs" />
     <Compile Include="Navigation\Concrete\Rl8NavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -388,6 +399,9 @@
     <Compile Include="Forms\RawSizeForm.Designer.cs">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\Plot3dForm.resx">
+      <DependentUpon>Plot3dForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindPointForm.resx">
       <DependentUpon>FindPointForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -420,6 +434,7 @@
     <EmbeddedResource Include="Forms\SectionGraphForm.resx">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ILNumerics_deploy\ilnumerics.lic" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -439,6 +454,8 @@
     <EmbeddedResource Include="Settings\ComboBoxPics.resx">
       <DependentUpon>ComboBoxPics.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ILNumerics_deploy\ILNImports1.targets" />
+    <None Include="ILNumerics_deploy\ILNImports2.targets" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -535,6 +552,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.28.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.3\build\Fody.targets'))" />
   </Target>
+  <Import Project="ILNumerics_deploy\ILNImports1.targets" Condition="$(ILNLicCompile) != 'true'" />
+  <Import Project="ILNumerics_deploy\ILNImports2.targets" Condition="$(ILNLicCompile) == 'true'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

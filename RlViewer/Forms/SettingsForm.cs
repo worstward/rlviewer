@@ -13,18 +13,12 @@ namespace RlViewer.Forms
 {
     public partial class  SettingsForm : Form
     {
-        public SettingsForm(Settings.Settings settings, int selectedPointsCount)
+        public SettingsForm(Settings.Settings settings)
         {
             _settings = settings;
 
             InitializeComponent();
             FillComboBox();
-            if (selectedPointsCount != 0)
-            {
-                areasOrPointsForAligningCb.Enabled = false;
-            }
-            else areasOrPointsForAligningCb.Enabled = true;
-
 
             comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
                 .Where(item => item.Text == _settings.Palette.Select(x => x.ToString())

@@ -45,7 +45,7 @@ namespace RlViewer.Behaviors.AreaSelector
 
         public new void StopResizing(float rcsValue)
         {
-            _canResize = false;
+            IsActive = false;
 
             if (Area.Width * Area.Height > _maxAreaSize)
             {

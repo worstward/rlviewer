@@ -66,7 +66,10 @@ namespace RlViewer.Behaviors.Draw
             return _iDrawer.DrawSection(_canvas, from, to);
         }
 
-
+        public Image DrawSquareArea(Point leftTop, int borderSize)
+        {
+            return _iDrawer.DrawSquareArea(_canvas, leftTop, borderSize);
+        }
        
     }
 }
