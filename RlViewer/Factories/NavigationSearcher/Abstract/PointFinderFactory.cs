@@ -8,7 +8,7 @@ namespace RlViewer.Factories.NavigationSearcher.Abstract
 {
     public abstract class PointFinderFactory
     {
-        public abstract RlViewer.Behaviors.Navigation.Abstract.GeodesicPointFinder Create(RlViewer.Files.LocatorFile file);
+        public abstract RlViewer.Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder Create(RlViewer.Files.LocatorFile file);
 
         public static PointFinderFactory GetFactory(RlViewer.Files.FileProperties properties)
         {

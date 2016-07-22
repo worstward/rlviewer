@@ -54,7 +54,6 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.ilPanel1);
             this.Name = "Plot3dForm";
-            this.Text = "Form1";
             this.ResumeLayout(false);
 
         }

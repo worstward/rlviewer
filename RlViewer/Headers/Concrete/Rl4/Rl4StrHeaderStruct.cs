@@ -17,6 +17,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public byte[] time;
 
+        //Speed (x-y-z axis respectively)
         public double Vx;
         public double Vy;
         public double Vz;
@@ -24,21 +25,26 @@ namespace RlViewer.Headers.Concrete.Rl4
         public double latitude;
         public double longtitude;
 
-        public double H;
-        public double V;
+        public double H;//Height
 
+        public double V; //Speed
+
+        //Speed (e-n axis)
         public double Ve;
         public double Vn;
 
-        public double a;
 
-        public double g;
-        public double f;
-        public double w;
+        public double a;//Heading
 
+        public double g;//Roll
+        public double f;//Pitch
+
+        public double w;//Drift
+
+        //Speed(u axis)
         public double Vu;
 
-        public double WH;
+        public double WH;//Speed/Height
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 119)]
         public byte[] reserved;

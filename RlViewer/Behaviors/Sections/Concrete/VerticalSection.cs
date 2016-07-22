@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.Sections.Concrete
 
             for (int i = p1.Y - SectionLength / 2; i < p1.Y + SectionLength / 2; i++)
             {
-                if (i < 0 || i >= file.Height) continue;
+                if (i < 0 || i >= file.Height || p1.X < 0 || p1.X >= file.Width) continue;
 
                 try
                 {

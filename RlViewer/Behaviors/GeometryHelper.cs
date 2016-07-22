@@ -74,6 +74,40 @@ namespace RlViewer.Behaviors
         }
 
 
+        /// <summary>
+        /// Gets area that's occupied by user selected points
+        /// </summary>
+        /// <param name="selector">Selected points container</param>
+        /// <param name="maxWorkingArea">Minimum allowed area size</param>
+        /// <returns></returns>
+        public static System.Drawing.Rectangle GetArea(IEnumerable<PointSelector.SelectedPoint> selector, int minWorkingArea)
+        {
+
+            var minX = selector.Min(p => p.Location.X);
+            var maxX = selector.Max(p => p.Location.X);
+            var minY = selector.Min(p => p.Location.Y);
+            var maxY = selector.Max(p => p.Location.Y);
+
+            int areaWidth = maxX - minX;
+            int areaHeight = maxY - minY;
+
+
+            if (areaWidth < minWorkingArea)
+            {
+                minX = minX - (minWorkingArea - areaWidth) / 2;
+                minX = minX < 0 ? 0 : minX;
+                areaWidth = minWorkingArea;
+            }
+
+            if (areaHeight < minWorkingArea)
+            {
+                minY = minY - (minWorkingArea - areaHeight) / 2;
+                minY = minY < 0 ? 0 : minY;
+                areaHeight = minWorkingArea;
+            }
+
+            return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
+        }
 
         /// <summary>
         /// Gets line angle

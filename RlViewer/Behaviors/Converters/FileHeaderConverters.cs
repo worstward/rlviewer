@@ -50,6 +50,42 @@ namespace RlViewer.Behaviors.Converters
         }
 
 
+        public static RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct ToBrl4StrHeader(this RlViewer.Headers.Concrete.Ba.BaStrHeader baStrHeader)
+        {
+            var brl4StrHead = new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct();
+
+            brl4StrHead.Ve = baStrHeader.Ve;
+            brl4StrHead.Vu = baStrHeader.Vh;
+            brl4StrHead.Vn = baStrHeader.Vn;
+            brl4StrHead.V = baStrHeader.V;
+            brl4StrHead.latitude = baStrHeader.latitude;
+            brl4StrHead.longtitude = baStrHeader.longtitude;
+            brl4StrHead.H = baStrHeader.H;
+            brl4StrHead.f = baStrHeader.pitch;
+            brl4StrHead.g = baStrHeader.roll;
+            brl4StrHead.a = baStrHeader.heading;
+
+            return brl4StrHead;
+        }
+
+
+        //public static RlViewer.Headers.Concrete.Ba.BaStrHeader ToBa(this RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct rl4StrHeader)
+        //{
+        //    var ba = new Headers.Concrete.Ba.BaStrHeader();
+        //    ba.Ve         = (float)rl4StrHeader.Ve;
+        //    ba.Vh         = (float)rl4StrHeader.Vu;
+        //    ba.Vn         = (float)rl4StrHeader.Vn;
+        //    ba.V          = (float)rl4StrHeader.V;
+        //    ba.latitude   = (float)rl4StrHeader.latitude;
+        //    ba.longtitude = (float)rl4StrHeader.longtitude;
+        //    ba.H          = (float)rl4StrHeader.H;
+        //    ba.pitch      = (float)rl4StrHeader.f;
+        //    ba.roll       = (float)rl4StrHeader.g;
+        //    ba.heading    = (float)rl4StrHeader.a;
+
+        //    return ba;
+        //}
+
 
         public static RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader ToBrl4
             (this Rl4RliFileHeader rl4RliFileHeader, byte calibration, byte polarization, float angle_zond)

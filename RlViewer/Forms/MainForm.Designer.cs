@@ -29,29 +29,19 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
-            this.statisticsBtn = new System.Windows.Forms.Button();
-            this.linSectionRb = new System.Windows.Forms.RadioButton();
-            this.findPointBtn = new System.Windows.Forms.Button();
-            this.rulerRb = new System.Windows.Forms.RadioButton();
-            this.alignBtn = new System.Windows.Forms.Button();
-            this.verSection = new System.Windows.Forms.RadioButton();
-            this.horSection = new System.Windows.Forms.RadioButton();
-            this.analyzeRb = new System.Windows.Forms.RadioButton();
-            this.markAreaRb = new System.Windows.Forms.RadioButton();
-            this.dragRb = new System.Windows.Forms.RadioButton();
-            this.markPointRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьОтчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.вшитьНавигациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,13 +74,24 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.dragRb = new System.Windows.Forms.RadioButton();
+            this.markPointRb = new System.Windows.Forms.RadioButton();
+            this.alignBtn = new System.Windows.Forms.Button();
+            this.markAreaRb = new System.Windows.Forms.RadioButton();
+            this.squareAreaRb = new System.Windows.Forms.RadioButton();
+            this.analyzeRb = new System.Windows.Forms.RadioButton();
+            this.verSection = new System.Windows.Forms.RadioButton();
+            this.horSection = new System.Windows.Forms.RadioButton();
+            this.linSectionRb = new System.Windows.Forms.RadioButton();
+            this.rulerRb = new System.Windows.Forms.RadioButton();
+            this.findPointBtn = new System.Windows.Forms.Button();
+            this.statisticsBtn = new System.Windows.Forms.Button();
+            this.filterPanelCb = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.naviPanelCb = new System.Windows.Forms.CheckBox();
             this.zoomOutBtn = new System.Windows.Forms.Button();
             this.zoomInBtn = new System.Windows.Forms.Button();
-            this.filterPanelCb = new System.Windows.Forms.CheckBox();
-            this.naviPanelCb = new System.Windows.Forms.CheckBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -130,187 +131,6 @@
             this.vScrollBar1.TabIndex = 4;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
             // 
-            // statisticsBtn
-            // 
-            this.statisticsBtn.BackgroundImage = global::RlViewer.Properties.Resources.stat;
-            this.statisticsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.statisticsBtn.FlatAppearance.BorderSize = 0;
-            this.statisticsBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.statisticsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.statisticsBtn.Location = new System.Drawing.Point(399, 3);
-            this.statisticsBtn.Name = "statisticsBtn";
-            this.statisticsBtn.Size = new System.Drawing.Size(30, 30);
-            this.statisticsBtn.TabIndex = 15;
-            this.statisticsBtn.UseVisualStyleBackColor = true;
-            this.statisticsBtn.Click += new System.EventHandler(this.statisticsBtn_Click);
-            // 
-            // linSectionRb
-            // 
-            this.linSectionRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.linSectionRb.BackColor = System.Drawing.Color.Transparent;
-            this.linSectionRb.BackgroundImage = global::RlViewer.Properties.Resources.LinearSection;
-            this.linSectionRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.linSectionRb.FlatAppearance.BorderSize = 0;
-            this.linSectionRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.linSectionRb.Location = new System.Drawing.Point(291, 3);
-            this.linSectionRb.Name = "linSectionRb";
-            this.linSectionRb.Size = new System.Drawing.Size(30, 30);
-            this.linSectionRb.TabIndex = 14;
-            this.linSectionRb.TabStop = true;
-            this.linSectionRb.UseVisualStyleBackColor = false;
-            // 
-            // findPointBtn
-            // 
-            this.findPointBtn.BackgroundImage = global::RlViewer.Properties.Resources.FindPoint;
-            this.findPointBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.findPointBtn.FlatAppearance.BorderSize = 0;
-            this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.findPointBtn.Location = new System.Drawing.Point(363, 3);
-            this.findPointBtn.Name = "findPointBtn";
-            this.findPointBtn.Size = new System.Drawing.Size(30, 30);
-            this.findPointBtn.TabIndex = 13;
-            this.findPointBtn.UseVisualStyleBackColor = true;
-            this.findPointBtn.Click += new System.EventHandler(this.findPointBtn_Click);
-            // 
-            // rulerRb
-            // 
-            this.rulerRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rulerRb.BackColor = System.Drawing.Color.Transparent;
-            this.rulerRb.BackgroundImage = global::RlViewer.Properties.Resources.Ruler;
-            this.rulerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.rulerRb.FlatAppearance.BorderSize = 0;
-            this.rulerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rulerRb.Location = new System.Drawing.Point(327, 3);
-            this.rulerRb.Name = "rulerRb";
-            this.rulerRb.Size = new System.Drawing.Size(30, 30);
-            this.rulerRb.TabIndex = 12;
-            this.rulerRb.TabStop = true;
-            this.rulerRb.UseVisualStyleBackColor = false;
-            this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
-            // 
-            // alignBtn
-            // 
-            this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
-            this.alignBtn.FlatAppearance.BorderSize = 0;
-            this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.alignBtn.Location = new System.Drawing.Point(75, 3);
-            this.alignBtn.Name = "alignBtn";
-            this.alignBtn.Size = new System.Drawing.Size(30, 30);
-            this.alignBtn.TabIndex = 11;
-            this.alignBtn.UseVisualStyleBackColor = true;
-            this.alignBtn.Click += new System.EventHandler(this.alignBtn_Click);
-            // 
-            // verSection
-            // 
-            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.verSection.BackColor = System.Drawing.Color.Transparent;
-            this.verSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("verSection.BackgroundImage")));
-            this.verSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.verSection.FlatAppearance.BorderSize = 0;
-            this.verSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.verSection.Location = new System.Drawing.Point(219, 3);
-            this.verSection.Name = "verSection";
-            this.verSection.Size = new System.Drawing.Size(30, 30);
-            this.verSection.TabIndex = 10;
-            this.verSection.TabStop = true;
-            this.verSection.UseVisualStyleBackColor = false;
-            // 
-            // horSection
-            // 
-            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
-            this.horSection.BackColor = System.Drawing.Color.Transparent;
-            this.horSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("horSection.BackgroundImage")));
-            this.horSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.horSection.FlatAppearance.BorderSize = 0;
-            this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.horSection.Location = new System.Drawing.Point(255, 3);
-            this.horSection.Name = "horSection";
-            this.horSection.Size = new System.Drawing.Size(30, 30);
-            this.horSection.TabIndex = 9;
-            this.horSection.TabStop = true;
-            this.horSection.UseVisualStyleBackColor = false;
-            // 
-            // analyzeRb
-            // 
-            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.analyzeRb.BackColor = System.Drawing.Color.Transparent;
-            this.analyzeRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("analyzeRb.BackgroundImage")));
-            this.analyzeRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.analyzeRb.FlatAppearance.BorderSize = 0;
-            this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeRb.Location = new System.Drawing.Point(183, 3);
-            this.analyzeRb.Name = "analyzeRb";
-            this.analyzeRb.Size = new System.Drawing.Size(30, 30);
-            this.analyzeRb.TabIndex = 8;
-            this.analyzeRb.TabStop = true;
-            this.analyzeRb.UseVisualStyleBackColor = false;
-            // 
-            // markAreaRb
-            // 
-            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.markAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.markAreaRb.FlatAppearance.BorderSize = 0;
-            this.markAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
-            this.markAreaRb.Location = new System.Drawing.Point(111, 3);
-            this.markAreaRb.Name = "markAreaRb";
-            this.markAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.markAreaRb.TabIndex = 7;
-            this.markAreaRb.TabStop = true;
-            this.markAreaRb.UseVisualStyleBackColor = false;
-            // 
-            // dragRb
-            // 
-            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.dragRb.BackColor = System.Drawing.Color.Transparent;
-            this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
-            this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.dragRb.FlatAppearance.BorderSize = 0;
-            this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.dragRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.dragRb.Location = new System.Drawing.Point(3, 3);
-            this.dragRb.Name = "dragRb";
-            this.dragRb.Size = new System.Drawing.Size(30, 30);
-            this.dragRb.TabIndex = 5;
-            this.dragRb.TabStop = true;
-            this.dragRb.UseVisualStyleBackColor = false;
-            // 
-            // markPointRb
-            // 
-            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.markPointRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.markPointRb.FlatAppearance.BorderSize = 0;
-            this.markPointRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.markPointRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.markPointRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.markPointRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.markPointRb.Image = ((System.Drawing.Image)(resources.GetObject("markPointRb.Image")));
-            this.markPointRb.Location = new System.Drawing.Point(39, 3);
-            this.markPointRb.Name = "markPointRb";
-            this.markPointRb.Size = new System.Drawing.Size(30, 30);
-            this.markPointRb.TabIndex = 6;
-            this.markPointRb.TabStop = true;
-            this.markPointRb.UseVisualStyleBackColor = true;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -328,7 +148,8 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.сохранитьToolStripMenuItem,
-            this.создатьОтчетToolStripMenuItem});
+            this.создатьОтчетToolStripMenuItem,
+            this.вшитьНавигациюToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.fileToolStripMenuItem.Text = "Файл";
@@ -336,23 +157,30 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
             // создатьОтчетToolStripMenuItem
             // 
             this.создатьОтчетToolStripMenuItem.Name = "создатьОтчетToolStripMenuItem";
-            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.создатьОтчетToolStripMenuItem.Text = "Создать отчет";
             this.создатьОтчетToolStripMenuItem.Click += new System.EventHandler(this.создатьОтчетToolStripMenuItem_Click);
+            // 
+            // вшитьНавигациюToolStripMenuItem
+            // 
+            this.вшитьНавигациюToolStripMenuItem.Name = "вшитьНавигациюToolStripMenuItem";
+            this.вшитьНавигациюToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.вшитьНавигациюToolStripMenuItem.Text = "Вшить навигацию";
+            this.вшитьНавигациюToolStripMenuItem.Click += new System.EventHandler(this.вшитьНавигациюToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -587,14 +415,14 @@
             this.chart1.BackColor = System.Drawing.Color.Transparent;
             this.chart1.BackSecondaryColor = System.Drawing.Color.Transparent;
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Location = new System.Drawing.Point(328, 3);
             this.chart1.Name = "chart1";
-            series2.ChartArea = "ChartArea1";
-            series2.IsVisibleInLegend = false;
-            series2.Name = "Series1";
-            this.chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(298, 98);
             this.chart1.TabIndex = 10;
             this.chart1.Text = "chart1";
@@ -604,38 +432,38 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(96, 100);
@@ -734,6 +562,274 @@
             this.toolStripDropDownButton1.Text = "Cancel";
             this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.Controls.Add(this.dragRb);
+            this.flowLayoutPanel1.Controls.Add(this.markPointRb);
+            this.flowLayoutPanel1.Controls.Add(this.alignBtn);
+            this.flowLayoutPanel1.Controls.Add(this.markAreaRb);
+            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
+            this.flowLayoutPanel1.Controls.Add(this.analyzeRb);
+            this.flowLayoutPanel1.Controls.Add(this.verSection);
+            this.flowLayoutPanel1.Controls.Add(this.horSection);
+            this.flowLayoutPanel1.Controls.Add(this.linSectionRb);
+            this.flowLayoutPanel1.Controls.Add(this.rulerRb);
+            this.flowLayoutPanel1.Controls.Add(this.findPointBtn);
+            this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
+            this.flowLayoutPanel1.Controls.Add(this.filterPanelCb);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(672, 36);
+            this.flowLayoutPanel1.TabIndex = 27;
+            // 
+            // dragRb
+            // 
+            this.dragRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.dragRb.BackColor = System.Drawing.Color.Transparent;
+            this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
+            this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.dragRb.FlatAppearance.BorderSize = 0;
+            this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.dragRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dragRb.Location = new System.Drawing.Point(3, 3);
+            this.dragRb.Name = "dragRb";
+            this.dragRb.Size = new System.Drawing.Size(30, 30);
+            this.dragRb.TabIndex = 5;
+            this.dragRb.TabStop = true;
+            this.dragRb.UseVisualStyleBackColor = false;
+            // 
+            // markPointRb
+            // 
+            this.markPointRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markPointRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markPointRb.FlatAppearance.BorderSize = 0;
+            this.markPointRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markPointRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markPointRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.markPointRb.Image = ((System.Drawing.Image)(resources.GetObject("markPointRb.Image")));
+            this.markPointRb.Location = new System.Drawing.Point(39, 3);
+            this.markPointRb.Name = "markPointRb";
+            this.markPointRb.Size = new System.Drawing.Size(30, 30);
+            this.markPointRb.TabIndex = 6;
+            this.markPointRb.TabStop = true;
+            this.markPointRb.UseVisualStyleBackColor = true;
+            // 
+            // alignBtn
+            // 
+            this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
+            this.alignBtn.FlatAppearance.BorderSize = 0;
+            this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.alignBtn.Location = new System.Drawing.Point(75, 3);
+            this.alignBtn.Name = "alignBtn";
+            this.alignBtn.Size = new System.Drawing.Size(30, 30);
+            this.alignBtn.TabIndex = 11;
+            this.alignBtn.UseVisualStyleBackColor = true;
+            this.alignBtn.Click += new System.EventHandler(this.alignBtn_Click);
+            // 
+            // markAreaRb
+            // 
+            this.markAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.markAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.markAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.markAreaRb.FlatAppearance.BorderSize = 0;
+            this.markAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.markAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.markAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("markAreaRb.Image")));
+            this.markAreaRb.Location = new System.Drawing.Point(111, 3);
+            this.markAreaRb.Name = "markAreaRb";
+            this.markAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.markAreaRb.TabIndex = 7;
+            this.markAreaRb.TabStop = true;
+            this.markAreaRb.UseVisualStyleBackColor = false;
+            // 
+            // squareAreaRb
+            // 
+            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources._3dPlot;
+            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.squareAreaRb.FlatAppearance.BorderSize = 0;
+            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.squareAreaRb.Location = new System.Drawing.Point(147, 3);
+            this.squareAreaRb.Name = "squareAreaRb";
+            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.squareAreaRb.TabIndex = 25;
+            this.squareAreaRb.TabStop = true;
+            this.squareAreaRb.UseVisualStyleBackColor = false;
+            // 
+            // analyzeRb
+            // 
+            this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.analyzeRb.BackColor = System.Drawing.Color.Transparent;
+            this.analyzeRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("analyzeRb.BackgroundImage")));
+            this.analyzeRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.analyzeRb.FlatAppearance.BorderSize = 0;
+            this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.analyzeRb.Location = new System.Drawing.Point(183, 3);
+            this.analyzeRb.Name = "analyzeRb";
+            this.analyzeRb.Size = new System.Drawing.Size(30, 30);
+            this.analyzeRb.TabIndex = 8;
+            this.analyzeRb.TabStop = true;
+            this.analyzeRb.UseVisualStyleBackColor = false;
+            // 
+            // verSection
+            // 
+            this.verSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.verSection.BackColor = System.Drawing.Color.Transparent;
+            this.verSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("verSection.BackgroundImage")));
+            this.verSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.verSection.FlatAppearance.BorderSize = 0;
+            this.verSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.verSection.Location = new System.Drawing.Point(219, 3);
+            this.verSection.Name = "verSection";
+            this.verSection.Size = new System.Drawing.Size(30, 30);
+            this.verSection.TabIndex = 10;
+            this.verSection.TabStop = true;
+            this.verSection.UseVisualStyleBackColor = false;
+            // 
+            // horSection
+            // 
+            this.horSection.Appearance = System.Windows.Forms.Appearance.Button;
+            this.horSection.BackColor = System.Drawing.Color.Transparent;
+            this.horSection.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("horSection.BackgroundImage")));
+            this.horSection.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.horSection.FlatAppearance.BorderSize = 0;
+            this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.horSection.Location = new System.Drawing.Point(255, 3);
+            this.horSection.Name = "horSection";
+            this.horSection.Size = new System.Drawing.Size(30, 30);
+            this.horSection.TabIndex = 9;
+            this.horSection.TabStop = true;
+            this.horSection.UseVisualStyleBackColor = false;
+            // 
+            // linSectionRb
+            // 
+            this.linSectionRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.linSectionRb.BackColor = System.Drawing.Color.Transparent;
+            this.linSectionRb.BackgroundImage = global::RlViewer.Properties.Resources.LinearSection;
+            this.linSectionRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.linSectionRb.FlatAppearance.BorderSize = 0;
+            this.linSectionRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.linSectionRb.Location = new System.Drawing.Point(291, 3);
+            this.linSectionRb.Name = "linSectionRb";
+            this.linSectionRb.Size = new System.Drawing.Size(30, 30);
+            this.linSectionRb.TabIndex = 14;
+            this.linSectionRb.TabStop = true;
+            this.linSectionRb.UseVisualStyleBackColor = false;
+            // 
+            // rulerRb
+            // 
+            this.rulerRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rulerRb.BackColor = System.Drawing.Color.Transparent;
+            this.rulerRb.BackgroundImage = global::RlViewer.Properties.Resources.Ruler;
+            this.rulerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.rulerRb.FlatAppearance.BorderSize = 0;
+            this.rulerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.rulerRb.Location = new System.Drawing.Point(327, 3);
+            this.rulerRb.Name = "rulerRb";
+            this.rulerRb.Size = new System.Drawing.Size(30, 30);
+            this.rulerRb.TabIndex = 12;
+            this.rulerRb.TabStop = true;
+            this.rulerRb.UseVisualStyleBackColor = false;
+            this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
+            // 
+            // findPointBtn
+            // 
+            this.findPointBtn.BackgroundImage = global::RlViewer.Properties.Resources.FindPoint;
+            this.findPointBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.findPointBtn.FlatAppearance.BorderSize = 0;
+            this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.findPointBtn.Location = new System.Drawing.Point(363, 3);
+            this.findPointBtn.Name = "findPointBtn";
+            this.findPointBtn.Size = new System.Drawing.Size(30, 30);
+            this.findPointBtn.TabIndex = 13;
+            this.findPointBtn.UseVisualStyleBackColor = true;
+            this.findPointBtn.Click += new System.EventHandler(this.findPointBtn_Click);
+            // 
+            // statisticsBtn
+            // 
+            this.statisticsBtn.BackgroundImage = global::RlViewer.Properties.Resources.stat;
+            this.statisticsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.statisticsBtn.FlatAppearance.BorderSize = 0;
+            this.statisticsBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.statisticsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.statisticsBtn.Location = new System.Drawing.Point(399, 3);
+            this.statisticsBtn.Name = "statisticsBtn";
+            this.statisticsBtn.Size = new System.Drawing.Size(30, 30);
+            this.statisticsBtn.TabIndex = 15;
+            this.statisticsBtn.UseVisualStyleBackColor = true;
+            this.statisticsBtn.Click += new System.EventHandler(this.statisticsBtn_Click);
+            // 
+            // filterPanelCb
+            // 
+            this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.filterPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.filter;
+            this.filterPanelCb.FlatAppearance.BorderSize = 0;
+            this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.filterPanelCb.Location = new System.Drawing.Point(435, 3);
+            this.filterPanelCb.Name = "filterPanelCb";
+            this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
+            this.filterPanelCb.TabIndex = 24;
+            this.filterPanelCb.UseVisualStyleBackColor = true;
+            this.filterPanelCb.CheckedChanged += new System.EventHandler(this.filterPanelCb_CheckedChanged);
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.Controls.Add(this.scaleLabel);
+            this.flowLayoutPanel2.Controls.Add(this.naviPanelCb);
+            this.flowLayoutPanel2.Controls.Add(this.zoomOutBtn);
+            this.flowLayoutPanel2.Controls.Add(this.zoomInBtn);
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(267, 30);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(639, 36);
+            this.flowLayoutPanel2.TabIndex = 28;
+            // 
+            // naviPanelCb
+            // 
+            this.naviPanelCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.naviPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.naviPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
+            this.naviPanelCb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.naviPanelCb.FlatAppearance.BorderSize = 0;
+            this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.naviPanelCb.Location = new System.Drawing.Point(515, 3);
+            this.naviPanelCb.Name = "naviPanelCb";
+            this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
+            this.naviPanelCb.TabIndex = 20;
+            this.naviPanelCb.UseVisualStyleBackColor = true;
+            this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
+            // 
             // zoomOutBtn
             // 
             this.zoomOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -763,94 +859,6 @@
             this.zoomInBtn.TabIndex = 25;
             this.zoomInBtn.UseVisualStyleBackColor = true;
             this.zoomInBtn.Click += new System.EventHandler(this.zoomInBtn_Click);
-            // 
-            // filterPanelCb
-            // 
-            this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.filterPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.filter;
-            this.filterPanelCb.FlatAppearance.BorderSize = 0;
-            this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(435, 3);
-            this.filterPanelCb.Name = "filterPanelCb";
-            this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
-            this.filterPanelCb.TabIndex = 24;
-            this.filterPanelCb.UseVisualStyleBackColor = true;
-            this.filterPanelCb.CheckedChanged += new System.EventHandler(this.filterPanelCb_CheckedChanged);
-            // 
-            // naviPanelCb
-            // 
-            this.naviPanelCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.naviPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.naviPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.Navigation;
-            this.naviPanelCb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.naviPanelCb.FlatAppearance.BorderSize = 0;
-            this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.naviPanelCb.Location = new System.Drawing.Point(515, 3);
-            this.naviPanelCb.Name = "naviPanelCb";
-            this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
-            this.naviPanelCb.TabIndex = 20;
-            this.naviPanelCb.UseVisualStyleBackColor = true;
-            this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.dragRb);
-            this.flowLayoutPanel1.Controls.Add(this.markPointRb);
-            this.flowLayoutPanel1.Controls.Add(this.alignBtn);
-            this.flowLayoutPanel1.Controls.Add(this.markAreaRb);
-            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
-            this.flowLayoutPanel1.Controls.Add(this.analyzeRb);
-            this.flowLayoutPanel1.Controls.Add(this.verSection);
-            this.flowLayoutPanel1.Controls.Add(this.horSection);
-            this.flowLayoutPanel1.Controls.Add(this.linSectionRb);
-            this.flowLayoutPanel1.Controls.Add(this.rulerRb);
-            this.flowLayoutPanel1.Controls.Add(this.findPointBtn);
-            this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
-            this.flowLayoutPanel1.Controls.Add(this.filterPanelCb);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(672, 36);
-            this.flowLayoutPanel1.TabIndex = 27;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.scaleLabel);
-            this.flowLayoutPanel2.Controls.Add(this.naviPanelCb);
-            this.flowLayoutPanel2.Controls.Add(this.zoomOutBtn);
-            this.flowLayoutPanel2.Controls.Add(this.zoomInBtn);
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(267, 30);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(639, 36);
-            this.flowLayoutPanel2.TabIndex = 28;
-            // 
-            // squareAreaRb
-            // 
-            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.squareAreaRb.FlatAppearance.BorderSize = 0;
-            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squareAreaRb.Image = ((System.Drawing.Image)(resources.GetObject("squareAreaRb.Image")));
-            this.squareAreaRb.Location = new System.Drawing.Point(147, 3);
-            this.squareAreaRb.Name = "squareAreaRb";
-            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.squareAreaRb.TabIndex = 25;
-            this.squareAreaRb.TabStop = true;
-            this.squareAreaRb.UseVisualStyleBackColor = false;
-            this.squareAreaRb.CheckedChanged += new System.EventHandler(this.squareAreaRb_CheckedChanged);
             // 
             // MainForm
             // 
@@ -962,6 +970,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.RadioButton squareAreaRb;
+        private System.Windows.Forms.ToolStripMenuItem вшитьНавигациюToolStripMenuItem;
     }
 }
 

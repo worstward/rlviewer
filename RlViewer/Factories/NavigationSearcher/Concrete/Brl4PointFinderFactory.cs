@@ -8,9 +8,9 @@ namespace RlViewer.Factories.NavigationSearcher.Concrete
 {
     public class Brl4PointFinderFactory : Abstract.PointFinderFactory
     {
-        public override Behaviors.Navigation.Abstract.GeodesicPointFinder Create(Files.LocatorFile file)
+        public override Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder Create(Files.LocatorFile file)
         {
-            return new Behaviors.Navigation.Concrete.Brl4PointFinder(file);
+            return new Behaviors.Navigation.NavigationSearcher.Concrete.Brl4PointFinder(file);
         } 
     }
 }

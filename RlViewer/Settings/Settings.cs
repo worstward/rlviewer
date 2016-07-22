@@ -121,7 +121,7 @@ namespace RlViewer.Settings
 
 
         private float _rangeCompressionCoef = 1f;
-        //[DataMember]
+        [DataMember]
         public float RangeCompressionCoef
         {
             get { return _rangeCompressionCoef; }
@@ -130,7 +130,7 @@ namespace RlViewer.Settings
 
 
         private float _azimuthCompressionCoef = 1f;
-        //[DataMember]
+        [DataMember]
         public float AzimuthCompressionCoef
         {
             get { return _azimuthCompressionCoef; }
@@ -150,6 +150,22 @@ namespace RlViewer.Settings
                 _tileOutputAlgorithm = value;
             }
         }
+
+        private int _aligningAreaBorderSize = 4000;
+
+        [DataMember]
+        public int AligningAreaBorderSize
+        {
+            get 
+            {
+                return _aligningAreaBorderSize;
+            }
+            set 
+            {
+                _aligningAreaBorderSize = value > 5000 ? 5000 : value;
+            }
+        }
+
 
     }
 }

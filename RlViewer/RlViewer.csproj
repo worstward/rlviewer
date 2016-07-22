@@ -57,9 +57,15 @@
       <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ILNumerics.Computing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=8d9bf50ef854734d" />
-    <Reference Include="ILNumerics.Core, Version=4.11.0.0, Culture=neutral, PublicKeyToken=9651adc37f12bb00" />
-    <Reference Include="ILNumerics.Drawing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=e22c8a010c3b081a" />
+    <Reference Include="ILNumerics.Computing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=8d9bf50ef854734d">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ILNumerics.Core, Version=4.11.0.0, Culture=neutral, PublicKeyToken=9651adc37f12bb00">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ILNumerics.Drawing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=e22c8a010c3b081a">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -110,12 +116,13 @@
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
-    <Compile Include="Behaviors\Navigation\Abstract\GeodesicPointFinder.cs" />
-    <Compile Include="Behaviors\Navigation\Concrete\Brl4PointFinder.cs" />
-    <Compile Include="Behaviors\Navigation\Concrete\KPointFinder.cs" />
-    <Compile Include="Behaviors\Navigation\Concrete\Rl4PointFinder.cs" />
-    <Compile Include="Behaviors\Navigation\Concrete\Rl8PointFinder.cs" />
-    <Compile Include="Behaviors\Navigation\Concrete\RPointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationChanger\Brl4NavigationChanger.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Abstract\GeodesicPointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Brl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\KPointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Rl4PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Rl8PointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\RPointFinder.cs" />
     <Compile Include="Behaviors\PointSelector\CompressedPointSelectorWrapper.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\ReporterTypes.cs" />
@@ -130,8 +137,8 @@
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
+    <Compile Include="Behaviors\Saving\SaverParams.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
-    <Compile Include="Behaviors\SquareAreaSelector\SquareArea.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ShortSampleTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
@@ -252,6 +259,7 @@
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Headers\Abstract\IStrHeader.cs" />
+    <Compile Include="Headers\Concrete\Ba\BaStrHeader.cs" />
     <Compile Include="Headers\Concrete\K\KHeader.cs" />
     <Compile Include="Headers\Concrete\K\KHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Rl8\Rl8Header.cs" />
@@ -520,6 +528,7 @@
     <None Include="Resources\LightBlues.png" />
     <Content Include="FodyWeavers.xml" />
     <None Include="Resources\stat.png" />
+    <None Include="Resources\3dPlot.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

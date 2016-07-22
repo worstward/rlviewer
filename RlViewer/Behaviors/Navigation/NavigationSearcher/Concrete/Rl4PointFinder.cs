@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.Navigation.Concrete
+namespace RlViewer.Behaviors.Navigation.NavigationSearcher.Concrete
 {
     public class Rl4PointFinder : Abstract.GeodesicPointFinder
     {

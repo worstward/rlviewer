@@ -11,11 +11,10 @@ namespace RlViewer.Behaviors.ImageAligning
     class Aligning : WorkerEventController
     {
         public Aligning(Files.LocatorFile file, PointSelector.CompressedPointSelectorWrapper selector, 
-            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, Saving.Abstract.Saver saver)
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider)
         {
             _file = file;     
             _selector = selector;
-            _saver = saver;
             _surface = Factories.Surface.SurfaceFactory.CreateSurface(_selector, rcsProvider);
         }
 
@@ -55,56 +54,15 @@ namespace RlViewer.Behaviors.ImageAligning
             }
         }
 
-        private Saving.Abstract.Saver _saver;
         private Surfaces.Abstract.Surface _surface;
         private PointSelector.CompressedPointSelectorWrapper _selector;
 
 
-        public void Resample(string fileName)
+        public byte[] Resample(string fileName, System.Drawing.Rectangle area)
         {           
-            var area = GetArea(_selector);
-            var resampledImage = _surface.ResampleImage(_file, area);
-
-            if(resampledImage != null)
-            {           
-                _saver.SaveAsAligned(fileName, area, resampledImage, _selector.Count(),
-                    _selector.RangeCompressionCoef, _selector.AzimuthCompressionCoef);
-            }
+            return _surface.ResampleImage(_file, area);
         }
-
 
         private Files.LocatorFile _file;
-
-        private const int _workingAreaSize = 4000;
-
-        private System.Drawing.Rectangle GetArea(IEnumerable<PointSelector.SelectedPoint> selector)
-        {
-
-            var minX = selector.Min(p => p.Location.X);
-            var maxX = selector.Max(p => p.Location.X);
-            var minY = selector.Min(p => p.Location.Y);
-            var maxY = selector.Max(p => p.Location.Y);
-
-            int areaWidth = maxX - minX;
-            int areaHeight = maxY - minY;
-
-
-            if (areaWidth < _workingAreaSize)
-            {
-                minX = minX - (_workingAreaSize - areaWidth) / 2;
-                minX = minX < 0 ? 0 : minX;
-                areaWidth = _workingAreaSize;
-            }
-
-            if (areaHeight < _workingAreaSize)
-            {
-                minY = minY - (_workingAreaSize - areaHeight) / 2;
-                minY = minY < 0 ? 0 : minY;
-                areaHeight = _workingAreaSize;
-            }
-
-            return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);
-        }
-
     }
 }

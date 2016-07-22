@@ -20,12 +20,14 @@ namespace RlViewer.Behaviors
                 var areaLocY = areaBorders.Y < 0 ? 0 : areaBorders.Y;
                 areaLocX = areaLocX > file.Width ? 0 : areaLocX;
                 areaLocY = areaLocY > file.Height ? 0 : areaLocY;
+                var areaWidth = areaBorders.X + areaBorders.Width > file.Width ? file.Width - areaBorders.X : areaBorders.Width;
+                var areaHeight = areaBorders.Y + areaBorders.Height > file.Height ? file.Height - areaBorders.Y : areaBorders.Height;
 
                 fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-                byte[] area = new byte[file.Header.BytesPerSample * areaBorders.Width * areaBorders.Height];
-                int width = file.Width < areaBorders.Width ? file.Width : areaBorders.Width;
-                int height = file.Height < areaBorders.Height ? file.Height : areaBorders.Height;
+                byte[] area = new byte[file.Header.BytesPerSample * areaWidth * areaHeight];
+                int width = file.Width < areaWidth ? file.Width : areaWidth;
+                int height = file.Height < areaHeight ? file.Height : areaHeight;
 
                 int areaLineLength = file.Header.BytesPerSample * width;
 
@@ -39,7 +41,7 @@ namespace RlViewer.Behaviors
                 for (int i = 0; i < height; i++)
                 {
                     fs.Seek(xOffset + file.Header.StrHeaderLength, SeekOrigin.Current);
-                    fs.Read(area, i * areaBorders.Width * file.Header.BytesPerSample, areaLineLength);
+                    fs.Read(area, i * areaWidth * file.Header.BytesPerSample, areaLineLength);
                     fs.Seek(file.Width * file.Header.BytesPerSample - xOffset - areaLineLength,
                         SeekOrigin.Current);
                 }
@@ -325,6 +327,11 @@ namespace RlViewer.Behaviors
 
         public static byte[] GetSample(this RlViewer.Files.LocatorFile file, Point p)
         {
+            if (p.X >= file.Width || p.Y >= file.Height)
+            {
+                return new byte[file.Header.BytesPerSample];
+            }
+
             FileStream fs = null;
             try
             {

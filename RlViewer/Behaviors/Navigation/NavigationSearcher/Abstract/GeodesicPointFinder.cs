@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 
 
-namespace RlViewer.Behaviors.Navigation.Abstract
+namespace RlViewer.Behaviors.Navigation.NavigationSearcher.Abstract
 {
     public abstract class GeodesicPointFinder : WorkerEventController
     {

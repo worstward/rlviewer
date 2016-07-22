@@ -507,9 +507,10 @@ namespace RlViewer.Forms
             _guiFacade.GetAreaStatistics();
         }
 
-        private void squareAreaRb_CheckedChanged(object sender, EventArgs e)
-        {
 
+        private void вшитьНавигациюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _guiFacade.EmbedNavigation();
         }
 
     }
