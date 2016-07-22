@@ -23,6 +23,23 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
         private Headers.Concrete.Brl4.Brl4Header _header;
         private Files.Rli.Concrete.Brl4 _brl4File;
 
+
+        public bool CheckIsBaRhg()
+        {
+            //if source rhg for rli file has .ba extension, return true
+
+            if(_brl4File == null)
+            {
+                return false;
+            }
+
+            var rhgName = _brl4File.Header.HeaderInfo.Where(x => x.HeaderName == "РГГ")
+                .FirstOrDefault().Params.Where(x => x.Item1 == "Имя файла").FirstOrDefault().Item2;
+
+            return Path.GetExtension(rhgName) == ".ba";
+        }
+
+
         public void ChangeNavigation(string baFilename)
         {   
             if (_brl4File != null)

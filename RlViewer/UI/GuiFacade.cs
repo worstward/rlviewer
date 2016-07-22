@@ -424,8 +424,7 @@ namespace RlViewer.UI
             else
             {
                 var fileName = Path.GetFullPath((string)e.Result);
-
-                EmbedNavigation(fileName);
+                EmbedNavigation(fileName, false);
 
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
                     string.Format("Image aligning completed, new file saved at: {0}", fileName));
@@ -575,7 +574,7 @@ namespace RlViewer.UI
         {
             var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
 
-            if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 16)
+            if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
             {
                 _form.AlignBtn.Enabled = true;
             }
@@ -1435,14 +1434,22 @@ namespace RlViewer.UI
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    EmbedNavigation(ofd.FileName);
+                    EmbedNavigation(ofd.FileName, true);
                 }
             }
         }
 
-        private void EmbedNavigation(string brl4FileName)
+        private void EmbedNavigation(string brl4FileName, bool forced = true)
         {
             var naviChanger = new Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger(brl4FileName);
+
+            if (!forced)
+            {
+                if (!naviChanger.CheckIsBaRhg())
+                {
+                    return;
+                }
+            }
 
             using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл РГГ", Filter = "РГГ Ba (*.ba)|*.ba;" })
             {
@@ -1454,7 +1461,8 @@ namespace RlViewer.UI
                     }
                     catch(Exception ex)
                     {
-                        Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to embed new navigation: {0}", ex.Message));
+                        Logging.Logger.Log(Logging.SeverityGrades.Error,
+                            string.Format("Unable to embed new navigation: {0}", ex.Message));
                     }
                 }
             }
