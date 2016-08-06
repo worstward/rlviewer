@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.AreaSelector
 {
-    public class AreaSelectorsAlignerContainer : IEnumerable<AreaSelectorWrapper>
+    public class AreaSelectorsAlignerContainer : IEnumerable<AreaSelectorDecorator>
     {
 
-        private IList<AreaSelectorWrapper> _areaSelectors = new List<AreaSelectorWrapper>();
+        private IList<AreaSelectorDecorator> _areaSelectors = new List<AreaSelectorDecorator>();
 
-        protected IList<AreaSelectorWrapper> SelectedAreas
+        protected IList<AreaSelectorDecorator> SelectedAreas
         {
             get { return _areaSelectors; }
             set { _areaSelectors = value; }
         }
 
 
-        public AreaSelectorWrapper this[int index]
+        public AreaSelectorDecorator this[int index]
         {
             get
             {
@@ -26,7 +26,7 @@ namespace RlViewer.Behaviors.AreaSelector
             }
         }
 
-        public IEnumerator<AreaSelectorWrapper> GetEnumerator()
+        public IEnumerator<AreaSelectorDecorator> GetEnumerator()
         {
             return SelectedAreas.GetEnumerator();
         }
@@ -37,7 +37,7 @@ namespace RlViewer.Behaviors.AreaSelector
         }
 
 
-        public void AddArea(AreaSelectorWrapper area)
+        public void AddArea(AreaSelectorDecorator area)
         {
             _areaSelectors.Add(area);
         }

@@ -29,6 +29,7 @@ namespace RlViewer.UI
         RadioButton HorizontalSectionRb { get; }
         RadioButton LinearSectionRb { get; }
         RadioButton RulerRb { get; }
+        RadioButton SharerRb { get; }
         RadioButton BrightnessRb { get; }
         RadioButton ContrastRb { get; }
         RadioButton GammaRb { get; }

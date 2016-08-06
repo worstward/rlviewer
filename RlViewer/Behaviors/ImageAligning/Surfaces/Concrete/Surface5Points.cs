@@ -75,9 +75,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
 
-            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //{
+            for (int i = area.Location.X;  i < toInclusiveX; i++)
             {
-
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
@@ -93,11 +94,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
                 if (OnCancelWorker())
                 {
-                     loopState.Break();
+                    break;
+                    // loopState.Break();
                 }
 
-            
-            });
+            }
+         //   });
 
             if (Cancelled)
             {
@@ -148,7 +150,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                 foreach (var sidePoint in selectedNoCentral)
                 {
-                    vectors.Add(new System.Windows.Vector(sidePoint.Location.X - initialPoints[i].Location.X, sidePoint.Location.Y - initialPoints[i].Location.Y));
+                    vectors.Add(new System.Windows.Vector(sidePoint.Location.X - initialPoints[i].Location.X,
+                        sidePoint.Location.Y - initialPoints[i].Location.Y));
                 }
 
                 //get angle between each two co-bordered vectors 
@@ -238,9 +241,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             foreach (var sidePoint in initialPoints.Where(x => !x.Equals(centerPoint)))
             {
-                vectors.Add(new System.Windows.Vector(sidePoint.Location.X * Selector.RangeCompressionCoef - centerPoint.Location.X *
-                    Selector.RangeCompressionCoef,
-                    sidePoint.Location.Y * Selector.AzimuthCompressionCoef - centerPoint.Location.Y * Selector.AzimuthCompressionCoef));
+                vectors.Add(new System.Windows.Vector(sidePoint.Location.X * Selector.RangeCompressionCoef -
+                    centerPoint.Location.X * Selector.RangeCompressionCoef,
+                    sidePoint.Location.Y * Selector.AzimuthCompressionCoef - 
+                    centerPoint.Location.Y * Selector.AzimuthCompressionCoef));
             }
 
             if (GeometryHelper.IsInsideAngle(centerPoint.Location, vectors[0], vectors[1], p))

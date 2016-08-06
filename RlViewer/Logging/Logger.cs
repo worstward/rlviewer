@@ -29,15 +29,20 @@ namespace RlViewer.Logging
             SaveEntry(logEntry);
         }
 
+        private static FileStream fs;
+
+
+
         private static object saveLocker = new object();
         private static void SaveEntry(LogEntry entry)
         {
+            
             lock (saveLocker)
             {
                 StreamWriter stream = null;
                 try
                 {
-                    stream = new StreamWriter(_logFileName, true);
+                    stream = new StreamWriter(File.Open(_logFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite));
                     stream.WriteLine(entry.ToString());
                 }
                 catch

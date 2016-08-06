@@ -70,7 +70,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             CreateTileFolder(tileFolder);
 
 
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 List<Tile> tiles = new List<Tile>();
                 byte[] tileLine;
@@ -97,7 +97,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return GetTilesFromTl(tileFolder);
         }
 
-        protected override float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
+        protected override float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
         {
             byte[] bRliString = new byte[strDataLen + strHeadLen];
 
@@ -138,10 +138,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
             
-            _maxValue = GetMaxValue(loc, strDataLen, strHeadLen, frameHeight);
+            MaxValue = GetMaxValue(loc, strDataLen, strHeadLen);
 
-
-            float histogramStep = _maxValue / 1000f;
+            float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();
 
             for (float i = 0; i < 1000; i += histogramStep)
@@ -215,9 +214,9 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             int index = 0;
 
-            //if (normalizationFactor > _maxValue)
+            //if (normalizationFactor > MaxValue)
             //{
-            //    _maxValue = normalizationFactor;
+            //    MaxValue = normalizationFactor;
             //}
 
             float border = NormalizationFactor / 9f * 7;// *3;
@@ -238,11 +237,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     break;
                 case TileOutputType.Logarithmic:
                     normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLogarithmicValue(x, _maxValue))).ToArray();
+                        NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
                     break;
                 case TileOutputType.LinearLogarithmic:
                     normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, _maxValue, NormalizationFactor))).ToArray();
+                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, MaxValue, NormalizationFactor))).ToArray();
                     break;
                 default:
                     break;

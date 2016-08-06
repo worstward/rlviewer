@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-
 namespace RlViewer.Settings
 {
     [DataContract]
     public class Settings
     {
+
         private bool _allowViewWhileLoading;
 
-        [DataMember]
+        [DataMember(IsRequired=true)]
         public bool AllowViewWhileLoading
         {
             get { return _allowViewWhileLoading; }
@@ -22,7 +22,7 @@ namespace RlViewer.Settings
 
 
         private bool _forceTileGen;
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public bool ForceTileGeneration
         {
             get { return _forceTileGen; }
@@ -32,7 +32,7 @@ namespace RlViewer.Settings
 
         private float[] _palette = new float[3] { 1, 1, 1 };
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public float[] Palette
         {
             get { return _palette; }
@@ -41,7 +41,7 @@ namespace RlViewer.Settings
 
         private bool _isPaletteReversed;
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public bool IsPaletteReversed
         {
             get { return _isPaletteReversed; }
@@ -50,7 +50,7 @@ namespace RlViewer.Settings
 
         private bool isGrouped;
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public bool IsPaletteGroupped
         {
             get { return isGrouped; }
@@ -59,7 +59,7 @@ namespace RlViewer.Settings
 
         private bool _useTemperaturePalette;
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public bool UseTemperaturePalette
         {
             get { return _useTemperaturePalette; }
@@ -71,7 +71,7 @@ namespace RlViewer.Settings
         /// <summary>
         /// Amount of points for section graph
         /// </summary>
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public int SectionSize
         {
             get { return _sectionSize; }
@@ -82,7 +82,7 @@ namespace RlViewer.Settings
         /// <summary>
         /// Rectangle area side length
         /// </summary>
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public int SelectorAreaSize
         {
             get { return _areaSize; }
@@ -90,8 +90,8 @@ namespace RlViewer.Settings
         }
 
         private bool _highResForDownScaled = true;
-        
-        [DataMember]
+
+        [DataMember(IsRequired = true)]
         public bool HighResForDownScaled
         {
             get { return _highResForDownScaled; }
@@ -103,15 +103,19 @@ namespace RlViewer.Settings
         /// </summary>
         private bool _areasOrPointsForAligning = false;
 
-        [DataMember]
-        public bool AreasOrPointsForAligning
+        [DataMember(IsRequired = true)]
+        public bool UsePointsForAligning
         {
             get { return _areasOrPointsForAligning; }
             set { _areasOrPointsForAligning = value; }
         }
 
+
         private int _maxAlignerAreaSize = 500;
-        [DataMember]
+        /// <summary>
+        /// Maximum pixels covered by aligner area (if area mode selected)
+        /// </summary>
+        [DataMember(IsRequired = true)]
         public int MaxAlignerAreaSize
         {
             get { return _maxAlignerAreaSize; }
@@ -121,7 +125,7 @@ namespace RlViewer.Settings
 
 
         private float _rangeCompressionCoef = 1f;
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public float RangeCompressionCoef
         {
             get { return _rangeCompressionCoef; }
@@ -130,7 +134,7 @@ namespace RlViewer.Settings
 
 
         private float _azimuthCompressionCoef = 1f;
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public float AzimuthCompressionCoef
         {
             get { return _azimuthCompressionCoef; }
@@ -138,7 +142,7 @@ namespace RlViewer.Settings
         }
 
         private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
         {
             get
@@ -153,7 +157,7 @@ namespace RlViewer.Settings
 
         private int _aligningAreaBorderSize = 4000;
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public int AligningAreaBorderSize
         {
             get 
@@ -162,8 +166,52 @@ namespace RlViewer.Settings
             }
             set 
             {
-                _aligningAreaBorderSize = value > 5000 ? 5000 : value;
+                _aligningAreaBorderSize = value > 9999 ? 9999 : value;
             }
+        }
+
+        private int _plot3dAreaBorderSize = 100;
+
+        [DataMember(IsRequired = true)]
+        public int Plot3dAreaBorderSize
+        {
+            get
+            {
+                return _plot3dAreaBorderSize;
+            }
+            set
+            {
+                _plot3dAreaBorderSize = value > 999 ? 999 : value;
+            }
+        }
+
+
+        private bool _forceAdminMode = true;
+
+        [DataMember(IsRequired = true)]
+        public bool ForceAdminMode
+        {
+            get { return _forceAdminMode; }
+            set { _forceAdminMode = value; }
+        }
+
+
+        private bool _useCustomFileOpenDlg = false;
+
+        [DataMember(IsRequired = true)]      
+        public bool UseCustomFileOpenDlg
+        {
+            get { return _useCustomFileOpenDlg; }
+            set { _useCustomFileOpenDlg = value; }
+        }
+
+        private System.Net.IPEndPoint _multicastEp = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("234.0.1.1"), 1000);
+
+        [DataMember(IsRequired = true)]
+        public System.Net.IPEndPoint MulticastEp
+        {
+            get { return _multicastEp; }
+            set { _multicastEp = value; }
         }
 
 

@@ -33,7 +33,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
         public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
-            Filters.ImageFilterFacade filter, float normalization, float maxValue)
+            Filters.ImageFilterProxy filter, float normalization, float maxValue)
         {
             switch (destinationType)
             {
@@ -80,7 +80,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 {
                     using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
-                        var headBytes = RlViewer.Files.LocatorFile.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
+                        var headBytes = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
                         fw.Write(headBytes, 0, headBytes.Length);
                         fr.Seek(_file.Header.FileHeaderLength, SeekOrigin.Current);
                         fr.Seek((strHeader.Length + _file.Width * _file.Header.BytesPerSample) * area.Y, SeekOrigin.Current);
@@ -119,7 +119,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     var rl4Header = brl4Header.ToRl4(); 
 
-                    fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Header),
+                    fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Header),
                     0, Marshal.SizeOf(rl4Header));
 
 
@@ -179,7 +179,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                             _head.HeaderStruct.aligningPointsCount, _head.HeaderStruct.rangeCompressionCoef, 
                             _head.HeaderStruct.azimuthCompressionCoef, _head.HeaderStruct.reserved);
 
-                    fw.Write(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(rl4Header),
+                    fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(rl4Header),
                     0, Marshal.SizeOf(rl4Header));
 
                     byte[] strHeader = new byte[SourceFile.Header.StrHeaderLength];

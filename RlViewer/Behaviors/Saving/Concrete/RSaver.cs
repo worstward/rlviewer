@@ -32,7 +32,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Headers.Concrete.R.RHeader _head;
 
         public override void Save(string path, RlViewer.FileType destinationType,
-            Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue)
+            Rectangle area, Filters.ImageFilterProxy filter, float normalization, float maxValue)
         {
             switch (destinationType)
             {

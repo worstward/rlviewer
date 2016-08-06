@@ -19,15 +19,13 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         
             for (int i = 0; i < 4; i++)
             {
-                _zCoefficients[i] = new LinearEquation(
+                _zCoefficients[i] = LinearEquation.SolveEquation(
                         Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        Selector.Skip(i * 4).Take(4).Select(x => x.Value).ToArray())
-                    .Solution;
+                        Selector.Skip(i * 4).Take(4).Select(x => x.Value).ToArray());
 
-                _yCoefficients[i] = new LinearEquation(
+                _yCoefficients[i] = LinearEquation.SolveEquation(
                         Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.X).ToArray(),
-                        Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.Y).ToArray())
-                    .Solution;
+                        Selector.Skip(i * 4).Take(4).Select(x => (float)x.Location.Y).ToArray());
 
             } 
         }
@@ -74,7 +72,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 var zValues = _zCoefficients.Select(x => Extrapolate(i, x)).ToArray();
                 var yValues = _yCoefficients.Select(x => Extrapolate(i, x)).ToArray();
-                var _zCoefs = new LinearEquation(yValues, zValues).Solution;
+                var _zCoefs = LinearEquation.SolveEquation(yValues, zValues);
 
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {

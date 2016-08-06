@@ -7,10 +7,13 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace RlViewer.Behaviors.ImageAligning
 {
-    public class LinearEquation
+    public static class LinearEquation
     {
-        public LinearEquation(float[] leftSide, float[] rightSide)
-        {
+
+        public static float[] SolveEquation(float[] leftSide, float[] rightSide)
+        {         
+            float[,] _leftSide = new float[4, 4];
+
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
@@ -19,26 +22,8 @@ namespace RlViewer.Behaviors.ImageAligning
                 }
             }
 
-                _rightSide = rightSide;
-        }
 
-
-
-        private float[,] _leftSide = new float[4, 4];
-        private float[] _rightSide;
-
-        private float[] _solution;
-        public float[] Solution
-        {
-            get
-            {
-                return _solution = _solution ?? SolveEquation(_leftSide, _rightSide);
-            }
-        }
-
-        private float[] SolveEquation(float[,] leftSide, float[] rightSide)
-        {
-            var leftSideMatrix = Matrix<float>.Build.DenseOfArray(leftSide);
+            var leftSideMatrix = Matrix<float>.Build.DenseOfArray(_leftSide);
             var rightSideMatrix = Vector<float>.Build.Dense(rightSide);
             return leftSideMatrix.Solve(rightSideMatrix).ToArray();
         }

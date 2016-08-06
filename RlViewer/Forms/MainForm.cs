@@ -16,11 +16,11 @@ namespace RlViewer.Forms
         {
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(this);
-            _keyboardFacade = new UI.KeyboardFacade(() => _guiFacade.Undo(), () => this.Text = _guiFacade.OpenFile(),
+            _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(), () => this.Text = _guiFacade.OpenFile(),
                  () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(), () => _guiFacade.MakeReport());
         }
 
-        UI.KeyboardFacade _keyboardFacade;
+        UI.KeyPressProcessor _keyProcessor;
         UI.GuiFacade _guiFacade;
 
         #region ISuitableForm controls
@@ -208,7 +208,15 @@ namespace RlViewer.Forms
                 return rulerRb;
             }
         }
-        
+
+        public RadioButton SharerRb
+        {
+            get
+            {
+                return sharerRb;
+            }
+        }
+
         public CheckBox NavigationPanelCb
         {
             get
@@ -359,7 +367,8 @@ namespace RlViewer.Forms
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            _guiFacade.ChangeFilterValue();
+            _guiFacade.ChangeFilterValue(trackBar1.Value);
+            filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
         private void contrastRb_CheckedChanged(object sender, EventArgs e)
@@ -398,7 +407,7 @@ namespace RlViewer.Forms
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            _keyboardFacade.ProceedKeyPress(e);
+            _keyProcessor.ProceedKeyPress(e);
         }
 
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
@@ -511,6 +520,11 @@ namespace RlViewer.Forms
         private void вшитьНавигациюToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _guiFacade.EmbedNavigation();
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            _guiFacade.DrawItems(e.Graphics);
         }
 
     }

@@ -140,9 +140,9 @@ namespace RlViewer.Behaviors.Converters
         public static Brl4StrHeaderStruct ToBrl4StrHeader(Rl4StrHeaderStruct rl4StrHeader, double LatSns, double LonSns, double Hsns)
         {
             //16 это systime
-            using (var ms = new System.IO.MemoryStream(RlViewer.Files.LocatorFile.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct>(rl4StrHeader)))
+            using (var ms = new System.IO.MemoryStream(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct>(rl4StrHeader)))
             {
-                var header = RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(ms);
+                var header = RlViewer.Behaviors.Converters.StructIO.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct>(ms);
                 header.LatSNS = LatSns;
                 header.LongSNS = LonSns;
                 header.Hsns = Hsns;
@@ -167,7 +167,7 @@ namespace RlViewer.Behaviors.Converters
         private static RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct ToBrl4SynthSubHeader
             (this Rl4SynthesisSubHeaderStruct rl4SynthSubHeader, byte polarization, float angle_zond)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4SynthesisSubHeaderStruct>(rl4SynthSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Rl4SynthesisSubHeaderStruct>(rl4SynthSubHeader);
 
             //compute offset and place new values to header byte array
             var offset = headerStructArr.Length - rl4SynthSubHeader.reserved5.Length 
@@ -179,24 +179,24 @@ namespace RlViewer.Behaviors.Converters
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4SynthesisSubHeaderStruct>(ms);
             }
 
         }
 
         private static RlViewer.Headers.Concrete.Brl4.Brl4RhgSubHeaderStruct ToBrl4RhgSubHeader(this Rl4RhgSubHeaderStruct rl4SynthSubHeader)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RhgSubHeaderStruct>(rl4SynthSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Rl4RhgSubHeaderStruct>(rl4SynthSubHeader);
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RhgSubHeaderStruct>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RhgSubHeaderStruct>(ms);
             }
         }
 
         private static RlViewer.Headers.Concrete.Brl4.Brl4RliSubHeaderStruct ToBrl4RliSubHeader(this Rl4RliSubHeaderStruct rl4RliSubHeader, byte calibration)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Rl4RliSubHeaderStruct>(rl4RliSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Rl4RliSubHeaderStruct>(rl4RliSubHeader);
             //compute offset and place new values to header byte array
             var offset = headerStructArr.Length -
                 (rl4RliSubHeader.reserved4.Length + rl4RliSubHeader.fileName.Length + rl4RliSubHeader.reserved3.Length);
@@ -204,7 +204,7 @@ namespace RlViewer.Behaviors.Converters
             headerStructArr[offset] = calibration;
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliSubHeaderStruct>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliSubHeaderStruct>(ms);
             }
         }
 
@@ -216,31 +216,31 @@ namespace RlViewer.Behaviors.Converters
 
         private static T ToRliSubHeader<T>(this Brl4RliSubHeaderStruct brl4RliSubHeader)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4RliSubHeaderStruct>(brl4RliSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Brl4RliSubHeaderStruct>(brl4RliSubHeader);
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<T>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(ms);
             }
         }
 
         private static T ToRhgSubHeader<T>(this Brl4RhgSubHeaderStruct brl4RliSubHeader)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4RhgSubHeaderStruct>(brl4RliSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Brl4RhgSubHeaderStruct>(brl4RliSubHeader);
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<T>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(ms);
             }
         }
 
         private static T ToSynthSubHeader<T>(this Brl4SynthesisSubHeaderStruct brl4RliSubHeader)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4SynthesisSubHeaderStruct>(brl4RliSubHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Brl4SynthesisSubHeaderStruct>(brl4RliSubHeader);
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<T>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(ms);
             }
         }
 
@@ -260,7 +260,7 @@ namespace RlViewer.Behaviors.Converters
 
         public static RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct ToRl4StrHeader(this Brl4StrHeaderStruct brl4StrHeader, double Vx, double Vy, double Vz)
         {
-            byte[] headerStructArr = RlViewer.Files.LocatorFile.WriteStruct<Brl4StrHeaderStruct>(brl4StrHeader);
+            byte[] headerStructArr = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Brl4StrHeaderStruct>(brl4StrHeader);
 
             var offset = sizeof(bool) + brl4StrHeader.time.Length;
             Buffer.BlockCopy(BitConverter.GetBytes(Vx), 0, headerStructArr, offset, sizeof(double));
@@ -269,7 +269,7 @@ namespace RlViewer.Behaviors.Converters
 
             using (var ms = new System.IO.MemoryStream(headerStructArr))
             {
-                return RlViewer.Files.LocatorFile.ReadStruct<RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct>(ms);
+                return RlViewer.Behaviors.Converters.StructIO.ReadStruct<RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct>(ms);
             }
         }
 

@@ -19,12 +19,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             OutputType = type;
         }
 
-        private System.Drawing.Size tileSize = new System.Drawing.Size(1024, 1024);
+        private System.Drawing.Size _tileSize = new System.Drawing.Size(1024, 1024);
         protected System.Drawing.Size TileSize
         {
             get
             {
-                return tileSize;
+                return _tileSize;
             }
         }
 
@@ -37,12 +37,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public abstract Tile[] Tiles { get; }
 
-        private string tileExtension = ".tl";
+        private string _tileExtension = ".tl";
         protected virtual string TileFileExtension
         {
             get
             {
-                return tileExtension;
+                return _tileExtension;
             }
         }
 
@@ -50,21 +50,26 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         public virtual float MaxValue
         {
-            get
-            {
-                return _maxValue;
-            }
+            get;
+            protected set;
         }
 
-        protected float _maxValue;
+        public virtual void ClearCancelledFileTiles(string sourceFilePath)
+        {
+            var path = this.GetDirectoryName(sourceFilePath);
 
-
+            if (Directory.Exists(path))
+            {
+                File.SetAttributes(path, FileAttributes.Normal);
+                Directory.Delete(path, true);
+            }
+        }
 
 
         protected abstract Tile[] GetTilesFromTl(string path);
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
-        protected abstract T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
+        protected abstract T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen);
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
         protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType);
         protected abstract Tile[] GetTilesFromFile(string filePath, LocatorFile file,

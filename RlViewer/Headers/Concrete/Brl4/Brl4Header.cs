@@ -92,7 +92,7 @@ namespace RlViewer.Headers.Concrete.Brl4
 
             try
             {
-                CheckInfo(headerStruct.fileSign);
+                CheckSignature(headerStruct.fileSign);
             }
             catch (ArgumentException aex)
             {

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace RlViewer.Behaviors.Filters
 {
 
-    public class ImageFilterFacade
+    public class ImageFilterProxy
     {
-        public ImageFilterFacade()
+        public ImageFilterProxy()
         {
             GetFilter("Brightness", 4);
         }

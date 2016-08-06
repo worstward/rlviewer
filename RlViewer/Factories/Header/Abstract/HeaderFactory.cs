@@ -28,7 +28,7 @@ namespace RlViewer.Factories.Header.Abstract
                 case FileType.rl8:
                     return new Rl8HeaderFactory();
                 default:
-                    throw new NotSupportedException("Unsupported filter type");
+                    throw new NotSupportedException("Unsupported file type");
             }
         }
     }

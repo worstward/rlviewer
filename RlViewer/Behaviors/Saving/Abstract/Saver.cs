@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
         }
         public abstract Files.LocatorFile SourceFile { get; }
 
-        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterFacade filter, float normalization, float maxValue);
+        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterProxy filter, float normalization, float maxValue);
 
         public virtual void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
         {
@@ -79,18 +79,18 @@ namespace RlViewer.Behaviors.Saving.Abstract
             //fill palette with shades of gray
             for (int i = 0; i < 256; i++)
             {
-                palette.AddRange(RlViewer.Files.LocatorFile.WriteStruct<RGBQUAD>(new RGBQUAD((byte)i, (byte)i, (byte)i)));
+                palette.AddRange(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RGBQUAD>(new RGBQUAD((byte)i, (byte)i, (byte)i)));
             }
 
             List<byte> bmpHeader = new List<byte>();
-            bmpHeader.AddRange(RlViewer.Files.LocatorFile.WriteStruct<BITMAPFILEHEADER>(bmpFileHeader));
-            bmpHeader.AddRange(RlViewer.Files.LocatorFile.WriteStruct<BITMAPINFOHEADER>(bmpInfoHeader));
+            bmpHeader.AddRange(RlViewer.Behaviors.Converters.StructIO.WriteStruct<BITMAPFILEHEADER>(bmpFileHeader));
+            bmpHeader.AddRange(RlViewer.Behaviors.Converters.StructIO.WriteStruct<BITMAPINFOHEADER>(bmpInfoHeader));
             bmpHeader.AddRange(palette);
 
             return bmpHeader.ToArray();
         }
 
-        protected virtual void SaveAsBmp(string path, Rectangle area, float normalization, float maxValue, Filters.ImageFilterFacade filter = null)
+        protected virtual void SaveAsBmp(string path, Rectangle area, float normalization, float maxValue, Filters.ImageFilterProxy filter = null)
         {
             using (var fr = System.IO.File.Open(SourceFile.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {

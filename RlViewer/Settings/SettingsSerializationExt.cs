@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Xml;
 using System.IO;
 
@@ -11,47 +12,55 @@ namespace RlViewer.Settings
 {
     public static class SettingsSerializationExt
     {
-        private static string _settingsXmlPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "settings.xml");
+        private static string _settingsPath =
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "settings");
 
-
+        
         public static void ToXml(this Settings settings)
-        {
+        {           
             DataContractSerializer dcs = new DataContractSerializer(typeof(Settings));
 
-            try
-            {
-                var xmlSettings = new XmlWriterSettings() { Indent = true };
+            var xmlSettings = new XmlWriterSettings() { Indent = true };
 
-                using (var stream = XmlWriter.Create(_settingsXmlPath, xmlSettings))
-                {
-                    dcs.WriteObject(stream, settings);
-                }
-            }
-            catch
+            using (var stream = XmlWriter.Create(Path.ChangeExtension(_settingsPath, "xml"), xmlSettings))
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, "Error while writing settings to file");
+                dcs.WriteObject(stream, settings);
             }
+
         }
 
         public static Settings FromXml(this Settings settings)
         {
             DataContractSerializer dcs = new DataContractSerializer(typeof(Settings));
 
-            try
+            using (var stream = File.OpenRead(Path.ChangeExtension(_settingsPath, "xml")))
             {
-                using (var stream = XmlReader.Create(_settingsXmlPath))
-                {
-                    return (Settings)dcs.ReadObject(stream);
-                }
+                return (Settings)dcs.ReadObject(stream);
             }
-            catch
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, "Error while reading settings from file");
-                throw;
-            }
-
         }
 
 
+        //public static void ToJson(this Settings settings)
+        //{
+        //    DataContractJsonSerializer dcs = new DataContractJsonSerializer(typeof(Settings));
+
+        //    using (var stream = File.OpenWrite(Path.ChangeExtension(_settingsPath, "json")))
+        //    {
+        //        dcs.WriteObject(stream, settings);
+        //    }
+        //}
+
+        //public static Settings FromJson(this Settings settings)
+        //{
+        //    DataContractJsonSerializer dcs = new DataContractJsonSerializer(typeof(Settings));
+
+        //    using (var stream = File.OpenRead(Path.ChangeExtension(_settingsPath, "json")))
+        //    {
+        //        return (Settings)dcs.ReadObject(stream);
+        //    }
+        //}
+
+
+        
     }
 }

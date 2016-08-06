@@ -60,7 +60,7 @@ namespace RlViewer.Navigation
 
                 while (fs.Position < fs.Length)
                 {
-                    naviCollection.Add(RlViewer.Files.LocatorFile.ReadStruct<T>(fs));
+                    naviCollection.Add(RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(fs));
                     fs.Seek(strDataLength, SeekOrigin.Current);
 
                     OnProgressReport((int)((float)fs.Position / (float)fs.Length * 100));

@@ -90,7 +90,7 @@ namespace RlViewer.Headers.Concrete.K
         {
             try
             {
-                CheckInfo(headerStruct.signatureHeader.fileSign);
+                CheckSignature(headerStruct.signatureHeader.fileSign);
             }
             catch (ArgumentException aex)
             {

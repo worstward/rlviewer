@@ -73,7 +73,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             int counter = 0;
 
          
-            Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
+            //{
+            for (int i = area.Location.X; i < toInclusiveX; i++)
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
@@ -92,12 +94,15 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                 System.Threading.Interlocked.Increment(ref counter);
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
+
                 if (OnCancelWorker())
                 {
-                    loopState.Break();
+                    break;
+                    // loopState.Break();
                 }
 
-            });
+            }
+            //});
 
             if (Cancelled)
             {

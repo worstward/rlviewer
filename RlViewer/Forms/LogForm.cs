@@ -125,7 +125,7 @@ namespace RlViewer.Forms
         {
             _dgv.Rows.Clear();
 
-            foreach (var logEntry in Logging.Logger.Logs)
+            foreach (var logEntry in Logging.Logger.Logs.Where(x => x.Severity != Logging.SeverityGrades.Internal))
             {
                 var msg = GetFormattedEntry(logEntry.Message, _dgv.Columns[2].Width / 5);
                 _dgv.Rows.Add(logEntry.EventTime, logEntry.Severity, msg.Aggregate((x, y) => x + y));

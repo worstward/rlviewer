@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -85,6 +85,7 @@
             this.horSection = new System.Windows.Forms.RadioButton();
             this.linSectionRb = new System.Windows.Forms.RadioButton();
             this.rulerRb = new System.Windows.Forms.RadioButton();
+            this.sharerRb = new System.Windows.Forms.RadioButton();
             this.findPointBtn = new System.Windows.Forms.Button();
             this.statisticsBtn = new System.Windows.Forms.Button();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
@@ -389,7 +390,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel2Collapsed = true;
             this.splitContainer2.Size = new System.Drawing.Size(872, 519);
-            this.splitContainer2.SplitterDistance = 379;
+            this.splitContainer2.SplitterDistance = 373;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -404,6 +405,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(866, 513);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
@@ -415,14 +417,14 @@
             this.chart1.BackColor = System.Drawing.Color.Transparent;
             this.chart1.BackSecondaryColor = System.Drawing.Color.Transparent;
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea4.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea4);
             this.chart1.Location = new System.Drawing.Point(328, 3);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.IsVisibleInLegend = false;
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series4.ChartArea = "ChartArea1";
+            series4.IsVisibleInLegend = false;
+            series4.Name = "Series1";
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(298, 98);
             this.chart1.TabIndex = 10;
             this.chart1.Text = "chart1";
@@ -432,38 +434,38 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle11;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(96, 100);
@@ -579,10 +581,10 @@
             this.flowLayoutPanel1.Controls.Add(this.rulerRb);
             this.flowLayoutPanel1.Controls.Add(this.findPointBtn);
             this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
-            this.flowLayoutPanel1.Controls.Add(this.filterPanelCb);
+            this.flowLayoutPanel1.Controls.Add(this.sharerRb);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(672, 36);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(651, 36);
             this.flowLayoutPanel1.TabIndex = 27;
             // 
             // dragRb
@@ -591,6 +593,7 @@
             this.dragRb.BackColor = System.Drawing.Color.Transparent;
             this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
             this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.dragRb.Checked = true;
             this.dragRb.FlatAppearance.BorderSize = 0;
             this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
@@ -616,7 +619,6 @@
             this.markPointRb.Name = "markPointRb";
             this.markPointRb.Size = new System.Drawing.Size(30, 30);
             this.markPointRb.TabIndex = 6;
-            this.markPointRb.TabStop = true;
             this.markPointRb.UseVisualStyleBackColor = true;
             // 
             // alignBtn
@@ -646,7 +648,6 @@
             this.markAreaRb.Name = "markAreaRb";
             this.markAreaRb.Size = new System.Drawing.Size(30, 30);
             this.markAreaRb.TabIndex = 7;
-            this.markAreaRb.TabStop = true;
             this.markAreaRb.UseVisualStyleBackColor = false;
             // 
             // squareAreaRb
@@ -663,7 +664,6 @@
             this.squareAreaRb.Name = "squareAreaRb";
             this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
             this.squareAreaRb.TabIndex = 25;
-            this.squareAreaRb.TabStop = true;
             this.squareAreaRb.UseVisualStyleBackColor = false;
             // 
             // analyzeRb
@@ -680,7 +680,6 @@
             this.analyzeRb.Name = "analyzeRb";
             this.analyzeRb.Size = new System.Drawing.Size(30, 30);
             this.analyzeRb.TabIndex = 8;
-            this.analyzeRb.TabStop = true;
             this.analyzeRb.UseVisualStyleBackColor = false;
             // 
             // verSection
@@ -698,7 +697,6 @@
             this.verSection.Name = "verSection";
             this.verSection.Size = new System.Drawing.Size(30, 30);
             this.verSection.TabIndex = 10;
-            this.verSection.TabStop = true;
             this.verSection.UseVisualStyleBackColor = false;
             // 
             // horSection
@@ -715,7 +713,6 @@
             this.horSection.Name = "horSection";
             this.horSection.Size = new System.Drawing.Size(30, 30);
             this.horSection.TabIndex = 9;
-            this.horSection.TabStop = true;
             this.horSection.UseVisualStyleBackColor = false;
             // 
             // linSectionRb
@@ -733,7 +730,6 @@
             this.linSectionRb.Name = "linSectionRb";
             this.linSectionRb.Size = new System.Drawing.Size(30, 30);
             this.linSectionRb.TabIndex = 14;
-            this.linSectionRb.TabStop = true;
             this.linSectionRb.UseVisualStyleBackColor = false;
             // 
             // rulerRb
@@ -751,9 +747,25 @@
             this.rulerRb.Name = "rulerRb";
             this.rulerRb.Size = new System.Drawing.Size(30, 30);
             this.rulerRb.TabIndex = 12;
-            this.rulerRb.TabStop = true;
             this.rulerRb.UseVisualStyleBackColor = false;
             this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
+            // 
+            // sharerRb
+            // 
+            this.sharerRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.sharerRb.BackColor = System.Drawing.Color.Transparent;
+            this.sharerRb.BackgroundImage = global::RlViewer.Properties.Resources.Sharer1;
+            this.sharerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.sharerRb.FlatAppearance.BorderSize = 0;
+            this.sharerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.sharerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.sharerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sharerRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.sharerRb.Location = new System.Drawing.Point(435, 3);
+            this.sharerRb.Name = "sharerRb";
+            this.sharerRb.Size = new System.Drawing.Size(30, 30);
+            this.sharerRb.TabIndex = 26;
+            this.sharerRb.UseVisualStyleBackColor = false;
             // 
             // findPointBtn
             // 
@@ -791,7 +803,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(435, 3);
+            this.filterPanelCb.Location = new System.Drawing.Point(515, 3);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -804,6 +816,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel2.AutoSize = true;
             this.flowLayoutPanel2.Controls.Add(this.scaleLabel);
+            this.flowLayoutPanel2.Controls.Add(this.filterPanelCb);
             this.flowLayoutPanel2.Controls.Add(this.naviPanelCb);
             this.flowLayoutPanel2.Controls.Add(this.zoomOutBtn);
             this.flowLayoutPanel2.Controls.Add(this.zoomInBtn);
@@ -823,7 +836,7 @@
             this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.naviPanelCb.Location = new System.Drawing.Point(515, 3);
+            this.naviPanelCb.Location = new System.Drawing.Point(479, 3);
             this.naviPanelCb.Name = "naviPanelCb";
             this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
             this.naviPanelCb.TabIndex = 20;
@@ -838,7 +851,7 @@
             this.zoomOutBtn.FlatAppearance.BorderSize = 0;
             this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomOutBtn.Location = new System.Drawing.Point(479, 3);
+            this.zoomOutBtn.Location = new System.Drawing.Point(443, 3);
             this.zoomOutBtn.Name = "zoomOutBtn";
             this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomOutBtn.TabIndex = 26;
@@ -853,7 +866,7 @@
             this.zoomInBtn.FlatAppearance.BorderSize = 0;
             this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomInBtn.Location = new System.Drawing.Point(443, 3);
+            this.zoomInBtn.Location = new System.Drawing.Point(407, 3);
             this.zoomInBtn.Name = "zoomInBtn";
             this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomInBtn.TabIndex = 25;
@@ -971,6 +984,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.RadioButton squareAreaRb;
         private System.Windows.Forms.ToolStripMenuItem вшитьНавигациюToolStripMenuItem;
+        private System.Windows.Forms.RadioButton sharerRb;
     }
 }
 

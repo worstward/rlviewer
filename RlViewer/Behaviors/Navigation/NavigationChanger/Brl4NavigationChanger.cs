@@ -23,11 +23,12 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
         private Headers.Concrete.Brl4.Brl4Header _header;
         private Files.Rli.Concrete.Brl4 _brl4File;
 
-
+        /// <summary>
+        /// Checks if RLI has .ba RHG as its source
+        /// </summary>
+        /// <returns></returns>
         public bool CheckIsBaRhg()
         {
-            //if source rhg for rli file has .ba extension, return true
-
             if(_brl4File == null)
             {
                 return false;
@@ -40,6 +41,10 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
         }
 
 
+        /// <summary>
+        /// Changes selected brl4 rli navigation based on .ba rhg file
+        /// </summary>
+        /// <param name="baFilename">Path to .ba source rhg</param>
         public void ChangeNavigation(string baFilename)
         {   
             if (_brl4File != null)
@@ -65,17 +70,16 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
                         for (int i = 0; i < _brl4File.Height; i++)
                         {
                             fr.Seek(offsetToNavigation, SeekOrigin.Current);
-                            var brl4StrHeader = Files.LocatorFile.ReadStruct<Headers.Concrete.Ba.BaStrHeader>(fr).ToBrl4StrHeader();
-                            fr.Seek(baHeaderLength - offsetToNavigation - System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.Ba.BaStrHeader()), SeekOrigin.Current);                           
+                            var brl4StrHeader = StructIO.ReadStruct<Headers.Concrete.Ba.BaStrHeader>(fr).ToBrl4StrHeader();
+                            fr.Seek(baHeaderLength - offsetToNavigation - 
+                                System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.Ba.BaStrHeader()), SeekOrigin.Current);                           
                             fr.Seek(strDataLength, SeekOrigin.Current);
 
-                            var brl4HeaderBytes = Files.LocatorFile.WriteStruct<Headers.Concrete.Brl4.Brl4StrHeaderStruct>(brl4StrHeader);
+                            var brl4HeaderBytes = StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4StrHeaderStruct>(brl4StrHeader);
 
                             fw.Write(brl4HeaderBytes, 0, brl4HeaderBytes.Length);
                             fw.Seek(_brl4File.Width * _brl4File.Header.BytesPerSample, SeekOrigin.Current);
-                        }
-
-                     
+                        }                
                     }
                 }
 

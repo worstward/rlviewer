@@ -36,7 +36,10 @@ namespace RlViewer.Forms
             azimuthCompressCoefTb.Text = _settings.AzimuthCompressionCoef.ToString();
 
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
-            areasOrPointsForAligningCb.Checked = settings.AreasOrPointsForAligning;
+            areasOrPointsForAligningCb.Checked = settings.UsePointsForAligning;
+            plot3dSizeTb.Text = settings.Plot3dAreaBorderSize.ToString();
+            adminReminderCb.Checked = _settings.ForceAdminMode;
+            useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
         }
 
 
@@ -51,8 +54,8 @@ namespace RlViewer.Forms
         private Behaviors.TileCreator.TileOutputType _outputType;
         private bool _highRes;
         private bool _areasOrPointsForAligning;
-
-        
+        private bool _forceAdmin;
+        private bool _customFileOpenDlg;
 
         private void FillComboBox()
         {
@@ -124,6 +127,15 @@ namespace RlViewer.Forms
                 _settings.UseTemperaturePalette = false;
             }
 
+
+            int plot3dSize;
+            if (Int32.TryParse(plot3dSizeTb.Text, out plot3dSize))
+            {
+                _settings.Plot3dAreaBorderSize = plot3dSize == 0 ? 10 : plot3dSize;
+            }
+            else return;
+
+
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
             _settings.IsPaletteReversed = _isReversed;
@@ -131,7 +143,9 @@ namespace RlViewer.Forms
             _settings.IsPaletteGroupped = _isGrouped;
             _settings.TileOutputAlgorithm = _outputType;
             _settings.HighResForDownScaled = _highRes;
-            _settings.AreasOrPointsForAligning = _areasOrPointsForAligning;
+            _settings.UsePointsForAligning = _areasOrPointsForAligning;
+            _settings.ForceAdminMode = _forceAdmin;
+            _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -227,6 +241,18 @@ namespace RlViewer.Forms
             var tb = ((MaskedTextBox)sender);
             tb.Select(tb.Text.Length, 0);
         }
+
+        private void adminReminderCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _forceAdmin = ((CheckBox)sender).Checked;
+        }
+
+        private void useCustomFileOpenDlgCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _customFileOpenDlg = ((CheckBox)sender).Checked;
+        }
+
+
 
     }
 

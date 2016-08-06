@@ -51,7 +51,7 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
             using (var fs = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fs.Seek(fileHeaderLength, SeekOrigin.Begin);
-                naviCollection.Add(RlViewer.Files.LocatorFile.ReadStruct<T>(fs));
+                naviCollection.Add(RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(fs));
                 fs.Seek(File.Width * File.Header.BytesPerSample, SeekOrigin.Current);
 
                 for (int i = 0; i < File.Height - 2; i++)
@@ -59,7 +59,7 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
                     fs.Seek(File.Width * File.Header.BytesPerSample + File.Header.StrHeaderLength, SeekOrigin.Current);
                 }
 
-                naviCollection.Add(RlViewer.Files.LocatorFile.ReadStruct<T>(fs));    
+                naviCollection.Add(RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(fs));    
             }
 
             return naviCollection.ToArray();

@@ -23,8 +23,8 @@ namespace RlViewer.Behaviors.Draw
         /// <returns>Histogram data</returns>
         public async Task<long[]> GetHistogramAsync(System.Drawing.Image img, int visibleWidth, int visibleHeight)
         {
-            return await Task.Run(() =>
-                {      
+            return await Task.Factory.StartNew(() =>
+                {
                     var imageRGB = GetBytesFromBmp(img, visibleWidth, visibleHeight);
 
                     //var hist =  imgBytes.GroupBy(x => x).Select(x => new { Key = x.Key, Value = x.Count() });
@@ -46,7 +46,7 @@ namespace RlViewer.Behaviors.Draw
         /// <returns>Histogram data</returns>
         public async Task<long[]> GetHistogramAsync(TileCreator.Tile[] tiles)
         {
-            return await Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     Array.Clear(histogram, 0, histogram.Length);
                     foreach (var tile in tiles)
@@ -57,7 +57,7 @@ namespace RlViewer.Behaviors.Draw
                         {
                             histogram[tileBytes[i]]++;
                         }
-                        
+
                     }
                     return histogram;
                 });

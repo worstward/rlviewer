@@ -29,12 +29,24 @@ namespace RlViewer
             return control.InvokeRequired ? (T)control.Invoke((Func<Control>)(() => control)) : control;
         }
 
-        public static void ThreadSafeUpdate<T>(T control, Action<T> action) where T : ToolStripItem
+        public static void ThreadSafeUpdate<T>(T control, Action action) where T : Control
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        public static void ThreadSafeUpdateToolStrip<T>(T control, Action<T> action) where T : ToolStripItem
         {
             ToolStrip parent = control.GetCurrentParent();
             if (parent != null && parent.InvokeRequired)
             {
-                parent.Invoke((Delegate)action, new object[] { control });
+                parent.Invoke(action, new object[] { control });
             }
             else
             {

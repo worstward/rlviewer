@@ -70,6 +70,10 @@ namespace RlViewer.Behaviors.Draw
         {
             return _iDrawer.DrawSquareArea(_canvas, leftTop, borderSize);
         }
-       
+
+        public Image DrawSharedPoint(Point shared, Point leftTopPointOfView, Size screenSize)
+        {
+            return _iDrawer.DrawSharedPoint(_canvas, shared, leftTopPointOfView, screenSize);
+        }
     }
 }

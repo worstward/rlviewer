@@ -96,7 +96,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         {
             try
             {
-                CheckInfo(headerStruct.fileSign);
+                CheckSignature(headerStruct.fileSign);
             }
             catch (ArgumentException aex)
             {
@@ -144,7 +144,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             synthHeader.Add(new Tuple<string, string>("Борт",                            headerStruct.synthParams.board == 0 ? "Левый" : "Правый"));
             synthHeader.Add(new Tuple<string, string>("Шаг разложения по наклонной дальности, м", headerStruct.synthParams.dD.ToString()));
             synthHeader.Add(new Tuple<string, string>("Длина волны, м",                  headerStruct.synthParams.lambda.ToString()));
-            //synthHeader.Add(new Tuple<string, string>("Поляризация",                     headerStruct.synthParams.polarization.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Поляризация",                     headerStruct.synthParams.polarization.ToPolarizationType()));
             
             var comments = new List<Tuple<string, string>>();
             comments.Add(new Tuple<string, string>("Комментарий", Encoding.UTF8.GetString(headerStruct.synthParams.comments).Trim('\0')));

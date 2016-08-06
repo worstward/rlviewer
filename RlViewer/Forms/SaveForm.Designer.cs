@@ -34,7 +34,7 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.sizePanel = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -43,7 +43,7 @@
             this.widthTextBox = new System.Windows.Forms.MaskedTextBox();
             this.xSizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
             this.ySizeCoordTextBox = new System.Windows.Forms.MaskedTextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.coordPanel = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,8 +54,8 @@
             this.y1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.sizePanel.SuspendLayout();
+            this.coordPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -74,8 +74,8 @@
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.radioButton1);
             this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.panel3);
-            this.groupBox1.Controls.Add(this.panel2);
+            this.groupBox1.Controls.Add(this.sizePanel);
+            this.groupBox1.Controls.Add(this.coordPanel);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(273, 392);
@@ -129,20 +129,20 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // panel3
+            // sizePanel
             // 
-            this.panel3.Controls.Add(this.label8);
-            this.panel3.Controls.Add(this.label7);
-            this.panel3.Controls.Add(this.label6);
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Controls.Add(this.heightTextBox);
-            this.panel3.Controls.Add(this.widthTextBox);
-            this.panel3.Controls.Add(this.xSizeCoordTextBox);
-            this.panel3.Controls.Add(this.ySizeCoordTextBox);
-            this.panel3.Location = new System.Drawing.Point(6, 234);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(261, 123);
-            this.panel3.TabIndex = 5;
+            this.sizePanel.Controls.Add(this.label8);
+            this.sizePanel.Controls.Add(this.label7);
+            this.sizePanel.Controls.Add(this.label6);
+            this.sizePanel.Controls.Add(this.label5);
+            this.sizePanel.Controls.Add(this.heightTextBox);
+            this.sizePanel.Controls.Add(this.widthTextBox);
+            this.sizePanel.Controls.Add(this.xSizeCoordTextBox);
+            this.sizePanel.Controls.Add(this.ySizeCoordTextBox);
+            this.sizePanel.Location = new System.Drawing.Point(6, 234);
+            this.sizePanel.Name = "sizePanel";
+            this.sizePanel.Size = new System.Drawing.Size(261, 123);
+            this.sizePanel.TabIndex = 5;
             // 
             // label8
             // 
@@ -185,6 +185,7 @@
             this.heightTextBox.Location = new System.Drawing.Point(142, 79);
             this.heightTextBox.Mask = "0000000";
             this.heightTextBox.Name = "heightTextBox";
+            this.heightTextBox.PromptChar = ' ';
             this.heightTextBox.Size = new System.Drawing.Size(100, 20);
             this.heightTextBox.TabIndex = 8;
             // 
@@ -193,6 +194,7 @@
             this.widthTextBox.Location = new System.Drawing.Point(142, 31);
             this.widthTextBox.Mask = "0000000";
             this.widthTextBox.Name = "widthTextBox";
+            this.widthTextBox.PromptChar = ' ';
             this.widthTextBox.Size = new System.Drawing.Size(100, 20);
             this.widthTextBox.TabIndex = 7;
             // 
@@ -201,6 +203,7 @@
             this.xSizeCoordTextBox.Location = new System.Drawing.Point(9, 31);
             this.xSizeCoordTextBox.Mask = "0000000";
             this.xSizeCoordTextBox.Name = "xSizeCoordTextBox";
+            this.xSizeCoordTextBox.PromptChar = ' ';
             this.xSizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.xSizeCoordTextBox.TabIndex = 5;
             // 
@@ -209,23 +212,24 @@
             this.ySizeCoordTextBox.Location = new System.Drawing.Point(9, 79);
             this.ySizeCoordTextBox.Mask = "0000000";
             this.ySizeCoordTextBox.Name = "ySizeCoordTextBox";
+            this.ySizeCoordTextBox.PromptChar = ' ';
             this.ySizeCoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.ySizeCoordTextBox.TabIndex = 6;
             // 
-            // panel2
+            // coordPanel
             // 
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.y2CoordTextBox);
-            this.panel2.Controls.Add(this.x1CoordTextBox);
-            this.panel2.Controls.Add(this.x2CoordTextBox);
-            this.panel2.Controls.Add(this.y1CoordTextBox);
-            this.panel2.Location = new System.Drawing.Point(6, 74);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(261, 135);
-            this.panel2.TabIndex = 7;
+            this.coordPanel.Controls.Add(this.label4);
+            this.coordPanel.Controls.Add(this.label3);
+            this.coordPanel.Controls.Add(this.label2);
+            this.coordPanel.Controls.Add(this.label1);
+            this.coordPanel.Controls.Add(this.y2CoordTextBox);
+            this.coordPanel.Controls.Add(this.x1CoordTextBox);
+            this.coordPanel.Controls.Add(this.x2CoordTextBox);
+            this.coordPanel.Controls.Add(this.y1CoordTextBox);
+            this.coordPanel.Location = new System.Drawing.Point(6, 74);
+            this.coordPanel.Name = "coordPanel";
+            this.coordPanel.Size = new System.Drawing.Size(261, 135);
+            this.coordPanel.TabIndex = 7;
             // 
             // label4
             // 
@@ -268,6 +272,7 @@
             this.y2CoordTextBox.Location = new System.Drawing.Point(142, 83);
             this.y2CoordTextBox.Mask = "0000000";
             this.y2CoordTextBox.Name = "y2CoordTextBox";
+            this.y2CoordTextBox.PromptChar = ' ';
             this.y2CoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.y2CoordTextBox.TabIndex = 4;
             // 
@@ -276,6 +281,7 @@
             this.x1CoordTextBox.Location = new System.Drawing.Point(9, 33);
             this.x1CoordTextBox.Mask = "0000000";
             this.x1CoordTextBox.Name = "x1CoordTextBox";
+            this.x1CoordTextBox.PromptChar = ' ';
             this.x1CoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.x1CoordTextBox.TabIndex = 1;
             // 
@@ -284,6 +290,7 @@
             this.x2CoordTextBox.Location = new System.Drawing.Point(142, 33);
             this.x2CoordTextBox.Mask = "0000000";
             this.x2CoordTextBox.Name = "x2CoordTextBox";
+            this.x2CoordTextBox.PromptChar = ' ';
             this.x2CoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.x2CoordTextBox.TabIndex = 3;
             // 
@@ -292,6 +299,7 @@
             this.y1CoordTextBox.Location = new System.Drawing.Point(9, 83);
             this.y1CoordTextBox.Mask = "0000000";
             this.y1CoordTextBox.Name = "y1CoordTextBox";
+            this.y1CoordTextBox.PromptChar = ' ';
             this.y1CoordTextBox.Size = new System.Drawing.Size(100, 20);
             this.y1CoordTextBox.TabIndex = 2;
             // 
@@ -321,10 +329,10 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SaveSizeForm_KeyDown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.sizePanel.ResumeLayout(false);
+            this.sizePanel.PerformLayout();
+            this.coordPanel.ResumeLayout(false);
+            this.coordPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -336,8 +344,8 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel sizePanel;
+        private System.Windows.Forms.Panel coordPanel;
         private System.Windows.Forms.MaskedTextBox xSizeCoordTextBox;
         private System.Windows.Forms.MaskedTextBox ySizeCoordTextBox;
         private System.Windows.Forms.MaskedTextBox x1CoordTextBox;

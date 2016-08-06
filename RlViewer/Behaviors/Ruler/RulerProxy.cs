@@ -14,10 +14,10 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Ruler
 {
-    public class RulerFacade
+    public class RulerProxy
     {
 
-        public RulerFacade(LocatorFile file)
+        public RulerProxy(LocatorFile file)
         {
             _file = file;
             ParseSteps(file);

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.AreaSelector
 {
-    public class AreaSelectorWrapper : AreaSelector
+    public class AreaSelectorDecorator : AreaSelector
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="file">Locator file that's opened</param>
         /// <param name="maxAreaSize">Max permitted area size</param>
-        public AreaSelectorWrapper(Files.LocatorFile file, int maxAreaSize) : base(file)
+        public AreaSelectorDecorator(Files.LocatorFile file, int maxAreaSize) : base(file)
         {
             _file = file;
             _maxAreaSize = maxAreaSize;
@@ -24,26 +24,22 @@ namespace RlViewer.Behaviors.AreaSelector
         private PointSelector.SelectedPoint _selectedPoint;
         private int _maxAreaSize;
 
+
+        /// <summary>
+        /// Aligner selected point based on highest area sample
+        /// </summary>
         public PointSelector.SelectedPoint SelectedPoint
         {
             get { return _selectedPoint; }
         }
 
-        private float GetSplashedRcs(float rcs)
-        {
-            var maxSample = _file.GetMaxSample(new System.Drawing.Rectangle(
-                Area.Location.X, Area.Location.Y, Area.Width, Area.Height));            
-
-            var area = _file.GetArea(new System.Drawing.Rectangle(
-                Area.Location.X, Area.Location.Y, Area.Width, Area.Height));
-            var sampleArea = area.ToArea<float>(_file.Header.BytesPerSample);
-            var cumulativeSamples = sampleArea.Sum();
-
-            return maxSample / cumulativeSamples * rcs;
-        }
 
 
-        public new void StopResizing(float rcsValue)
+        /// <summary>
+        /// Stops resizing area size and creates aligner selected point from max sample
+        /// </summary>
+        /// <param name="rcsValue"></param>
+        public void StopResizing(float rcsValue)
         {
             IsActive = false;
 
@@ -63,8 +59,27 @@ namespace RlViewer.Behaviors.AreaSelector
             _selectedPoint = new PointSelector.SelectedPoint(_file.GetMaxSampleLocation(area),
                 _file.GetMaxSample(area), GetSplashedRcs(rcsValue));
             
-
-           
         }
+
+        /// <summary>
+        /// Gets portion of objects rcs that suits maximum sample
+        /// </summary>
+        /// <param name="rcs">Full object rcs</param>
+        /// <returns></returns>
+        private float GetSplashedRcs(float rcs)
+        {
+            var maxSample = _file.GetMaxSample(new System.Drawing.Rectangle(
+                Area.Location.X, Area.Location.Y, Area.Width, Area.Height));
+
+            var area = _file.GetArea(new System.Drawing.Rectangle(
+                Area.Location.X, Area.Location.Y, Area.Width, Area.Height));
+            var sampleArea = area.ToArea<float>(_file.Header.BytesPerSample);
+            var cumulativeSamples = sampleArea.Sum();
+
+            return maxSample / cumulativeSamples * rcs;
+        }
+
+
+
     }
 }

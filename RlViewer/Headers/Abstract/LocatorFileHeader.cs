@@ -42,19 +42,12 @@ namespace RlViewer.Headers.Abstract
                 fs.Read(header, 0, header.Length);
             }
 
-            //to invoke generic ReadStruct method from this generic
-            System.Reflection.MethodInfo method = typeof(RlViewer.Files.LocatorFile).GetMethod("ReadStruct");
-            System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(typeof(T));
-
-            using (var ms = new MemoryStream(header))
-            {
-                return (T)genericMethod.Invoke(null, new object[] { ms });
-            }
+            return Behaviors.Converters.StructIO.ReadStruct<T>(header);
         }
 
 
 
-        protected virtual void CheckInfo(byte[] header)
+        protected virtual void CheckSignature(byte[] header)
         {
             for (int i = 0; i < Signature.Length; i++)
             {

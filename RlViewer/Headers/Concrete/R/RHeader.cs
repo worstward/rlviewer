@@ -95,7 +95,7 @@ namespace RlViewer.Headers.Concrete.R
         {
             try
             {
-                CheckInfo(headerStruct.signatureHeader.fileSign);
+                CheckSignature(headerStruct.signatureHeader.fileSign);
             }
             catch (ArgumentException aex)
             {

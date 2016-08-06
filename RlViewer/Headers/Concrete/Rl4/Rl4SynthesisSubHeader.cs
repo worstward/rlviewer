@@ -33,8 +33,10 @@ namespace RlViewer.Headers.Concrete.Rl4
         public float VH;
         public float lambda;
         public float Fn;
+        public byte polarization;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 842)]
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 841)]
         public byte[] reserved2;
 
 

@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace RlViewer.UI
 {
-    class KeyboardFacade
+    class KeyPressProcessor
     {
-        public KeyboardFacade(Action undo, Action openFile, Action saveFile, Action fileInfo, Action log, Action report)
+        public KeyPressProcessor(Action undo, Action openFile, Action saveFile, Action fileInfo, Action log, Action report)
         {
             Undo = undo;
             OpenFile = openFile;

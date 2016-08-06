@@ -20,15 +20,6 @@ namespace RlViewer.Forms
         {
 
             InitializeComponent();
-            x1CoordTextBox.PromptChar = ' ';
-            x2CoordTextBox.PromptChar = ' ';
-            y1CoordTextBox.PromptChar = ' ';
-            y2CoordTextBox.PromptChar = ' ';
-            xSizeCoordTextBox.PromptChar = ' ';
-            ySizeCoordTextBox.PromptChar = ' ';
-            widthTextBox.PromptChar = ' ';
-            heightTextBox.PromptChar = ' ';
-
             _fileWidth = fileWidth;
             _fileHeight = fileHeight;
 
@@ -39,12 +30,36 @@ namespace RlViewer.Forms
                 radioButton3.Checked = true;
             }
 
+            AddClickEvent<MaskedTextBox>(this, (s, e) =>  
+                        {
+                            var tb = ((MaskedTextBox)s);
+                            tb.Select(tb.Text.Length, 0);
+                        });
+
             InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
         }
 
+
+
+
+        private void AddClickEvent<T>(Control parent, Action<object, EventArgs> eventAction) where T : Control
+        {
+            foreach (Control childControl in parent.Controls)
+            {
+                if (childControl is T)
+                {
+                    childControl.Click += (s, e) => eventAction(s, e);
+                }
+
+                if (childControl.Controls.Count != 0)
+                {
+                    AddClickEvent<T>(childControl, eventAction);
+                }
+            }
+        }
+
+
         private AreaSelector _selector;
-
-
         private int _fileWidth;
         private int _fileHeight;
 
@@ -68,10 +83,10 @@ namespace RlViewer.Forms
             get { return _width; }
         }
 
-        private int _heigth;
+        private int _height;
         public int ImageHeight
         {
-            get { return _heigth; }
+            get { return _height; }
         }
 
 
@@ -82,7 +97,7 @@ namespace RlViewer.Forms
                 InitControls(_selector.Area.Location.X, _selector.Area.Location.Y, _selector.Area.Width, _selector.Area.Height);
                 _leftTop = new Point(0, 0);
                 _width = _fileWidth;
-                _heigth = _fileHeight;
+                _height = _fileHeight;
             }
         }
 
@@ -100,7 +115,6 @@ namespace RlViewer.Forms
             if (((RadioButton)sender).Checked)
             {
                 InitControls(_selector.Area.Location.X, _selector.Area.Location.Y, _selector.Area.Width, _selector.Area.Height);
-
             }
         }
 
@@ -108,18 +122,18 @@ namespace RlViewer.Forms
         {
             if (radioButton1.Checked)
             {
-                ControlSwitch(panel2, false);
-                ControlSwitch(panel3, false);
+                ControlSwitch(coordPanel, false);
+                ControlSwitch(sizePanel, false);
             }
             else if (radioButton2.Checked)
             {
-                ControlSwitch(panel2, true);
-                ControlSwitch(panel3, false);
+                ControlSwitch(coordPanel, true);
+                ControlSwitch(sizePanel, false);
             }
             else if(radioButton3.Checked)
             {
-                ControlSwitch(panel2, false);
-                ControlSwitch(panel3, true);
+                ControlSwitch(coordPanel, false);
+                ControlSwitch(sizePanel, true);
             }
 
             width = x < 0 ? x + width : width;
@@ -167,7 +181,7 @@ namespace RlViewer.Forms
             if (radioButton2.Checked)
             {
                 _width = Convert.ToInt32(x2CoordTextBox.Text) - Convert.ToInt32(x1CoordTextBox.Text) + 1;
-                _heigth = Convert.ToInt32(y2CoordTextBox.Text) - Convert.ToInt32(y1CoordTextBox.Text) + 1;
+                _height = Convert.ToInt32(y2CoordTextBox.Text) - Convert.ToInt32(y1CoordTextBox.Text) + 1;
 
                 int x = Convert.ToInt32(x1CoordTextBox.Text);
                 int y = Convert.ToInt32(y1CoordTextBox.Text);
@@ -178,9 +192,9 @@ namespace RlViewer.Forms
                     _width = -_width;
                     x = Convert.ToInt32(x2CoordTextBox.Text);
                 }
-                if (_heigth < 0)
+                if (_height < 0)
                 {
-                    _heigth = -_heigth;
+                    _height = -_height;
                     y = Convert.ToInt32(y2CoordTextBox.Text);
                 }
 
@@ -194,19 +208,29 @@ namespace RlViewer.Forms
                 var y = Convert.ToInt32(ySizeCoordTextBox.Text);
 
                 _width = Convert.ToInt32(widthTextBox.Text);
-                _heigth = Convert.ToInt32(heightTextBox.Text);
+                _height = Convert.ToInt32(heightTextBox.Text);
                 if (_width < 0)
                 {
                     _width = -_width;
                     x -= _width;
                 }
-                if (_heigth < 0)
+                if (_height < 0)
                 {
-                    _heigth = -_heigth;
-                    y -= _heigth;
+                    _height = -_height;
+                    y -= _height;
                 }
 
                 _leftTop = new Point(x, y);
+
+                if (_leftTop.X + _width > _fileWidth)
+                {
+                    _width = _fileWidth - _leftTop.X;
+                }
+
+                if (_leftTop.Y + _height > _fileHeight)
+                {
+                    _height = _fileHeight - _leftTop.Y;
+                }
             }
 
 
