@@ -21,16 +21,23 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
         {
             using (DocX document = DocX.Create(reportFilePath))
             {
-                for (int i = 0; i < FilePaths.Length; i++)
+                for (int i = 0; i < FilesToProcess.Length; i++)
                 {
-                    using (var docToInsert = PrepareReport(reportFilePath, FilePaths[i]))
+                    using (var docToInsert = PrepareReport(reportFilePath, FilesToProcess[i]))
                     { 
                         document.InsertDocument(docToInsert);
 
-                        if (i != FilePaths.Length - 1)
+                        if (i != FilesToProcess.Length - 1)
                         {
                             document.InsertSectionPageBreak();
-                        }             
+                        }
+
+
+                        OnProgressReport((int)(i / (float)FilesToProcess.Length * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
                     }
                 }
                 document.Save();
@@ -40,6 +47,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
         private DocX PrepareReport(string reportFilePath, string locatorFilePath)
         {
+            
             DocX document = DocX.Create(reportFilePath);
             
             var prop = new Files.FileProperties(locatorFilePath);

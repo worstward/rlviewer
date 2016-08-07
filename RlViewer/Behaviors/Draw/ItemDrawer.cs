@@ -25,9 +25,7 @@ namespace RlViewer.Behaviors.Draw
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
         private AreaSelector.AreaSelectorsAlignerContainer _areaAlignerWrapper;
-
-        private object _locker = new object();
-
+        
 
         public void DrawItems(Graphics g, Point leftTopPointOfView, Size screenSize)
         {
@@ -41,18 +39,15 @@ namespace RlViewer.Behaviors.Draw
 
         public Image DrawSection(Image canvas, Point pt1, Point pt2)
         {
-            Image img;
-            lock (_locker)
+            Image img = (Image)canvas.Clone();
+            using (var g = Graphics.FromImage(img))
             {
-                img = (Image)canvas.Clone();
-                using (var g = Graphics.FromImage(img))
+                using (var pen = new Pen(Palette.Entries[240]))
                 {
-                    using (var pen = new Pen(Palette.Entries[240]))
-                    {
-                        g.DrawLine(pen, pt1, pt2);
-                    }
+                    g.DrawLine(pen, pt1, pt2);
                 }
             }
+            
             return img;
         }
         public Image DrawSharedPoint(Image canvas, Point shared, Point leftTopPointOfView, Size screenSize)
@@ -63,27 +58,24 @@ namespace RlViewer.Behaviors.Draw
             Image img = (Image)canvas.Clone();
             using (var g = Graphics.FromImage(img))
             {
-                DrawPoint(g, screen, shared, Brushes.Green);                  
+                DrawPoint(g, screen, shared, Brushes.Orange);                  
             }
-            
+           
             return img;
         }
 
         public Image DrawSquareArea(Image canvas, Point leftTop, int borderSize)
         {
-            Image img;
-            lock (_locker)
+            Image img = (Image)canvas.Clone();
+            using (var g = Graphics.FromImage(img))
             {
-                img = (Image)canvas.Clone();
-                using (var g = Graphics.FromImage(img))
+                using (var pen = new Pen(Palette.Entries[240]))
                 {
-                    using (var pen = new Pen(Palette.Entries[240]))
-                    {
-                        g.DrawRectangle(pen, new Rectangle(leftTop,
-                            new Size((int)(borderSize * Scaler.ScaleFactor), (int)(borderSize * Scaler.ScaleFactor))));
-                    }
+                    g.DrawRectangle(pen, new Rectangle(leftTop,
+                        new Size((int)(borderSize * Scaler.ScaleFactor), (int)(borderSize * Scaler.ScaleFactor))));
                 }
             }
+            
             return img;
         }
 

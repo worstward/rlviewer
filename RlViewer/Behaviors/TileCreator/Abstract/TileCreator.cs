@@ -69,7 +69,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromTl(string path);
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
-        protected abstract T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen);
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
         protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType);
         protected abstract Tile[] GetTilesFromFile(string filePath, LocatorFile file,
@@ -135,6 +134,50 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             return tiles;
         }
+
+        
+
+        protected T GetMaxValue<T>(LocatorFile loc, int strDataLen, int strHeadLen, Func<T[], T> GetMax) where T : new()
+        {
+            byte[] bRliString = new byte[strDataLen + strHeadLen];
+            T[] rliString = new T[strDataLen / Marshal.SizeOf(new T())];
+            T maxSampleValue = default(T);
+            var comparer = Comparer<T>.Default;
+
+
+            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+
+                while (s.Position != s.Length)
+                {
+                    s.Read(bRliString, 0, bRliString.Length);
+
+                    Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
+
+                    var localMax = GetMax(rliString);
+
+                    Array.Clear(rliString, 0, rliString.Length);
+
+                    if (comparer.Compare(maxSampleValue, localMax) <= 0)
+                    {
+                        maxSampleValue = localMax;
+                    }
+
+                    OnProgressReport((int)(s.Position / (float)s.Length * 100));
+                    if (OnCancelWorker())
+                    {
+                        return default(T);
+                    }
+                }
+            }
+
+            return maxSampleValue;
+        }
+
+
+
+
 
         /// <summary>
         /// Creates tile objects array from existing tile files

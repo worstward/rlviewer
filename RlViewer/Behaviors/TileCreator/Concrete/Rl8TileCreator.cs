@@ -51,7 +51,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         {
             get
             {
-                //double lock checking
                 if (_normalFactor == 0)
                 {
                     lock (_normalLocker)
@@ -69,41 +68,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
-        protected override float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
-        {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-
-            float[] fRliString = new float[strDataLen / sizeof(float)];
-
-            float maxSampleValue = 0;
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                while (s.Position != s.Length)
-                {
-                    s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
-
-                    var amplitudeModulus = new float[fRliString.Length / 2];
-
-                    for (int i = 0; i < fRliString.Length; i += 2)
-                    {
-                        amplitudeModulus[i / 2] = (float)Math.Sqrt(fRliString[i] * fRliString[i] +
-                            fRliString[i + 1] * fRliString[i + 1]); 
-                    }
-
-                    var localMax = amplitudeModulus.Max();
-
-                    Array.Clear(fRliString, 0, fRliString.Length);
-                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;// EqualityComparer<T>.Default.Equals(maxSampleValue, localMax) ? maxSampleValue : localMax;
-                }
-            }
-
-            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
-            return maxSampleValue;
-        }
 
 
         protected override float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
@@ -116,8 +80,18 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
-            MaxValue = GetMaxValue(loc, strDataLen, strHeadLen);
+            MaxValue = GetMaxValue<float>(loc, strDataLen, strHeadLen,
+                (float[] arr) =>
+                {
+                    var amplitudeModulus = new float[arr.Length / 2];
 
+                    for (int i = 0; i < arr.Length; i += 2)
+                    {
+                        amplitudeModulus[i / 2] = (float)Math.Sqrt(arr[i] * arr[i] + arr[i + 1] * arr[i + 1]);
+                    }
+
+                    return amplitudeModulus.Max();
+                });
 
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();

@@ -20,6 +20,7 @@ namespace RlViewer.UI
     {
         public GuiFacade(ISuitableForm form)
         {
+
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -34,7 +35,6 @@ namespace RlViewer.UI
             InitializeWindow();
         }
 
-
         private Settings.Settings _settings;
         private ITileCreator _creator;
 
@@ -47,7 +47,9 @@ namespace RlViewer.UI
         private Behaviors.Sections.Abstract.Section _section;
         private Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder _searcher;
         private Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer _pointSharer;
+        private Behaviors.ReportGenerator.Abstract.Reporter _reporter;
         private WorkerEventController _cancellableAction;
+
 
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
@@ -70,7 +72,7 @@ namespace RlViewer.UI
         private string _caption = string.Empty;
         private ToolTip _toolTip = new ToolTip();
         private IWin32Window _win;
-
+        private object _animationLocker = new object();
 
         #region OpenFile
         public string OpenWithDoubleClick()
@@ -190,14 +192,6 @@ namespace RlViewer.UI
         #endregion
 
 
-        public void GetImage()
-        {
-            if (_file != null)
-            {
-                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
-            }
-        }
-
         #region Tasks
 
         private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
@@ -241,7 +235,6 @@ namespace RlViewer.UI
 
             _worker.Dispose();
         }
-
 
 
         #region findPointWorkerMethods
@@ -429,15 +422,16 @@ namespace RlViewer.UI
             _areaSelector = new Behaviors.AreaSelector.AreaSelector(_file);
             _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
 
-            if(_pointSharer == null)
-            {
-                _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file, 
-                    _settings.MulticastEp,
-                    System.Diagnostics.Process.GetCurrentProcess().Id,
-                    (point) => { CenterImageAtPoint(point, false);
-                       _form.Canvas.Image = _drawer.DrawSharedPoint(point,  
-                            new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size); });
-            }
+            _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file, 
+                _settings.MulticastEp,
+                System.Diagnostics.Process.GetCurrentProcess().Id,
+                (point) => 
+                { 
+                    CenterImageAtPoint(point, false);
+                    UpdateCurrentImage(_drawer.DrawSharedPoint(point,  
+                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size)); 
+                });
+            
 
         }
 
@@ -473,7 +467,8 @@ namespace RlViewer.UI
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
                     _file.Properties.Type, _file.Properties.FilePath));
-                GetImage();
+
+                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);              
             }
         }
         #endregion
@@ -511,7 +506,7 @@ namespace RlViewer.UI
                 ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}",
                     e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
-                ErrorGuiMessage("Unable to create tiles");
+                ErrorGuiMessage("Ошибка генерации изображения из файла");
                 InitializeWindow();
             }
             else
@@ -530,6 +525,54 @@ namespace RlViewer.UI
 
         }
         #endregion
+
+        #region generateReportWorkerMethods
+
+        private void loaderWorker_GenerateReport(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            if (_reporter != null)
+            {
+                ((WorkerEventController)_reporter).Report += (s, pe) => ProgressReporter(pe.Percent);
+                ((WorkerEventController)_reporter).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
+            }
+
+            var reportFileName = (string)e.Argument;
+
+            _reporter.GenerateReport(reportFileName);
+            e.Result = reportFileName;
+        }
+
+        private void loaderWorker_GenerateReportCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (_reporter != null)
+            {
+                ((WorkerEventController)_reporter).Report -= (s, pe) => ProgressReporter(pe.Percent);
+                ((WorkerEventController)_reporter).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
+            }
+
+
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, "Report generation operation cancelled");
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Unable to make report: {0}", e.Error.Message));
+                ErrorGuiMessage("Ошибка при создании отчета");
+                InitializeWindow();
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                        string.Format("Report file generated: {0}", (string)e.Result));
+            }
+
+            InitProgressControls(false);
+        }
+
+        #endregion
+
 
         #endregion
 
@@ -579,8 +622,9 @@ namespace RlViewer.UI
             {
                 Task.Factory.StartNew(() =>
                     {
-                        _form.Canvas.Image = _drawer.Draw(_tiles,
-                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
+                        UpdateCurrentImage(_drawer.Draw(_tiles,
+                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
+                                _settings.HighResForDownScaled));
                     }).Wait();
 
                 if (_form.FilterPanelCb.Checked)
@@ -610,6 +654,14 @@ namespace RlViewer.UI
                 {
                     ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
                 }
+            }
+        }
+
+        private void UpdateCurrentImage(Image img)
+        {
+            lock (_animationLocker)
+            {
+                _form.Canvas.Image = img;
             }
         }
 
@@ -1112,14 +1164,14 @@ namespace RlViewer.UI
                     {
                         var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
                         e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                        _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
+                        UpdateCurrentImage(_drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize));
                     }
                 }
                 else if (_form.SquareAreaRb.Checked && _drawer != null)
                 {
                     var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
                         e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize);
+                    UpdateCurrentImage(_drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize));
                 }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
@@ -1127,11 +1179,11 @@ namespace RlViewer.UI
                 }
                 else if (_form.VerticalSectionRb.Checked && _drawer != null)
                 {
-                    _form.Canvas.Image = _drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+                    UpdateCurrentImage(_drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor)));
                 }
                 else if (_form.HorizontalSectionRb.Checked && _drawer != null)
                 {
-                    _form.Canvas.Image = _drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+                    UpdateCurrentImage(_drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor)));
                 }
                 else if (_form.RulerRb.Checked && _drawer != null)
                 {
@@ -1140,10 +1192,10 @@ namespace RlViewer.UI
                         var endPoint = _ruler.Pt2Fixed ? _ruler.Pt2 : new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
-                        _form.Canvas.Image = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
+                        UpdateCurrentImage(_drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                             (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor))
                             , new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
+                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor))));
 
                         _form.DistanceLabel.Text = _ruler.GetDistance(endPoint);
                     }
@@ -1155,11 +1207,11 @@ namespace RlViewer.UI
                         var endPoint = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
-                        _form.Canvas.Image = _drawer.DrawLinearSection(
+                        UpdateCurrentImage(_drawer.DrawLinearSection(
                             new Point((int)((_section.InitialPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                              (int)((_section.InitialPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
                             new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
+                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor))));
                     }
                 }
             }
@@ -1410,6 +1462,7 @@ namespace RlViewer.UI
                 ofd.Filter = Resources.OpenFilter;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
+
                     FileType type;
                     var validFiles = ofd.FileNames.Where(
                         x => Enum.TryParse<FileType>(System.IO.Path.GetExtension(x).Replace(".", ""), out type) && type != FileType.raw);
@@ -1421,27 +1474,18 @@ namespace RlViewer.UI
                         return;
                     }
 
-                    var reporter = Factories.Reporter.Abstract.ReporterFactory
-                        .GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx)
-                        .Create(validFiles.ToArray());
                     using (var fsd = new SaveFileDialog())
                     {
                         fsd.Title = "Имя для файла отчета";
                         fsd.Filter = "Документ MS Word|.docx";
                         if (fsd.ShowDialog() == DialogResult.OK)
                         {
-                            try
-                            {
-                                reporter.GenerateReport(fsd.FileName);
-                                Logging.Logger.Log(Logging.SeverityGrades.Info, 
-                                    string.Format("Report file generated: {0}", fsd.FileName));
-                            }
-                            catch (Exception ex)
-                            {
-                                ErrorGuiMessage("Ошибка при создании отчета");
-                                Logging.Logger.Log(Logging.SeverityGrades.Error, 
-                                    string.Format("Unable to make report: {0}", ex.Message));
-                            }
+                            _reporter = Factories.Reporter.Abstract.ReporterFactory
+                                                .GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx)
+                                                .Create(validFiles.ToArray());
+
+                            StartTask("Генерация отчета", loaderWorker_GenerateReport,
+                                loaderWorker_GenerateReportCompleted, fsd.FileName);
                         }
                     }
                 }

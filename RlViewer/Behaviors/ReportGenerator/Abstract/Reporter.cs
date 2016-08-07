@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Behaviors.ReportGenerator.Abstract
 {
-    public abstract class Reporter
+
+
+    public abstract class Reporter : WorkerEventController
     {
-        public Reporter(params string[] filePaths)
+        public Reporter(params string[] filesToProcess)
         {
-            _filePaths = filePaths;
+            _filesToProcess = filesToProcess;
         }
 
-        private string[] _filePaths;
-        protected string[] FilePaths
+        private string[] _filesToProcess;
+        protected string[] FilesToProcess
         {
             get
             {
-                return _filePaths;
+                return _filesToProcess;
             }
         }
 

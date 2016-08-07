@@ -12,6 +12,10 @@ using RlViewer.Behaviors.TileCreator;
 
 namespace RlViewer.Behaviors.Draw
 {
+
+    /// <summary>
+    /// Incapsulates functions of drawing image tiles and tools
+    /// </summary>
     class DrawerFacade
     {
         public DrawerFacade(Size screenSize, ItemDrawer iDrawer, TileDrawer tDrawer)

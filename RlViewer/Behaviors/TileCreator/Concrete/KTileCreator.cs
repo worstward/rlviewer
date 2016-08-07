@@ -72,45 +72,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         }
 
 
-        protected override short GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
-        {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-
-            short[] rliString = new short[strDataLen / sizeof(short)];
-
-            short maxSampleValue = 0;
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                while (s.Position != s.Length)
-                {
-                    s.Read(bRliString, 0, bRliString.Length);
-
-                    var amplitudeModulus = new short[rliString.Length / 2];
-
-                    Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
-
-                    for (int i = 0; i < rliString.Length; i += 2)
-                    {
-                        amplitudeModulus[i / 2] = (short)Math.Sqrt(rliString[i] * rliString[i] +
-                           rliString[i + 1] * rliString[i + 1]);
-                    }
-
-                    var localMax = amplitudeModulus.Max();
-
-
-                    Array.Clear(rliString, 0, rliString.Length);
-
-                    maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
-                }
-            }
-
-            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
-            return maxSampleValue;
-        }
-
         protected override short ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
             byte[] bRliString = new byte[strDataLen + strHeadLen];
@@ -121,8 +82,18 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
-            MaxValue = GetMaxValue(loc, strDataLen, strHeadLen);
+            MaxValue = GetMaxValue<short>(loc, strDataLen, strHeadLen,
+                (short[] arr) => 
+                {
+                    var amplitudeModulus = new short[arr.Length / 2];
 
+                    for (int i = 0; i < arr.Length; i += 2)
+                    {
+                        amplitudeModulus[i / 2] = (short)Math.Sqrt(arr[i] * arr[i] + arr[i + 1] * arr[i + 1]);
+                    }
+
+                    return amplitudeModulus.Max();
+                });
 
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();

@@ -97,36 +97,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return GetTilesFromTl(tileFolder);
         }
 
-        protected override float GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
-        {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-
-            float[] fRliString = new float[strDataLen / sizeof(float)];
-
-            float maxSampleValue = 0;
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                while (s.Position != s.Length)
-                {
-                    s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
-
-                    var localMax = fRliString.Max();
-
-                    Array.Clear(fRliString, 0, fRliString.Length);
-                    if (!float.IsInfinity(localMax))
-                    { 
-                        maxSampleValue = maxSampleValue > localMax ? maxSampleValue : localMax;
-                    }
-                }
-            }
-
-            if (maxSampleValue == 0) throw new ArgumentException("Corrupted file");
-            return maxSampleValue;
-        }
+      
 
         protected override float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
@@ -137,8 +108,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-            
-            MaxValue = GetMaxValue(loc, strDataLen, strHeadLen);
+
+            MaxValue = GetMaxValue<float>(loc, strDataLen, strHeadLen, (arr) => { return arr.Max(); });
 
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();
