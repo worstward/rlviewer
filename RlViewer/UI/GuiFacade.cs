@@ -26,11 +26,13 @@ namespace RlViewer.UI
 
             _form = form;
             _filterProxy = new Behaviors.Filters.ImageFilterProxy();
-            _scaler = new Behaviors.Scaling.Scaler();
+            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale);
             _drag = new Behaviors.DragController();
             _chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
 
             _win = _form.Canvas;
+
+            OnImageDrawn += (s, img) => _form.Canvas.Image = img;
 
             InitializeWindow();
         }
@@ -72,7 +74,12 @@ namespace RlViewer.UI
         private string _caption = string.Empty;
         private ToolTip _toolTip = new ToolTip();
         private IWin32Window _win;
-        private object _animationLocker = new object();
+
+
+        public delegate void ImageDrawnHandler(object sender, Image e);
+        public event ImageDrawnHandler OnImageDrawn = delegate { };
+        private object _animationLock = new object();
+
 
         #region OpenFile
         public string OpenWithDoubleClick()
@@ -428,8 +435,8 @@ namespace RlViewer.UI
                 (point) => 
                 { 
                     CenterImageAtPoint(point, false);
-                    UpdateCurrentImage(_drawer.DrawSharedPoint(point,  
-                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size)); 
+                    _form.Canvas.Image = _drawer.DrawSharedPoint(point,  
+                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size); 
                 });
             
 
@@ -616,16 +623,22 @@ namespace RlViewer.UI
         }
 
 
-        public void DrawImage()
+        public async void DrawImage()
         {
             if (_tiles != null && _drawer != null)
             {
-                Task.Factory.StartNew(() =>
+                await Task.Factory.StartNew(() =>
                     {
-                        UpdateCurrentImage(_drawer.Draw(_tiles,
-                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
-                                _settings.HighResForDownScaled));
-                    }).Wait();
+                        Image img = null;
+                        lock (_animationLock)
+                        { 
+                            img = _drawer.Draw(_tiles,
+                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
+                                        _settings.HighResForDownScaled);
+                        }
+                        OnImageDrawn(null, img);
+                    });
+
 
                 if (_form.FilterPanelCb.Checked)
                 {
@@ -657,13 +670,6 @@ namespace RlViewer.UI
             }
         }
 
-        private void UpdateCurrentImage(Image img)
-        {
-            lock (_animationLocker)
-            {
-                _form.Canvas.Image = img;
-            }
-        }
 
         private void ChangeScaleFactor(float value)
         {
@@ -674,7 +680,7 @@ namespace RlViewer.UI
 
             CenterScaledImage(scaleFactor);
 
-            _scaler = new Behaviors.Scaling.Scaler(scaleFactor);
+            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, scaleFactor);
             InitDrawImage();
         }
 
@@ -1164,14 +1170,14 @@ namespace RlViewer.UI
                     {
                         var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
                         e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                        UpdateCurrentImage(_drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize));
+                        _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
                     }
                 }
                 else if (_form.SquareAreaRb.Checked && _drawer != null)
                 {
                     var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
                         e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                    UpdateCurrentImage(_drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize));
+                    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize);
                 }
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
@@ -1179,11 +1185,11 @@ namespace RlViewer.UI
                 }
                 else if (_form.VerticalSectionRb.Checked && _drawer != null)
                 {
-                    UpdateCurrentImage(_drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor)));
+                    _form.Canvas.Image = _drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
                 }
                 else if (_form.HorizontalSectionRb.Checked && _drawer != null)
                 {
-                    UpdateCurrentImage(_drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor)));
+                    _form.Canvas.Image = _drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
                 }
                 else if (_form.RulerRb.Checked && _drawer != null)
                 {
@@ -1192,10 +1198,10 @@ namespace RlViewer.UI
                         var endPoint = _ruler.Pt2Fixed ? _ruler.Pt2 : new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
-                        UpdateCurrentImage(_drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
+                        _form.Canvas.Image = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                             (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor))
                             , new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor))));
+                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
 
                         _form.DistanceLabel.Text = _ruler.GetDistance(endPoint);
                     }
@@ -1207,11 +1213,11 @@ namespace RlViewer.UI
                         var endPoint = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
-                        UpdateCurrentImage(_drawer.DrawLinearSection(
+                        _form.Canvas.Image = _drawer.DrawLinearSection(
                             new Point((int)((_section.InitialPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                              (int)((_section.InitialPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
                             new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor))));
+                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
                     }
                 }
             }

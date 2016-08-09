@@ -227,8 +227,7 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>
         private IEnumerable<TileImageWrapper> ScaleNormal(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
         {
-
-            var visibleTiles = tiles.AsParallel().Where(x => x.CheckVisibility(leftTopPointOfView,
+            var visibleTiles = tiles.Where(x => x.CheckVisibility(leftTopPointOfView,
                 screenSize.Width, screenSize.Height));
             var tileImgWrappers = new List<TileImageWrapper>();
 

@@ -214,6 +214,22 @@ namespace RlViewer.Settings
             set { _multicastEp = value; }
         }
 
+        private float _minScale = 0.125f;
 
+        [DataMember(IsRequired = true)]
+        public float MinScale
+        {
+            get { return _minScale; }
+            set { _minScale = value; }
+        }
+
+        private float _maxScale = 128f;
+
+        [DataMember(IsRequired = true)]
+        public float MaxScale
+        {
+            get { return _maxScale; }
+            set { _maxScale = value; }
+        }
     }
 }

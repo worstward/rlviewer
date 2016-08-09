@@ -8,8 +8,10 @@ namespace RlViewer.Behaviors.Scaling
 {
     public class Scaler
     {
-        public Scaler(float scaleFactor = 1)
+        public Scaler(float minZoom, float maxZoom, float scaleFactor = 1)
         {
+            MinZoom = minZoom;
+            MaxZoom = maxZoom;
             ScaleFactor = scaleFactor;
         }
 
@@ -22,22 +24,23 @@ namespace RlViewer.Behaviors.Scaling
             }
             private set 
             {
-                var factor = value <= _maxZoom ? value : _maxZoom;
-                factor = factor > _minZoom ? factor : _minZoom;
+                var factor = value <= MaxZoom ? value : MaxZoom;
+                factor = factor > MinZoom ? factor : MinZoom;
                 _scaleFactor = factor;
             }
         }
 
-        private const float _minZoom = 0.125f;
+
         public float MinZoom
         {
-            get { return _minZoom; }
+            get;
+            private set;
         }
 
-        private const float _maxZoom = 128f;
         public float MaxZoom
         {
-            get { return _maxZoom; }
+            get;
+            private set;
         }
     }
 }

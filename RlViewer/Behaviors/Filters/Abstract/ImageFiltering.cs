@@ -82,13 +82,19 @@ namespace RlViewer.Behaviors.Filters.Abstract
 
             byte[] img = new byte[imgData.Length];
 
-            Parallel.ForEach(prop.Chunks, prop.Options, range =>
+            for (int i = 0; i < img.Length; i++)
             {
-                for (int i = range.Item1; i < range.Item2; i++)
-                {
-                    img[i] = lut[imgData[i]];
-                }
-            });
+                img[i] = lut[imgData[i]];
+            }
+
+
+                //Parallel.ForEach(prop.Chunks, prop.Options, range =>
+                //{
+                //    for (int i = range.Item1; i < range.Item2; i++)
+                //    {
+                //        img[i] = lut[imgData[i]];
+                //    }
+                //});
 
             return img;
 
