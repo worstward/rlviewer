@@ -28,16 +28,18 @@ namespace RlViewer.Behaviors.Draw
         }
 
 
-        private ColorPalette _colorPalette;
+        //private ColorPalette _colorPalette;
 
         public virtual ColorPalette Palette
         {
             get
             {
-                return _colorPalette = _colorPalette ?? InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B,
+                return InitPalette(PaletteParams.R, PaletteParams.G, PaletteParams.B,
                     PaletteParams.Reversed, PaletteParams.UseTemperaturePalette);
             }
+            
         }
+
 
 
         /// <summary>
@@ -48,6 +50,10 @@ namespace RlViewer.Behaviors.Draw
         {
             //TODO: REWRITE PALETTE INIT
             ColorPalette colorPalette = new Bitmap(1, 1, PixelFormat.Format8bppIndexed).Palette;
+
+
+            object obj = new object();
+             
 
             if (useTemperaturePalette)
             {
@@ -155,7 +161,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="logarithmic">Determines if palette uses grouped colors</param>
         public void GetPalette(float R, float G, float B, bool reversed, bool grouped, bool useTemperaturePalette)
         {
-            _colorPalette = null;
+            //_colorPalette = null;
             PaletteParams.R = R;
             PaletteParams.G = G;
             PaletteParams.B = B;

@@ -435,8 +435,6 @@ namespace RlViewer.UI
                 (point) => 
                 { 
                     CenterImageAtPoint(point, false);
-                    _form.Canvas.Image = _drawer.DrawSharedPoint(point,  
-                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size); 
                 });
             
 
@@ -622,6 +620,23 @@ namespace RlViewer.UI
             }
         }
 
+        public async void DrawImage(Func<Image> RedrawWithItems)
+        {
+            if (_tiles != null && _drawer != null)
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    Image img = null;
+                    lock (_animationLock)
+                    {
+                        img = _drawer.Draw(_tiles,
+                                    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
+                                    _settings.HighResForDownScaled);
+                    }
+                    OnImageDrawn(null, RedrawWithItems());
+                });
+            }
+        }
 
         public async void DrawImage()
         {
@@ -632,18 +647,22 @@ namespace RlViewer.UI
                         Image img = null;
                         lock (_animationLock)
                         { 
-                            img = _drawer.Draw(_tiles,
-                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
-                                        _settings.HighResForDownScaled);
+                            if(_drawer != null)
+                            { 
+                                img = _drawer.Draw(_tiles,
+                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
+                                            _settings.HighResForDownScaled);
+                            }
                         }
                         OnImageDrawn(null, img);
+
+                        //if (_form.FilterPanelCb.Checked)
+                        //{
+                        //    _chart.RedrawChart(_form.HistogramChart, (Image)img.Clone(), _file.Width, _file.Height);
+                        //}
                     });
 
 
-                if (_form.FilterPanelCb.Checked)
-                {
-                    _chart.RedrawChart(_form.HistogramChart, (Image)_form.Canvas.Image.Clone(),_file.Width, _file.Height);
-                }
             }
         }
 
@@ -715,7 +734,9 @@ namespace RlViewer.UI
 
                     ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical, () => _form.Vertical.Value = vertValue);
 
-                    DrawImage();
+                    DrawImage(() => _drawer.DrawSharedPoint(center,
+                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size));
+                    
                 }
                 else if (showWarning)
                 {
@@ -1168,8 +1189,8 @@ namespace RlViewer.UI
                     }
                     else
                     {
-                        var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
-                        e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
+                        var leftTop = new Point(e.X - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2),
+                        e.Y - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2));
                         _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
                     }
                 }

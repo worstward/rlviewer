@@ -62,6 +62,7 @@ namespace RlViewer.Behaviors.Filters.Abstract
             return arr;
         }
 
+
         public System.Drawing.Imaging.ColorPalette ApplyColorFilters(System.Drawing.Imaging.ColorPalette palette)
         {
             byte[] lut = MergeLut();

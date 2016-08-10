@@ -24,7 +24,7 @@ namespace RlViewer.Factories.PointSharer.Abstract
                 case FileType.rl4:
                     return new Concrete.Rl4PointSharerFactory();
                 case FileType.r:
-                    return new Concrete.Rl4PointSharerFactory();
+                    return new Concrete.RPointSharerFactory();
                 case FileType.rl8:
                     return new Concrete.Rl8PointSharerFactory();
 

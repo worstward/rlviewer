@@ -27,7 +27,7 @@ namespace RlViewer.Behaviors.CrossAppCommunication
 
         public void ListenAndNotify()
         {
-            Task.Run(async () =>
+            Task.Factory.StartNew(async () =>
             {
                 while (true)
                 {

@@ -41,17 +41,19 @@ namespace RlViewer.Behaviors.Draw
         {
             IEnumerable<TileImageWrapper> wrappers;
 
+            var palette = _filter.ApplyColorFilters(Palette);
+
             if (Scaler.ScaleFactor == 1)
             {
-                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize);
+                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize, palette);
             }
             else if (Scaler.ScaleFactor > 1)
             {
-                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize);
+                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize, palette);
             }
             else
             {
-                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
+                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, palette, highRes);
             }
 
             return DrawWrappers(wrappers, screenSize);
@@ -67,10 +69,11 @@ namespace RlViewer.Behaviors.Draw
         private Image DrawWrappers(IEnumerable<TileImageWrapper> tilesToDraw, Size screenSize)
         {
             Bitmap canvas = new Bitmap(screenSize.Width, screenSize.Height, PixelFormat.Format24bppRgb);
+
             using (var g = Graphics.FromImage(canvas))
             {
                 foreach (var t in tilesToDraw)
-                {      
+                {
                     g.DrawImage(t.TileImage, t.Location);
                 }
             }
@@ -86,7 +89,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="screenSize"></param>
         /// <param name="highRes">Determines if algorithm uses averaging to get downscaled image (true if it uses)</param>
         /// <returns></returns>
-        private IEnumerable<TileImageWrapper> ScaleDown(Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
+        private IEnumerable<TileImageWrapper> ScaleDown(Tile[] tiles, Point leftTopPointOfView, Size screenSize, ColorPalette palette, bool highRes)
         {
 
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
@@ -110,7 +113,6 @@ namespace RlViewer.Behaviors.Draw
                 //scale by averaging nearby pixels
                 int index = 0;
 
-
                 for (int i = 0; i < tile.Size.Height * tile.Size.Width - tile.Size.Width; i += scale * tile.Size.Width)
                 {
                     for (int j = i; j < i + tile.Size.Width; j += scale)
@@ -133,8 +135,11 @@ namespace RlViewer.Behaviors.Draw
                     }
                 }
 
-                var tw = new TileImageWrapper(GetBmp(_filter.ApplyFilters(sievedImage),
-                    tile.Size.Width >> scalePower, tile.Size.Height >> scalePower, Palette),
+
+
+
+                var tw = new TileImageWrapper(GetBmp(sievedImage,
+                    tile.Size.Width >> scalePower, tile.Size.Height >> scalePower, palette),
                     (int)((tile.LeftTopCoord.X - leftTopPointOfView.X) >> scalePower),
                     (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) >> scalePower));
 
@@ -151,7 +156,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="leftTopPointOfView"></param>
         /// <param name="screenSize"></param>
         /// <returns></returns>
-        private IEnumerable<TileImageWrapper> ScaleUp(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        private IEnumerable<TileImageWrapper> ScaleUp(Tile[] tiles, Point leftTopPointOfView, Size screenSize, ColorPalette palette)
         {
             int scaledScreenX = (int)Math.Ceiling(screenSize.Width / Scaler.ScaleFactor);
             int scaledScreenY = (int)Math.Ceiling(screenSize.Height / Scaler.ScaleFactor);
@@ -165,8 +170,6 @@ namespace RlViewer.Behaviors.Draw
             //g.TranslateTransform(0.0F, -(float)canvas.Height)
             Size cropS = new Size();
             Tile leftTopTile = default(Tile);
-
-
 
             foreach(var tile in visibleTiles)
             {
@@ -203,9 +206,9 @@ namespace RlViewer.Behaviors.Draw
                 //pointToDraw = new Point(x, y);
 
                 byte[] imgData = tile.ReadData();
-                byte[] filteredData = _filter.ApplyFilters(imgData);
+                //byte[] filteredData = _filter.ApplyFilters(imgData);
 
-                using (Bitmap tileImg = GetBmp(filteredData, tile.Size.Width, tile.Size.Height, Palette))
+                using (Bitmap tileImg = GetBmp(imgData, tile.Size.Width, tile.Size.Height, palette))
                 using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
                 {
                     Bitmap resized = Resize(cropped, resizedCanvasSize, InterpolationMode.NearestNeighbor);
@@ -225,7 +228,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="leftTopPointOfView"></param>
         /// <param name="screenSize"></param>
         /// <returns></returns>
-        private IEnumerable<TileImageWrapper> ScaleNormal(Tile[] tiles, Point leftTopPointOfView, Size screenSize)
+        private IEnumerable<TileImageWrapper> ScaleNormal(Tile[] tiles, Point leftTopPointOfView, Size screenSize, ColorPalette palette)
         {
             var visibleTiles = tiles.Where(x => x.CheckVisibility(leftTopPointOfView,
                 screenSize.Width, screenSize.Height));
@@ -233,7 +236,8 @@ namespace RlViewer.Behaviors.Draw
 
             foreach(var tile in visibleTiles)
             {
-                Bitmap tileImg = GetBmp(_filter.ApplyFilters(tile.ReadData()), tile.Size.Width, tile.Size.Height, Palette);
+                var tileBytes = tile.ReadData();
+                Bitmap tileImg = GetBmp(tileBytes, tile.Size.Width, tile.Size.Height, palette);
                 int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
                 int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
                 var tw = new TileImageWrapper(tileImg, xToScreen, yToScreen);
@@ -274,12 +278,10 @@ namespace RlViewer.Behaviors.Draw
             {
                 g.PixelOffsetMode = PixelOffsetMode.Half;
                 g.InterpolationMode = mode;
-                g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);
-             
+                g.DrawImage(bmp, 0, 0, newSize.Width, newSize.Height);    
             }
             
             return newBmp;
-            
         }
 
         /// <summary>

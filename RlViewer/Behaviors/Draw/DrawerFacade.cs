@@ -50,34 +50,58 @@ namespace RlViewer.Behaviors.Draw
 
         public Image DrawHorizontalSection(Point current, int size)
         {
-            return _iDrawer.DrawSection(_canvas, new Point(current.X - size / 2, current.Y),
-                            new Point(current.X + size / 2, current.Y)); 
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSection(_canvas, new Point(current.X - size / 2, current.Y),
+                                           new Point(current.X + size / 2, current.Y)); 
+            }
+            return null;
         }
 
         public Image DrawVerticalSection(Point current, int size)
         {
-            return _iDrawer.DrawSection(_canvas, new Point(current.X, current.Y - size / 2),
-                            new Point(current.X, current.Y + size / 2));
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSection(_canvas, new Point(current.X, current.Y - size / 2),
+                                new Point(current.X, current.Y + size / 2));
+            }
+            return null;
         }
 
         public Image DrawRuler(Point from, Point to)
         {
-            return _iDrawer.DrawSection(_canvas, from, to);
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSection(_canvas, from, to);
+            }
+            return null;
         }
 
         public Image DrawLinearSection(Point from, Point to)
         {
-            return _iDrawer.DrawSection(_canvas, from, to);
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSection(_canvas, from, to);
+            }
+            return null;
         }
 
         public Image DrawSquareArea(Point leftTop, int borderSize)
         {
-            return _iDrawer.DrawSquareArea(_canvas, leftTop, borderSize);
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSquareArea(_canvas, leftTop, borderSize);
+            }
+            return null;
         }
 
         public Image DrawSharedPoint(Point shared, Point leftTopPointOfView, Size screenSize)
         {
-            return _iDrawer.DrawSharedPoint(_canvas, shared, leftTopPointOfView, screenSize);
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSharedPoint(_canvas, shared, leftTopPointOfView, screenSize);
+            }
+            return null;
         }
     }
 }
