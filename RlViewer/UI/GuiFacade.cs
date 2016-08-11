@@ -642,25 +642,30 @@ namespace RlViewer.UI
         {
             if (_tiles != null && _drawer != null)
             {
-                await Task.Factory.StartNew(() =>
+                Task<Image> t = new Task<Image>(() =>
                     {
-                        Image img = null;
                         lock (_animationLock)
-                        { 
-                            if(_drawer != null)
-                            { 
-                                img = _drawer.Draw(_tiles,
-                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
+                        {
+                            if (_drawer != null)
+                            {
+                                return _drawer.Draw(_tiles,
+                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
                                             _settings.HighResForDownScaled);
                             }
+                            else return null;
                         }
-                        OnImageDrawn(null, img);
 
                         //if (_form.FilterPanelCb.Checked)
                         //{
                         //    _chart.RedrawChart(_form.HistogramChart, (Image)img.Clone(), _file.Width, _file.Height);
                         //}
                     });
+                t.Start();
+
+                await t.ContinueWith((result) =>
+                {
+                    OnImageDrawn(null, result.Result);
+                });
 
 
             }

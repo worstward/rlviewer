@@ -52,9 +52,11 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
             {
                 fs.Seek(fileHeaderLength, SeekOrigin.Begin);
                 naviCollection.Add(RlViewer.Behaviors.Converters.StructIO.ReadStruct<T>(fs));
-                fs.Seek(File.Width * File.Header.BytesPerSample, SeekOrigin.Current);
+                
+                fs.Position = 0;
+                fs.Seek(fileHeaderLength, SeekOrigin.Begin);
 
-                for (int i = 0; i < File.Height - 2; i++)
+                for (int i = 0; i < File.Height - 1; i++)
                 {
                     fs.Seek(File.Width * File.Header.BytesPerSample + File.Header.StrHeaderLength, SeekOrigin.Current);
                 }

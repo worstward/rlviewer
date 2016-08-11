@@ -41,19 +41,19 @@ namespace RlViewer.Behaviors.Draw
         {
             IEnumerable<TileImageWrapper> wrappers;
 
-            var palette = _filter.ApplyColorFilters(Palette);
+            //var palette = _filter.ApplyColorFilters(Palette);
 
             if (Scaler.ScaleFactor == 1)
             {
-                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize, palette);
+                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize, Palette);
             }
             else if (Scaler.ScaleFactor > 1)
             {
-                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize, palette);
+                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize, Palette);
             }
             else
             {
-                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, palette, highRes);
+                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, Palette, highRes);
             }
 
             return DrawWrappers(wrappers, screenSize);
@@ -138,7 +138,7 @@ namespace RlViewer.Behaviors.Draw
 
 
 
-                var tw = new TileImageWrapper(GetBmp(sievedImage,
+                var tw = new TileImageWrapper(GetBmp(_filter.ApplyFilters(sievedImage),
                     tile.Size.Width >> scalePower, tile.Size.Height >> scalePower, palette),
                     (int)((tile.LeftTopCoord.X - leftTopPointOfView.X) >> scalePower),
                     (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) >> scalePower));
@@ -208,7 +208,7 @@ namespace RlViewer.Behaviors.Draw
                 byte[] imgData = tile.ReadData();
                 //byte[] filteredData = _filter.ApplyFilters(imgData);
 
-                using (Bitmap tileImg = GetBmp(imgData, tile.Size.Width, tile.Size.Height, palette))
+                using (Bitmap tileImg = GetBmp(_filter.ApplyFilters(imgData), tile.Size.Width, tile.Size.Height, palette))
                 using (Bitmap cropped = Crop(tileImg, shiftTileX, shiftTileY, croppedWidth, croppedHeight))
                 {
                     Bitmap resized = Resize(cropped, resizedCanvasSize, InterpolationMode.NearestNeighbor);
@@ -237,7 +237,7 @@ namespace RlViewer.Behaviors.Draw
             foreach(var tile in visibleTiles)
             {
                 var tileBytes = tile.ReadData();
-                Bitmap tileImg = GetBmp(tileBytes, tile.Size.Width, tile.Size.Height, palette);
+                Bitmap tileImg = GetBmp(_filter.ApplyFilters(tileBytes), tile.Size.Width, tile.Size.Height, palette);
                 int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
                 int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
                 var tw = new TileImageWrapper(tileImg, xToScreen, yToScreen);

@@ -79,7 +79,7 @@ namespace RlViewer.Behaviors.Filters.Abstract
         public byte[] ApplyFilters(byte[] imgData)
         {
             byte[] lut = MergeLut();
-            RlViewer.ParallelProperties prop = new RlViewer.ParallelProperties(0, imgData.Length);
+            //RlViewer.ParallelProperties prop = new RlViewer.ParallelProperties(0, imgData.Length);
 
             byte[] img = new byte[imgData.Length];
 

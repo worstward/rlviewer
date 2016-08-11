@@ -17,17 +17,30 @@ namespace RlViewer
         public static DateTime ToDateTime(this byte[] timeArray)
         {
             if (timeArray.Length != 16) throw new ArgumentException();
+
             
-            short year =        BitConverter.ToInt16(timeArray, 0);
-            short month =       BitConverter.ToInt16(timeArray, 2);
-            short dayOfWeek =   BitConverter.ToInt16(timeArray, 4);
-            short day =         BitConverter.ToInt16(timeArray, 6);
-            short hour =        BitConverter.ToInt16(timeArray, 8);
-            short minute =      BitConverter.ToInt16(timeArray, 10);
-            short second =      BitConverter.ToInt16(timeArray, 12);
+
+            
+            short year = BitConverter.ToInt16(timeArray, 0);
+            short month = BitConverter.ToInt16(timeArray, 2);
+            short dayOfWeek = BitConverter.ToInt16(timeArray, 4);
+            short day = BitConverter.ToInt16(timeArray, 6);
+            short hour = BitConverter.ToInt16(timeArray, 8);
+            short minute = BitConverter.ToInt16(timeArray, 10);
+            short second = BitConverter.ToInt16(timeArray, 12);
             short millisecond = BitConverter.ToInt16(timeArray, 14);
 
-            return new DateTime(year, month, day, hour, minute, second, millisecond);
+
+            DateTime dateTime;
+            try
+            {
+                dateTime = new DateTime(year, month, day, hour, minute, second, millisecond);
+            }
+            catch
+            {
+                dateTime = default(DateTime);
+            }
+            return dateTime;
         }
 
 
