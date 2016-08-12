@@ -375,7 +375,7 @@ namespace RlViewer.Forms
          {
             if(((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter("Contrast", 4);
+                _guiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
             }
         }
 
@@ -383,7 +383,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter("Gamma Correction", 0);
+                _guiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
             }
         }
 
@@ -391,7 +391,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter("Brightness", 4);
+                _guiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
             }
         }
 

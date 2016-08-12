@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.Filters
     {
         public ImageFilterProxy()
         {
-            GetFilter("Brightness", 4);
+            //GetFilter(FilterType.Brightness, 4);
         }
 
 
@@ -26,7 +26,7 @@ namespace RlViewer.Behaviors.Filters
         }
         private int _filterDelta;
 
-        public void GetFilter(string filterType, int filterDelta)
+        public void GetFilter(FilterType filterType, int filterDelta)
         {
             _filterDelta = filterDelta;
             _filter = RlViewer.Factories.Filter.Abstract.FilterFactory.GetFactory(filterType).Create();

@@ -11,15 +11,15 @@ namespace RlViewer.Factories.Filter.Abstract
     {
         public abstract RlViewer.Behaviors.Filters.Abstract.ImageFiltering Create();
 
-        public static FilterFactory GetFactory(string filterType)
+        public static FilterFactory GetFactory(Behaviors.Filters.FilterType filterType)
         {
             switch (filterType)
             {
-                case "Brightness":
+                case Behaviors.Filters.FilterType.Brightness:
                     return new BrightnessFilterFactory();
-                case "Contrast":
+                case Behaviors.Filters.FilterType.Contrast:
                     return new ContrastFilterFactory();
-                case "Gamma Correction":
+                case Behaviors.Filters.FilterType.GammaCorrection:
                     return new GammaCorrectionFilterFactory();
                 default:
                     throw new NotSupportedException("Unsupported filter type");

@@ -126,6 +126,7 @@
     <Compile Include="Behaviors\FilePreview\Concrete\Rl4Preview.cs" />
     <Compile Include="Behaviors\FilePreview\Concrete\Rl8Preview.cs" />
     <Compile Include="Behaviors\FilePreview\Concrete\RPreview.cs" />
+    <Compile Include="Behaviors\Filters\FilterTypes.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />

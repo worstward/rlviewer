@@ -29,9 +29,6 @@ namespace RlViewer.Logging
             SaveEntry(logEntry);
         }
 
-        private static FileStream fs;
-
-
 
         private static object saveLocker = new object();
         private static void SaveEntry(LogEntry entry)

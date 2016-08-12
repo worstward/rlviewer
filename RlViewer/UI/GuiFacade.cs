@@ -972,7 +972,7 @@ namespace RlViewer.UI
         /// </summary>
         /// <param name="filterType"></param>
         /// <param name="filterDelta"></param>
-        public void GetFilter(string filterType, int filterDelta)
+        public void GetFilter(Behaviors.Filters.FilterType filterType, int filterDelta)
         {
             _filterProxy.GetFilter(filterType, filterDelta);
             _form.FilterTrackBar.Value = _filterProxy.Filter.FilterValue >> filterDelta;
