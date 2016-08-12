@@ -20,7 +20,6 @@ namespace RlViewer.UI
     {
         public GuiFacade(ISuitableForm form)
         {
-
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
