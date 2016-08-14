@@ -15,9 +15,18 @@ namespace RlViewer.Forms
         public MainForm()
         {
             InitializeComponent();
+           
             _guiFacade = new UI.GuiFacade(this);
+
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
+
+            FormBorderStyle = FormBorderStyle.Sizable;
+            WindowState = FormWindowState.Normal;
+
             _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(), () => this.Text = _guiFacade.OpenFile(),
-                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(), () => _guiFacade.MakeReport());
+                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(),
+                 () => _guiFacade.MakeReport());
         }
 
         UI.KeyPressProcessor _keyProcessor;

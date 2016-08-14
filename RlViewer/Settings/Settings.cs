@@ -231,5 +231,14 @@ namespace RlViewer.Settings
             get { return _maxScale; }
             set { _maxScale = value; }
         }
+
+        private bool _useKriging = false;
+
+        public bool UseKriging
+        {
+            get { return _useKriging; }
+            set { _useKriging = value; }
+        }
+
     }
 }

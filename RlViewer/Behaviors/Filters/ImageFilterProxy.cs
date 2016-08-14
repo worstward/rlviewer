@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.Filters
     {
         public ImageFilterProxy()
         {
-            //GetFilter(FilterType.Brightness, 4);
+            GetFilter(FilterType.Brightness, 4);
         }
 
 
