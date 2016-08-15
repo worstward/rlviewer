@@ -14,13 +14,15 @@ using RlViewer.Navigation;
 using RlViewer.Settings;
 using RlViewer.Behaviors;
 
+
+
 namespace RlViewer.UI
 {
     public class GuiFacade
     {
         public GuiFacade(ISuitableForm form)
         {
-           
+
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -794,11 +796,18 @@ namespace RlViewer.UI
             { 
                 var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
 
-                if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
+                if(_settings.SurfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.Custom)
                 {
-                    _form.AlignBtn.Enabled = true;
+                    if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
+                    {
+                        _form.AlignBtn.Enabled = true;
+                    }
+                    else
+                    {
+                        _form.AlignBtn.Enabled = false;
+                    }
                 }
-                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16 && _settings.UseKriging)
+                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16 )
                 {
                     _form.AlignBtn.Enabled = true;
                 }
@@ -1391,7 +1400,7 @@ namespace RlViewer.UI
 
                     _aligner = new Behaviors.ImageAligning.Aligning(_file, compressedSelector,
                         new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector),
-                        _settings.UseKriging);
+                        _settings.SurfaceType);
 
                     StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         Path.ChangeExtension(alignedSaveDlg.FileName, Path.GetExtension(_file.Properties.FilePath)));

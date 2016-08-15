@@ -34,7 +34,6 @@
             this.adminReminderCb = new System.Windows.Forms.CheckBox();
             this.viewTab = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -44,6 +43,8 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.toolsTab = new System.Windows.Forms.TabPage();
+            this.surfaceTypeLbl = new System.Windows.Forms.Label();
+            this.surfaceTypeCb = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.plot3dSizeTb = new System.Windows.Forms.MaskedTextBox();
             this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
@@ -58,7 +59,7 @@
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.useKrigingCb = new System.Windows.Forms.CheckBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
@@ -87,7 +88,7 @@
             this.commonTab.Location = new System.Drawing.Point(4, 22);
             this.commonTab.Name = "commonTab";
             this.commonTab.Padding = new System.Windows.Forms.Padding(3);
-            this.commonTab.Size = new System.Drawing.Size(270, 161);
+            this.commonTab.Size = new System.Drawing.Size(270, 179);
             this.commonTab.TabIndex = 3;
             this.commonTab.Text = "Общие";
             this.commonTab.UseVisualStyleBackColor = true;
@@ -121,7 +122,7 @@
             this.viewTab.Location = new System.Drawing.Point(4, 22);
             this.viewTab.Name = "viewTab";
             this.viewTab.Padding = new System.Windows.Forms.Padding(3);
-            this.viewTab.Size = new System.Drawing.Size(270, 161);
+            this.viewTab.Size = new System.Drawing.Size(270, 179);
             this.viewTab.TabIndex = 0;
             this.viewTab.Text = "Отображение";
             this.viewTab.UseVisualStyleBackColor = true;
@@ -137,17 +138,6 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -193,7 +183,7 @@
             this.outputTab.Location = new System.Drawing.Point(4, 22);
             this.outputTab.Name = "outputTab";
             this.outputTab.Padding = new System.Windows.Forms.Padding(3);
-            this.outputTab.Size = new System.Drawing.Size(270, 161);
+            this.outputTab.Size = new System.Drawing.Size(270, 179);
             this.outputTab.TabIndex = 1;
             this.outputTab.Text = "Подготовка вывода";
             this.outputTab.UseVisualStyleBackColor = true;
@@ -245,7 +235,8 @@
             // 
             // toolsTab
             // 
-            this.toolsTab.Controls.Add(this.useKrigingCb);
+            this.toolsTab.Controls.Add(this.surfaceTypeLbl);
+            this.toolsTab.Controls.Add(this.surfaceTypeCb);
             this.toolsTab.Controls.Add(this.label6);
             this.toolsTab.Controls.Add(this.plot3dSizeTb);
             this.toolsTab.Controls.Add(this.areasOrPointsForAligningCb);
@@ -260,6 +251,29 @@
             this.toolsTab.TabIndex = 2;
             this.toolsTab.Text = "Инструменты";
             this.toolsTab.UseVisualStyleBackColor = true;
+            // 
+            // surfaceTypeLbl
+            // 
+            this.surfaceTypeLbl.AutoSize = true;
+            this.surfaceTypeLbl.Location = new System.Drawing.Point(7, 132);
+            this.surfaceTypeLbl.Name = "surfaceTypeLbl";
+            this.surfaceTypeLbl.Size = new System.Drawing.Size(114, 26);
+            this.surfaceTypeLbl.TabIndex = 13;
+            this.surfaceTypeLbl.Text = "Тип выравнивающей\r\n поверхности";
+            // 
+            // surfaceTypeCb
+            // 
+            this.surfaceTypeCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.surfaceTypeCb.FormattingEnabled = true;
+            this.surfaceTypeCb.Items.AddRange(new object[] {
+            "Кригинг",
+            "РБФ",
+            "Кастомный"});
+            this.surfaceTypeCb.Location = new System.Drawing.Point(127, 132);
+            this.surfaceTypeCb.Name = "surfaceTypeCb";
+            this.surfaceTypeCb.Size = new System.Drawing.Size(134, 21);
+            this.surfaceTypeCb.TabIndex = 12;
+            this.surfaceTypeCb.SelectedIndexChanged += new System.EventHandler(this.surfaceTypeCb_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -284,7 +298,7 @@
             // areasOrPointsForAligningCb
             // 
             this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 124);
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 109);
             this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
             this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
             this.areasOrPointsForAligningCb.TabIndex = 9;
@@ -411,16 +425,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // krigingCb
+            // comboBoxPics1
             // 
-            this.useKrigingCb.AutoSize = true;
-            this.useKrigingCb.Location = new System.Drawing.Point(9, 147);
-            this.useKrigingCb.Name = "krigingCb";
-            this.useKrigingCb.Size = new System.Drawing.Size(240, 17);
-            this.useKrigingCb.TabIndex = 12;
-            this.useKrigingCb.Text = "Использовать кригинг для выравнивания";
-            this.useKrigingCb.UseVisualStyleBackColor = true;
-            this.useKrigingCb.CheckedChanged += new System.EventHandler(this.krigingCb_CheckedChanged);
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // SettingsForm
             // 
@@ -487,6 +501,7 @@
         private System.Windows.Forms.TabPage outputTab;
         private System.Windows.Forms.CheckBox adminReminderCb;
         private System.Windows.Forms.CheckBox useCustomFileOpenDlgCb;
-        private System.Windows.Forms.CheckBox useKrigingCb;
+        private System.Windows.Forms.Label surfaceTypeLbl;
+        private System.Windows.Forms.ComboBox surfaceTypeCb;
     }
 }

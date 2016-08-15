@@ -57,6 +57,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="alglibnet2, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\alglibnet2.dll</HintPath>
+    </Reference>
     <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
       <Private>True</Private>
@@ -132,7 +136,9 @@
     <Compile Include="Behaviors\FilePreview\Concrete\RPreview.cs" />
     <Compile Include="Behaviors\Filters\FilterTypes.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfSurface.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\TriangulatedSurface.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\SurfaceType.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />

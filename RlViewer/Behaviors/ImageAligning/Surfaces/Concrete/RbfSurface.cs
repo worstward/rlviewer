@@ -3,74 +3,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ILNumerics;
-using ILNumerics.Toolboxes;
-
-
 
 namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
-    public class KrigingInterpolatedSurface : Abstract.Surface
+    public class RbfSurface : Abstract.Surface
     {
-        public KrigingInterpolatedSurface(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
+        public RbfSurface(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
             : base(selector)
         {
-            _rcsProvider = rcsProvider;
-        }
 
-        private IInterpolationProvider _rcsProvider;
+        }
+        
+
         protected override IInterpolationProvider RcsProvider
         {
-            get { return _rcsProvider; }
+            get { throw new NotImplementedException(); }
         }
 
-        private float[] GetAmplitudeSolution(System.Drawing.Rectangle area)
+        private double[,] GetAmplitudeSolution(System.Drawing.Rectangle area)
         {
             return GetSolution(area, Selector.Select(x => x.Value).ToArray());
         }
 
-        private float[] GetRcsSolution(System.Drawing.Rectangle area)
+        private double[,] GetRcsSolution(System.Drawing.Rectangle area)
         {
             return GetSolution(area, Selector.Select(x => x.Rcs).ToArray());
         }
 
-
-        private float[] GetSolution(System.Drawing.Rectangle area, float[] values)
+        private double[,] GetSolution(System.Drawing.Rectangle area, float[] values)
         {
-            int index;
-            for (index = 1; index < values.Length; index++)
-            {
-                if (values[0] == values[index])
-                {
-                    continue;
-                }
-                break;
-            }
+            alglib.rbfmodel model;
+            alglib.rbfreport rep;
 
-            if (index == values.Length)
-            {
-                return Enumerable.Repeat<float>(values[0], area.Width * area.Height).ToArray();
-            }
+            alglib.rbfcreate(2, 1, out model);
 
-
-            ILArray<float> Y = 1, X = ILMath.meshgrid(ILMath.vec<float>(area.X, 1, area.X + area.Width - 1),
-                ILMath.vec<float>(area.Y, 1, area.Y + area.Height - 1), Y);
-
-            var scatteredPositionFloat = new float[2, Selector.Count()];
+            var xy = new double[3, Selector.Count()];
             for (int i = 0; i < Selector.Count(); i++)
             {
-                scatteredPositionFloat[0, i] = Selector[i].Location.X;
-                scatteredPositionFloat[1, i] = Selector[i].Location.Y;
+                xy[i, 0] = Selector[i].Location.X;
+                xy[i, 1] = Selector[i].Location.Y;
+                xy[i, 2] = values[i];
             }
 
-            ILArray<float> scatteredPositions = scatteredPositionFloat;
-            ILArray<float> scatteredValues = values;
-            ILArray<float> interpPositions = X[":"].T.Concat(Y[":"].T, 0);
-            ILArray<float> interpValues = Interpolation.kriging(scatteredValues.T, scatteredPositions.T, interpPositions);
-            var reshaped = ILMath.reshape(interpValues, X.S).T;
+            alglib.rbfsetpoints(model, xy);
+            alglib.rbfsetalgoqnn(model);
+            alglib.rbfbuildmodel(model, out rep);
 
-            return reshaped.ToArray();
+            double[] x = Enumerable.Range(area.X, area.Width).Select(val => (double)val).ToArray();
+            double[] y = Enumerable.Range(area.Y, area.Height).Select(val => (double)val).ToArray(); 
+
+            double[,] result;
+            alglib.rbfgridcalc2(model, x, x.Length, y, y.Length, out result);
+
+            return result;
         }
+
 
 
         public override byte[] ResampleImage(Files.LocatorFile file, System.Drawing.Rectangle area)
@@ -93,10 +80,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 for (int j = area.Location.Y; j < toInclusiveY; j++)
                 {
-                    
+
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newAmplVal = amplitudeSolution[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
-                    var newRcsVal = rcsSolution[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
+                    var newAmplVal = (float)amplitudeSolution[i, j];
+                    var newRcsVal = (float)rcsSolution[i, j];
                     var diff = oldAmplVal / newAmplVal * newRcsVal;
                     //var ls = RcsProvider.GetValueAt(diff);
                     //diff *= ls;

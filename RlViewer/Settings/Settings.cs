@@ -155,7 +155,7 @@ namespace RlViewer.Settings
             }
         }
 
-        private int _aligningAreaBorderSize = 4000;
+        private int _aligningAreaBorderSize = 2000;
 
         [DataMember(IsRequired = true)]
         public int AligningAreaBorderSize
@@ -232,13 +232,17 @@ namespace RlViewer.Settings
             set { _maxScale = value; }
         }
 
-        private bool _useKriging = false;
+        private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType =
+            Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction;
 
-        public bool UseKriging
+        [DataMember(IsRequired = true)]
+        public Behaviors.ImageAligning.Surfaces.SurfaceType SurfaceType
         {
-            get { return _useKriging; }
-            set { _useKriging = value; }
+            get { return _surfaceType; }
+            set { _surfaceType = value; }
         }
+
+      
 
     }
 }

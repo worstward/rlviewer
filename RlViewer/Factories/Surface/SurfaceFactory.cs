@@ -12,30 +12,40 @@ namespace RlViewer.Factories.Surface
     {
         public static Behaviors.ImageAligning.Surfaces.Abstract.Surface CreateSurface
             (Behaviors.PointSelector.CompressedPointSelectorWrapper selector,
-            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, bool useKriging)
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, 
+            Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType)
         {
             var pointCount = selector.CompessedSelector.Count();
 
-            if (useKriging && pointCount >= 3 && pointCount <= 16)
-            {
-                return new KrigingInterpolatedSurface(selector, rcsProvider);
-            }
+            if (pointCount < 3 || pointCount > 16)
+                throw new ArgumentException("Selected point count");
 
-            switch (pointCount)
+            switch (surfaceType)
             {
-                case 3:
-                    return new Surface3Points(selector, rcsProvider);
-                case 4:
-                    return new Surface4Points(selector, rcsProvider);
-                case 5:
-                    return new Surface5Points(selector, rcsProvider);
-                case 16:
-                    return new Surface16Points(selector, rcsProvider);
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.Kriging:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.KrigingInterpolatedSurface(selector, rcsProvider);
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfSurface(selector, rcsProvider);
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.Custom:
+                    switch (pointCount)
+                    {
+                        case 3:
+                            return new Surface3Points(selector, rcsProvider);
+                        case 4:
+                            return new Surface4Points(selector, rcsProvider);
+                        case 5:
+                            return new Surface5Points(selector, rcsProvider);
+                        case 16:
+                            return new Surface16Points(selector, rcsProvider);
+                        default:
+                            throw new NotSupportedException("Not supported points number");
+                    }
                 default:
-                    break;
+                    throw new ArgumentException("Unknown surface type");
             }
 
-            throw new NotSupportedException("Not supported points number");
+
+
         }
 
 

@@ -11,11 +11,12 @@ namespace RlViewer.Behaviors.ImageAligning
     class Aligning : WorkerEventController
     {
         public Aligning(Files.LocatorFile file, PointSelector.CompressedPointSelectorWrapper selector, 
-            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, bool useKriging)
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider,
+            Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType)
         {
             _file = file;     
             _selector = selector;
-            _surface = Factories.Surface.SurfaceFactory.CreateSurface(_selector, rcsProvider, useKriging);
+            _surface = Factories.Surface.SurfaceFactory.CreateSurface(_selector, rcsProvider, surfaceType);
         }
 
         public override bool Cancelled
