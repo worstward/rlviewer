@@ -20,7 +20,7 @@ namespace RlViewer.UI
     {
         public GuiFacade(ISuitableForm form)
         {
-
+           
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -629,9 +629,12 @@ namespace RlViewer.UI
                     Image img = null;
                     lock (_animationLock)
                     {
-                        img = _drawer.Draw(_tiles,
-                                    new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
-                                    _settings.HighResForDownScaled);
+                        if(_tiles != null && _drawer != null)
+                        { 
+                            img = _drawer.Draw(_tiles,
+                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
+                                        _settings.HighResForDownScaled);
+                        }
                     }
                     OnImageDrawn(null, RedrawWithItems());
                 });
@@ -646,10 +649,17 @@ namespace RlViewer.UI
                     {
                         lock (_animationLock)
                         {
+<<<<<<< HEAD
                             if (_drawer != null)
                             {
                                 return _drawer.Draw(_tiles,
                                             new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
+=======
+                            if (_tiles != null && _drawer != null)
+                            { 
+                                img = _drawer.Draw(_tiles,
+                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
+>>>>>>> 4e376b16360db5b951c29ecfafd8d328490bf77f
                                             _settings.HighResForDownScaled);
                             }
                             else return null;
@@ -719,6 +729,13 @@ namespace RlViewer.UI
 
         #region guiProcessing
 
+
+        private Size _drawingPanelSize;
+        private Point _drawingPanelLocation;
+
+
+       
+
         private void CenterImageAtPoint(Point center, bool showWarning)
         {
             if (_file != null)
@@ -785,15 +802,22 @@ namespace RlViewer.UI
 
         private void BlockAlignButton()
         {
-            var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
+            if(_pointSelector != null)
+            { 
+                var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
 
-            if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
-            {
-                _form.AlignBtn.Enabled = true;
-            }
-            else
-            {
-                _form.AlignBtn.Enabled = false;
+                if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
+                {
+                    _form.AlignBtn.Enabled = true;
+                }
+                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16 && _settings.UseKriging)
+                {
+                    _form.AlignBtn.Enabled = true;
+                }
+                else
+                {
+                    _form.AlignBtn.Enabled = false;
+                }
             }
         }
 
@@ -977,7 +1001,7 @@ namespace RlViewer.UI
         /// </summary>
         /// <param name="filterType"></param>
         /// <param name="filterDelta"></param>
-        public void GetFilter(string filterType, int filterDelta)
+        public void GetFilter(Behaviors.Filters.FilterType filterType, int filterDelta)
         {
             _filterProxy.GetFilter(filterType, filterDelta);
             _form.FilterTrackBar.Value = _filterProxy.Filter.FilterValue >> filterDelta;
@@ -1340,6 +1364,7 @@ namespace RlViewer.UI
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
                     InitDrawImage();
+                    BlockAlignButton();
                 }
             }
         }
@@ -1377,7 +1402,9 @@ namespace RlViewer.UI
                        selectedPoints, (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
 
                     _aligner = new Behaviors.ImageAligning.Aligning(_file, compressedSelector,
-                        new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector));
+                        new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector),
+                        _settings.UseKriging);
+
                     StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         Path.ChangeExtension(alignedSaveDlg.FileName, Path.GetExtension(_file.Properties.FilePath)));
                 }

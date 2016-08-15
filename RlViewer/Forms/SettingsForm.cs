@@ -40,6 +40,7 @@ namespace RlViewer.Forms
             plot3dSizeTb.Text = settings.Plot3dAreaBorderSize.ToString();
             adminReminderCb.Checked = _settings.ForceAdminMode;
             useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
+            useKrigingCb.Checked = _settings.UseKriging;
         }
 
 
@@ -56,6 +57,7 @@ namespace RlViewer.Forms
         private bool _areasOrPointsForAligning;
         private bool _forceAdmin;
         private bool _customFileOpenDlg;
+        private bool _useKriging;
 
         private void FillComboBox()
         {
@@ -146,6 +148,7 @@ namespace RlViewer.Forms
             _settings.UsePointsForAligning = _areasOrPointsForAligning;
             _settings.ForceAdminMode = _forceAdmin;
             _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
+            _settings.UseKriging = _useKriging;
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -252,7 +255,10 @@ namespace RlViewer.Forms
             _customFileOpenDlg = ((CheckBox)sender).Checked;
         }
 
-
+        private void krigingCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _useKriging = ((CheckBox)sender).Checked;
+        }
 
     }
 

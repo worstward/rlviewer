@@ -55,11 +55,11 @@ namespace RlViewer.Forms
             }
             catch (UnauthorizedAccessException uaex)
             {
-
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Unauthorized access: {0}", uaex));
             }
             catch (Exception ex)
             {
- 
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Error in file preview: {0}", ex));
             }          
         }
 
@@ -139,13 +139,12 @@ namespace RlViewer.Forms
                     headerInfos.Add(Factories.FilePreview.Abstract.FilePreviewFactory.GetFactory(props)
                         .Create(file, header).GetPreview());
                 }
-                catch (NotSupportedException nsex)
+                catch (NotSupportedException)
                 {
-
                 }
                 catch (Exception ex)
                 {
-
+                    Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Error in file preview: {0}", ex));
                 }
             }
 

@@ -12,9 +12,16 @@ namespace RlViewer.Factories.Surface
     {
         public static Behaviors.ImageAligning.Surfaces.Abstract.Surface CreateSurface
             (Behaviors.PointSelector.CompressedPointSelectorWrapper selector,
-            Behaviors.ImageAligning.IInterpolationProvider rcsProvider)
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, bool useKriging)
         {
-            switch (selector.CompessedSelector.Count())
+            var pointCount = selector.CompessedSelector.Count();
+
+            if (useKriging && pointCount >= 3 && pointCount <= 16)
+            {
+                return new KrigingInterpolatedSurface(selector, rcsProvider);
+            }
+
+            switch (pointCount)
             {
                 case 3:
                     return new Surface3Points(selector, rcsProvider);

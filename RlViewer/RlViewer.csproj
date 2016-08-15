@@ -70,6 +70,10 @@
     <Reference Include="ILNumerics.Drawing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=e22c8a010c3b081a">
       <Private>True</Private>
     </Reference>
+    <Reference Include="ILNumerics.Toolboxes.Interpolation, Version=4.11.0.0, Culture=neutral, PublicKeyToken=feb6e2cd77588932, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\ILNumerics\ILNumerics Ultimate VS\bin\ILNumerics.Toolboxes.Interpolation.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -126,7 +130,9 @@
     <Compile Include="Behaviors\FilePreview\Concrete\Rl4Preview.cs" />
     <Compile Include="Behaviors\FilePreview\Concrete\Rl8Preview.cs" />
     <Compile Include="Behaviors\FilePreview\Concrete\RPreview.cs" />
+    <Compile Include="Behaviors\Filters\FilterTypes.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\TriangulatedSurface.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
