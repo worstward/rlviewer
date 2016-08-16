@@ -31,20 +31,43 @@ namespace RlViewer.Behaviors.Draw
         
         private Image _canvas;
 
+
+
         public void GetPalette(float R, float G, float B, bool reversed, bool isGroupped, bool useTemperaturePalette)
         {
             _tDrawer.GetPalette(R, G, B, reversed, isGroupped, useTemperaturePalette);
         }
 
+        /// <summary>
+        /// Draws visible tiles
+        /// </summary>
+        /// <param name="tiles">tile array</param>
+        /// <param name="pointOfView">left top coordinate of visible area</param>
+        /// <param name="highRes">Determines downscale resampling algorithm</param>
+        /// <returns></returns>
         public Image Draw(Tile[] tiles, Point pointOfView, bool highRes = false)
         {
             _canvas = _tDrawer.DrawImage(_screenSize.Width, _screenSize.Height, tiles, pointOfView, _screenSize, highRes);
             return _canvas;
         }
 
+        /// <summary>
+        /// Draws artifacts (tools, points etc) on top of the current image
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="pointOfView"></param>
         public void Draw(Graphics g, Point pointOfView)
         {
             _iDrawer.DrawItems(g, pointOfView, _screenSize);
+        }
+
+        /// <summary>
+        /// Redraws last fetched tiles
+        /// </summary>
+        /// <returns></returns>
+        public Image RedrawImage()
+        {
+            return _tDrawer.RedrawImage(_screenSize);
         }
 
 

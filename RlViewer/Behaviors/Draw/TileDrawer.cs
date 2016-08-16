@@ -27,6 +27,7 @@ namespace RlViewer.Behaviors.Draw
         }
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
+        private IEnumerable<TileRawWrapper> _wrappers;
 
 
         /// <summary>
@@ -39,25 +40,32 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>       
         public Image DrawImage(int width, int height, Tile[] tiles, Point leftTopPointOfView, Size screenSize, bool highRes)
         {
-            IEnumerable<TileRawWrapper> wrappers;
-
            
             if (Scaler.ScaleFactor == 1)
             {
-                wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize);
+                _wrappers = ScaleNormal(tiles, leftTopPointOfView, screenSize);
             }
             else if (Scaler.ScaleFactor > 1)
             {
-                wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize);
+                _wrappers = ScaleUp(tiles, leftTopPointOfView, screenSize);
             }
             else
             {
-                wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
+                _wrappers = ScaleDown(tiles, leftTopPointOfView, screenSize, highRes);
             }
 
-            return DrawWrappers(wrappers, screenSize);
+            return DrawWrappers(_wrappers, screenSize);
         }
 
+        /// <summary>
+        /// Redraws last fetched tiles
+        /// </summary>
+        /// <param name="screenSize">Current drawing area size</param>
+        /// <returns></returns>
+        public Image RedrawImage(Size screenSize)
+        {
+            return DrawWrappers(_wrappers, screenSize);
+        }
 
         /// <summary>
         /// Draws imageWrapper with given image and its location
@@ -75,47 +83,15 @@ namespace RlViewer.Behaviors.Draw
             {
                 foreach (var t in tilesToDraw)
                 {
-                    g.DrawImage(DrawRect(DrawingHelper.GetBmp(t.TileBytes, t.Width, t.Height, palette)), t.Location);
+                    g.DrawImage(DrawingHelper.GetBmp(t.TileBytes, t.Width, t.Height, palette), t.Location);
                 }
             }
             return canvas;
         }
 
-        private Image DrawRect(Bitmap bmp)
-        {
-            var range = Enumerable.Range(0, 4500).Select(x => (byte)x).ToArray();
-            unsafe
-            { 
-                fixed (byte* p = range)
-                {
-            
-
-                var tileBmpData = new BitmapData();
-
-                tileBmpData.Width = 50;
-                tileBmpData.Height = 30;
-
-                tileBmpData.PixelFormat = PixelFormat.Format24bppRgb;
-                tileBmpData.Stride = tileBmpData.Width;
-                tileBmpData.Scan0 = (IntPtr)p;
-
-
-                bmp.LockBits(new Rectangle(0, 0, 50, 30),
-                                            ImageLockMode.UserInputBuffer,
-                                            bmp.PixelFormat, tileBmpData);
-
-                bmp.UnlockBits(tileBmpData);
-
-                }
-            }
-            return bmp;
-        }
-
-
-
 
         /// <summary>
-        /// Draws imageWrapper with given image and its location
+        /// Draws imageWrapper with given byte buffer and its location
         /// </summary>
         /// <param name="tilesToDraw"></param>
         /// <param name="screenSize"></param>
@@ -148,7 +124,6 @@ namespace RlViewer.Behaviors.Draw
 
                 tileBmpData.Width = item.Location.X < 0 ? item.Location.X + item.Width : item.Width;
                 tileBmpData.Height = item.Location.Y < 0 ? item.Location.Y + item.Height : item.Height;
-
                 tileBmpData.PixelFormat = PixelFormat.Format8bppIndexed;
                 tileBmpData.Stride = tileBmpData.Width;
                 tileBmpData.Scan0 = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(item.TileBytes, 0);
@@ -159,16 +134,13 @@ namespace RlViewer.Behaviors.Draw
                 location.Y = location.Y < 0 ? 0 : location.Y;
 
                 BitmapData bmpData = bmp.LockBits(new Rectangle(location, new Size(tileBmpData.Width, tileBmpData.Height)),
-                                            ImageLockMode.ReadWrite,
+                                            ImageLockMode.UserInputBuffer | ImageLockMode.WriteOnly,
                                             bmp.PixelFormat, tileBmpData);
 
                 bmp.UnlockBits(bmpData);
 
               
             }
-
-
-
 
             return bmp;
         }

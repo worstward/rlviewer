@@ -994,7 +994,7 @@ namespace RlViewer.UI
         public void ChangeFilterValue(int newValue)
         {
             _filterProxy.ChangeFilterValue(newValue);
-            DrawImage();
+            OnImageDrawn(null, _drawer.RedrawImage());
         }
 
         /// <summary>
