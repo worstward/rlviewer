@@ -40,7 +40,7 @@ namespace RlViewer.Forms
             plot3dSizeTb.Text = settings.Plot3dAreaBorderSize.ToString();
             adminReminderCb.Checked = _settings.ForceAdminMode;
             useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
-            useKrigingCb.Checked = _settings.UseKriging;
+            surfaceTypeCb.SelectedIndex = (int)_settings.SurfaceType;
         }
 
 
@@ -57,7 +57,7 @@ namespace RlViewer.Forms
         private bool _areasOrPointsForAligning;
         private bool _forceAdmin;
         private bool _customFileOpenDlg;
-        private bool _useKriging;
+        private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType;
 
         private void FillComboBox()
         {
@@ -148,7 +148,7 @@ namespace RlViewer.Forms
             _settings.UsePointsForAligning = _areasOrPointsForAligning;
             _settings.ForceAdminMode = _forceAdmin;
             _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
-            _settings.UseKriging = _useKriging;
+            _settings.SurfaceType = _surfaceType;
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -192,7 +192,7 @@ namespace RlViewer.Forms
                     _outputType = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
                     break;
                 default:
-                    break;
+                    throw new NotSupportedException("Tile Output settings");
             }
         }
 
@@ -255,10 +255,28 @@ namespace RlViewer.Forms
             _customFileOpenDlg = ((CheckBox)sender).Checked;
         }
 
-        private void krigingCb_CheckedChanged(object sender, EventArgs e)
+
+        private void surfaceTypeCb_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _useKriging = ((CheckBox)sender).Checked;
+            var cb = ((ComboBox)sender);
+            switch((string)cb.SelectedItem)
+            {
+                case @"Кригинг":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.Kriging;
+                    break;
+                case @"РБФ":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction;
+                    break;
+                case @"Кастомный":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.Custom;
+                    break;
+                default:
+                    throw new NotSupportedException("SurfaceType settings");
+            }
+
         }
+
+       
 
     }
 
