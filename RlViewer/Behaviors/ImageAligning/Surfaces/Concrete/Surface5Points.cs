@@ -84,7 +84,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                     var oldAmplVal = imageArea[(j - area.Location.Y) * area.Width + (i - area.Location.X)];
                     var newAmplVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), AmplitudeSolution));
                     var newRcsVal = GetPlaneValue(i, j, PointToPlane(new System.Drawing.Point(i, j), RcsSolution));
-                    var diff = (float)(Math.Round(oldAmplVal, 2) / Math.Round(newAmplVal, 2) * newRcsVal);
+
+                    var diff = oldAmplVal / newAmplVal * newRcsVal;
 
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;

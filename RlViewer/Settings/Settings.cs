@@ -233,7 +233,7 @@ namespace RlViewer.Settings
         }
 
         private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType =
-            Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction;
+            Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn;
 
         [DataMember(IsRequired = true)]
         public Behaviors.ImageAligning.Surfaces.SurfaceType SurfaceType
@@ -242,6 +242,33 @@ namespace RlViewer.Settings
             set { _surfaceType = value; }
         }
 
+        private int _rbfMlBaseRadius = 100;
+
+        [DataMember(IsRequired = true)]
+        public int RbfMlBaseRaduis
+        {
+            get { return _rbfMlBaseRadius; }
+            set { _rbfMlBaseRadius = value; }
+        }
+
+
+        private int _rbfMlLayersNumber = 3;
+
+        [DataMember(IsRequired = true)]
+        public int RbfMlLayersNumber
+        {
+            get { return _rbfMlLayersNumber; }
+            set { _rbfMlLayersNumber = value; }
+        }
+
+        private double _rbfMlRegularizationCoef = 0.01;
+
+        [DataMember(IsRequired = true)]
+        public double RbfMlRegularizationCoef
+        {
+            get { return _rbfMlRegularizationCoef; }
+            set { _rbfMlRegularizationCoef = value; }
+        }
       
 
     }

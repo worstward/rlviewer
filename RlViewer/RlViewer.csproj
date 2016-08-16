@@ -51,11 +51,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Untitled-28-64.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,19 +68,6 @@
     <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="ILNumerics.Computing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=8d9bf50ef854734d">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ILNumerics.Core, Version=4.11.0.0, Culture=neutral, PublicKeyToken=9651adc37f12bb00">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ILNumerics.Drawing, Version=4.11.0.0, Culture=neutral, PublicKeyToken=e22c8a010c3b081a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ILNumerics.Toolboxes.Interpolation, Version=4.11.0.0, Culture=neutral, PublicKeyToken=feb6e2cd77588932, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\ILNumerics\ILNumerics Ultimate VS\bin\ILNumerics.Toolboxes.Interpolation.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
@@ -126,6 +117,7 @@
     <Compile Include="Behaviors\CrossAppCommunication\PointSharer\MulticastPointSharer.cs" />
     <Compile Include="Behaviors\CrossAppCommunication\SharerEventHelper.cs" />
     <Compile Include="Behaviors\DragController.cs" />
+    <Compile Include="Behaviors\Draw\DrawingHelper.cs" />
     <Compile Include="Behaviors\Draw\HistContainer.cs" />
     <Compile Include="Behaviors\FilePreview\Abstract\LocatorFilePreview.cs" />
     <Compile Include="Behaviors\FilePreview\Concrete\Brl4Preview.cs" />
@@ -136,8 +128,9 @@
     <Compile Include="Behaviors\FilePreview\Concrete\RPreview.cs" />
     <Compile Include="Behaviors\Filters\FilterTypes.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
-    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfSurface.cs" />
-    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\TriangulatedSurface.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfMultilayer.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfQnn.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\RbfSurface.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\SurfaceType.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
@@ -172,6 +165,7 @@
     <Compile Include="Behaviors\TileCreator\Concrete\Raw8TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Concrete\Rl8TileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\NormalizationHelpers.cs" />
+    <Compile Include="Behaviors\TileCreator\TileImgWrapper.cs" />
     <Compile Include="Behaviors\TileCreator\TileOutput.cs" />
     <Compile Include="Behaviors\ImageAligning\Aligner.cs" />
     <Compile Include="Behaviors\GeometryHelper.cs" />
@@ -251,12 +245,6 @@
     <Compile Include="Forms\FilePreviewForm.Designer.cs">
       <DependentUpon>FilePreviewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Plot3dForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Plot3dForm.Designer.cs">
-      <DependentUpon>Plot3dForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FindPointForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -277,7 +265,7 @@
       <DependentUpon>TileStatusForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Behaviors\TileCreator\Concrete\RTileCreator.cs" />
-    <Compile Include="Behaviors\TileCreator\TileWrapper.cs" />
+    <Compile Include="Behaviors\TileCreator\TileRawWrapper.cs" />
     <Compile Include="Factories\File\Concrete\RFactory.cs" />
     <Compile Include="Factories\Header\Abstract\HeaderFactory.cs" />
     <Compile Include="Factories\Header\Concrete\Brl4HeaderFactory.cs" />
@@ -312,7 +300,6 @@
     <Compile Include="Headers\Concrete\Rl8\Rl8Header.cs" />
     <Compile Include="Headers\Concrete\R\RHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
-    <Compile Include="ILNumerics_deploy\ILNHelper.cs" />
     <Compile Include="Navigation\Concrete\Rl8NavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -458,9 +445,6 @@
     <EmbeddedResource Include="Forms\FilePreviewForm.resx">
       <DependentUpon>FilePreviewForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Plot3dForm.resx">
-      <DependentUpon>Plot3dForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindPointForm.resx">
       <DependentUpon>FindPointForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -493,7 +477,6 @@
     <EmbeddedResource Include="Forms\SectionGraphForm.resx">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ILNumerics_deploy\ilnumerics.lic" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -513,8 +496,6 @@
     <EmbeddedResource Include="Settings\ComboBoxPics.resx">
       <DependentUpon>ComboBoxPics.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ILNumerics_deploy\ILNImports1.targets" />
-    <None Include="ILNumerics_deploy\ILNImports2.targets" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -614,8 +595,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.28.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.3\build\Fody.targets'))" />
   </Target>
-  <Import Project="ILNumerics_deploy\ILNImports1.targets" Condition="$(ILNLicCompile) != 'true'" />
-  <Import Project="ILNumerics_deploy\ILNImports2.targets" Condition="$(ILNLicCompile) == 'true'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

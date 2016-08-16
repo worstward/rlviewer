@@ -86,9 +86,11 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                     var newRcsVal = GetPlaneValue(i / Selector.RangeCompressionCoef, j / Selector.AzimuthCompressionCoef,
                         PointToPlane(new System.Drawing.Point(i / Selector.RangeCompressionCoef,
                             j / Selector.AzimuthCompressionCoef), RcsSolution));
-                    var diff = (float)(Math.Round(oldAmplVal, 2) / Math.Round(newAmplVal, 2) * newRcsVal);
+
+                    var diff = oldAmplVal / newAmplVal * newRcsVal;
 
                     diff = diff < 0 ? 0 : diff;
+
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
 

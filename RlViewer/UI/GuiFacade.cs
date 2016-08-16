@@ -22,7 +22,6 @@ namespace RlViewer.UI
     {
         public GuiFacade(ISuitableForm form)
         {
-
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -66,7 +65,7 @@ namespace RlViewer.UI
         private Behaviors.PointSelector.PointSelector _pointSelector;
         private Behaviors.AreaSelector.AreaSelectorDecorator _selectedPointArea;
         private Behaviors.AreaSelector.AreaSelectorsAlignerContainer _areaAligningWrapper;
-        private Rectangle _squareArea;
+
         
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
@@ -86,7 +85,17 @@ namespace RlViewer.UI
         #region OpenFile
         public string OpenWithDoubleClick()
         {
-            var fName = Environment.GetCommandLineArgs().Where(x => Path.GetExtension(x) != ".exe").FirstOrDefault();
+            var args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 10)
+            {
+                return string.Empty;
+            }
+
+            var fileExts = Enum.GetNames(typeof(FileType));
+
+            //get first filepath that has supported extension
+            var fName = args.Where(x => fileExts.Any(Path.GetExtension(x).Contains)).FirstOrDefault();
             return fName == null ? string.Empty : OpenFile(fName);
         }
 
@@ -103,7 +112,6 @@ namespace RlViewer.UI
             }
         }
 
-
         public string OpenFileDragDrop(DragEventArgs e)
         {
             if (MoveFileDragDrop(e))
@@ -113,7 +121,6 @@ namespace RlViewer.UI
             }
             return string.Empty;
         }
-
 
         public bool MoveFileDragDrop(DragEventArgs e)
         {
@@ -199,7 +206,6 @@ namespace RlViewer.UI
 
         }
         #endregion
-
 
         #region Tasks
 
@@ -651,18 +657,10 @@ namespace RlViewer.UI
                     {
                         lock (_animationLock)
                         {
-<<<<<<< HEAD
                             if (_drawer != null)
                             {
                                 return _drawer.Draw(_tiles,
-                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
-=======
-                            if (_tiles != null && _drawer != null)
-                            { 
-                                img = _drawer.Draw(_tiles,
-                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), 
->>>>>>> 4e376b16360db5b951c29ecfafd8d328490bf77f
-                                            _settings.HighResForDownScaled);
+                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
                             }
                             else return null;
                         }
@@ -731,12 +729,6 @@ namespace RlViewer.UI
 
         #region guiProcessing
 
-
-        private Size _drawingPanelSize;
-        private Point _drawingPanelLocation;
-
-
-       
 
         private void CenterImageAtPoint(Point center, bool showWarning)
         {
@@ -1160,22 +1152,22 @@ namespace RlViewer.UI
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
                         }
                     }
-                    else if (_form.SquareAreaRb.Checked)
-                    {
-                        _squareArea = new Rectangle(new Point((int)(e.X / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Horizontal.Value,
-                                                               (int)(e.Y / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Vertical.Value),
-                                                               new Size(_settings.Plot3dAreaBorderSize, _settings.Plot3dAreaBorderSize));
+                    //else if (_form.SquareAreaRb.Checked)
+                    //{
+                    //    _squareArea = new Rectangle(new Point((int)(e.X / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Horizontal.Value,
+                    //                                           (int)(e.Y / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Vertical.Value),
+                    //                                           new Size(_settings.Plot3dAreaBorderSize, _settings.Plot3dAreaBorderSize));
 
-                        try
-                        {
-                            Show3dPlot(_squareArea);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to build 3d plot: {0}", ex.Message));
-                            ErrorGuiMessage("Невозможно построить график");
-                        }
-                    }
+                    //    try
+                    //    {
+                    //        Show3dPlot(_squareArea);
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to build 3d plot: {0}", ex.Message));
+                    //        ErrorGuiMessage("Невозможно построить график");
+                    //    }
+                    //}
 
                 }
                 else if (e.Button == MouseButtons.Right)
@@ -1232,12 +1224,12 @@ namespace RlViewer.UI
                         _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
                     }
                 }
-                else if (_form.SquareAreaRb.Checked && _drawer != null)
-                {
-                    var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
-                        e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize);
-                }
+                //else if (_form.SquareAreaRb.Checked && _drawer != null)
+                //{
+                //    var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
+                //        e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
+                //    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize);
+                //}
                 else if (_form.AnalyzePointRb.Checked && _analyzer != null)
                 {
                     AnalyzePoint(e);
@@ -1367,16 +1359,23 @@ namespace RlViewer.UI
 
         public void ShowSettings()
         {
-
-            using (var settgingsForm = new Forms.SettingsForm(_settings))
+            try
             {
-                if (settgingsForm.ShowDialog() == DialogResult.OK)
+                using (var settgingsForm = new Forms.SettingsForm(_settings))
                 {
-                    InitDrawImage();
-                    BlockAlignButton();
+                    if (settgingsForm.ShowDialog() == DialogResult.OK)
+                    {
+                        InitDrawImage();
+                        BlockAlignButton();
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Error while applying new settings: {0}", ex.Message));
+            }
         }
+
 
         public void ShowCache()
         {
@@ -1412,7 +1411,7 @@ namespace RlViewer.UI
 
                     _aligner = new Behaviors.ImageAligning.Aligning(_file, compressedSelector,
                         new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector),
-                        _settings.SurfaceType);
+                        _settings.SurfaceType, _settings.RbfMlBaseRaduis, _settings.RbfMlLayersNumber, _settings.RbfMlRegularizationCoef);
 
                     StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         Path.ChangeExtension(alignedSaveDlg.FileName, Path.GetExtension(_file.Properties.FilePath)));
@@ -1561,26 +1560,26 @@ namespace RlViewer.UI
         }
 
 
-        private void Show3dPlot(Rectangle area)
-        {
-            float[] areaData = new float[area.Width * area.Height];
-            float[] borderedArea = _file.GetArea(area).ToArea<float>(_file.Header.BytesPerSample);
+        //private void Show3dPlot(Rectangle area)
+        //{
+        //    float[] areaData = new float[area.Width * area.Height];
+        //    float[] borderedArea = _file.GetArea(area).ToArea<float>(_file.Header.BytesPerSample);
 
-            var borderedAreaWidth = area.X + area.Width - _file.Width > 0 ? _file.Width - area.X : area.Width;
+        //    var borderedAreaWidth = area.X + area.Width - _file.Width > 0 ? _file.Width - area.X : area.Width;
 
-            for (int i = 0; i < borderedArea.Length; i++)
-            {
-                var heightIndex = i / borderedAreaWidth * borderedAreaWidth;
-                var widthIndex = i % borderedAreaWidth;
-                areaData[widthIndex + heightIndex] = borderedArea[i];
-            }
+        //    for (int i = 0; i < borderedArea.Length; i++)
+        //    {
+        //        var heightIndex = i / borderedAreaWidth * borderedAreaWidth;
+        //        var widthIndex = i % borderedAreaWidth;
+        //        areaData[widthIndex + heightIndex] = borderedArea[i];
+        //    }
 
-            using (var plotFrm = new Forms.Plot3dForm(area.Location.X,
-                area.Location.X + area.Width, area.Location.Y, area.Location.Y + area.Height, areaData))
-            {
-                plotFrm.ShowDialog();
-            }
-        }
+        //    using (var plotFrm = new Forms.Plot3dForm(area.Location.X,
+        //        area.Location.X + area.Width, area.Location.Y, area.Location.Y + area.Height, areaData))
+        //    {
+        //        plotFrm.ShowDialog();
+        //    }
+        //}
 
 
         private string GetSectionFormCaption(Behaviors.Sections.Abstract.Section section)

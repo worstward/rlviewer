@@ -29,10 +29,7 @@ namespace RlViewer.Logging
             SaveEntry(logEntry);
         }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 4e376b16360db5b951c29ecfafd8d328490bf77f
         private static object saveLocker = new object();
         private static void SaveEntry(LogEntry entry)
         {

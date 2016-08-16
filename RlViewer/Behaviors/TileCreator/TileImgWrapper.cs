@@ -7,20 +7,21 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.TileCreator
 {
-    public class TileImageWrapper
+    class TileImgWrapper
     {
-        public TileImageWrapper(Bitmap bmp, Point location)
+        public TileImgWrapper(Bitmap bmp, Point location)
         {
             TileImage = bmp;
             Location = location;
         }
 
-        public TileImageWrapper(Bitmap bmp, int x, int y)
+        public TileImgWrapper(Bitmap bmp, int x, int y)
         {
             TileImage = bmp;
             Location = new Point(x, y);
         }
 
+   
 
         public Bitmap TileImage
         {

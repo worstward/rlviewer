@@ -38,7 +38,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
             {
                 return _rcsProvider;
             }
-
         }
 
         /// <summary>
@@ -78,9 +77,10 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
                 {
                     var oldVal = imageArea[(j - area.Location.Y)
                         * area.Width + (i - area.Location.X)];
-                    var newVal = Extrapolate(j, _zCoefs);
+                    var newAmplVal = Extrapolate(j, _zCoefs);
+                    var rcsVal = RcsProvider.GetValueAt(oldVal);
 
-                    var diff = oldVal / newVal * RcsProvider.GetValueAt(oldVal);
+                    var diff = oldVal / newAmplVal * rcsVal;
                     diff = diff < 0 ? 0 : diff;
 
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;

@@ -33,21 +33,21 @@
             this.useCustomFileOpenDlgCb = new System.Windows.Forms.CheckBox();
             this.adminReminderCb = new System.Windows.Forms.CheckBox();
             this.viewTab = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.logPaletteCb = new System.Windows.Forms.CheckBox();
-            this.inverseCheckBox = new System.Windows.Forms.CheckBox();
-            this.highResCb = new System.Windows.Forms.CheckBox();
-            this.outputTab = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.tileOutputCb = new System.Windows.Forms.ComboBox();
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
+            this.logPaletteCb = new System.Windows.Forms.CheckBox();
+            this.inverseCheckBox = new System.Windows.Forms.CheckBox();
+            this.highResCb = new System.Windows.Forms.CheckBox();
             this.toolsTab = new System.Windows.Forms.TabPage();
+            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.surfaceTypeLbl = new System.Windows.Forms.Label();
             this.surfaceTypeCb = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.plot3dSizeTb = new System.Windows.Forms.MaskedTextBox();
-            this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -59,26 +59,31 @@
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
+            this.rbfInterpolationcSettingsGb = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.regularizationCoefTb = new System.Windows.Forms.MaskedTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.layersNumTb = new System.Windows.Forms.MaskedTextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.baseRadiusTb = new System.Windows.Forms.MaskedTextBox();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.outputTab.SuspendLayout();
             this.toolsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.rbfInterpolationcSettingsGb.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.commonTab);
             this.tabControl1.Controls.Add(this.viewTab);
-            this.tabControl1.Controls.Add(this.outputTab);
             this.tabControl1.Controls.Add(this.toolsTab);
-            this.tabControl1.Location = new System.Drawing.Point(13, 36);
+            this.tabControl1.Location = new System.Drawing.Point(13, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(278, 205);
+            this.tabControl1.Size = new System.Drawing.Size(278, 351);
             this.tabControl1.TabIndex = 1;
             // 
             // commonTab
@@ -88,7 +93,7 @@
             this.commonTab.Location = new System.Drawing.Point(4, 22);
             this.commonTab.Name = "commonTab";
             this.commonTab.Padding = new System.Windows.Forms.Padding(3);
-            this.commonTab.Size = new System.Drawing.Size(270, 179);
+            this.commonTab.Size = new System.Drawing.Size(270, 325);
             this.commonTab.TabIndex = 3;
             this.commonTab.Text = "Общие";
             this.commonTab.UseVisualStyleBackColor = true;
@@ -96,53 +101,110 @@
             // useCustomFileOpenDlgCb
             // 
             this.useCustomFileOpenDlgCb.AutoSize = true;
-            this.useCustomFileOpenDlgCb.Location = new System.Drawing.Point(6, 12);
+            this.useCustomFileOpenDlgCb.Location = new System.Drawing.Point(6, 24);
             this.useCustomFileOpenDlgCb.Name = "useCustomFileOpenDlgCb";
-            this.useCustomFileOpenDlgCb.Size = new System.Drawing.Size(169, 30);
+            this.useCustomFileOpenDlgCb.Size = new System.Drawing.Size(207, 30);
             this.useCustomFileOpenDlgCb.TabIndex = 1;
-            this.useCustomFileOpenDlgCb.Text = "Использовать собственный\r\nдиалог открытия файлов";
+            this.useCustomFileOpenDlgCb.Text = "Использовать собственный диалог\r\nоткрытия файлов";
             this.useCustomFileOpenDlgCb.UseVisualStyleBackColor = true;
             this.useCustomFileOpenDlgCb.CheckedChanged += new System.EventHandler(this.useCustomFileOpenDlgCb_CheckedChanged);
             // 
             // adminReminderCb
             // 
             this.adminReminderCb.AutoSize = true;
-            this.adminReminderCb.Location = new System.Drawing.Point(6, 48);
+            this.adminReminderCb.Location = new System.Drawing.Point(6, 60);
             this.adminReminderCb.Name = "adminReminderCb";
-            this.adminReminderCb.Size = new System.Drawing.Size(180, 30);
+            this.adminReminderCb.Size = new System.Drawing.Size(207, 30);
             this.adminReminderCb.TabIndex = 0;
-            this.adminReminderCb.Text = "Предупреждать об отсутствии\r\n прав администратора";
+            this.adminReminderCb.Text = "Предупреждать об отсутствии прав\r\nадминистратора";
             this.adminReminderCb.UseVisualStyleBackColor = true;
             this.adminReminderCb.CheckedChanged += new System.EventHandler(this.adminReminderCb_CheckedChanged);
             // 
             // viewTab
             // 
+            this.viewTab.Controls.Add(this.label3);
+            this.viewTab.Controls.Add(this.tileOutputCb);
+            this.viewTab.Controls.Add(this.forceTileGenCheckBox);
+            this.viewTab.Controls.Add(this.allowViewCheckBox);
             this.viewTab.Controls.Add(this.groupBox3);
             this.viewTab.Controls.Add(this.highResCb);
             this.viewTab.Location = new System.Drawing.Point(4, 22);
             this.viewTab.Name = "viewTab";
             this.viewTab.Padding = new System.Windows.Forms.Padding(3);
-            this.viewTab.Size = new System.Drawing.Size(270, 179);
+            this.viewTab.Size = new System.Drawing.Size(270, 325);
             this.viewTab.TabIndex = 0;
             this.viewTab.Text = "Отображение";
             this.viewTab.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 204);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(97, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Алгоритм вывода";
+            // 
+            // tileOutputCb
+            // 
+            this.tileOutputCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tileOutputCb.FormattingEnabled = true;
+            this.tileOutputCb.Items.AddRange(new object[] {
+            "Линейный",
+            "Логарифмический",
+            "Линейно-Логарифмический"});
+            this.tileOutputCb.Location = new System.Drawing.Point(6, 220);
+            this.tileOutputCb.Name = "tileOutputCb";
+            this.tileOutputCb.Size = new System.Drawing.Size(170, 21);
+            this.tileOutputCb.TabIndex = 19;
+            // 
+            // forceTileGenCheckBox
+            // 
+            this.forceTileGenCheckBox.AutoSize = true;
+            this.forceTileGenCheckBox.Location = new System.Drawing.Point(6, 173);
+            this.forceTileGenCheckBox.Name = "forceTileGenCheckBox";
+            this.forceTileGenCheckBox.Size = new System.Drawing.Size(204, 17);
+            this.forceTileGenCheckBox.TabIndex = 18;
+            this.forceTileGenCheckBox.Text = "Принудительная генерация тайлов";
+            this.forceTileGenCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // allowViewCheckBox
+            // 
+            this.allowViewCheckBox.AutoSize = true;
+            this.allowViewCheckBox.Location = new System.Drawing.Point(6, 138);
+            this.allowViewCheckBox.Name = "allowViewCheckBox";
+            this.allowViewCheckBox.Size = new System.Drawing.Size(247, 17);
+            this.allowViewCheckBox.TabIndex = 17;
+            this.allowViewCheckBox.Text = "Просмотр изображения во время загрузки";
+            this.allowViewCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.comboBoxPics1);
             this.groupBox3.Controls.Add(this.logPaletteCb);
             this.groupBox3.Controls.Add(this.inverseCheckBox);
-            this.groupBox3.Location = new System.Drawing.Point(6, 29);
+            this.groupBox3.Location = new System.Drawing.Point(6, 22);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 94);
+            this.groupBox3.Size = new System.Drawing.Size(258, 78);
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
             // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            // 
             // logPaletteCb
             // 
             this.logPaletteCb.AutoSize = true;
-            this.logPaletteCb.Location = new System.Drawing.Point(6, 46);
+            this.logPaletteCb.Location = new System.Drawing.Point(118, 19);
             this.logPaletteCb.Name = "logPaletteCb";
             this.logPaletteCb.Size = new System.Drawing.Size(128, 17);
             this.logPaletteCb.TabIndex = 15;
@@ -154,7 +216,7 @@
             // 
             this.inverseCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.inverseCheckBox.AutoSize = true;
-            this.inverseCheckBox.Location = new System.Drawing.Point(6, 69);
+            this.inverseCheckBox.Location = new System.Drawing.Point(118, 42);
             this.inverseCheckBox.Name = "inverseCheckBox";
             this.inverseCheckBox.Size = new System.Drawing.Size(104, 17);
             this.inverseCheckBox.TabIndex = 14;
@@ -166,7 +228,7 @@
             // 
             this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.highResCb.AutoSize = true;
-            this.highResCb.Location = new System.Drawing.Point(11, 129);
+            this.highResCb.Location = new System.Drawing.Point(6, 106);
             this.highResCb.Name = "highResCb";
             this.highResCb.Size = new System.Drawing.Size(253, 17);
             this.highResCb.TabIndex = 16;
@@ -174,72 +236,14 @@
             this.highResCb.UseVisualStyleBackColor = true;
             this.highResCb.CheckedChanged += new System.EventHandler(this.highResCb_CheckedChanged);
             // 
-            // outputTab
-            // 
-            this.outputTab.Controls.Add(this.label3);
-            this.outputTab.Controls.Add(this.tileOutputCb);
-            this.outputTab.Controls.Add(this.forceTileGenCheckBox);
-            this.outputTab.Controls.Add(this.allowViewCheckBox);
-            this.outputTab.Location = new System.Drawing.Point(4, 22);
-            this.outputTab.Name = "outputTab";
-            this.outputTab.Padding = new System.Windows.Forms.Padding(3);
-            this.outputTab.Size = new System.Drawing.Size(270, 179);
-            this.outputTab.TabIndex = 1;
-            this.outputTab.Text = "Подготовка вывода";
-            this.outputTab.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 78);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(97, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Алгоритм вывода";
-            // 
-            // tileOutputCb
-            // 
-            this.tileOutputCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.tileOutputCb.FormattingEnabled = true;
-            this.tileOutputCb.Items.AddRange(new object[] {
-            "Линейный",
-            "Логарифмический",
-            "Линейно-Логарифмический"});
-            this.tileOutputCb.Location = new System.Drawing.Point(6, 94);
-            this.tileOutputCb.Name = "tileOutputCb";
-            this.tileOutputCb.Size = new System.Drawing.Size(170, 21);
-            this.tileOutputCb.TabIndex = 2;
-            this.tileOutputCb.SelectedIndexChanged += new System.EventHandler(this.tileOutputCb_SelectedIndexChanged);
-            // 
-            // forceTileGenCheckBox
-            // 
-            this.forceTileGenCheckBox.AutoSize = true;
-            this.forceTileGenCheckBox.Location = new System.Drawing.Point(6, 41);
-            this.forceTileGenCheckBox.Name = "forceTileGenCheckBox";
-            this.forceTileGenCheckBox.Size = new System.Drawing.Size(204, 17);
-            this.forceTileGenCheckBox.TabIndex = 1;
-            this.forceTileGenCheckBox.Text = "Принудительная генерация тайлов";
-            this.forceTileGenCheckBox.UseVisualStyleBackColor = true;
-            this.forceTileGenCheckBox.CheckedChanged += new System.EventHandler(this.forceTileGenCheckBox_CheckedChanged);
-            // 
-            // allowViewCheckBox
-            // 
-            this.allowViewCheckBox.AutoSize = true;
-            this.allowViewCheckBox.Location = new System.Drawing.Point(6, 18);
-            this.allowViewCheckBox.Name = "allowViewCheckBox";
-            this.allowViewCheckBox.Size = new System.Drawing.Size(247, 17);
-            this.allowViewCheckBox.TabIndex = 0;
-            this.allowViewCheckBox.Text = "Просмотр изображения во время загрузки";
-            this.allowViewCheckBox.UseVisualStyleBackColor = true;
-            this.allowViewCheckBox.CheckedChanged += new System.EventHandler(this.allowViewCheckBox_CheckedChanged);
-            // 
             // toolsTab
             // 
+            this.toolsTab.Controls.Add(this.rbfInterpolationcSettingsGb);
+            this.toolsTab.Controls.Add(this.areasOrPointsForAligningCb);
             this.toolsTab.Controls.Add(this.surfaceTypeLbl);
             this.toolsTab.Controls.Add(this.surfaceTypeCb);
             this.toolsTab.Controls.Add(this.label6);
             this.toolsTab.Controls.Add(this.plot3dSizeTb);
-            this.toolsTab.Controls.Add(this.areasOrPointsForAligningCb);
             this.toolsTab.Controls.Add(this.label2);
             this.toolsTab.Controls.Add(this.areaSizeTextBox);
             this.toolsTab.Controls.Add(this.label1);
@@ -247,15 +251,26 @@
             this.toolsTab.Location = new System.Drawing.Point(4, 22);
             this.toolsTab.Name = "toolsTab";
             this.toolsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.toolsTab.Size = new System.Drawing.Size(270, 179);
+            this.toolsTab.Size = new System.Drawing.Size(270, 325);
             this.toolsTab.TabIndex = 2;
             this.toolsTab.Text = "Инструменты";
             this.toolsTab.UseVisualStyleBackColor = true;
             // 
+            // areasOrPointsForAligningCb
+            // 
+            this.areasOrPointsForAligningCb.AutoSize = true;
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 160);
+            this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
+            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
+            this.areasOrPointsForAligningCb.TabIndex = 9;
+            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
+            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
+            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
+            // 
             // surfaceTypeLbl
             // 
             this.surfaceTypeLbl.AutoSize = true;
-            this.surfaceTypeLbl.Location = new System.Drawing.Point(7, 132);
+            this.surfaceTypeLbl.Location = new System.Drawing.Point(7, 122);
             this.surfaceTypeLbl.Name = "surfaceTypeLbl";
             this.surfaceTypeLbl.Size = new System.Drawing.Size(114, 26);
             this.surfaceTypeLbl.TabIndex = 13;
@@ -266,10 +281,10 @@
             this.surfaceTypeCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.surfaceTypeCb.FormattingEnabled = true;
             this.surfaceTypeCb.Items.AddRange(new object[] {
-            "Кригинг",
-            "РБФ",
-            "Кастомный"});
-            this.surfaceTypeCb.Location = new System.Drawing.Point(127, 132);
+            "РБФ NN",
+            "РБФ многослойная",
+            "Кастомная"});
+            this.surfaceTypeCb.Location = new System.Drawing.Point(127, 122);
             this.surfaceTypeCb.Name = "surfaceTypeCb";
             this.surfaceTypeCb.Size = new System.Drawing.Size(134, 21);
             this.surfaceTypeCb.TabIndex = 12;
@@ -295,17 +310,6 @@
             this.plot3dSizeTb.Size = new System.Drawing.Size(100, 20);
             this.plot3dSizeTb.TabIndex = 10;
             // 
-            // areasOrPointsForAligningCb
-            // 
-            this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 109);
-            this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
-            this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
-            this.areasOrPointsForAligningCb.TabIndex = 9;
-            this.areasOrPointsForAligningCb.Text = "Использовать области для выравнивания";
-            this.areasOrPointsForAligningCb.UseVisualStyleBackColor = true;
-            this.areasOrPointsForAligningCb.CheckedChanged += new System.EventHandler(this.pointsOrAreasForAligningCb_CheckedChanged);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -318,14 +322,13 @@
             // areaSizeTextBox
             // 
             this.areaSizeTextBox.AllowPromptAsInput = false;
-            this.areaSizeTextBox.Location = new System.Drawing.Point(161, 46);
+            this.areaSizeTextBox.Location = new System.Drawing.Point(161, 49);
             this.areaSizeTextBox.Mask = "00";
             this.areaSizeTextBox.Name = "areaSizeTextBox";
             this.areaSizeTextBox.PromptChar = ' ';
             this.areaSizeTextBox.ResetOnPrompt = false;
             this.areaSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.areaSizeTextBox.TabIndex = 3;
-            this.areaSizeTextBox.Click += new System.EventHandler(this.areaSizeTextBox_Click);
             // 
             // label1
             // 
@@ -347,7 +350,6 @@
             this.sectionSizeTextBox.ResetOnPrompt = false;
             this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.sectionSizeTextBox.TabIndex = 0;
-            this.sectionSizeTextBox.Click += new System.EventHandler(this.sectionSizeTextBox_Click);
             // 
             // groupBox1
             // 
@@ -355,9 +357,9 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
             this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
-            this.groupBox1.Location = new System.Drawing.Point(118, 234);
+            this.groupBox1.Location = new System.Drawing.Point(118, 369);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(57, 67);
+            this.groupBox1.Size = new System.Drawing.Size(57, 36);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Visible = false;
@@ -390,7 +392,6 @@
             this.azimuthCompressCoefTb.ResetOnPrompt = false;
             this.azimuthCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.azimuthCompressCoefTb.TabIndex = 7;
-            this.azimuthCompressCoefTb.Click += new System.EventHandler(this.azimuthCompressCoefTb_Click);
             // 
             // rangeCompressCoefTb
             // 
@@ -402,12 +403,11 @@
             this.rangeCompressCoefTb.ResetOnPrompt = false;
             this.rangeCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.rangeCompressCoefTb.TabIndex = 5;
-            this.rangeCompressCoefTb.Click += new System.EventHandler(this.rangeCompressCoefTb_Click);
             // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.Control;
-            this.button1.Location = new System.Drawing.Point(13, 270);
+            this.button1.Location = new System.Drawing.Point(12, 369);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -417,7 +417,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(216, 270);
+            this.button3.Location = new System.Drawing.Point(216, 369);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 4;
@@ -425,22 +425,89 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // comboBoxPics1
+            // rbfInterpolationcSettingsGb
             // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label7);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.regularizationCoefTb);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label8);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.layersNumTb);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label9);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.baseRadiusTb);
+            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 180);
+            this.rbfInterpolationcSettingsGb.Name = "rbfInterpolationcSettingsGb";
+            this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
+            this.rbfInterpolationcSettingsGb.TabIndex = 14;
+            this.rbfInterpolationcSettingsGb.TabStop = false;
+            this.rbfInterpolationcSettingsGb.Text = "РБФ интерполяция";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(14, 91);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(110, 26);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Регуляризационный\r\n коэффициент";
+            // 
+            // regularizationCoefTb
+            // 
+            this.regularizationCoefTb.AllowPromptAsInput = false;
+            this.regularizationCoefTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.regularizationCoefTb.Location = new System.Drawing.Point(145, 97);
+            this.regularizationCoefTb.Mask = "\\0.000";
+            this.regularizationCoefTb.Name = "regularizationCoefTb";
+            this.regularizationCoefTb.PromptChar = ' ';
+            this.regularizationCoefTb.ResetOnPrompt = false;
+            this.regularizationCoefTb.Size = new System.Drawing.Size(100, 20);
+            this.regularizationCoefTb.TabIndex = 24;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 57);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(99, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Количество слоев";
+            // 
+            // layersNumTb
+            // 
+            this.layersNumTb.AllowPromptAsInput = false;
+            this.layersNumTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.layersNumTb.Location = new System.Drawing.Point(145, 57);
+            this.layersNumTb.Mask = "00";
+            this.layersNumTb.Name = "layersNumTb";
+            this.layersNumTb.PromptChar = ' ';
+            this.layersNumTb.ResetOnPrompt = false;
+            this.layersNumTb.Size = new System.Drawing.Size(100, 20);
+            this.layersNumTb.TabIndex = 22;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(13, 29);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(102, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Начальный радиус";
+            // 
+            // baseRadiusTb
+            // 
+            this.baseRadiusTb.AllowPromptAsInput = false;
+            this.baseRadiusTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.baseRadiusTb.Location = new System.Drawing.Point(145, 26);
+            this.baseRadiusTb.Mask = "0000";
+            this.baseRadiusTb.Name = "baseRadiusTb";
+            this.baseRadiusTb.PromptChar = ' ';
+            this.baseRadiusTb.ResetOnPrompt = false;
+            this.baseRadiusTb.Size = new System.Drawing.Size(100, 20);
+            this.baseRadiusTb.TabIndex = 20;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 314);
+            this.ClientSize = new System.Drawing.Size(303, 404);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControl1);
@@ -459,12 +526,12 @@
             this.viewTab.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.outputTab.ResumeLayout(false);
-            this.outputTab.PerformLayout();
             this.toolsTab.ResumeLayout(false);
             this.toolsTab.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.rbfInterpolationcSettingsGb.ResumeLayout(false);
+            this.rbfInterpolationcSettingsGb.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -477,16 +544,12 @@
         private System.Windows.Forms.CheckBox inverseCheckBox;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.CheckBox forceTileGenCheckBox;
-        private System.Windows.Forms.CheckBox allowViewCheckBox;
         private System.Windows.Forms.TabPage toolsTab;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MaskedTextBox sectionSizeTextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.MaskedTextBox areaSizeTextBox;
         private System.Windows.Forms.CheckBox logPaletteCb;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox tileOutputCb;
         private System.Windows.Forms.CheckBox highResCb;
         private Settings.ComboBoxPics comboBoxPics1;
         private System.Windows.Forms.Label label4;
@@ -498,10 +561,20 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.MaskedTextBox plot3dSizeTb;
         private System.Windows.Forms.TabPage commonTab;
-        private System.Windows.Forms.TabPage outputTab;
         private System.Windows.Forms.CheckBox adminReminderCb;
         private System.Windows.Forms.CheckBox useCustomFileOpenDlgCb;
         private System.Windows.Forms.Label surfaceTypeLbl;
         private System.Windows.Forms.ComboBox surfaceTypeCb;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox tileOutputCb;
+        private System.Windows.Forms.CheckBox forceTileGenCheckBox;
+        private System.Windows.Forms.CheckBox allowViewCheckBox;
+        private System.Windows.Forms.GroupBox rbfInterpolationcSettingsGb;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.MaskedTextBox regularizationCoefTb;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.MaskedTextBox layersNumTb;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.MaskedTextBox baseRadiusTb;
     }
 }

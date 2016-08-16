@@ -8,8 +8,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces
 {
     public enum SurfaceType
     {
-        Kriging,
-        RadicalBasisFunction,
+        RadicalBasisFunctionQnn,
+        RadicalBasisFunctionMultiLayered,
         Custom
     }
 }

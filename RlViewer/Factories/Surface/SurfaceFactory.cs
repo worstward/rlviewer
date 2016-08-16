@@ -13,7 +13,7 @@ namespace RlViewer.Factories.Surface
         public static Behaviors.ImageAligning.Surfaces.Abstract.Surface CreateSurface
             (Behaviors.PointSelector.CompressedPointSelectorWrapper selector,
             Behaviors.ImageAligning.IInterpolationProvider rcsProvider, 
-            Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType)
+            Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType, int baseRadius, int layers, double lambda)
         {
             var pointCount = selector.CompessedSelector.Count();
 
@@ -22,10 +22,10 @@ namespace RlViewer.Factories.Surface
 
             switch (surfaceType)
             {
-                case Behaviors.ImageAligning.Surfaces.SurfaceType.Kriging:
-                    return new Behaviors.ImageAligning.Surfaces.Concrete.KrigingInterpolatedSurface(selector, rcsProvider);
-                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction:
-                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfSurface(selector, rcsProvider);
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfQnn(selector, rcsProvider);
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfMultilayer(selector, rcsProvider, baseRadius, layers, lambda);
                 case Behaviors.ImageAligning.Surfaces.SurfaceType.Custom:
                     switch (pointCount)
                     {

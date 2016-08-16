@@ -19,6 +19,8 @@ namespace RlViewer.Forms
 
             InitializeComponent();
             FillComboBox();
+            AddTbClickEvent(tabControl1);
+
 
             comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
                 .Where(item => item.Text == _settings.Palette.Select(x => x.ToString())
@@ -41,6 +43,10 @@ namespace RlViewer.Forms
             adminReminderCb.Checked = _settings.ForceAdminMode;
             useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
             surfaceTypeCb.SelectedIndex = (int)_settings.SurfaceType;
+
+            baseRadiusTb.Text = _settings.RbfMlBaseRaduis.ToString();
+            layersNumTb.Text = _settings.RbfMlLayersNumber.ToString();
+            regularizationCoefTb.Text = _settings.RbfMlRegularizationCoef.ToString();
         }
 
 
@@ -211,8 +217,7 @@ namespace RlViewer.Forms
             catch (Exception ex)
             {
                 _palette = new float[] { 1, 1, 1 };
-                Logging.Logger.Log(Logging.SeverityGrades.Warning,
-                    string.Format("Attempt to get palette from settings failed with message {0}", ex.Message));
+                throw new ArgumentException(string.Format("Palette settings: {0}", ex.Message));
             }
         }
 
@@ -221,28 +226,21 @@ namespace RlViewer.Forms
             _areasOrPointsForAligning = ((CheckBox)sender).Checked;
         }
 
-        private void sectionSizeTextBox_Click(object sender, EventArgs e)
+        private void AddTbClickEvent(TabControl container)
         {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
 
-        private void areaSizeTextBox_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
-
-        private void rangeCompressCoefTb_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
-
-        private void azimuthCompressCoefTb_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
+            foreach (TabPage page in container.TabPages)
+            {
+                foreach(var control in page.Controls)
+                { 
+                    if (control.GetType() == typeof(MaskedTextBox))
+                    {
+                        var tb = ((MaskedTextBox)control);
+                        tb.Click += (s, e) => tb.Select(tb.Text.Length, 0);
+                    }
+                }
+            }
+           
         }
 
         private void adminReminderCb_CheckedChanged(object sender, EventArgs e)
@@ -261,19 +259,29 @@ namespace RlViewer.Forms
             var cb = ((ComboBox)sender);
             switch((string)cb.SelectedItem)
             {
-                case @"Кригинг":
-                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.Kriging;
+                case @"РБФ NN":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn;
                     break;
-                case @"РБФ":
-                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunction;
+                case @"РБФ многослойная":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered;
                     break;
-                case @"Кастомный":
+                case @"Кастомная":
                     _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.Custom;
                     break;
                 default:
                     throw new NotSupportedException("SurfaceType settings");
             }
 
+
+            if (_surfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered)
+            {
+                rbfInterpolationcSettingsGb.Enabled = true;
+            }
+            else
+            {
+                rbfInterpolationcSettingsGb.Enabled = false;
+            }
+            
         }
 
        

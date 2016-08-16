@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -85,9 +85,9 @@
             this.horSection = new System.Windows.Forms.RadioButton();
             this.linSectionRb = new System.Windows.Forms.RadioButton();
             this.rulerRb = new System.Windows.Forms.RadioButton();
-            this.sharerRb = new System.Windows.Forms.RadioButton();
             this.findPointBtn = new System.Windows.Forms.Button();
             this.statisticsBtn = new System.Windows.Forms.Button();
+            this.sharerRb = new System.Windows.Forms.RadioButton();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
@@ -417,14 +417,14 @@
             this.chart1.BackColor = System.Drawing.Color.Transparent;
             this.chart1.BackSecondaryColor = System.Drawing.Color.Transparent;
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea4.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea4);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Location = new System.Drawing.Point(328, 3);
             this.chart1.Name = "chart1";
-            series4.ChartArea = "ChartArea1";
-            series4.IsVisibleInLegend = false;
-            series4.Name = "Series1";
-            this.chart1.Series.Add(series4);
+            series1.ChartArea = "ChartArea1";
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(298, 98);
             this.chart1.TabIndex = 10;
             this.chart1.Text = "chart1";
@@ -434,38 +434,38 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(96, 100);
@@ -573,7 +573,6 @@
             this.flowLayoutPanel1.Controls.Add(this.markPointRb);
             this.flowLayoutPanel1.Controls.Add(this.alignBtn);
             this.flowLayoutPanel1.Controls.Add(this.markAreaRb);
-            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
             this.flowLayoutPanel1.Controls.Add(this.analyzeRb);
             this.flowLayoutPanel1.Controls.Add(this.verSection);
             this.flowLayoutPanel1.Controls.Add(this.horSection);
@@ -582,6 +581,7 @@
             this.flowLayoutPanel1.Controls.Add(this.findPointBtn);
             this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
             this.flowLayoutPanel1.Controls.Add(this.sharerRb);
+            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(651, 36);
@@ -654,17 +654,18 @@
             // 
             this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
             this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources._3dPlot;
+            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
             this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.squareAreaRb.FlatAppearance.BorderSize = 0;
             this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squareAreaRb.Location = new System.Drawing.Point(147, 3);
+            this.squareAreaRb.Location = new System.Drawing.Point(435, 3);
             this.squareAreaRb.Name = "squareAreaRb";
             this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
             this.squareAreaRb.TabIndex = 25;
             this.squareAreaRb.UseVisualStyleBackColor = false;
+            this.squareAreaRb.Visible = false;
             // 
             // analyzeRb
             // 
@@ -676,7 +677,7 @@
             this.analyzeRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.analyzeRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeRb.Location = new System.Drawing.Point(183, 3);
+            this.analyzeRb.Location = new System.Drawing.Point(147, 3);
             this.analyzeRb.Name = "analyzeRb";
             this.analyzeRb.Size = new System.Drawing.Size(30, 30);
             this.analyzeRb.TabIndex = 8;
@@ -693,7 +694,7 @@
             this.verSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.verSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.verSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.verSection.Location = new System.Drawing.Point(219, 3);
+            this.verSection.Location = new System.Drawing.Point(183, 3);
             this.verSection.Name = "verSection";
             this.verSection.Size = new System.Drawing.Size(30, 30);
             this.verSection.TabIndex = 10;
@@ -709,7 +710,7 @@
             this.horSection.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.horSection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.horSection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.horSection.Location = new System.Drawing.Point(255, 3);
+            this.horSection.Location = new System.Drawing.Point(219, 3);
             this.horSection.Name = "horSection";
             this.horSection.Size = new System.Drawing.Size(30, 30);
             this.horSection.TabIndex = 9;
@@ -726,7 +727,7 @@
             this.linSectionRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.linSectionRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.linSectionRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.linSectionRb.Location = new System.Drawing.Point(291, 3);
+            this.linSectionRb.Location = new System.Drawing.Point(255, 3);
             this.linSectionRb.Name = "linSectionRb";
             this.linSectionRb.Size = new System.Drawing.Size(30, 30);
             this.linSectionRb.TabIndex = 14;
@@ -743,29 +744,12 @@
             this.rulerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.rulerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rulerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rulerRb.Location = new System.Drawing.Point(327, 3);
+            this.rulerRb.Location = new System.Drawing.Point(291, 3);
             this.rulerRb.Name = "rulerRb";
             this.rulerRb.Size = new System.Drawing.Size(30, 30);
             this.rulerRb.TabIndex = 12;
             this.rulerRb.UseVisualStyleBackColor = false;
             this.rulerRb.CheckedChanged += new System.EventHandler(this.rulerRb_CheckedChanged);
-            // 
-            // sharerRb
-            // 
-            this.sharerRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.sharerRb.BackColor = System.Drawing.Color.Transparent;
-            this.sharerRb.BackgroundImage = global::RlViewer.Properties.Resources.Sharer1;
-            this.sharerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.sharerRb.FlatAppearance.BorderSize = 0;
-            this.sharerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.sharerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.sharerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sharerRb.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.sharerRb.Location = new System.Drawing.Point(435, 3);
-            this.sharerRb.Name = "sharerRb";
-            this.sharerRb.Size = new System.Drawing.Size(30, 30);
-            this.sharerRb.TabIndex = 26;
-            this.sharerRb.UseVisualStyleBackColor = false;
             // 
             // findPointBtn
             // 
@@ -774,7 +758,7 @@
             this.findPointBtn.FlatAppearance.BorderSize = 0;
             this.findPointBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.findPointBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.findPointBtn.Location = new System.Drawing.Point(363, 3);
+            this.findPointBtn.Location = new System.Drawing.Point(327, 3);
             this.findPointBtn.Name = "findPointBtn";
             this.findPointBtn.Size = new System.Drawing.Size(30, 30);
             this.findPointBtn.TabIndex = 13;
@@ -788,12 +772,29 @@
             this.statisticsBtn.FlatAppearance.BorderSize = 0;
             this.statisticsBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.statisticsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.statisticsBtn.Location = new System.Drawing.Point(399, 3);
+            this.statisticsBtn.Location = new System.Drawing.Point(363, 3);
             this.statisticsBtn.Name = "statisticsBtn";
             this.statisticsBtn.Size = new System.Drawing.Size(30, 30);
             this.statisticsBtn.TabIndex = 15;
             this.statisticsBtn.UseVisualStyleBackColor = true;
             this.statisticsBtn.Click += new System.EventHandler(this.statisticsBtn_Click);
+            // 
+            // sharerRb
+            // 
+            this.sharerRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.sharerRb.BackColor = System.Drawing.Color.Transparent;
+            this.sharerRb.BackgroundImage = global::RlViewer.Properties.Resources.Sharer1;
+            this.sharerRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.sharerRb.FlatAppearance.BorderSize = 0;
+            this.sharerRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.sharerRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.sharerRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sharerRb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.sharerRb.Location = new System.Drawing.Point(399, 3);
+            this.sharerRb.Name = "sharerRb";
+            this.sharerRb.Size = new System.Drawing.Size(30, 30);
+            this.sharerRb.TabIndex = 26;
+            this.sharerRb.UseVisualStyleBackColor = false;
             // 
             // filterPanelCb
             // 
