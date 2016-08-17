@@ -50,27 +50,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
-        private Tile[] _tiles;
-
-        private object _tileLocker = new object();
-        public override Tile[] Tiles
-        {
-            get
-            {
-                if (_tiles == null)
-                {
-                    lock (_tileLocker)
-                    {
-                        if (_tiles == null)
-                        {
-                            _tiles = GetTiles(_rhg.Properties.FilePath);
-                        }
-                    }
-                }
-                return _tiles;
-            }
-        }
-
+      
 
         protected override short ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
@@ -223,7 +203,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
         protected override Tile[] GetTilesFromTl(string directoryPath)
         {
-            return GetTilesFromTl(directoryPath, _rhg);
+            return GetTilesFromTl(directoryPath, _rhg.Width, _rhg.Height);
         }
 
 

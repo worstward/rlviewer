@@ -65,6 +65,7 @@ namespace RlViewer.Forms
                 Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
                 File.GetCreationTime(_currFile).ToFileTime().ToString());
+
             foreach (var fileNameDirectory in Directory.GetDirectories(tileDir))
             {
                 foreach (var extensionDirectory in Directory.GetDirectories(fileNameDirectory))

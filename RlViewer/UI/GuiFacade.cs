@@ -399,7 +399,9 @@ namespace RlViewer.UI
             {
                 var fileName = Path.GetFullPath((string)e.Result);
                 
-                if (new Files.FileProperties(fileName).Type != FileType.raw)
+                var type = new Files.FileProperties(fileName).Type;
+
+                if (type != FileType.raw && type != FileType.r)
                 {
                     fileName = Path.ChangeExtension(fileName, "brl4");
                     EmbedNavigation(fileName, false);
@@ -628,28 +630,27 @@ namespace RlViewer.UI
             }
         }
 
-        public async void DrawImage(Func<Image> RedrawWithItems)
-        {
-            if (_tiles != null && _drawer != null)
-            {
-                await Task.Factory.StartNew(() =>
-                {
-                    Image img = null;
-                    lock (_animationLock)
-                    {
-                        if(_tiles != null && _drawer != null)
-                        { 
-                            img = _drawer.Draw(_tiles,
-                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
-                                        _settings.HighResForDownScaled);
-                        }
-                    }
-                    OnImageDrawn(null, RedrawWithItems());
-                });
-            }
-        }
+        //public async void DrawImage(Func<Image> RedrawWithItems = null)
+        //{
+        //    if (_tiles != null && _drawer != null)
+        //    {
+        //        await Task.Factory.StartNew(() =>
+        //        {
+        //            lock (_animationLock)
+        //            {
+        //                if (_tiles != null && _drawer != null)
+        //                {
+        //                    _drawer.Draw(_tiles,
+        //                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
+        //                                _settings.HighResForDownScaled);
+        //                }
+        //            }
+        //            OnImageDrawn(null, RedrawWithItems());
+        //        });
+        //    }
+        //}
 
-        public async void DrawImage()
+        public async void DrawImage(Func<Image> RedrawWithItems = null)
         {
             if (_tiles != null && _drawer != null)
             {
@@ -657,7 +658,7 @@ namespace RlViewer.UI
                     {
                         lock (_animationLock)
                         {
-                            if (_drawer != null)
+                            if (_tiles != null && _drawer != null)
                             {
                                 return _drawer.Draw(_tiles,
                                             new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
@@ -994,7 +995,10 @@ namespace RlViewer.UI
         public void ChangeFilterValue(int newValue)
         {
             _filterProxy.ChangeFilterValue(newValue);
-            OnImageDrawn(null, _drawer.RedrawImage());
+            if (_drawer != null)
+            { 
+                OnImageDrawn(null, _drawer.RedrawImage());
+            }
         }
 
         /// <summary>

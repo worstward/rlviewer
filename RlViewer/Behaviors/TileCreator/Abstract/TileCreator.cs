@@ -35,8 +35,6 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             set;
         }
 
-        public abstract Tile[] Tiles { get; }
-
         private string _tileExtension = ".tl";
         protected virtual string TileFileExtension
         {
@@ -184,13 +182,13 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         /// </summary>
         /// <param name="directoryPath">Directory with tiles</param>
         /// <returns></returns>
-        protected virtual Tile[] GetTilesFromTl(string directoryPath, LocatorFile file)
+        protected virtual Tile[] GetTilesFromTl(string directoryPath, int fileWidth, int fileHeight)
         {
             List<Tile> tiles = new List<Tile>();
 
-            for (int i = 0; i < file.Width; i += TileSize.Width)
+            for (int i = 0; i < fileWidth; i += TileSize.Width)
             {
-                for (int j = 0; j < file.Height; j += TileSize.Height)
+                for (int j = 0; j < fileHeight; j += TileSize.Height)
                 {
 
                     tiles.Add(new Tile(

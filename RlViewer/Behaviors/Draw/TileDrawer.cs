@@ -64,7 +64,11 @@ namespace RlViewer.Behaviors.Draw
         /// <returns></returns>
         public Image RedrawImage(Size screenSize)
         {
-            return DrawWrappers(_wrappers, screenSize);
+            if (_wrappers != null)
+            {
+                return DrawWrappers(_wrappers, screenSize);
+            }
+            else return null;
         }
 
         /// <summary>
@@ -83,7 +87,9 @@ namespace RlViewer.Behaviors.Draw
             {
                 foreach (var t in tilesToDraw)
                 {
-                    g.DrawImage(DrawingHelper.GetBmp(t.TileBytes, t.Width, t.Height, palette), t.Location);
+                    var bitmapToDraw = DrawingHelper.GetBmp(t.TileBytes, t.Width, t.Height, palette);
+                    //bitmapToDraw.Save(string.Format("w{0}h{1}p{2}x{3}.bmp", t.Width, t.Height, t.Location.X, t.Location.Y));
+                    g.DrawImage(bitmapToDraw, t.Location);
                 }
             }
             return canvas;
@@ -245,8 +251,14 @@ namespace RlViewer.Behaviors.Draw
                 //if not all scaled tile is visible we only take the visible part.
                 int croppedWidth = tile.Size.Width - shiftTileX >= scaledScreenX ? scaledScreenX : tile.Size.Width - shiftTileX;
                 int croppedHeight = tile.Size.Height - shiftTileY >= scaledScreenY ? scaledScreenY : tile.Size.Height - shiftTileY;
-                
-                croppedWidth = croppedWidth + (croppedWidth % 4);//bmp stride should be multiple of 4
+
+                var resizedW = (int)(croppedWidth * Scaler.ScaleFactor);
+                var resizedH = (int)(croppedHeight * Scaler.ScaleFactor);
+
+                var padding = (resizedW % 4);
+
+                resizedW = resizedW + (padding == 0 ? 0 : 4 - padding);//bmp stride should be multiple of 4
+
 
                 //determines resized canvas size
                 Size resizedCanvasSize = new Size((int)(croppedWidth * Scaler.ScaleFactor), (int)(croppedHeight * Scaler.ScaleFactor));
@@ -268,10 +280,11 @@ namespace RlViewer.Behaviors.Draw
                 byte[] imgData = tile.ReadData();
 
                 byte[] cropped = DrawingHelper.Crop(imgData, tile.Size.Width, shiftTileX, shiftTileY, croppedWidth, croppedHeight);
-                byte[] resized = DrawingHelper.Resize(cropped, croppedWidth, croppedHeight, Scaler.ScaleFactor);
 
-                tileImgWrappers.Add(new TileRawWrapper(resized, x, y, 
-                    (int)(croppedWidth * Scaler.ScaleFactor), (int)(croppedHeight * Scaler.ScaleFactor)));
+                byte[] resized = DrawingHelper.Resize(cropped, croppedWidth, resizedW, resizedH, Scaler.ScaleFactor);
+
+                tileImgWrappers.Add(new TileRawWrapper(resized, x, y,
+                    resizedCanvasSize.Width, resizedCanvasSize.Height));
             }
 
 

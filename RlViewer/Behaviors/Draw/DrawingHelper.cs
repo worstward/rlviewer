@@ -68,29 +68,52 @@ namespace RlViewer.Behaviors.Draw
             return cropped;
         }
 
-        public static byte[] Resize(byte[] initialImage, int initialWidth, int initialHeight, float scaleFactor)
+        //public static byte[] Resize(byte[] initialImage, int initialWidth, int initialHeight, float scaleFactor)
+        //{
+        //    var imgWidth = (int)(initialWidth * scaleFactor);
+        //    var imgHeight = (int)(initialHeight * scaleFactor);
+
+        //    byte[] newImage = new byte[imgWidth * imgHeight];
+
+        //    int targetIdx = 0;
+
+        //    for (int i = 0; i < imgHeight; i++)
+        //    {
+        //        int iUnscaled = (int)(i / scaleFactor);
+        //        for (int j = 0; j < imgWidth; j++)
+        //        {
+        //            int jUnscaled = (int)(j / scaleFactor);
+        //            newImage[targetIdx++] = initialImage[iUnscaled * initialWidth + jUnscaled];
+        //        }
+        //    }
+
+        //    return newImage;
+        //}
+
+        public static byte[] Resize(byte[] initialImage, int initialWidth, int resizedW, int resizedH, float scaleFactor)
         {
-            var imgWidth = (int)(initialWidth * scaleFactor);
-            var imgHeight = (int)(initialHeight * scaleFactor);
 
-            byte[] newImage = new byte[imgWidth * imgHeight];
+            byte[] newImage = new byte[resizedW * resizedH];
 
-            int targetIdx = 0;
+            var realWidth = (int)(initialWidth * scaleFactor);
+            var padding = resizedW - realWidth;
 
-            for (int i = 0; i < imgHeight; i++)
-            {
-                int iUnscaled = (int)(i / scaleFactor);
-                for (int j = 0; j < imgWidth; j++)
+            Parallel.For(0, resizedH, (i) =>
                 {
-                    int jUnscaled = (int)(j / scaleFactor);
-                    newImage[targetIdx++] = initialImage[iUnscaled * initialWidth + jUnscaled];
-                }
-            }
+                    //for (int i = 0; i < resizedH; i++)
+                    //{
+                    int iUnscaled = (int)(i / scaleFactor);
+
+                    var newImgIndex = i * realWidth + i * padding; 
+                    for (int j = 0; j < realWidth; j++)
+                    {
+                        int jUnscaled = (int)(j / scaleFactor);
+                        newImage[newImgIndex + j] = initialImage[iUnscaled * initialWidth + jUnscaled];
+                    }
+                });
 
             return newImage;
         }
-
-
 
         /// <summary>
         /// Creates 8bpp image from raw byte array
@@ -98,7 +121,7 @@ namespace RlViewer.Behaviors.Draw
         /// <param name="imgData">Raw image data</param>
         /// <param name="tileWidth">Image width</param>
         /// <param name="tileHeight">Image height</param>
-        /// <returns>Grayscale image</returns>
+        /// <returns>8bpp image</returns>
         public static Bitmap GetBmp(byte[] imgData, int tileWidth, int tileHeight, ColorPalette palette)
         {
             Bitmap bmp = new Bitmap(tileWidth, tileHeight, PixelFormat.Format8bppIndexed);

@@ -51,7 +51,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
         protected override Tile[] GetTilesFromTl(string directoryPath)
         {
-            return GetTilesFromTl(directoryPath, _rli);
+            return GetTilesFromTl(directoryPath, _rli.Width, _rli.Height);
         }
 
 

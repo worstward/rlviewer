@@ -143,6 +143,26 @@ namespace RlViewer.Forms
             }
             else return;
 
+            int rbfMlBaseRadius;
+            if (Int32.TryParse(baseRadiusTb.Text, out rbfMlBaseRadius))
+            {
+                _settings.RbfMlBaseRaduis = rbfMlBaseRadius == 0 ? 100 : rbfMlBaseRadius;
+            }
+            else return;
+
+            int rbfMlLayersNumber;
+            if (Int32.TryParse(layersNumTb.Text, out rbfMlLayersNumber))
+            {
+                _settings.RbfMlLayersNumber = rbfMlLayersNumber == 0 ? 3 : rbfMlLayersNumber;
+            }
+            else return;
+
+            double rbfMlRegularizationCoef;
+            if (Double.TryParse(regularizationCoefTb.Text, out rbfMlRegularizationCoef))
+            {
+                _settings.RbfMlRegularizationCoef = rbfMlRegularizationCoef == 0 ? 0.01 : rbfMlRegularizationCoef;
+            }
+            else return;
 
             _settings.AllowViewWhileLoading = _allowViewWhileLoading;
             _settings.Palette = _palette;
@@ -155,6 +175,8 @@ namespace RlViewer.Forms
             _settings.ForceAdminMode = _forceAdmin;
             _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
             _settings.SurfaceType = _surfaceType;
+            
+
             _settings.ToXml();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;

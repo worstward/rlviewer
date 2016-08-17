@@ -24,24 +24,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         private LocatorFile _rli;
         private float _normalFactor;
 
-        private Tile[] _tiles;
-        private Dictionary<float, Tile[]> tileSets = new Dictionary<float, Tile[]>();
-
-        private object _tileLocker = new object();
-        public override Tile[] Tiles
-        {
-            get
-            {
-                if (_tiles == null)
-                {
-                    lock (_tileLocker)
-                    {
-                        _tiles = _tiles ?? GetTiles(_rli.Properties.FilePath);
-                    }
-                }
-                return _tiles;
-            }
-        }
 
 
         private object _locker = new object();
@@ -67,7 +49,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
         protected override Tile[] GetTilesFromTl(string directoryPath)
         {
-            return GetTilesFromTl(directoryPath, _rli);
+            return GetTilesFromTl(directoryPath, _rli.Width, _rli.Height);
         }
 
 
