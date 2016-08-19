@@ -6,9 +6,8 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RlViewer")]
-[assembly: AssemblyDescription("Технологический наземный комплекс просмотра и обработки радиолокационной информации для проекта Банк-РЛВ")]
+[assembly: AssemblyDescription("Технологический наземный комплекс просмотра и обработки радиолокационной информации")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("АО Концерн Вега")]
 [assembly: AssemblyProduct("RlViewer")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.1.0.*")]
 //[assembly: AssemblyFileVersion("1.0.0.0")]

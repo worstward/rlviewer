@@ -110,7 +110,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
             MaxValue = GetMaxValue<float>(loc, strDataLen, strHeadLen, (arr) => { return arr.Max(); });
-
+            
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();
 

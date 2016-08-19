@@ -134,7 +134,7 @@ namespace RlViewer
             switch (mode)
             {
                 case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.SDC1:
-                    sType = "СДЦ1";
+                    sType = "СДЦ1/Обзор";
                     break;
                 case RlViewer.Headers.Concrete.R.SynchronizerHeader.OverviewModes.SDC2:
                     sType = "СДЦ2";

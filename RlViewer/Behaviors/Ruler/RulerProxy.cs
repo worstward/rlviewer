@@ -122,7 +122,7 @@ namespace RlViewer.Behaviors.Ruler
             }
             else
             {
-                return string.Format("Расстояние: {0:0.##} м", _ruler.GetDistance(_pt1, _pt2, _dx, _dy));
+                return string.Format("Расстояние: {0:0.##} м, {1} пкс", _ruler.GetDistance(_pt1, _pt2, _dx, _dy), _ruler.GetDistance(_pt1, _pt2));
             }
         }
 

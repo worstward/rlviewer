@@ -38,11 +38,17 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
             this.toolsTab = new System.Windows.Forms.TabPage();
+            this.rbfInterpolationcSettingsGb = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.regularizationCoefTb = new System.Windows.Forms.MaskedTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.layersNumTb = new System.Windows.Forms.MaskedTextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.baseRadiusTb = new System.Windows.Forms.MaskedTextBox();
             this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.surfaceTypeLbl = new System.Windows.Forms.Label();
             this.surfaceTypeCb = new System.Windows.Forms.ComboBox();
@@ -59,20 +65,14 @@
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.rbfInterpolationcSettingsGb = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.regularizationCoefTb = new System.Windows.Forms.MaskedTextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.layersNumTb = new System.Windows.Forms.MaskedTextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.baseRadiusTb = new System.Windows.Forms.MaskedTextBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.toolsTab.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.rbfInterpolationcSettingsGb.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -157,6 +157,7 @@
             this.tileOutputCb.Name = "tileOutputCb";
             this.tileOutputCb.Size = new System.Drawing.Size(170, 21);
             this.tileOutputCb.TabIndex = 19;
+            this.tileOutputCb.SelectedIndexChanged += new System.EventHandler(this.tileOutputCb_SelectedIndexChanged);
             // 
             // forceTileGenCheckBox
             // 
@@ -167,6 +168,7 @@
             this.forceTileGenCheckBox.TabIndex = 18;
             this.forceTileGenCheckBox.Text = "Принудительная генерация тайлов";
             this.forceTileGenCheckBox.UseVisualStyleBackColor = true;
+            this.forceTileGenCheckBox.CheckedChanged += new System.EventHandler(this.forceTileGenCheckBox_CheckedChanged);
             // 
             // allowViewCheckBox
             // 
@@ -177,6 +179,7 @@
             this.allowViewCheckBox.TabIndex = 17;
             this.allowViewCheckBox.Text = "Просмотр изображения во время загрузки";
             this.allowViewCheckBox.UseVisualStyleBackColor = true;
+            this.allowViewCheckBox.CheckedChanged += new System.EventHandler(this.allowViewCheckBox_CheckedChanged);
             // 
             // groupBox3
             // 
@@ -189,17 +192,6 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -255,6 +247,84 @@
             this.toolsTab.TabIndex = 2;
             this.toolsTab.Text = "Инструменты";
             this.toolsTab.UseVisualStyleBackColor = true;
+            // 
+            // rbfInterpolationcSettingsGb
+            // 
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label7);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.regularizationCoefTb);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label8);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.layersNumTb);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.label9);
+            this.rbfInterpolationcSettingsGb.Controls.Add(this.baseRadiusTb);
+            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 180);
+            this.rbfInterpolationcSettingsGb.Name = "rbfInterpolationcSettingsGb";
+            this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
+            this.rbfInterpolationcSettingsGb.TabIndex = 14;
+            this.rbfInterpolationcSettingsGb.TabStop = false;
+            this.rbfInterpolationcSettingsGb.Text = "РБФ интерполяция";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(14, 91);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(110, 26);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Регуляризационный\r\n коэффициент";
+            // 
+            // regularizationCoefTb
+            // 
+            this.regularizationCoefTb.AllowPromptAsInput = false;
+            this.regularizationCoefTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.regularizationCoefTb.Location = new System.Drawing.Point(145, 97);
+            this.regularizationCoefTb.Mask = "\\0.000";
+            this.regularizationCoefTb.Name = "regularizationCoefTb";
+            this.regularizationCoefTb.PromptChar = ' ';
+            this.regularizationCoefTb.ResetOnPrompt = false;
+            this.regularizationCoefTb.Size = new System.Drawing.Size(100, 20);
+            this.regularizationCoefTb.TabIndex = 24;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 57);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(99, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Количество слоев";
+            // 
+            // layersNumTb
+            // 
+            this.layersNumTb.AllowPromptAsInput = false;
+            this.layersNumTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.layersNumTb.Location = new System.Drawing.Point(145, 57);
+            this.layersNumTb.Mask = "00";
+            this.layersNumTb.Name = "layersNumTb";
+            this.layersNumTb.PromptChar = ' ';
+            this.layersNumTb.ResetOnPrompt = false;
+            this.layersNumTb.Size = new System.Drawing.Size(100, 20);
+            this.layersNumTb.TabIndex = 22;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(13, 29);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(102, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Начальный радиус";
+            // 
+            // baseRadiusTb
+            // 
+            this.baseRadiusTb.AllowPromptAsInput = false;
+            this.baseRadiusTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.baseRadiusTb.Location = new System.Drawing.Point(145, 26);
+            this.baseRadiusTb.Mask = "0000";
+            this.baseRadiusTb.Name = "baseRadiusTb";
+            this.baseRadiusTb.PromptChar = ' ';
+            this.baseRadiusTb.ResetOnPrompt = false;
+            this.baseRadiusTb.Size = new System.Drawing.Size(100, 20);
+            this.baseRadiusTb.TabIndex = 20;
             // 
             // areasOrPointsForAligningCb
             // 
@@ -425,83 +495,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // rbfInterpolationcSettingsGb
+            // comboBoxPics1
             // 
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.label7);
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.regularizationCoefTb);
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.label8);
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.layersNumTb);
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.label9);
-            this.rbfInterpolationcSettingsGb.Controls.Add(this.baseRadiusTb);
-            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 180);
-            this.rbfInterpolationcSettingsGb.Name = "rbfInterpolationcSettingsGb";
-            this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
-            this.rbfInterpolationcSettingsGb.TabIndex = 14;
-            this.rbfInterpolationcSettingsGb.TabStop = false;
-            this.rbfInterpolationcSettingsGb.Text = "РБФ интерполяция";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 91);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(110, 26);
-            this.label7.TabIndex = 25;
-            this.label7.Text = "Регуляризационный\r\n коэффициент";
-            // 
-            // regularizationCoefTb
-            // 
-            this.regularizationCoefTb.AllowPromptAsInput = false;
-            this.regularizationCoefTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.regularizationCoefTb.Location = new System.Drawing.Point(145, 97);
-            this.regularizationCoefTb.Mask = "\\0.000";
-            this.regularizationCoefTb.Name = "regularizationCoefTb";
-            this.regularizationCoefTb.PromptChar = ' ';
-            this.regularizationCoefTb.ResetOnPrompt = false;
-            this.regularizationCoefTb.Size = new System.Drawing.Size(100, 20);
-            this.regularizationCoefTb.TabIndex = 24;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 57);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(99, 13);
-            this.label8.TabIndex = 23;
-            this.label8.Text = "Количество слоев";
-            // 
-            // layersNumTb
-            // 
-            this.layersNumTb.AllowPromptAsInput = false;
-            this.layersNumTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.layersNumTb.Location = new System.Drawing.Point(145, 57);
-            this.layersNumTb.Mask = "00";
-            this.layersNumTb.Name = "layersNumTb";
-            this.layersNumTb.PromptChar = ' ';
-            this.layersNumTb.ResetOnPrompt = false;
-            this.layersNumTb.Size = new System.Drawing.Size(100, 20);
-            this.layersNumTb.TabIndex = 22;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(13, 29);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(102, 13);
-            this.label9.TabIndex = 21;
-            this.label9.Text = "Начальный радиус";
-            // 
-            // baseRadiusTb
-            // 
-            this.baseRadiusTb.AllowPromptAsInput = false;
-            this.baseRadiusTb.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.baseRadiusTb.Location = new System.Drawing.Point(145, 26);
-            this.baseRadiusTb.Mask = "0000";
-            this.baseRadiusTb.Name = "baseRadiusTb";
-            this.baseRadiusTb.PromptChar = ' ';
-            this.baseRadiusTb.ResetOnPrompt = false;
-            this.baseRadiusTb.Size = new System.Drawing.Size(100, 20);
-            this.baseRadiusTb.TabIndex = 20;
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // SettingsForm
             // 
@@ -528,10 +531,10 @@
             this.groupBox3.PerformLayout();
             this.toolsTab.ResumeLayout(false);
             this.toolsTab.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.rbfInterpolationcSettingsGb.ResumeLayout(false);
             this.rbfInterpolationcSettingsGb.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }

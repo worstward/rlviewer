@@ -269,7 +269,15 @@ namespace RlViewer.Settings
             get { return _rbfMlRegularizationCoef; }
             set { _rbfMlRegularizationCoef = value; }
         }
-      
 
+        private int _dragAccelerator = 2;
+
+        [DataMember(IsRequired = true)]
+        public int DragAccelerator
+        {
+            get { return _dragAccelerator; }
+            set { _dragAccelerator = value; }
+        }
+      
     }
 }

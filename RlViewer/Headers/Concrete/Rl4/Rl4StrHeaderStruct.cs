@@ -35,7 +35,6 @@ namespace RlViewer.Headers.Concrete.Rl4
 
 
         public double a;//Heading
-
         public double g;//Roll
         public double f;//Pitch
 

@@ -68,27 +68,6 @@ namespace RlViewer.Behaviors.Draw
             return cropped;
         }
 
-        //public static byte[] Resize(byte[] initialImage, int initialWidth, int initialHeight, float scaleFactor)
-        //{
-        //    var imgWidth = (int)(initialWidth * scaleFactor);
-        //    var imgHeight = (int)(initialHeight * scaleFactor);
-
-        //    byte[] newImage = new byte[imgWidth * imgHeight];
-
-        //    int targetIdx = 0;
-
-        //    for (int i = 0; i < imgHeight; i++)
-        //    {
-        //        int iUnscaled = (int)(i / scaleFactor);
-        //        for (int j = 0; j < imgWidth; j++)
-        //        {
-        //            int jUnscaled = (int)(j / scaleFactor);
-        //            newImage[targetIdx++] = initialImage[iUnscaled * initialWidth + jUnscaled];
-        //        }
-        //    }
-
-        //    return newImage;
-        //}
 
         public static byte[] Resize(byte[] initialImage, int initialWidth, int resizedW, int resizedH, float scaleFactor)
         {
@@ -100,8 +79,6 @@ namespace RlViewer.Behaviors.Draw
 
             Parallel.For(0, resizedH, (i) =>
                 {
-                    //for (int i = 0; i < resizedH; i++)
-                    //{
                     int iUnscaled = (int)(i / scaleFactor);
 
                     var newImgIndex = i * realWidth + i * padding; 

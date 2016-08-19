@@ -121,6 +121,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             var rliHeader = new List<Tuple<string, string>>();
             //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));
+            //rliHeader.Add(new Tuple<string, string>("Дата и время синтеза",              headerStruct.rlParams.synthTime.ToDateTime().ToString()));
             rliHeader.Add(new Tuple<string, string>("Ширина, отсчетов",                  headerStruct.rlParams.width.ToString()));
             rliHeader.Add(new Tuple<string, string>("Высота, строк",                     headerStruct.rlParams.height.ToString())); 
             rliHeader.Add(new Tuple<string, string>("Ширина кадра, отсчетов",            headerStruct.rlParams.cadrWidth.ToString()));

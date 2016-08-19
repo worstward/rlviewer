@@ -70,8 +70,9 @@ namespace RlViewer.Forms
             comboBoxPics1.Items.Add(new CboItem("1 1 1", Properties.Resources.Grayscale));
             comboBoxPics1.Items.Add(new CboItem("-1 -1 -1", Properties.Resources.Rainbow));
             comboBoxPics1.Items.Add(new CboItem("1 1 0", Properties.Resources.Yellows));
-            comboBoxPics1.Items.Add(new CboItem("1 0 1", Properties.Resources.Pinks));
-            comboBoxPics1.Items.Add(new CboItem("0 1 1", Properties.Resources.LightBlues));
+            comboBoxPics1.Items.Add(new CboItem("5 1 2", Properties.Resources.Pinks));
+            comboBoxPics1.Items.Add(new CboItem("1 2 5", Properties.Resources.LightBlues));
+            comboBoxPics1.Items.Add(new CboItem("2 5 1", Properties.Resources.AcidGreen));
         }
 
         private void allowViewCheckBox_CheckedChanged(object sender, EventArgs e)

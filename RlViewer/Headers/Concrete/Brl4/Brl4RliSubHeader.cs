@@ -37,12 +37,10 @@ namespace RlViewer.Headers.Concrete.Brl4
         public int width;
         public int height;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] dummy4;
+        public int frames;
 
-        // время синтеза
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] processTime;
+        public byte[] synthTime;
 
         // размер соответствующего фрагмента РГГ
         public int processi;

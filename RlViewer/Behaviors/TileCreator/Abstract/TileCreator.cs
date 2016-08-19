@@ -170,6 +170,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 }
             }
 
+            if(comparer.Compare(maxSampleValue, default(T)) == 0)
+            {
+                throw new ArgumentException("File is corrupted (zero sample values)");
+            }
+
             return maxSampleValue;
         }
 

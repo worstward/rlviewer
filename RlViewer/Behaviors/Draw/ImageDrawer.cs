@@ -85,7 +85,7 @@ namespace RlViewer.Behaviors.Draw
                 {
                     if (PaletteParams.IsGroupped)
                     {
-                        colorPalette.Entries[255 - i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
+                        colorPalette.Entries[255 - i] = Color.FromArgb(alpha, TrimToByteRange(GroupValues(r)), TrimToByteRange(GroupValues(g)), TrimToByteRange(GroupValues(b)));
                     }
                     else
                     {
@@ -96,11 +96,11 @@ namespace RlViewer.Behaviors.Draw
                 {
                     if (PaletteParams.IsGroupped)
                     {
-                        colorPalette.Entries[i] = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
+                        colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(GroupValues(r)), TrimToByteRange(GroupValues(g)), TrimToByteRange(GroupValues(b)));
                     }
                     else
                     {
-                        var color = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
+                        //var color = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
                         colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                     }
                 }

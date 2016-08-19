@@ -18,7 +18,7 @@ namespace RlViewer.Behaviors.Ruler
         /// <returns>Distance in pixels</returns>
         public double GetDistance(Point p1, Point p2)
         {
-            return Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+            return Math.Round(Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)));
         }
 
         /// <summary>

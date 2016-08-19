@@ -630,27 +630,37 @@ namespace RlViewer.UI
             }
         }
 
-        //public async void DrawImage(Func<Image> RedrawWithItems = null)
-        //{
-        //    if (_tiles != null && _drawer != null)
-        //    {
-        //        await Task.Factory.StartNew(() =>
-        //        {
-        //            lock (_animationLock)
-        //            {
-        //                if (_tiles != null && _drawer != null)
-        //                {
-        //                    _drawer.Draw(_tiles,
-        //                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value),
-        //                                _settings.HighResForDownScaled);
-        //                }
-        //            }
-        //            OnImageDrawn(null, RedrawWithItems());
-        //        });
-        //    }
-        //}
-
         public async void DrawImage(Func<Image> RedrawWithItems = null)
+        {
+            if (_tiles != null && _drawer != null)
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    lock (_animationLock)
+                    {
+                        if (_tiles != null && _drawer != null)
+                        {
+                            try
+                            {
+                                _drawer.Draw(_tiles,
+                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Concurrency error");
+                            }
+                            catch (Exception)
+                            {
+                                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Generic type drawing error");
+                            }
+                        }
+                    }
+                    OnImageDrawn(null, RedrawWithItems());
+                });
+            }
+        }
+
+        public async void DrawImage()
         {
             if (_tiles != null && _drawer != null)
             {
@@ -660,8 +670,21 @@ namespace RlViewer.UI
                         {
                             if (_tiles != null && _drawer != null)
                             {
-                                return _drawer.Draw(_tiles,
+                                try
+                                {
+                                    return _drawer.Draw(_tiles,
                                             new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
+                                }
+                                catch (InvalidOperationException)
+                                {
+                                    Logging.Logger.Log(Logging.SeverityGrades.Internal, "Concurrency error");
+                                    return _form.Canvas.Image;
+                                }
+                                catch (Exception)
+                                {
+                                    Logging.Logger.Log(Logging.SeverityGrades.Internal, "Generic type drawing error");
+                                    return _form.Canvas.Image;
+                                }
                             }
                             else return null;
                         }
@@ -1188,9 +1211,8 @@ namespace RlViewer.UI
             {
                 if (_drag.Trace(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor))))
                 {
-              
-                    var newHor = _form.Horizontal.Value - _drag.Delta.X;
-                    var newVert = _form.Vertical.Value - _drag.Delta.Y;
+                    var newHor = _form.Horizontal.Value - _drag.Delta.X * _settings.DragAccelerator;
+                    var newVert = _form.Vertical.Value - _drag.Delta.Y * _settings.DragAccelerator;
 
                     newVert = newVert < 0 ? 0 : newVert;
                     newVert = newVert > _form.Vertical.Maximum ? _form.Vertical.Maximum : newVert;

@@ -79,7 +79,6 @@
             this.markPointRb = new System.Windows.Forms.RadioButton();
             this.alignBtn = new System.Windows.Forms.Button();
             this.markAreaRb = new System.Windows.Forms.RadioButton();
-            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.analyzeRb = new System.Windows.Forms.RadioButton();
             this.verSection = new System.Windows.Forms.RadioButton();
             this.horSection = new System.Windows.Forms.RadioButton();
@@ -88,6 +87,7 @@
             this.findPointBtn = new System.Windows.Forms.Button();
             this.statisticsBtn = new System.Windows.Forms.Button();
             this.sharerRb = new System.Windows.Forms.RadioButton();
+            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
@@ -650,23 +650,6 @@
             this.markAreaRb.TabIndex = 7;
             this.markAreaRb.UseVisualStyleBackColor = false;
             // 
-            // squareAreaRb
-            // 
-            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
-            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.squareAreaRb.FlatAppearance.BorderSize = 0;
-            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squareAreaRb.Location = new System.Drawing.Point(435, 3);
-            this.squareAreaRb.Name = "squareAreaRb";
-            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.squareAreaRb.TabIndex = 25;
-            this.squareAreaRb.UseVisualStyleBackColor = false;
-            this.squareAreaRb.Visible = false;
-            // 
             // analyzeRb
             // 
             this.analyzeRb.Appearance = System.Windows.Forms.Appearance.Button;
@@ -795,6 +778,23 @@
             this.sharerRb.Size = new System.Drawing.Size(30, 30);
             this.sharerRb.TabIndex = 26;
             this.sharerRb.UseVisualStyleBackColor = false;
+            // 
+            // squareAreaRb
+            // 
+            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
+            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.squareAreaRb.FlatAppearance.BorderSize = 0;
+            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.squareAreaRb.Location = new System.Drawing.Point(435, 3);
+            this.squareAreaRb.Name = "squareAreaRb";
+            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.squareAreaRb.TabIndex = 25;
+            this.squareAreaRb.UseVisualStyleBackColor = false;
+            this.squareAreaRb.Visible = false;
             // 
             // filterPanelCb
             // 

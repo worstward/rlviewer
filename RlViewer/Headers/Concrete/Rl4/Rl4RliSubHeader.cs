@@ -36,13 +36,10 @@ namespace RlViewer.Headers.Concrete.Rl4
         // размер изображения
         public int width;
         public int height;
+        public int frames;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] dummy4;
-
-        // время синтеза
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] processTime;
+        public byte[] synthTime;
 
         // размер соответствующего фрагмента РГГ
         public int processi;
