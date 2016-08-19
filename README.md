@@ -15,7 +15,7 @@ RlViewer is a tool designed specially for viewing and editing radiolocation imag
   Viewing includes scaling, applying image filters, changing palettes and more.
 2. Checking file header info;
 3. Linear/Logarithmic/Linear-Logarithmic image output;
-4. Image aligning (different surfaces and provided point amount);
+4. Image aligning (different algorithms depending on provided points amount and user input);
 5. Image saving;
 6. Coordinates recomputing;
 7. Searching point on image given local or geodesic coordinates;
@@ -25,7 +25,8 @@ RlViewer is a tool designed specially for viewing and editing radiolocation imag
 11. Checking user selected area statistics;
 12. Docx report generation;
 13. Cached images manipulations;
-14. Image histogram and so on.
+14. Cross process interaction between any number of app instances
+15. Area statistics and so on.
 
 ![FullImage](http://i.imgur.com/QblgaXo.png)
 
