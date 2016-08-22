@@ -23,8 +23,25 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             {
                 for (int i = 0; i < FilesToProcess.Length; i++)
                 {
-                    using (var docToInsert = PrepareReport(reportFilePath, FilesToProcess[i]))
-                    { 
+                    if (System.IO.File.Exists(FilesToProcess[i]))
+                    {
+                        DocX docToInsert = null;
+
+                        try
+                        {
+                            docToInsert = PrepareReport(reportFilePath, FilesToProcess[i]);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logging.Logger.Log(Logging.SeverityGrades.Error, 
+                                string.Format("Can't create report for file {0}, reason: {1}", FilesToProcess[i],  ex.Message));
+                        }
+
+                        if (docToInsert == null)
+                        {
+                            continue;
+                        }
+
                         document.InsertDocument(docToInsert);
 
                         if (i != FilesToProcess.Length - 1)
@@ -32,12 +49,12 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                             document.InsertSectionPageBreak();
                         }
 
-
                         OnProgressReport((int)(i / (float)FilesToProcess.Length * 100));
                         if (OnCancelWorker())
                         {
                             return;
                         }
+
                     }
                 }
                 document.Save();

@@ -47,16 +47,17 @@ namespace RlViewer.Headers.Abstract
 
 
 
-        protected virtual void CheckSignature(byte[] header)
+        protected virtual bool CheckSignature(byte[] header)
         {
             for (int i = 0; i < Signature.Length; i++)
             {
                 if (header[i] != Signature[i])
                 {
-                    Logging.Logger.Log(Logging.SeverityGrades.Blocking, "Unexpected symbols in file header signature");
-                    throw new ArgumentException("Wrong file header signature");
+                    return false;
                 }
             }
+
+            return true;
         }
 
 

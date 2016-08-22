@@ -122,9 +122,22 @@ namespace RlViewer.Behaviors.Draw
         {
             if (_canvas != null)
             {
-                return _iDrawer.DrawSharedPoint(_canvas, shared, leftTopPointOfView, screenSize);
+                Image img = (Image)_canvas.Clone();
+                return _iDrawer.DrawSharedPoint(img, shared, leftTopPointOfView, screenSize);
             }
             return null;
         }
+
+        public Image DrawSharedPoint(Image canvas, Point shared, Point leftTopPointOfView, Size screenSize)
+        {
+            if (canvas != null)
+            {
+                Image img = (Image)canvas.Clone();
+                return _iDrawer.DrawSharedPoint(img, shared, leftTopPointOfView, screenSize);
+            }
+            return null;
+        }
+
+
     }
 }

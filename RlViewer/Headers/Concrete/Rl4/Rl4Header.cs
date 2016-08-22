@@ -83,8 +83,9 @@ namespace RlViewer.Headers.Concrete.Rl4
             {
                 parsedHeader = ParseHeader(_headerStruct);
             }
-            catch (ArgumentException)
+            catch (ArgumentException arex)
             {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, arex.Message);
                 return null;
             }
 
@@ -94,14 +95,9 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         private HeaderInfoOutput[] ParseHeader(Rl4RliFileHeader headerStruct)
         {
-            try
+            if(!CheckSignature(headerStruct.fileSign))
             {
-                CheckSignature(headerStruct.fileSign);
-            }
-            catch (ArgumentException aex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, aex.Message);
-                throw;
+                throw new ArgumentException("Unexpected file header signature");
             }
 
             var rhgHeader = new List<Tuple<string, string>>();

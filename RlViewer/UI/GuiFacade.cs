@@ -244,7 +244,7 @@ namespace RlViewer.UI
                 catch (Exception ex)
                 {
                     Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
-                    ErrorGuiMessage(ex.Message);
+                    Forms.FormsHelper.ShowErrorMsg(ex.Message);
                 }
             }
 
@@ -282,7 +282,7 @@ namespace RlViewer.UI
             if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point: {0}", e.Error.Message));
-                ErrorGuiMessage("Unable to find point");
+                Forms.FormsHelper.ShowErrorMsg("Unable to find point");
             }
             else
             {
@@ -345,7 +345,7 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error occured while saving image: {0}", e.Error.Message));
-                ErrorGuiMessage("Unable to save image");
+                Forms.FormsHelper.ShowErrorMsg("Unable to save image");
             }
             else
             {
@@ -393,7 +393,7 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error occured while aligning image: {0}", e.Error.Message));
-                ErrorGuiMessage("Unable to align image");
+                Forms.FormsHelper.ShowErrorMsg("Unable to align image");
             }
             else
             {
@@ -472,7 +472,7 @@ namespace RlViewer.UI
                 {
                     grade = Logging.SeverityGrades.Blocking;
                     errMess = string.Format("Error occured while opening file: {0}", e.Error.Message);
-                    ErrorGuiMessage("Unable to open file");
+                    Forms.FormsHelper.ShowErrorMsg("Unable to open file");
                 }
 
                 Logging.Logger.Log(grade, errMess);
@@ -521,7 +521,7 @@ namespace RlViewer.UI
                 ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}",
                     e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
-                ErrorGuiMessage("Ошибка генерации изображения из файла");
+                Forms.FormsHelper.ShowErrorMsg("Ошибка генерации изображения из файла");
                 InitializeWindow();
             }
             else
@@ -574,7 +574,7 @@ namespace RlViewer.UI
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error,
                     string.Format("Unable to make report: {0}", e.Error.Message));
-                ErrorGuiMessage("Ошибка при создании отчета");
+                Forms.FormsHelper.ShowErrorMsg("Ошибка при создании отчета");
                 InitializeWindow();
             }
             else
@@ -630,80 +630,44 @@ namespace RlViewer.UI
             }
         }
 
-        public async void DrawImage(Func<Image> RedrawWithItems = null)
+
+        public void DrawImage(Func<Image, Image> RedrawWithItems = null)
         {
             if (_tiles != null && _drawer != null)
             {
-                await Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
+                    Image img = null;
                     lock (_animationLock)
                     {
                         if (_tiles != null && _drawer != null)
                         {
                             try
                             {
-                                _drawer.Draw(_tiles,
+                                img = _drawer.Draw(_tiles,
                                         new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
                             }
-                            catch (InvalidOperationException)
+                            catch (Exception ex)
                             {
-                                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Concurrency error");
-                            }
-                            catch (Exception)
-                            {
-                                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Generic type drawing error");
+                                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Generic type drawing error: {0}", ex.Message));
                             }
                         }
                     }
-                    OnImageDrawn(null, RedrawWithItems());
-                });
-            }
-        }
 
-        public async void DrawImage()
-        {
-            if (_tiles != null && _drawer != null)
-            {
-                Task<Image> t = new Task<Image>(() =>
+                    if (RedrawWithItems != null)
                     {
-                        lock (_animationLock)
-                        {
-                            if (_tiles != null && _drawer != null)
-                            {
-                                try
-                                {
-                                    return _drawer.Draw(_tiles,
-                                            new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
-                                }
-                                catch (InvalidOperationException)
-                                {
-                                    Logging.Logger.Log(Logging.SeverityGrades.Internal, "Concurrency error");
-                                    return _form.Canvas.Image;
-                                }
-                                catch (Exception)
-                                {
-                                    Logging.Logger.Log(Logging.SeverityGrades.Internal, "Generic type drawing error");
-                                    return _form.Canvas.Image;
-                                }
-                            }
-                            else return null;
-                        }
 
-                        //if (_form.FilterPanelCb.Checked)
-                        //{
-                        //    _chart.RedrawChart(_form.HistogramChart, (Image)img.Clone(), _file.Width, _file.Height);
-                        //}
-                    });
-                t.Start();
-
-                await t.ContinueWith((result) =>
-                {
-                    OnImageDrawn(null, result.Result);
-                });
-
+                        OnImageDrawn(null, RedrawWithItems(img));
+                    }
+                    else
+                    {
+                        OnImageDrawn(null, img);
+                    }
+                }).Wait();
 
             }
         }
+
 
         public void ChangePalette(float[] rgb, bool isReversed, bool isGrouped, bool useTemperaturePalette)
         {
@@ -774,13 +738,13 @@ namespace RlViewer.UI
 
                     ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical, () => _form.Vertical.Value = vertValue);
 
-                    DrawImage(() => _drawer.DrawSharedPoint(center,
+                    DrawImage((image) => _drawer.DrawSharedPoint(image, center,
                         new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size));
                     
                 }
                 else if (showWarning)
                 {
-                    ErrorGuiMessage("Невозможно найти точку");
+                    Forms.FormsHelper.ShowErrorMsg("Невозможно найти точку");
                 }
             }
         }
@@ -913,39 +877,29 @@ namespace RlViewer.UI
 
         private void AddToolTips(ISuitableForm frm)
         {
-            AddToolTip(frm.AlignBtn, "Выровнять");
-            AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
-            AddToolTip(frm.DragRb, "Перемещение по изображению");
-            AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
-            AddToolTip(frm.LinearSectionRb, "Произвольное сечение");
-            AddToolTip(frm.MarkAreaRb, "Область");
-            AddToolTip(frm.MarkPointRb, "Отметка");
-            AddToolTip(frm.NavigationPanelCb, "Навигация");
-            AddToolTip(frm.RulerRb, "Линейка");
-            AddToolTip(frm.FindPointBtn, "Поиск точки");
-            AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
-            AddToolTip(frm.BrightnessRb, "Яркость");
-            AddToolTip(frm.ContrastRb, "Контрастность");
-            AddToolTip(frm.GammaRb, "Гамма");
-            AddToolTip(frm.ResetFilter, "Сброс фильтров");
-            AddToolTip(frm.FilterPanelCb, "Фильтры");
-            AddToolTip(frm.ZoomInBtn, "Увеличить масштаб");
-            AddToolTip(frm.ZoomOutBtn, "Уменьшить масштаб");
-            AddToolTip(frm.StatisticsBtn, "Статистика");
-            AddToolTip(frm.SquareAreaRb, "Трехмерный график");
-            AddToolTip(frm.SharerRb, "Сравнить точки");
+            Forms.FormsHelper.AddToolTip(frm.AlignBtn, "Выровнять");
+            Forms.FormsHelper.AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
+            Forms.FormsHelper.AddToolTip(frm.DragRb, "Перемещение по изображению");
+            Forms.FormsHelper.AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
+            Forms.FormsHelper.AddToolTip(frm.LinearSectionRb, "Произвольное сечение");
+            Forms.FormsHelper.AddToolTip(frm.MarkAreaRb, "Область");
+            Forms.FormsHelper.AddToolTip(frm.MarkPointRb, "Отметка");
+            Forms.FormsHelper.AddToolTip(frm.NavigationPanelCb, "Навигация");
+            Forms.FormsHelper.AddToolTip(frm.RulerRb, "Линейка");
+            Forms.FormsHelper.AddToolTip(frm.FindPointBtn, "Поиск точки");
+            Forms.FormsHelper.AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
+            Forms.FormsHelper.AddToolTip(frm.BrightnessRb, "Яркость");
+            Forms.FormsHelper.AddToolTip(frm.ContrastRb, "Контрастность");
+            Forms.FormsHelper.AddToolTip(frm.GammaRb, "Гамма");
+            Forms.FormsHelper.AddToolTip(frm.ResetFilter, "Сброс фильтров");
+            Forms.FormsHelper.AddToolTip(frm.FilterPanelCb, "Фильтры");
+            Forms.FormsHelper.AddToolTip(frm.ZoomInBtn, "Увеличить масштаб");
+            Forms.FormsHelper.AddToolTip(frm.ZoomOutBtn, "Уменьшить масштаб");
+            Forms.FormsHelper.AddToolTip(frm.StatisticsBtn, "Статистика");
+            Forms.FormsHelper.AddToolTip(frm.SquareAreaRb, "Трехмерный график");
+            Forms.FormsHelper.AddToolTip(frm.SharerRb, "Сравнить точки");
         }
 
-        private void AddToolTip(Control c, string caption)
-        {
-            ToolTip t = new ToolTip();
-            t.SetToolTip(c, caption);
-        }
-
-        private void ErrorGuiMessage(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
 
         private void InitScrollBars(float scaleFactor)
         {
@@ -1192,7 +1146,7 @@ namespace RlViewer.UI
                     //    catch (Exception ex)
                     //    {
                     //        Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to build 3d plot: {0}", ex.Message));
-                    //        ErrorGuiMessage("Невозможно построить график");
+                    //        Forms.FormsHelper.ShowErrorMsg("Невозможно построить график");
                     //    }
                     //}
 
@@ -1313,9 +1267,10 @@ namespace RlViewer.UI
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ErrorGuiMessage("Невозможно проанализировать точку");
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Point analyzing failed with message: {0}", ex.Message));
+                Forms.FormsHelper.ShowErrorMsg("Невозможно проанализировать точку");
             }
         }
 
@@ -1494,7 +1449,7 @@ namespace RlViewer.UI
                 }
                 else
                 {
-                    ErrorGuiMessage("Невозможно построить статистику области");
+                    Forms.FormsHelper.ShowErrorMsg("Невозможно построить статистику области");
                 }
 
             }
@@ -1538,7 +1493,7 @@ namespace RlViewer.UI
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Error,
                             string.Format("Unable to embed new navigation: {0}", ex.Message));
-                        ErrorGuiMessage("Не удалось вшить навигацию");
+                        Forms.FormsHelper.ShowErrorMsg("Не удалось вшить навигацию");
                     }
                 }
             }
@@ -1563,7 +1518,7 @@ namespace RlViewer.UI
                     if (validFiles.Count() == 0)
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Error, "Unsuitable files selected");
-                        ErrorGuiMessage("Unsuitable files selected");
+                        Forms.FormsHelper.ShowErrorMsg("Unsuitable files selected");
                         return;
                     }
 
@@ -1640,7 +1595,7 @@ namespace RlViewer.UI
             }
             catch
             {
-                ErrorGuiMessage("Невозможно построить сечение");
+                Forms.FormsHelper.ShowErrorMsg("Невозможно построить сечение");
                 return;
             }
 
@@ -1692,7 +1647,7 @@ namespace RlViewer.UI
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Warning,
                             string.Format("Unable to evaluate process status: {0}", ex.Message));
-                        ErrorGuiMessage("Запуск в режиме администратора невозможен");
+                        Forms.FormsHelper.ShowErrorMsg("Запуск в режиме администратора невозможен");
                     }
                 }
             }

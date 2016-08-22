@@ -55,13 +55,12 @@ namespace RlViewer.Behaviors.Draw
             var screen = new RectangleF(leftTopPointOfView.X, leftTopPointOfView.Y,
                 screenSize.Width / Scaler.ScaleFactor, screenSize.Height / Scaler.ScaleFactor);
 
-            Image img = (Image)canvas.Clone();
-            using (var g = Graphics.FromImage(img))
+            using (var g = Graphics.FromImage(canvas))
             {
                 DrawPoint(g, screen, shared, Brushes.Orange);                  
             }
-           
-            return img;
+
+            return canvas;
         }
 
         public Image DrawSquareArea(Image canvas, Point leftTop, int borderSize)

@@ -48,5 +48,26 @@ namespace RlViewer.Forms
             }
             return dgv;
         }
+
+        /// <summary>
+        /// Adds tooltip to control
+        /// </summary>
+        /// <param name="c">Target control</param>
+        /// <param name="caption">Caption text</param>
+        public static void AddToolTip(Control c, string caption)
+        {
+            ToolTip t = new ToolTip();
+            t.SetToolTip(c, caption);
+        }
+
+        /// <summary>
+        /// Shows messagebox with provided error text
+        /// </summary>
+        /// <param name="message"></param>
+        public static void ShowErrorMsg(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
     }
 }
