@@ -52,6 +52,8 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Untitled-28-64.ico</ApplicationIcon>
@@ -244,6 +246,7 @@
     <Compile Include="Factories\TileCreator\Concrete\KTileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl8TileCreatorFactory.cs" />
+    <Compile Include="Files\EnumExt.cs" />
     <Compile Include="Files\Rli\Concrete\Rl8.cs" />
     <Compile Include="Forms\ChartHelper.cs" />
     <Compile Include="Forms\FilePreviewForm.cs">
@@ -383,7 +386,6 @@
     <Compile Include="Forms\LogForm.Designer.cs">
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Headers\Abstract\IHeader.cs" />
     <Compile Include="Factories\File\Concrete\Brl4Factory.cs" />
     <Compile Include="Factories\File\Abstract\FileFactory.cs" />
     <Compile Include="Factories\File\Concrete\Rl4Factory.cs" />

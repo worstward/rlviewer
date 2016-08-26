@@ -38,6 +38,7 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -65,7 +66,6 @@
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
@@ -83,7 +83,7 @@
             this.tabControl1.Location = new System.Drawing.Point(13, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(278, 351);
+            this.tabControl1.Size = new System.Drawing.Size(278, 329);
             this.tabControl1.TabIndex = 1;
             // 
             // commonTab
@@ -131,7 +131,7 @@
             this.viewTab.Location = new System.Drawing.Point(4, 22);
             this.viewTab.Name = "viewTab";
             this.viewTab.Padding = new System.Windows.Forms.Padding(3);
-            this.viewTab.Size = new System.Drawing.Size(270, 325);
+            this.viewTab.Size = new System.Drawing.Size(270, 303);
             this.viewTab.TabIndex = 0;
             this.viewTab.Text = "Отображение";
             this.viewTab.UseVisualStyleBackColor = true;
@@ -193,6 +193,17 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
             // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            // 
             // logPaletteCb
             // 
             this.logPaletteCb.AutoSize = true;
@@ -234,8 +245,6 @@
             this.toolsTab.Controls.Add(this.areasOrPointsForAligningCb);
             this.toolsTab.Controls.Add(this.surfaceTypeLbl);
             this.toolsTab.Controls.Add(this.surfaceTypeCb);
-            this.toolsTab.Controls.Add(this.label6);
-            this.toolsTab.Controls.Add(this.plot3dSizeTb);
             this.toolsTab.Controls.Add(this.label2);
             this.toolsTab.Controls.Add(this.areaSizeTextBox);
             this.toolsTab.Controls.Add(this.label1);
@@ -243,7 +252,7 @@
             this.toolsTab.Location = new System.Drawing.Point(4, 22);
             this.toolsTab.Name = "toolsTab";
             this.toolsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.toolsTab.Size = new System.Drawing.Size(270, 325);
+            this.toolsTab.Size = new System.Drawing.Size(270, 303);
             this.toolsTab.TabIndex = 2;
             this.toolsTab.Text = "Инструменты";
             this.toolsTab.UseVisualStyleBackColor = true;
@@ -256,7 +265,7 @@
             this.rbfInterpolationcSettingsGb.Controls.Add(this.layersNumTb);
             this.rbfInterpolationcSettingsGb.Controls.Add(this.label9);
             this.rbfInterpolationcSettingsGb.Controls.Add(this.baseRadiusTb);
-            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 180);
+            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 149);
             this.rbfInterpolationcSettingsGb.Name = "rbfInterpolationcSettingsGb";
             this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
             this.rbfInterpolationcSettingsGb.TabIndex = 14;
@@ -329,7 +338,7 @@
             // areasOrPointsForAligningCb
             // 
             this.areasOrPointsForAligningCb.AutoSize = true;
-            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 160);
+            this.areasOrPointsForAligningCb.Location = new System.Drawing.Point(10, 129);
             this.areasOrPointsForAligningCb.Name = "areasOrPointsForAligningCb";
             this.areasOrPointsForAligningCb.Size = new System.Drawing.Size(241, 17);
             this.areasOrPointsForAligningCb.TabIndex = 9;
@@ -340,7 +349,7 @@
             // surfaceTypeLbl
             // 
             this.surfaceTypeLbl.AutoSize = true;
-            this.surfaceTypeLbl.Location = new System.Drawing.Point(7, 122);
+            this.surfaceTypeLbl.Location = new System.Drawing.Point(7, 91);
             this.surfaceTypeLbl.Name = "surfaceTypeLbl";
             this.surfaceTypeLbl.Size = new System.Drawing.Size(114, 26);
             this.surfaceTypeLbl.TabIndex = 13;
@@ -354,7 +363,7 @@
             "РБФ NN",
             "РБФ многослойная",
             "Кастомная"});
-            this.surfaceTypeCb.Location = new System.Drawing.Point(127, 122);
+            this.surfaceTypeCb.Location = new System.Drawing.Point(127, 91);
             this.surfaceTypeCb.Name = "surfaceTypeCb";
             this.surfaceTypeCb.Size = new System.Drawing.Size(134, 21);
             this.surfaceTypeCb.TabIndex = 12;
@@ -363,22 +372,24 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 77);
+            this.label6.Location = new System.Drawing.Point(23, 409);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(118, 26);
             this.label6.TabIndex = 11;
             this.label6.Text = "Область трехмерного\r\nграфика, отсчетов";
+            this.label6.Visible = false;
             // 
             // plot3dSizeTb
             // 
             this.plot3dSizeTb.AllowPromptAsInput = false;
-            this.plot3dSizeTb.Location = new System.Drawing.Point(161, 83);
+            this.plot3dSizeTb.Location = new System.Drawing.Point(187, 425);
             this.plot3dSizeTb.Mask = "000";
             this.plot3dSizeTb.Name = "plot3dSizeTb";
             this.plot3dSizeTb.PromptChar = ' ';
             this.plot3dSizeTb.ResetOnPrompt = false;
             this.plot3dSizeTb.Size = new System.Drawing.Size(100, 20);
             this.plot3dSizeTb.TabIndex = 10;
+            this.plot3dSizeTb.Visible = false;
             // 
             // label2
             // 
@@ -424,10 +435,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
             this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
-            this.groupBox1.Location = new System.Drawing.Point(118, 369);
+            this.groupBox1.Location = new System.Drawing.Point(124, 424);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(57, 36);
             this.groupBox1.TabIndex = 10;
@@ -446,7 +456,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 16);
+            this.label4.Location = new System.Drawing.Point(124, 408);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(148, 13);
             this.label4.TabIndex = 6;
@@ -477,7 +487,7 @@
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.Control;
-            this.button1.Location = new System.Drawing.Point(12, 369);
+            this.button1.Location = new System.Drawing.Point(12, 347);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -487,7 +497,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(216, 369);
+            this.button3.Location = new System.Drawing.Point(216, 347);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 4;
@@ -495,26 +505,18 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 404);
+            this.ClientSize = new System.Drawing.Size(303, 385);
             this.Controls.Add(this.button3);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.plot3dSizeTb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
             this.MaximizeBox = false;
@@ -536,6 +538,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

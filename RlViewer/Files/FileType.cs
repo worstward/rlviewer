@@ -38,17 +38,4 @@ namespace RlViewer
         rl8       
     }
 
-    public static class EnumExt
-    {
-        public static T ToEnum<T>(this string value) where T : struct
-        {
-            T res;
-            if(Enum.TryParse<T>(value, true, out res))
-            {
-                return res;
-            }
-
-            throw new NotSupportedException("unsupported type");
-        }
-    }
 }

@@ -10,6 +10,14 @@ namespace RlViewer.Behaviors
 {
     public static class FileReaderExt
     {
+
+
+        /// <summary>
+        /// Reads bytes at given area from this file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="areaBorders">Area to read bytes at</param>
+        /// <returns>Bytes of given area</returns>
         public static byte[] GetArea(this RlViewer.Files.LocatorFile file, Rectangle areaBorders)
         {
 
@@ -75,12 +83,16 @@ namespace RlViewer.Behaviors
             }
         }
 
-        public static float ToFloatSample(this byte[] sampleBytes, int sampleSize)
+
+        /// <summary>
+        /// Converts byte array to sample based on sample size
+        /// </summary>
+        private static float ToFloatSample(this byte[] sampleBytes)
         {
-            switch (sampleSize)
+            switch (sampleBytes.Length)
             {
                 case 4:
-                    return sampleBytes.ToFloatSample();
+                    return BitConverter.ToSingle(sampleBytes, 0);
                 case 8:
                     return sampleBytes.ToFloatSampleModulus();
 
@@ -89,7 +101,13 @@ namespace RlViewer.Behaviors
             }
         }
 
-
+        /// <summary>
+        /// Converts sample byte representation to its real value
+        /// </summary>
+        /// <param name="sample">byte array containing sample</param>
+        /// <param name="type">this sample file type</param>
+        /// <param name="sampleSize">Size of sample</param>
+        /// <returns></returns>
         public static float ToFileSample(this byte[] sample, FileType type, int sampleSize)
         {
             switch (type)
@@ -97,18 +115,11 @@ namespace RlViewer.Behaviors
                 case FileType.brl4:
                 case FileType.rl4:
                 case FileType.r:
-                    return ToFloatSample(sample, sampleSize);               
+                    return ToFloatSample(sample);               
                 case FileType.rl8:
                     return ToFloatSampleModulus(sample);
                 case FileType.raw:
-                    if (sampleSize == 4)
-                    {
-                        return ToFloatSample(sample, sampleSize);
-                    }
-                    else if(sampleSize == 8)
-                    {
-                        return ToFloatSampleModulus(sample);
-                    }
+                        return ToFloatSample(sample);
                     break;
                 case FileType.k:
                     return ToShortSampleModulus(sample);
@@ -126,19 +137,14 @@ namespace RlViewer.Behaviors
             var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
             return (float)(Math.Sqrt(re * re + im * im));
         }
-        private static float ToFloatSample(this byte[] sampleBytes)
+
+
+        public static short ToShortSample(this byte[] sampleBytes)
         {
-            return BitConverter.ToSingle(sampleBytes, 0);
-        }
-
-
-
-        public static short ToShortSample(this byte[] sampleBytes, int sampleSize)
-        {
-            switch (sampleSize)
+            switch (sampleBytes.Length)
             {
                 case 2:
-                    return sampleBytes.ToShortSample();
+                    return BitConverter.ToInt16(sampleBytes, 0);
                 case 4:
                     return sampleBytes.ToShortSampleModulus();
 
@@ -152,10 +158,6 @@ namespace RlViewer.Behaviors
             var re = BitConverter.ToInt16(sampleBytes, 0);
             var im = BitConverter.ToInt16(sampleBytes, sizeof(short));
             return (short)(Math.Sqrt(re * re + im * im));
-        }
-        private static short ToShortSample(this byte[] sampleBytes)
-        {
-            return BitConverter.ToInt16(sampleBytes, 0);
         }
 
         public static T[] ToArea<T>(this byte[] areaBytes, int sampleSize)

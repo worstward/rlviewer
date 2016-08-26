@@ -82,9 +82,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
 
 
 
-
-
-
         private double[,] GetAmplitudeSolution(System.Drawing.Rectangle area)
         {
             return GetSolution(area, Selector.Select(x => x.Value).ToArray());

@@ -12,6 +12,11 @@ namespace RlViewer.Headers.Concrete.K
         public KHeader(string path)
         {
             _headerStruct =  ReadHeader<KFileHeaderStruct>(path);
+
+            if (!CheckSignature(_headerStruct.signatureHeader.fileSign))
+            {
+                throw new ArgumentException("Unexpected file header signature");
+            }
         }
 
         protected override byte[] Signature
@@ -89,10 +94,6 @@ namespace RlViewer.Headers.Concrete.K
 
         private HeaderInfoOutput[] ParseHeader(KFileHeaderStruct headerStruct)
         {
-            if (!CheckSignature(headerStruct.signatureHeader.fileSign))
-            {
-                throw new ArgumentException("Unexpected file header signature");
-            }
 
             var adcHeader = new List<Tuple<string, string>>();
             adcHeader.Add(new Tuple<string, string>("Задержка АЦП, мс", headerStruct.adcHeader.adcDelay.ToString()));

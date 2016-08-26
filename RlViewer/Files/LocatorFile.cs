@@ -8,7 +8,11 @@ using RlViewer.Headers.Concrete;
 
 namespace RlViewer.Files
 {
-    public abstract class LocatorFile : LoadedFile, IHeader
+
+    /// <summary>
+    /// Incapsulates radiolocation file
+    /// </summary>
+    public abstract class LocatorFile : LoadedFile
     {
         protected LocatorFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties)
@@ -16,10 +20,22 @@ namespace RlViewer.Files
 
         }
 
+        /// <summary>
+        /// Contains navigation data of each data string header
+        /// </summary>
         public abstract Navigation.NavigationContainer Navigation { get; }
+        
+
         public abstract LocatorFileHeader Header { get; }
 
+        /// <summary>
+        /// Amount of samples in data string
+        /// </summary>
         public abstract int Width { get; }
+
+        /// <summary>
+        /// Amount of data strings in a file
+        /// </summary>
         public abstract int Height { get; }
 
 

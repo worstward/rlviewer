@@ -12,6 +12,10 @@ namespace RlViewer.Files.Rli.Concrete
 {
     public class Raw : RliFile
     {
+
+        /// <summary>
+        /// Incapsulates radiolocation image file of a ".raw" format
+        /// </summary>
         public Raw(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {

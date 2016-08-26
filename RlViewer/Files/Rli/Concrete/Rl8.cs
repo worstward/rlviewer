@@ -8,6 +8,10 @@ namespace RlViewer.Files.Rli.Concrete
 {
     class Rl8 : Rl4
     {
+
+        /// <summary>
+        /// Incapsulates radiolocation image file of a ".rl8" format
+        /// </summary>
         public Rl8(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {

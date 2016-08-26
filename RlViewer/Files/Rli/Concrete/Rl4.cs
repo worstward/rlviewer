@@ -14,6 +14,9 @@ namespace RlViewer.Files.Rli.Concrete
 {
     public class Rl4 : RliFile
     {
+        /// <summary>
+        /// Incapsulates radiolocation image file of a ".rl4" format
+        /// </summary>
         public Rl4(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {

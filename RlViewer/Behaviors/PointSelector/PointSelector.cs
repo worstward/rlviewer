@@ -110,7 +110,7 @@ namespace RlViewer.Behaviors.PointSelector
 
                             var selectedPoint = new SelectedPoint(file, file.GetMaxSampleLocation(area), epr.EprValue);
 
-                            if (!SelectedPoints.Any(p => p.Equals(selectedPoint.Location)))
+                            if (!SelectedPoints.Any(p => p.Location.Equals(selectedPoint.Location)))
                             {
                                 SelectedPoints.Add(selectedPoint);
                             }        

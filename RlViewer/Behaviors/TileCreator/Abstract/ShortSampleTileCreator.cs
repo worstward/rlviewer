@@ -47,12 +47,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 for (int i = 0; i < totalLines; i++)
                 {
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
-                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
+
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
                     {
                         return null;
                     }
+
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
                 }
             }
             return tiles.ToArray();
@@ -109,6 +111,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
             MaxValue = GetMaxValue<short>(loc, strDataLen, strHeadLen, (arr) => { return arr.Max(); });
+
+            if (Cancelled)
+            {
+                return 0;
+            }
 
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();
@@ -183,13 +190,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
             int index = 0;
 
-            //if (normalizationFactor > MaxValue)
-            //{
-            //    MaxValue = normalizationFactor;
-            //}
-
             float border = NormalizationFactor / 9f * 7;// *3;
 
+            if (Cancelled)
+            {
+                return null;
+            }
 
             while (index != line.Length && s.Position != s.Length)
             {

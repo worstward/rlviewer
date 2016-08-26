@@ -7,10 +7,12 @@ using System.Drawing;
 
 namespace RlViewer.Behaviors.Analyzing.Abstract
 {
+
+
     public abstract class SampleAnalyzer
     {
-        protected bool _isMouseDown;
 
+        protected bool _isMouseDown;
         protected Point _currentLocation;
 
         public void StartTracing()
@@ -24,12 +26,23 @@ namespace RlViewer.Behaviors.Analyzing.Abstract
             _isMouseDown = false;
         }
 
+
+        /// <summary>
+        /// Amplitude in current point
+        /// </summary>
         public float Amplitude
         {
             get;
             protected set;
         }
 
+
+        /// <summary>
+        /// Gets amplitude in the provided point
+        /// </summary>
+        /// <param name="file">File to get amplitude from</param>
+        /// <param name="p">Point to get amplitude at</param>
+        /// <returns></returns>
         public abstract bool Analyze(Files.LocatorFile file, Point p);
 
 

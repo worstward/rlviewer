@@ -75,6 +75,11 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                     return amplitudeModulus.Max();
                 });
 
+            if (Cancelled)
+            {
+                return 0;
+            }
+
             float histogramStep = MaxValue / 1000f;
             var histogram = new List<int>();
 
@@ -160,6 +165,10 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 
             float border = NormalizationFactor / 9f * 7;// *3;
 
+            if (Cancelled)
+            {
+                return null;
+            }
 
             while (index != line.Length && s.Position != s.Length)
             {

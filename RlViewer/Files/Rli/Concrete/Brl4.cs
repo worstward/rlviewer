@@ -10,6 +10,10 @@ using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rli.Concrete
 {
+
+    /// <summary>
+    /// Incapsulates radiolocation image file of a ".brl4" format
+    /// </summary>
     public class Brl4 : RliFile
     {
         public Brl4(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
@@ -17,9 +21,6 @@ namespace RlViewer.Files.Rli.Concrete
         {
             _header = header as Brl4Header;
             _navi = navi;
-
-            //_navi = new RlViewer.Navigation.Navigation(properties, _header.HeaderStruct.synthParams.D0, _header.HeaderStruct.synthParams.dD,
-            //    _header.HeaderStruct.synthParams.board, Header.FileHeaderLength, Width * Header.BytesPerSample);
         }
 
         private Navigation.NavigationContainer _navi;

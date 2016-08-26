@@ -12,6 +12,10 @@ using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rli.Concrete
 {
+
+    /// <summary>
+    /// Incapsulates radiolocation image file of a ".r" format
+    /// </summary>
     class R : Rli.Abstract.RliFile
     {
         public R(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)

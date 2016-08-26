@@ -11,6 +11,10 @@ using RlViewer.Navigation.Concrete;
 
 namespace RlViewer.Files.Rhg.Concrete
 {
+
+    /// <summary>
+    /// Incapsulates radiohologram file of a ".k" format
+    /// </summary>
     public class K : RhgFile
     {
         public K(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)

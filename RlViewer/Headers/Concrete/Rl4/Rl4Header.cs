@@ -16,6 +16,11 @@ namespace RlViewer.Headers.Concrete.Rl4
         public Rl4Header(string path)
         {
             _headerStruct = ReadHeader<Rl4RliFileHeader>(path);
+
+            if (!CheckSignature(_headerStruct.fileSign))
+            {
+                throw new ArgumentException("Unexpected file header signature");
+            }
         }
 
         protected override byte[] Signature
@@ -95,11 +100,6 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         private HeaderInfoOutput[] ParseHeader(Rl4RliFileHeader headerStruct)
         {
-            if(!CheckSignature(headerStruct.fileSign))
-            {
-                throw new ArgumentException("Unexpected file header signature");
-            }
-
             var rhgHeader = new List<Tuple<string, string>>();
 
             var fname = string.IsNullOrEmpty(Path.GetFileName(Encoding.UTF8.GetString(headerStruct.rhgParams.fileName).Trim('\0'))) ?

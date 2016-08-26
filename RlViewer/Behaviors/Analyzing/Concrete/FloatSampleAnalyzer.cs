@@ -26,7 +26,7 @@ namespace RlViewer.Behaviors.Analyzing.Concrete
 
                         try
                         {
-                            Amplitude = file.GetSample(location).ToFloatSample(file.Header.BytesPerSample);
+                            Amplitude = file.GetSample(location).ToFileSample(file.Properties.Type, file.Header.BytesPerSample);
                         }
                         catch (Exception)
                         {

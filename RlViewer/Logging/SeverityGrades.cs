@@ -20,27 +20,15 @@ namespace RlViewer.Logging
         {
             public static string ToStringValue(this SeverityGrades severity)
             {
-                string severityString;
-                switch (severity)
+                string severityString = null;
+
+                try
                 {
-                    case SeverityGrades.Blocking:
-                        severityString = "Blocking";
-                        break;
-                    case SeverityGrades.Error:
-                        severityString = "Error";
-                        break;
-                    case SeverityGrades.Info:
-                        severityString = "Info";
-                        break;
-                    case SeverityGrades.Warning:
-                        severityString = "Warning";
-                        break;
-                    case SeverityGrades.Internal:
-                        severityString = "Internal";
-                        break;
-                    default:
-                        severityString = "Unknown";
-                        break;
+                    severityString = Enum.GetName(typeof(SeverityGrades), severity);
+                }
+                catch(Exception)
+                {
+                    severityString = "Unknown";
                 }
 
                 return severityString;

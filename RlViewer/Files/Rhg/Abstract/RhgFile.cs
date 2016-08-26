@@ -7,6 +7,10 @@ using RlViewer.Headers.Abstract;
 
 namespace RlViewer.Files.Rhg.Abstract
 {
+
+    /// <summary>
+    /// Incapsulates radiohologram file
+    /// </summary>
     public abstract class RhgFile : LocatorFile
     {
         protected RhgFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
@@ -14,6 +18,7 @@ namespace RlViewer.Files.Rhg.Abstract
         {
 
         }
+
         public override abstract LocatorFileHeader Header { get; }
 
     }

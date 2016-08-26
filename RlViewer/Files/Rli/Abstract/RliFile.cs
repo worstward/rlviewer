@@ -9,6 +9,10 @@ using RlViewer.Behaviors.Draw;
 
 namespace RlViewer.Files.Rli.Abstract
 {
+
+    /// <summary>
+    /// Incapsulates radiolocation image file
+    /// </summary>
     public abstract class RliFile : LocatorFile
     {
         protected RliFile(FileProperties properties, Headers.Abstract.LocatorFileHeader header,

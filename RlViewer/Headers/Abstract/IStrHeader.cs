@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Headers.Abstract
 {
+
+    /// <summary>
+    /// Marker of any data string header
+    /// </summary>
     public interface IStrHeader
     {
     }

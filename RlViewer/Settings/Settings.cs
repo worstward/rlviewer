@@ -267,7 +267,11 @@ namespace RlViewer.Settings
         public double RbfMlRegularizationCoef
         {
             get { return _rbfMlRegularizationCoef; }
-            set { _rbfMlRegularizationCoef = value; }
+            set 
+            {
+                var newRbfReg = value;
+                _rbfMlRegularizationCoef = newRbfReg > 1 ? 0.01 : newRbfReg; 
+            }
         }
 
         private int _dragAccelerator = 2;
