@@ -20,7 +20,7 @@ namespace RlViewer.Headers.Concrete.R
 
             if (!CheckSignature(_headerStruct.signatureHeader.fileSign))
             {
-                throw new ArgumentException("Unexpected file header signature");
+                throw new ArgumentException(string.Format("Unexpected header signature in file {0}", path));
             }
         }
 

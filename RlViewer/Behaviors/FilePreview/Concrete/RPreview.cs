@@ -29,6 +29,7 @@ namespace RlViewer.Behaviors.FilePreview.Concrete
             
             preview.Add(new Tuple<string, string>("Борт", ((byte)_header.HeaderStruct.synchronizerHeader.board).ToSynchronizerBoard()));
             preview.Add(new Tuple<string, string>("Начальная дальность, м", (_header.HeaderStruct.synchronizerHeader.initialRange * 1000).ToString()));
+            preview.Add(new Tuple<string, string>("Размер файла", new System.IO.FileInfo(_fileName).Length.ToReadableFileSize()));
 
             return new HeaderInfoOutput(_fileName, preview);
         }

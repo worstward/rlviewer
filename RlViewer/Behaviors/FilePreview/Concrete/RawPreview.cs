@@ -19,7 +19,17 @@ namespace RlViewer.Behaviors.FilePreview.Concrete
 
         public override HeaderInfoOutput GetPreview()
         {
-            return new HeaderInfoOutput(_fileName, new List<Tuple<string, string>>());
+            var preview = new List<Tuple<string, string>>();
+            preview.Add(new Tuple<string, string>("Имя файла", System.IO.Path.GetFileName(_fileName)));
+            preview.Add(new Tuple<string, string>("Имя файла", ""));
+            preview.Add(new Tuple<string, string>("Имя файла", ""));
+            preview.Add(new Tuple<string, string>("Имя файла", ""));
+            preview.Add(new Tuple<string, string>("Имя файла", ""));
+            preview.Add(new Tuple<string, string>("Размер файла", new System.IO.FileInfo(_fileName).Length.ToReadableFileSize()));
+
+            return new HeaderInfoOutput(_fileName, preview);
+
+            
         }
     }
 }

@@ -51,7 +51,6 @@ namespace RlViewer.Forms
                 {
                     childNodes.Add(subdir.Name).Nodes.Add("tmpNode");
                 }
-
             }
             catch (UnauthorizedAccessException uaex)
             {
@@ -60,7 +59,7 @@ namespace RlViewer.Forms
             catch (Exception ex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Error in file preview: {0}", ex));
-            }          
+            }
         }
 
 
@@ -115,32 +114,48 @@ namespace RlViewer.Forms
 
         }
 
-        private IEnumerable<string> GetLocatorFiles(IEnumerable<string> allFiles)
+        private async Task<IEnumerable<string>> GetLocatorFiles(IEnumerable<string> allFiles)
         {
-            var locatorExt = Enum.GetNames(typeof(FileType));
-            return allFiles.Where(x => locatorExt.Any(x.EndsWith));
+            var locatorExt = Enum.GetNames(typeof(FileType)).Except(new List<string>(){ "bmp" });
+
+            return await Task<IEnumerable<string>>.Run(() =>
+            {
+                return allFiles.Where(x => locatorExt.Any(Path.GetExtension(x).Contains));
+            });
+
         }
 
 
 
-        private void FillDataGrid()
+        private async void FillDataGrid()
         {
             List<HeaderInfoOutput> headerInfos = new List<HeaderInfoOutput>();
-            var files = GetLocatorFiles(Directory.GetFiles(treeView1.SelectedNode == null ? GetFullName(treeView1.Nodes[0])
-                : GetFullName(treeView1.SelectedNode)));
 
-            foreach (var file in files)
+            string[] files = null;
+
+            try
+            {
+                files = Directory.GetFiles(treeView1.SelectedNode == null ? GetFullName(treeView1.Nodes[0])
+               : GetFullName(treeView1.SelectedNode));
+            }
+            catch (UnauthorizedAccessException uaex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Unauthorized access to files error: {0}", uaex));
+                return;
+            }
+
+          
+            var locatorFiles = await GetLocatorFiles(files);
+
+            foreach (var file in locatorFiles)
             {
                 try
                 {
                     var props = new Files.FileProperties(file);
-                    var header = props.Type == FileType.raw ? null :
+                    var header = (props.Type == FileType.raw) ? null :
                         Factories.Header.Abstract.HeaderFactory.GetFactory(props).Create(file);
                     headerInfos.Add(Factories.FilePreview.Abstract.FilePreviewFactory.GetFactory(props)
                         .Create(file, header).GetPreview());
-                }
-                catch (NotSupportedException)
-                {
                 }
                 catch (Exception ex)
                 {
@@ -150,7 +165,7 @@ namespace RlViewer.Forms
 
             dataGridView1.Rows.Clear();
 
-            for(int i = 0; i < headerInfos.Count; i++)
+            for (int i = 0; i < headerInfos.Count; i++)
             {
                 dataGridView1.Rows.Add();
 
@@ -185,9 +200,9 @@ namespace RlViewer.Forms
         private void AcceptFile()
         {
             if (dataGridView1.SelectedRows.Count != 0)
-            { 
+            {
                 _fileToOpen = Path.Combine(GetFullName(treeView1.SelectedNode),
-                                   dataGridView1.CurrentRow.Cells[0].Value.ToString() + 
+                                   dataGridView1.CurrentRow.Cells[0].Value.ToString() +
                                    dataGridView1.CurrentRow.Cells[1].Value.ToString());
                 DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();
@@ -241,7 +256,7 @@ namespace RlViewer.Forms
             else if (e.KeyCode == Keys.Enter)
             {
                 AcceptFile();
-            }       
+            }
         }
 
 

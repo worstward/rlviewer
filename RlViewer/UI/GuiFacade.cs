@@ -92,7 +92,7 @@ namespace RlViewer.UI
                 return string.Empty;
             }
 
-            var fileExts = Enum.GetNames(typeof(FileType));
+            var fileExts = Enum.GetNames(typeof(FileType)).Except(new List<string>() { "bmp" });
 
             //get first filepath that has supported extension
             var fName = args.Where(x => fileExts.Any(Path.GetExtension(x).Contains)).FirstOrDefault();
