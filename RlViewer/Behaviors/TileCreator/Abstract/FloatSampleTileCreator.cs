@@ -41,7 +41,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 {
                     strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
                 }
-                else throw new ArgumentException("string header");
+                else if (file.Properties.Type != FileType.raw)
+                {
+                    throw new ArgumentException("string header");
+                } 
 
                 var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)

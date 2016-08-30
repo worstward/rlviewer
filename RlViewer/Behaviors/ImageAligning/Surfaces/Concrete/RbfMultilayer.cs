@@ -57,5 +57,12 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
             return result;
         }
+
+        public override byte[] ResampleImage(Files.LocatorFile file, System.Drawing.Rectangle area)
+        {
+            return base.ResampleImage(file, area);
+        }
+
+
     }
 }

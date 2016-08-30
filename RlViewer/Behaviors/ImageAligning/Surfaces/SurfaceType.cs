@@ -9,7 +9,9 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces
     public enum SurfaceType
     {
         RadicalBasisFunctionQnn,
+        RadicalBasisFunctionQnnCoef,
         RadicalBasisFunctionMultiLayered,
+        RadicalBasisFunctionMultiLayeredCoef,
         Custom
     }
 }

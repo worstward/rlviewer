@@ -24,8 +24,16 @@ namespace RlViewer.Factories.Surface
             {
                 case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn:
                     return new Behaviors.ImageAligning.Surfaces.Concrete.RbfQnn(selector, rcsProvider);
+
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnnCoef:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfQnnCoef(selector, rcsProvider);
+
                 case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered:
                     return new Behaviors.ImageAligning.Surfaces.Concrete.RbfMultilayer(selector, rcsProvider, baseRadius, layers, lambda);
+
+                case Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayeredCoef:
+                    return new Behaviors.ImageAligning.Surfaces.Concrete.RbfMultilayerCoef(selector, rcsProvider, baseRadius, layers, lambda);
+
                 case Behaviors.ImageAligning.Surfaces.SurfaceType.Custom:
                     switch (pointCount)
                     {

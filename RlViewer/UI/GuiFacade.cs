@@ -32,7 +32,6 @@ namespace RlViewer.UI
             _chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
 
             _win = _form.Canvas;
-
             OnImageDrawn += (s, img) => _form.Canvas.Image = img;
 
             InitializeWindow();
@@ -439,6 +438,11 @@ namespace RlViewer.UI
             _areaSelector = new Behaviors.AreaSelector.AreaSelector(_file);
             _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
 
+            if (_pointSharer != null)
+            {
+                _pointSharer.Dispose();
+            }
+            
             _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file, 
                 _settings.MulticastEp,
                 System.Diagnostics.Process.GetCurrentProcess().Id,

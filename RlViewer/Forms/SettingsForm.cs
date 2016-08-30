@@ -291,12 +291,19 @@ namespace RlViewer.Forms
                 case @"Кастомная":
                     _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.Custom;
                     break;
+                case @"РБФ NN коэф":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnnCoef;
+                    break;
+                case @"РБФ многослойная коэф":
+                    _surfaceType = Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayeredCoef;
+                    break;
                 default:
                     throw new NotSupportedException("SurfaceType settings");
             }
 
 
-            if (_surfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered)
+            if (_surfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayered ||
+                _surfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionMultiLayeredCoef)
             {
                 rbfInterpolationcSettingsGb.Enabled = true;
             }

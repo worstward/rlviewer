@@ -38,7 +38,6 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -53,19 +52,20 @@
             this.areasOrPointsForAligningCb = new System.Windows.Forms.CheckBox();
             this.surfaceTypeLbl = new System.Windows.Forms.Label();
             this.surfaceTypeCb = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.plot3dSizeTb = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.plot3dSizeTb = new System.Windows.Forms.MaskedTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.azimuthCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
             this.rangeCompressCoefTb = new System.Windows.Forms.MaskedTextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
@@ -93,7 +93,7 @@
             this.commonTab.Location = new System.Drawing.Point(4, 22);
             this.commonTab.Name = "commonTab";
             this.commonTab.Padding = new System.Windows.Forms.Padding(3);
-            this.commonTab.Size = new System.Drawing.Size(270, 325);
+            this.commonTab.Size = new System.Drawing.Size(270, 303);
             this.commonTab.TabIndex = 3;
             this.commonTab.Text = "Общие";
             this.commonTab.UseVisualStyleBackColor = true;
@@ -193,17 +193,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
             // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
-            // 
             // logPaletteCb
             // 
             this.logPaletteCb.AutoSize = true;
@@ -265,7 +254,7 @@
             this.rbfInterpolationcSettingsGb.Controls.Add(this.layersNumTb);
             this.rbfInterpolationcSettingsGb.Controls.Add(this.label9);
             this.rbfInterpolationcSettingsGb.Controls.Add(this.baseRadiusTb);
-            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 149);
+            this.rbfInterpolationcSettingsGb.Location = new System.Drawing.Point(6, 152);
             this.rbfInterpolationcSettingsGb.Name = "rbfInterpolationcSettingsGb";
             this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
             this.rbfInterpolationcSettingsGb.TabIndex = 14;
@@ -361,35 +350,15 @@
             this.surfaceTypeCb.FormattingEnabled = true;
             this.surfaceTypeCb.Items.AddRange(new object[] {
             "РБФ NN",
+            "РБФ NN коэф",
             "РБФ многослойная",
+            "РБФ многослойная коэф",
             "Кастомная"});
             this.surfaceTypeCb.Location = new System.Drawing.Point(127, 91);
             this.surfaceTypeCb.Name = "surfaceTypeCb";
             this.surfaceTypeCb.Size = new System.Drawing.Size(134, 21);
             this.surfaceTypeCb.TabIndex = 12;
             this.surfaceTypeCb.SelectedIndexChanged += new System.EventHandler(this.surfaceTypeCb_SelectedIndexChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(23, 409);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(118, 26);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "Область трехмерного\r\nграфика, отсчетов";
-            this.label6.Visible = false;
-            // 
-            // plot3dSizeTb
-            // 
-            this.plot3dSizeTb.AllowPromptAsInput = false;
-            this.plot3dSizeTb.Location = new System.Drawing.Point(187, 425);
-            this.plot3dSizeTb.Mask = "000";
-            this.plot3dSizeTb.Name = "plot3dSizeTb";
-            this.plot3dSizeTb.PromptChar = ' ';
-            this.plot3dSizeTb.ResetOnPrompt = false;
-            this.plot3dSizeTb.Size = new System.Drawing.Size(100, 20);
-            this.plot3dSizeTb.TabIndex = 10;
-            this.plot3dSizeTb.Visible = false;
             // 
             // label2
             // 
@@ -432,12 +401,34 @@
             this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.sectionSizeTextBox.TabIndex = 0;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(19, 446);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(118, 26);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Область трехмерного\r\nграфика, отсчетов";
+            this.label6.Visible = false;
+            // 
+            // plot3dSizeTb
+            // 
+            this.plot3dSizeTb.AllowPromptAsInput = false;
+            this.plot3dSizeTb.Location = new System.Drawing.Point(183, 462);
+            this.plot3dSizeTb.Mask = "000";
+            this.plot3dSizeTb.Name = "plot3dSizeTb";
+            this.plot3dSizeTb.PromptChar = ' ';
+            this.plot3dSizeTb.ResetOnPrompt = false;
+            this.plot3dSizeTb.Size = new System.Drawing.Size(100, 20);
+            this.plot3dSizeTb.TabIndex = 10;
+            this.plot3dSizeTb.Visible = false;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.azimuthCompressCoefTb);
             this.groupBox1.Controls.Add(this.rangeCompressCoefTb);
-            this.groupBox1.Location = new System.Drawing.Point(124, 424);
+            this.groupBox1.Location = new System.Drawing.Point(120, 461);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(57, 36);
             this.groupBox1.TabIndex = 10;
@@ -452,15 +443,6 @@
             this.label5.Size = new System.Drawing.Size(136, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "Коэф. сжатия по азимуту";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(124, 408);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(148, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Коэф. сжатия по дальности";
             // 
             // azimuthCompressCoefTb
             // 
@@ -484,6 +466,15 @@
             this.rangeCompressCoefTb.Size = new System.Drawing.Size(100, 20);
             this.rangeCompressCoefTb.TabIndex = 5;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(120, 445);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(148, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Коэф. сжатия по дальности";
+            // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.Control;
@@ -505,11 +496,22 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 385);
+            this.ClientSize = new System.Drawing.Size(303, 381);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button1);

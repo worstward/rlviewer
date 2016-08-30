@@ -24,6 +24,10 @@ namespace RlViewer.Behaviors.CrossAppCommunication
 
         private IPEndPoint _endPoint;
         private UdpClient _udpClient;
+        public UdpClient UdpClient
+        {
+            get { return _udpClient; }
+        }
 
         public void ListenAndNotify()
         {

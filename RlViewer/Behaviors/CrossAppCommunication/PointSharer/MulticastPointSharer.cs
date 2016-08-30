@@ -7,7 +7,7 @@ using System.Net;
 
 namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
 {
-    public class MulticastPointSharer
+    public class MulticastPointSharer : IDisposable
     {
 
         /// <summary>
@@ -58,11 +58,19 @@ namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
         }
 
 
+        /// <summary>
+        /// Sends point on image to remote host
+        /// </summary>
         public void SendPoint(System.Drawing.Point pointToSend)
         {
             var msg = new PointSharerMessage(_guid, _shiftX + pointToSend.X, _shiftY + pointToSend.Y);
             var msgBytes = Behaviors.Converters.StructIO.WriteStruct<PointSharerMessage>(msg);
             _server.SendDataAsync(msgBytes);
+        }
+
+        public void Dispose()
+        {
+            _server.UdpClient.Close();
         }
 
 

@@ -4,24 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
+namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 {
-    public abstract class RbfSurface : Abstract.Surface
+    class RbfQnnCoef : RbfQnn
     {
-        public RbfSurface(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider)
-            : base(selector)
+        public RbfQnnCoef(PointSelector.CompressedPointSelectorWrapper selector, IInterpolationProvider rcsProvider) 
+            : base(selector, rcsProvider)
         {
-            _rcsProvider = rcsProvider;
+ 
         }
 
 
-        private IInterpolationProvider _rcsProvider;
-        protected override IInterpolationProvider RcsProvider
+        private float _maxCoef;
+
+        protected double[,] GetCoefSolution(System.Drawing.Rectangle area)
         {
-            get
-            {
-                return _rcsProvider;
-            }
+            var coefs = Selector.Select(x => x.Value / x.Rcs);
+            _maxCoef = coefs.Max();
+            coefs = coefs.Select(x => x / _maxCoef);
+            return GetSolution(area, coefs.ToArray());
         }
 
 
@@ -38,8 +39,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
             toInclusiveY = toInclusiveY > file.Height ? file.Height : toInclusiveY;
             int counter = 0;
 
-            var rcsSolution = GetRcsSolution(area);
-            var amplitudeSolution = GetAmplitudeSolution(area);
+            var coefSolution = GetCoefSolution(area);
 
             Parallel.For(area.Location.X, toInclusiveX, (i, loopState) =>
             {
@@ -47,10 +47,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
                 {
 
                     var oldAmplVal = imageArea[(j - area.Y) * area.Width + (i - area.X)];
-                    var newAmplVal = (float)amplitudeSolution[i - area.X, j - area.Y];
-                    var newRcsVal = (float)rcsSolution[i - area.X, j - area.Y];
-                    var diff = oldAmplVal / newAmplVal * newRcsVal;
-
+                    var coefVal = (float)coefSolution[i - area.X, j - area.Y];
+                    var diff = oldAmplVal / coefVal / _maxCoef;
                     diff = diff < 0 ? 0 : diff;
                     image[(j - area.Location.Y) * area.Width + (i - area.Location.X)] = diff;
                 }
@@ -76,23 +74,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
 
             return imageB;
         }
- 
-        protected abstract double[,] GetSolution(System.Drawing.Rectangle area, float[] values);
-
-        protected double[,] GetAmplitudeSolution(System.Drawing.Rectangle area)
-        {
-            return GetSolution(area, Selector.Select(x => x.Value).ToArray());
-        }
-
-        protected double[,] GetRcsSolution(System.Drawing.Rectangle area)
-        {
-            return GetSolution(area, Selector.Select(x => x.Rcs).ToArray());
-        }
-
-        
 
 
 
     }
-
 }
