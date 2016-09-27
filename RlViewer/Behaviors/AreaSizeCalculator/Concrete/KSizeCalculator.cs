@@ -13,6 +13,9 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
             var fileHead = header as Headers.Concrete.K.KHeader;
             _dx = 300 / (2 * fileHead.HeaderStruct.adcHeader.adcFreq);
             _dy = _dx;
+            //_freq = fileHead.HeaderStruct.adcHeader.adcFreq;
+            //_impulseLength = fileHead.HeaderStruct
+
         }
 
 
@@ -29,5 +32,22 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
             get { return _dy; }
         }
 
+        //private float _freq;
+        //protected override float Frequency
+        //{
+        //    get
+        //    {
+        //        return _freq;
+        //    }
+        //}
+
+        //private float _impulseLength;
+        //protected override float ImpulseLength
+        //{
+        //    get
+        //    {
+        //        return _impulseLength;
+        //    }
+        //}
     }
 }

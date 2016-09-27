@@ -120,7 +120,6 @@ namespace RlViewer.Behaviors
                     return ToFloatSampleModulus(sample);
                 case FileType.raw:
                         return ToFloatSample(sample);
-                    break;
                 case FileType.k:
                     return ToShortSampleModulus(sample);
             }
@@ -133,6 +132,11 @@ namespace RlViewer.Behaviors
 
         private static float ToFloatSampleModulus(this byte[] sampleBytes)
         {
+            if (sampleBytes.Length != sizeof(float) * 2)
+            {
+                throw new ArgumentException("sampleBytes");
+            }
+
             var re = BitConverter.ToSingle(sampleBytes, 0);
             var im = BitConverter.ToSingle(sampleBytes, sizeof(float));
             return (float)(Math.Sqrt(re * re + im * im));
@@ -155,6 +159,11 @@ namespace RlViewer.Behaviors
 
         private static short ToShortSampleModulus(this byte[] sampleBytes)
         {
+            if (sampleBytes.Length != sizeof(short) * 2)
+            {
+                throw new ArgumentException("sampleBytes");
+            }
+
             var re = BitConverter.ToInt16(sampleBytes, 0);
             var im = BitConverter.ToInt16(sampleBytes, sizeof(short));
             return (short)(Math.Sqrt(re * re + im * im));

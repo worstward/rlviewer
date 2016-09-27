@@ -80,7 +80,7 @@ namespace RlViewer.Behaviors
         /// <param name="selector">Selected points container</param>
         /// <param name="maxWorkingArea">Minimum allowed area size</param>
         /// <returns></returns>
-        public static System.Drawing.Rectangle GetArea(IEnumerable<PointSelector.SelectedPoint> selector, int minWorkingArea)
+        public static System.Drawing.Rectangle GetArea(IEnumerable<PointSelector.SelectedPoint> selector, int workingAreaSize)
         {
 
             var minX = selector.Min(p => p.Location.X);
@@ -91,19 +91,21 @@ namespace RlViewer.Behaviors
             int areaWidth = maxX - minX;
             int areaHeight = maxY - minY;
 
+            areaWidth = areaWidth > workingAreaSize ? workingAreaSize : areaWidth;
+            areaWidth = areaHeight > workingAreaSize ? workingAreaSize : areaHeight;
 
-            if (areaWidth < minWorkingArea)
+            if (areaWidth < workingAreaSize)
             {
-                minX = minX - (minWorkingArea - areaWidth) / 2;
+                minX = minX - (workingAreaSize - areaWidth) / 2;
                 minX = minX < 0 ? 0 : minX;
-                areaWidth = minWorkingArea;
+                areaWidth = workingAreaSize;
             }
 
-            if (areaHeight < minWorkingArea)
+            if (areaHeight < workingAreaSize)
             {
-                minY = minY - (minWorkingArea - areaHeight) / 2;
+                minY = minY - (workingAreaSize - areaHeight) / 2;
                 minY = minY < 0 ? 0 : minY;
-                areaHeight = minWorkingArea;
+                areaHeight = workingAreaSize;
             }
 
             return new System.Drawing.Rectangle(minX, minY, areaWidth, areaHeight);

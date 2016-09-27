@@ -17,13 +17,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         public FloatSampleTileCreator(TileOutputType type) : base(type)
         { }
 
+        protected abstract override float[] GetSampleData(byte[] sourceBytes);
 
         protected override Tile[] GetTilesFromFile(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
             if (file.Width == 0 || file.Height == 0)
             {
-                throw new ArgumentException("File size");
+                throw new ArgumentException(
+                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
             }
 
             var tileFolder = GetDirectoryName(filePath);
@@ -50,7 +52,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 for (int i = 0; i < totalLines; i++)
                 {
 
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor, TileSize.Height, outputType);
 
                     if (OnCancelWorker())
                     {
@@ -71,7 +73,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         {
             if (file.Width == 0 || file.Height == 0)
             {
-                return new Tile[0];
+                throw new ArgumentException(
+                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
             }
 
             var tileFolder = GetDirectoryName(filePath);
@@ -97,7 +100,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                     for (int i = 0; i < totalLines; i++)
                     {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
+                            TileSize.Height, outputType);
                         SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
                     }
                 }
@@ -109,22 +113,17 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected override float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-            float[] fRliString = new float[strDataLen / sizeof(float)];
+            byte[] bRliString = new byte[strDataLen];
             float normal = 0;
 
             frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
 
             long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
 
-            MaxValue = GetMaxValue<float>(loc, strDataLen, strHeadLen, (arr) => { return arr.Max(); });
+            var maxFrame = GetMaxValue(loc, strDataLen, strHeadLen, 0, frameHeight);
 
-            if (Cancelled)
-            {
-                return 0;
-            }
-
-            float histogramStep = MaxValue / 1000f;
+            float histogramStep = maxFrame / 1000f;         
+            
             var histogram = new List<int>();
 
             for (float i = 0; i < 1000; i += histogramStep)
@@ -142,11 +141,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 while (s.Position != frameLength && s.Position != s.Length)
                 {
                     parts++;
-
+                    s.Seek(strHeadLen, SeekOrigin.Current);
                     s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, fRliString, 0, bRliString.Length - strHeadLen);
 
-                    avg += fRliString.Average();
+                    var fRliString = GetSampleData(bRliString);
+                    avg += fRliString.Average(x => x);
 
                     //fill histogram:
                     //count distinct float values, eg:
@@ -156,7 +155,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     for (int i = 0; i < fRliString.Length; i++)
                     {
                         int index = (int)(fRliString[i] / histogramStep);
-                        if(index < 0) continue;
+                        if (index < 0) continue;
 
                         if (index >= histogram.Count)
                             histogram[histogram.Count - 1]++;
@@ -190,42 +189,41 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
        
-        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType)
+        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, 
+            float normalizationFactor, int tileHeight, TileOutputType outputType)
         {
             byte[] line = new byte[signalDataLength * tileHeight];
-            float[] fLine = new float[line.Length / sizeof(float)];
-            byte[] normalizedLine = new byte[fLine.Length];
-
+            
             int index = 0;
 
-            float border = NormalizationFactor / 9f * 7;
-
-            if (Cancelled)
-            {
-                return null;
-            }
-    
+   
             while (index != line.Length && s.Position != s.Length)
             {
                 s.Seek(strHeaderLength, SeekOrigin.Current);
                 index += s.Read(line, index, signalDataLength);
             }
 
-            Buffer.BlockCopy(line, 0, fLine, 0, line.Length);
+            var fLine = GetSampleData(line);
+            byte[] normalizedLine = new byte[fLine.Length];
 
             switch (outputType)
             {
                 case TileOutputType.Linear:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / NormalizationFactor * 255)).ToArray();
+                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                        NormalizationHelpers.GetLinearValue(x, normalizationFactor))).ToArray();
                     break;
                 case TileOutputType.Logarithmic:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
-                    break;
+                    {
+                        normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                            NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
+                        break;
+                    }
                 case TileOutputType.LinearLogarithmic:
-                    normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, MaxValue, NormalizationFactor))).ToArray();
-                    break;
+                    {
+                        normalizedLine = fLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                        NormalizationHelpers.GetLinearLogarithmicValue(x, MaxValue, normalizationFactor))).ToArray();
+                        break;
+                    }
                 default:
                     break;
 

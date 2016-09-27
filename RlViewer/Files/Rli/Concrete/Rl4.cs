@@ -42,11 +42,16 @@ namespace RlViewer.Files.Rli.Concrete
         }
 
 
+        private int _height;
         public override int Height
         {
             get
             {
-                return _header.HeaderStruct.rlParams.height;    
+                return _height = _height == 0 ? _header.HeaderStruct.rlParams.height : _height;
+            }
+            protected set
+            {
+                _height = value;
             }
         }
 

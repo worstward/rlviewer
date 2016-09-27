@@ -26,7 +26,6 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         private LocatorFile _rli;
         private float _normalFactor;
 
-
         private object _normalLocker = new object();
         public override float NormalizationFactor
         {
@@ -47,6 +46,44 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 return _normalFactor;
 
             }
+        }
+
+        private float _maxValue;
+        private object _maxLocker = new object();
+        public override float MaxValue
+        {
+            get
+            {
+                //double lock checking
+                if (_maxValue == 0)
+                {
+                    lock (_maxLocker)
+                    {
+                        if (_maxValue == 0)
+                        {
+                            _maxValue = GetMaxValue(_rli, _rli.Width * _rli.Header.BytesPerSample, 0);
+                        }
+                    }
+                }
+                return _maxValue;
+            }
+        }
+
+        protected override float[] GetSampleData(byte[] sourceBytes)
+        {
+            float[] sampleData = new float[sourceBytes.Length / sizeof(float)];
+
+            Buffer.BlockCopy(sourceBytes, 0, sampleData, 0, sourceBytes.Length);
+
+            var amplitudeModulus = new float[sampleData.Length / 2];
+
+            for (int i = 0; i < sampleData.Length; i += 2)
+            {
+                amplitudeModulus[i / 2] = (float)Math.Sqrt(sampleData[i] * sampleData[i] +
+                    sampleData[i + 1] * sampleData[i + 1]);
+            }
+
+            return amplitudeModulus;
         }
 
         protected override Tile[] GetTilesFromTl(string directoryPath)

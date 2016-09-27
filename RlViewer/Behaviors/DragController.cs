@@ -25,7 +25,7 @@ namespace RlViewer.Behaviors
             private set;
         }
 
-        private bool _isMouseDown;
+        private bool _canDrag;
         private Point _previousMouseLocation;
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace RlViewer.Behaviors
         /// </summary>
         /// <param name="location">Current mouse location</param>
         /// <param name="canDrag">Determines if panning is allowed</param>
-        public void StartTracing(Point location, bool canDrag)
+        public void StartTracing(Point location, bool isMouseDown)
         {
-            _isMouseDown = canDrag;
+            _canDrag = isMouseDown;
             _previousMouseLocation = location;
         }
 
@@ -45,7 +45,7 @@ namespace RlViewer.Behaviors
         /// </summary>
         public void StopTracing()
         {
-            _isMouseDown = false;
+            _canDrag = false;
         }
 
 
@@ -56,12 +56,12 @@ namespace RlViewer.Behaviors
         /// <returns></returns>
         public bool Trace(Point location)
         {
-            if (_isMouseDown)
+            if (_canDrag)
             {
                 Delta = new Point(location.X - _previousMouseLocation.X, location.Y - _previousMouseLocation.Y);
                 _previousMouseLocation = location;
             }
-            return _isMouseDown;
+            return _canDrag;
         }
 
     }

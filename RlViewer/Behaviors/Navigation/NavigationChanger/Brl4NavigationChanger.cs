@@ -15,8 +15,8 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
             _brlFileName = fileName;
             var prop = new Files.FileProperties(fileName);
 
-            _header = Factories.Header.Abstract.HeaderFactory.GetFactory(prop).Create(fileName) as Headers.Concrete.Brl4.Brl4Header;
-            _brl4File = Factories.File.Abstract.FileFactory.GetFactory(prop).Create(prop, _header, null) as Files.Rli.Concrete.Brl4;
+            _header = (Headers.Concrete.Brl4.Brl4Header)Factories.Header.Abstract.HeaderFactory.GetFactory(prop).Create(fileName);
+            _brl4File = (Files.Rli.Concrete.Brl4)Factories.File.Abstract.FileFactory.GetFactory(prop).Create(prop, _header, null);
         }
 
         private string _brlFileName;
@@ -72,7 +72,7 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
                             fr.Seek(offsetToNavigation, SeekOrigin.Current);
                             var brl4StrHeader = StructIO.ReadStruct<Headers.Concrete.Ba.BaStrHeader>(fr).ToBrl4StrHeader();
                             fr.Seek(baHeaderLength - offsetToNavigation - 
-                                System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.Ba.BaStrHeader()), SeekOrigin.Current);                           
+                                System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.Ba.BaStrHeader)), SeekOrigin.Current);                           
                             fr.Seek(strDataLength, SeekOrigin.Current);
 
                             var brl4HeaderBytes = StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4StrHeaderStruct>(brl4StrHeader);

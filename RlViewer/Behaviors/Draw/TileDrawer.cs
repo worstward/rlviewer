@@ -21,7 +21,8 @@ namespace RlViewer.Behaviors.Draw
     /// </summary>
     public class TileDrawer : ImageDrawer
     {
-        public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter, RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
+        public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter,
+            RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
         {
             _filter = filter;
         }
@@ -88,7 +89,6 @@ namespace RlViewer.Behaviors.Draw
                 foreach (var t in tilesToDraw)
                 {
                     var bitmapToDraw = DrawingHelper.GetBmp(t.TileBytes, t.Width, t.Height, palette);
-                    //bitmapToDraw.Save(string.Format("w{0}h{1}p{2}x{3}.bmp", t.Width, t.Height, t.Location.X, t.Location.Y));
                     g.DrawImage(bitmapToDraw, t.Location);
                 }
             }

@@ -8,12 +8,6 @@ namespace RlViewer.Behaviors.Filters.Concrete
 {
     class GammaCorrectionFilter : RlViewer.Behaviors.Filters.Abstract.ImageFiltering
     {
-        public GammaCorrectionFilter()
-        {
-            RegisterFilter();
-            FilterValue = Filters[GetType().ToString()].FilterValue;
-        }
-
 
         private byte[] gammaCorrectionLookUp;
 

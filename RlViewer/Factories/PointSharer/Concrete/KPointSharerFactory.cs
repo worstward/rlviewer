@@ -9,9 +9,9 @@ namespace RlViewer.Factories.PointSharer.Concrete
     class KPointSharerFactory : Abstract.PointSharerFactory
     {
         public override Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer Create(Files.LocatorFile file,
-    System.Net.IPEndPoint multicastEp, int guid, Action<System.Drawing.Point> triggered)
+            Behaviors.CrossAppCommunication.ICrossAppExchange server, int guid)
         {
-            return new Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer(multicastEp, guid, 0, 0, triggered);
+            return new Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer(server, guid, 0, 0);
         }
     }
 }

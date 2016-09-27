@@ -13,9 +13,6 @@ namespace RlViewer.Forms
 {
     public partial class SaveForm : Form
     {
-
-        ///TODO: add class to keep save parameters
-
         public SaveForm(int fileWidth, int fileHeight, AreaSelector selector)
         {
 
@@ -30,32 +27,8 @@ namespace RlViewer.Forms
                 radioButton3.Checked = true;
             }
 
-            AddClickEvent<MaskedTextBox>(this, (s, e) =>  
-                        {
-                            var tb = ((MaskedTextBox)s);
-                            tb.Select(tb.Text.Length, 0);
-                        });
-
+            FormsHelper.AddTbClickEvent(this.Controls);
             InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
-        }
-
-
-
-
-        private void AddClickEvent<T>(Control parent, Action<object, EventArgs> eventAction) where T : Control
-        {
-            foreach (Control childControl in parent.Controls)
-            {
-                if (childControl is T)
-                {
-                    childControl.Click += (s, e) => eventAction(s, e);
-                }
-
-                if (childControl.Controls.Count != 0)
-                {
-                    AddClickEvent<T>(childControl, eventAction);
-                }
-            }
         }
 
 
@@ -70,6 +43,12 @@ namespace RlViewer.Forms
             get { return _keepFiltering; }
         }
 
+        private bool _keepPalette;
+
+        public bool KeepPalette
+        {
+            get { return _keepPalette; }
+        }
        
         private Point _leftTop;
         public Point LeftTop
@@ -238,6 +217,8 @@ namespace RlViewer.Forms
                    Convert.ToInt32(y1CoordTextBox.Text) < _fileHeight && Convert.ToInt32(y2CoordTextBox.Text) < _fileHeight)
             {
                 _keepFiltering = keepFilteringCb.Checked;
+                _keepPalette = keepPaletteCb.Checked;
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

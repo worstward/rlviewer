@@ -31,7 +31,13 @@ namespace RlViewer.Behaviors.Draw
         
         private Image _canvas;
 
-
+        public ColorPalette Palette
+        {
+            get
+            {
+                return _tDrawer.Palette;
+            }
+        }
 
         public void GetPalette(float R, float G, float B, bool reversed, bool isGroupped, bool useTemperaturePalette)
         {

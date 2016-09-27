@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -64,16 +64,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.scaleLabel = new System.Windows.Forms.Label();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
@@ -87,12 +77,22 @@
             this.findPointBtn = new System.Windows.Forms.Button();
             this.statisticsBtn = new System.Windows.Forms.Button();
             this.sharerRb = new System.Windows.Forms.RadioButton();
-            this.squareAreaRb = new System.Windows.Forms.RadioButton();
-            this.filterPanelCb = new System.Windows.Forms.CheckBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.naviPanelCb = new System.Windows.Forms.CheckBox();
-            this.zoomOutBtn = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.zoomInBtn = new System.Windows.Forms.Button();
+            this.zoomOutBtn = new System.Windows.Forms.Button();
+            this.naviPanelCb = new System.Windows.Forms.CheckBox();
+            this.filterPanelCb = new System.Windows.Forms.CheckBox();
+            this.scaleLabel = new System.Windows.Forms.Label();
+            this.squareAreaRb = new System.Windows.Forms.RadioButton();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -107,9 +107,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.statusStrip1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // hScrollBar1
@@ -138,8 +137,10 @@
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.infoToolStripMenuItem});
+            this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.menuStrip1.Size = new System.Drawing.Size(915, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
@@ -417,14 +418,14 @@
             this.chart1.BackColor = System.Drawing.Color.Transparent;
             this.chart1.BackSecondaryColor = System.Drawing.Color.Transparent;
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
             this.chart1.Location = new System.Drawing.Point(328, 3);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.IsVisibleInLegend = false;
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series2.ChartArea = "ChartArea1";
+            series2.IsVisibleInLegend = false;
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(298, 98);
             this.chart1.TabIndex = 10;
             this.chart1.Text = "chart1";
@@ -434,38 +435,38 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(96, 100);
@@ -485,85 +486,6 @@
             this.valueColumn.ReadOnly = true;
             this.valueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // statusLabel
-            // 
-            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(721, 628);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(35, 13);
-            this.statusLabel.TabIndex = 4;
-            this.statusLabel.Text = "status";
-            // 
-            // scaleLabel
-            // 
-            this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.scaleLabel.AutoSize = true;
-            this.scaleLabel.Location = new System.Drawing.Point(551, 11);
-            this.scaleLabel.Name = "scaleLabel";
-            this.scaleLabel.Size = new System.Drawing.Size(85, 13);
-            this.scaleLabel.TabIndex = 22;
-            this.scaleLabel.Text = "Масштаб: 100%";
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel4,
-            this.toolStripStatusLabel5,
-            this.toolStripStatusLabel3,
-            this.toolStripProgressBar1,
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2,
-            this.toolStripDropDownButton1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 628);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(915, 22);
-            this.statusStrip1.TabIndex = 23;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel4
-            // 
-            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-            this.toolStripStatusLabel4.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel5
-            // 
-            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel3
-            // 
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(751, 17);
-            this.toolStripStatusLabel3.Spring = true;
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.ShowDropDownArrow = false;
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(47, 20);
-            this.toolStripDropDownButton1.Text = "Cancel";
-            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
-            // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -581,10 +503,15 @@
             this.flowLayoutPanel1.Controls.Add(this.findPointBtn);
             this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
             this.flowLayoutPanel1.Controls.Add(this.sharerRb);
-            this.flowLayoutPanel1.Controls.Add(this.squareAreaRb);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(17, 30);
+            this.flowLayoutPanel1.Controls.Add(this.label1);
+            this.flowLayoutPanel1.Controls.Add(this.zoomInBtn);
+            this.flowLayoutPanel1.Controls.Add(this.zoomOutBtn);
+            this.flowLayoutPanel1.Controls.Add(this.naviPanelCb);
+            this.flowLayoutPanel1.Controls.Add(this.filterPanelCb);
+            this.flowLayoutPanel1.Controls.Add(this.scaleLabel);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 26);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(651, 36);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(894, 40);
             this.flowLayoutPanel1.TabIndex = 27;
             // 
             // dragRb
@@ -624,6 +551,7 @@
             // alignBtn
             // 
             this.alignBtn.BackgroundImage = global::RlViewer.Properties.Resources.Align;
+            this.alignBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.alignBtn.FlatAppearance.BorderSize = 0;
             this.alignBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.alignBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -779,53 +707,43 @@
             this.sharerRb.TabIndex = 26;
             this.sharerRb.UseVisualStyleBackColor = false;
             // 
-            // squareAreaRb
+            // label1
             // 
-            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
-            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.squareAreaRb.FlatAppearance.BorderSize = 0;
-            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squareAreaRb.Location = new System.Drawing.Point(435, 3);
-            this.squareAreaRb.Name = "squareAreaRb";
-            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.squareAreaRb.TabIndex = 25;
-            this.squareAreaRb.UseVisualStyleBackColor = false;
-            this.squareAreaRb.Visible = false;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(435, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 13);
+            this.label1.TabIndex = 27;
             // 
-            // filterPanelCb
+            // zoomInBtn
             // 
-            this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.filterPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.filter;
-            this.filterPanelCb.FlatAppearance.BorderSize = 0;
-            this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(515, 3);
-            this.filterPanelCb.Name = "filterPanelCb";
-            this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
-            this.filterPanelCb.TabIndex = 24;
-            this.filterPanelCb.UseVisualStyleBackColor = true;
-            this.filterPanelCb.CheckedChanged += new System.EventHandler(this.filterPanelCb_CheckedChanged);
+            this.zoomInBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.zoomInBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomIn;
+            this.zoomInBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.zoomInBtn.FlatAppearance.BorderSize = 0;
+            this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.zoomInBtn.Location = new System.Drawing.Point(441, 3);
+            this.zoomInBtn.Name = "zoomInBtn";
+            this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
+            this.zoomInBtn.TabIndex = 25;
+            this.zoomInBtn.UseVisualStyleBackColor = true;
+            this.zoomInBtn.Click += new System.EventHandler(this.zoomInBtn_Click);
             // 
-            // flowLayoutPanel2
+            // zoomOutBtn
             // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.scaleLabel);
-            this.flowLayoutPanel2.Controls.Add(this.filterPanelCb);
-            this.flowLayoutPanel2.Controls.Add(this.naviPanelCb);
-            this.flowLayoutPanel2.Controls.Add(this.zoomOutBtn);
-            this.flowLayoutPanel2.Controls.Add(this.zoomInBtn);
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(267, 30);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(639, 36);
-            this.flowLayoutPanel2.TabIndex = 28;
+            this.zoomOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.zoomOutBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomOut;
+            this.zoomOutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.zoomOutBtn.FlatAppearance.BorderSize = 0;
+            this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.zoomOutBtn.Location = new System.Drawing.Point(477, 3);
+            this.zoomOutBtn.Name = "zoomOutBtn";
+            this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
+            this.zoomOutBtn.TabIndex = 26;
+            this.zoomOutBtn.UseVisualStyleBackColor = true;
+            this.zoomOutBtn.Click += new System.EventHandler(this.zoomOutBtn_Click);
             // 
             // naviPanelCb
             // 
@@ -837,42 +755,124 @@
             this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.naviPanelCb.Location = new System.Drawing.Point(479, 3);
+            this.naviPanelCb.Location = new System.Drawing.Point(513, 3);
             this.naviPanelCb.Name = "naviPanelCb";
             this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
             this.naviPanelCb.TabIndex = 20;
             this.naviPanelCb.UseVisualStyleBackColor = true;
             this.naviPanelCb.CheckedChanged += new System.EventHandler(this.naviPanelCb_CheckedChanged);
             // 
-            // zoomOutBtn
+            // filterPanelCb
             // 
-            this.zoomOutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.zoomOutBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomOut;
-            this.zoomOutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.zoomOutBtn.FlatAppearance.BorderSize = 0;
-            this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomOutBtn.Location = new System.Drawing.Point(443, 3);
-            this.zoomOutBtn.Name = "zoomOutBtn";
-            this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
-            this.zoomOutBtn.TabIndex = 26;
-            this.zoomOutBtn.UseVisualStyleBackColor = true;
-            this.zoomOutBtn.Click += new System.EventHandler(this.zoomOutBtn_Click);
+            this.filterPanelCb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.filterPanelCb.BackgroundImage = global::RlViewer.Properties.Resources.filter;
+            this.filterPanelCb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.filterPanelCb.FlatAppearance.BorderSize = 0;
+            this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.filterPanelCb.Location = new System.Drawing.Point(549, 3);
+            this.filterPanelCb.Name = "filterPanelCb";
+            this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
+            this.filterPanelCb.TabIndex = 24;
+            this.filterPanelCb.UseVisualStyleBackColor = true;
+            this.filterPanelCb.CheckedChanged += new System.EventHandler(this.filterPanelCb_CheckedChanged);
             // 
-            // zoomInBtn
+            // scaleLabel
             // 
-            this.zoomInBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.zoomInBtn.BackgroundImage = global::RlViewer.Properties.Resources.ZoomIn;
-            this.zoomInBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.zoomInBtn.FlatAppearance.BorderSize = 0;
-            this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomInBtn.Location = new System.Drawing.Point(407, 3);
-            this.zoomInBtn.Name = "zoomInBtn";
-            this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
-            this.zoomInBtn.TabIndex = 25;
-            this.zoomInBtn.UseVisualStyleBackColor = true;
-            this.zoomInBtn.Click += new System.EventHandler(this.zoomInBtn_Click);
+            this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.scaleLabel.Location = new System.Drawing.Point(585, 3);
+            this.scaleLabel.Name = "scaleLabel";
+            this.scaleLabel.Size = new System.Drawing.Size(85, 30);
+            this.scaleLabel.TabIndex = 22;
+            this.scaleLabel.Text = "Масштаб: 100%";
+            this.scaleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // squareAreaRb
+            // 
+            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
+            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.squareAreaRb.FlatAppearance.BorderSize = 0;
+            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.squareAreaRb.Location = new System.Drawing.Point(873, 72);
+            this.squareAreaRb.Name = "squareAreaRb";
+            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.squareAreaRb.TabIndex = 25;
+            this.squareAreaRb.UseVisualStyleBackColor = false;
+            this.squareAreaRb.Visible = false;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(721, 628);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(35, 13);
+            this.statusLabel.TabIndex = 4;
+            this.statusLabel.Text = "status";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel4,
+            this.toolStripStatusLabel5,
+            this.toolStripStatusLabel3,
+            this.toolStripProgressBar1,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripDropDownButton1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 628);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(915, 22);
+            this.statusStrip1.TabIndex = 23;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel5
+            // 
+            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(751, 17);
+            this.toolStripStatusLabel3.Spring = true;
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.ShowDropDownArrow = false;
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(47, 20);
+            this.toolStripDropDownButton1.Text = "Cancel";
+            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
             // MainForm
             // 
@@ -881,7 +881,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 650);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.statusLabel);
@@ -889,6 +888,7 @@
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.squareAreaRb);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
@@ -915,11 +915,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -982,10 +981,10 @@
         private System.Windows.Forms.ToolStripMenuItem создатьОтчетToolStripMenuItem;
         private System.Windows.Forms.Button statisticsBtn;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.RadioButton squareAreaRb;
         private System.Windows.Forms.ToolStripMenuItem вшитьНавигациюToolStripMenuItem;
         private System.Windows.Forms.RadioButton sharerRb;
+        private System.Windows.Forms.Label label1;
     }
 }
 

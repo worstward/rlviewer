@@ -8,8 +8,7 @@ namespace RlViewer.Factories.CornerCoords.Abstract
 {
     public abstract class CornerCoordFactory
     {
-        public abstract RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract.CornerCoordinates Create(RlViewer.Files.LocatorFile file);
-
+        public abstract RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract.CornerCoordinates Create(Files.LocatorFile file, int firstLine, int lastLine, bool readToEnd);
         public static CornerCoordFactory GetFactory(RlViewer.Files.FileProperties properties)
         {
             switch (properties.Type)

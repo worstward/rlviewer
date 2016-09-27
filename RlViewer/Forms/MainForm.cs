@@ -15,22 +15,30 @@ namespace RlViewer.Forms
         public MainForm()
         {
             InitializeComponent();
-           
-            _guiFacade = new UI.GuiFacade(this);
-
+          
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
 
             FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Normal;
 
-            _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(), () => this.Text = _guiFacade.OpenFile(),
-                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(),
-                 () => _guiFacade.MakeReport());
+            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(), () => this.Text = GuiFacade.OpenFile(),
+                 () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
+                 () => GuiFacade.ReportDialog());
         }
 
         UI.KeyPressProcessor _keyProcessor;
+
         UI.GuiFacade _guiFacade;
+        public UI.GuiFacade GuiFacade
+        {
+            get
+            {
+                return _guiFacade = _guiFacade ?? new UI.GuiFacade(this); 
+            }
+        }
+
+
 
         #region ISuitableForm controls
         public PictureBox Canvas
@@ -327,45 +335,45 @@ namespace RlViewer.Forms
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Text = _guiFacade.OpenFile();           
+            Text = GuiFacade.OpenFile();           
         }
         
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            _guiFacade.DrawImage();
+            GuiFacade.DrawImage();
         }
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            _guiFacade.DrawImage();
+            GuiFacade.DrawImage();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            _guiFacade.InitDrawImage();
+            GuiFacade.InitDrawImage();
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            _guiFacade.TraceMouseMovement(e);
-            _guiFacade.ShowMousePosition(e);
-            _guiFacade.ShowNavigation(e);
+            GuiFacade.TraceMouseMovement(e);
+            GuiFacade.ShowMousePosition(e);
+            GuiFacade.ShowNavigation(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            _guiFacade.ClickStarted(e);          
-            _guiFacade.DrawImage();
+            GuiFacade.ClickStarted(e);          
+            GuiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            _guiFacade.ClickFinished(e);
+            GuiFacade.ClickFinished(e);
         }
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            _guiFacade.ScaleImage(e.Delta);
+            GuiFacade.ScaleImage(e.Delta);
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
@@ -376,7 +384,7 @@ namespace RlViewer.Forms
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            _guiFacade.ChangeFilterValue(trackBar1.Value);
+            GuiFacade.ChangeFilterValue(trackBar1.Value);
             filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
         }
 
@@ -384,7 +392,7 @@ namespace RlViewer.Forms
          {
             if(((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
+                GuiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
             }
         }
 
@@ -392,7 +400,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
+                GuiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
             }
         }
 
@@ -400,140 +408,141 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                _guiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
+                GuiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
             }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowSettings();
+            GuiFacade.ShowSettings();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _guiFacade.CancelLoading();
+            GuiFacade.CancelLoading();
+            GuiFacade.Dispose();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            _keyProcessor.ProceedKeyPress(e);
+            _keyProcessor.ProcessKeyPress(e);
         }
 
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowFileInfo();
+            GuiFacade.ShowFileInfo();
         }
 
         private void логToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowLog();
+            GuiFacade.ShowLog();
         }
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.Save();
+            GuiFacade.Save();
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            _guiFacade.InitDrawImage();
+            GuiFacade.InitDrawImage();
         }
 
         private void naviPanelCb_CheckedChanged(object sender, EventArgs e)
         {
-            _guiFacade.ToggleNavigation();
+            GuiFacade.ToggleNavigation();
         }
 
         private void filterPanelCb_CheckedChanged(object sender, EventArgs e)
         {
-            _guiFacade.ToggleFilters();
+            GuiFacade.ToggleFilters();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = _guiFacade.OpenWithDoubleClick();
+            Text = GuiFacade.OpenWithDoubleClick();
         }
 
 
         private void alignBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.AlignImage();
+            GuiFacade.AlignImage();
         }
 
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-            _guiFacade.CancelLoading();
+            GuiFacade.CancelLoading();
         }
 
         private void resetFilterBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.ResetFilter();
+            GuiFacade.ResetFilter();
         }
 
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
-            _guiFacade.MoveFileDragDrop(e);
+            GuiFacade.MoveFileDragDrop(e);
         }
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
-            Text = _guiFacade.OpenFileDragDrop(e);
+            Text = GuiFacade.OpenFileDragDrop(e);
         }
 
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowAbout();
+            GuiFacade.ShowAbout();
         }
 
         private void статусКешаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowCache();
+            GuiFacade.ShowCache();
         }
 
         private void findPointBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowFindPoint();
+            GuiFacade.ShowFindPoint();
         }
 
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
-             _guiFacade.InitDrawImage();
+             GuiFacade.InitDrawImage();
         }
 
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
         {
-            _guiFacade.ResetRuler();
+            GuiFacade.ResetRuler();
         }
 
         private void zoomOutBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.ScaleImage(-1);
+            GuiFacade.ScaleImage(-1);
         }
 
         private void zoomInBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.ScaleImage(1);
+            GuiFacade.ScaleImage(1);
         }
 
         private void создатьОтчетToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.MakeReport();
+            GuiFacade.ReportDialog();
         }
 
         private void statisticsBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.GetAreaStatistics();
+            GuiFacade.GetAreaStatistics();
         }
 
 
         private void вшитьНавигациюToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.EmbedNavigation();
+            GuiFacade.EmbedNavigation();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            _guiFacade.DrawItems(e.Graphics);
+            GuiFacade.DrawItems(e.Graphics);
         }
 
     }

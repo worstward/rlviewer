@@ -18,7 +18,7 @@ using RlViewer.Files;
 
 namespace RlViewer.UI
 {
-    public class GuiFacade
+    public class GuiFacade : IDisposable
     {
         public GuiFacade(ISuitableForm form)
         {
@@ -27,7 +27,7 @@ namespace RlViewer.UI
 
             _form = form;
             _filterProxy = new Behaviors.Filters.ImageFilterProxy();
-            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale);
+            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, _settings.InitialScale);
             _drag = new Behaviors.DragController();
             _chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
 
@@ -65,7 +65,7 @@ namespace RlViewer.UI
         private Behaviors.AreaSelector.AreaSelectorDecorator _selectedPointArea;
         private Behaviors.AreaSelector.AreaSelectorsAlignerContainer _areaAligningWrapper;
 
-        
+
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
 
@@ -75,13 +75,13 @@ namespace RlViewer.UI
         private ToolTip _toolTip = new ToolTip();
         private IWin32Window _win;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        public event EventHandler<Image> OnImageDrawn = delegate { };
 
-        public delegate void ImageDrawnHandler(object sender, Image e);
-        public event ImageDrawnHandler OnImageDrawn = delegate { };
         private object _animationLock = new object();
 
 
-        #region OpenFile
+        #region openFile
         public string OpenWithDoubleClick()
         {
             var args = Environment.GetCommandLineArgs();
@@ -153,7 +153,7 @@ namespace RlViewer.UI
                 {
                     openFileDlg.Title = "Радиолокационный файл";
                     if (openFileDlg.ShowDialog() == DialogResult.OK)
-                    {                      
+                    {
                         return OpenFile(openFileDlg.FileName);
                     }
                     else
@@ -174,11 +174,6 @@ namespace RlViewer.UI
         {
             string caption;
 
-            if (_worker != null && _worker.IsBusy)
-            {
-                CancelLoading();
-            }
-
 
             if (_worker != null && _worker.IsBusy)
             {
@@ -192,7 +187,12 @@ namespace RlViewer.UI
                 else
                 {
                     DrawImage();
-                    return _file.Properties.FilePath;
+                    if (_file != null)
+                    {
+                        return _file.Properties.FilePath;
+                    }
+
+                    return string.Empty;
                 }
             }
 
@@ -201,12 +201,12 @@ namespace RlViewer.UI
             StartTask("Чтение навигации", loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);
             _form.NavigationDgv.Rows.Clear();
             caption = _caption = fileName;
-            return caption; 
+            return caption;
 
         }
         #endregion
 
-        #region Tasks
+        #region tasks
 
         private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
             System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
@@ -258,27 +258,36 @@ namespace RlViewer.UI
             _searcher.Report += (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob += (s, ce) => ce.Cancel = _searcher.Cancelled;
             _cancellableAction = _searcher;
-            var xy = (Tuple<string, string>)(e.Argument);
-            int x;
-            if (Int32.TryParse(xy.Item1, out x))
-            {
-                e.Result = new Point(Convert.ToInt32(xy.Item1), Convert.ToInt32(xy.Item2));
-            }
-            else
-            {
-                e.Result = _searcher.GetCoordinates(NaviStringConverters.ParseToRadians(xy.Item1),
-                    NaviStringConverters.ParseToRadians(xy.Item2));
-            }
 
+            var searcherParams = (Behaviors.Navigation.NavigationSearcher.SearcherParams)e.Argument;
+
+            try
+            {
+                if (searcherParams.IsNavigationSearcher)
+                {
+                    e.Result = _searcher.GetCoordinates(searcherParams.Lat, searcherParams.Lon, searcherParams.Error);
+                }
+                else
+                {
+                    e.Result = new Point(searcherParams.X, searcherParams.Y);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
         }
 
         private void loaderWorker_FindPointCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-
             _searcher.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob -= (s, ce) => ce.Cancel = _searcher.Cancelled;
 
-            if (e.Error != null)
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Searching cancelled"));
+            }
+            else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point: {0}", e.Error.Message));
                 Forms.FormsHelper.ShowErrorMsg("Unable to find point");
@@ -316,18 +325,24 @@ namespace RlViewer.UI
             _cancellableAction = _saver;
 
             var filter = parameters.KeepFiltering ? _filterProxy : null;
+            var palette = parameters.KeepPalette ? _drawer.Palette : null;
 
-            _saver.Save(parameters.Path, Path.GetExtension(parameters.Path).Replace(".", "")
-                .ToEnum<RlViewer.FileType>(), new Rectangle(parameters.LeftTop.X, parameters.LeftTop.Y, parameters.Width, parameters.Height),
-                filter, _creator.NormalizationFactor, _creator.MaxValue);
-
+            try
+            {
+                _saver.Save(parameters.Path, Path.GetExtension(parameters.Path).Replace(".", "")
+                    .ToEnum<RlViewer.FileType>(), new Rectangle(parameters.LeftTop.X, parameters.LeftTop.Y, parameters.Width, parameters.Height),
+                    _creator.NormalizationFactor, _creator.MaxValue, palette, filter);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
 
             if (_saver.Cancelled)
             {
                 ClearWorkerData(() => File.Delete(parameters.Path));
             }
 
-            e.Cancel = _saver.Cancelled;
             e.Result = parameters.Path;
         }
 
@@ -336,14 +351,14 @@ namespace RlViewer.UI
             _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
 
-
             if (e.Cancelled)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Saving cancelled");
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Saving cancelled"));
+                string errMess = string.Format("Saving cancelled");
             }
             else if (e.Error != null)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error occured while saving image: {0}", e.Error.Message));
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while saving image: {0}", e.Error.Message));
                 Forms.FormsHelper.ShowErrorMsg("Unable to save image");
             }
             else
@@ -367,16 +382,23 @@ namespace RlViewer.UI
 
             var resamplingArea = GeometryHelper.GetArea(_pointSelector, _settings.AligningAreaBorderSize);
 
-            byte[] resampledImage = _aligner.Resample(fileName, resamplingArea);
+            byte[] resampledImage = null;
+
+            try
+            {
+                resampledImage = _aligner.Resample(fileName, resamplingArea);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
 
             if (resampledImage != null)
             {
                 _saver.SaveAsAligned(fileName, resamplingArea, resampledImage, _pointSelector.Count(),
                       (int)_settings.RangeCompressionCoef, (int)_settings.AzimuthCompressionCoef);
-
             }
 
-            e.Cancel = _aligner.Cancelled;
             e.Result = fileName;
         }
 
@@ -385,19 +407,20 @@ namespace RlViewer.UI
             _aligner.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _aligner.CancelJob -= (s, ce) => ce.Cancel = _aligner.Cancelled;
 
+
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Image aligning cancelled"));
             }
             else if (e.Error != null)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error occured while aligning image: {0}", e.Error.Message));
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while aligning image: {0}", e.Error.Message));
                 Forms.FormsHelper.ShowErrorMsg("Unable to align image");
             }
             else
             {
                 var fileName = Path.GetFullPath((string)e.Result);
-                
+
                 var type = new Files.FileProperties(fileName).Type;
 
                 if (type != FileType.raw && type != FileType.r)
@@ -426,10 +449,18 @@ namespace RlViewer.UI
             _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
             _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
             _cancellableAction = _navi;
-            _navi.GetNavigation();
-            e.Cancel = _navi.Cancelled;
+
+            try
+            {
+                _navi.GetNavigation();
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+
             _ruler = new Behaviors.Ruler.RulerProxy(_file);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
@@ -440,18 +471,15 @@ namespace RlViewer.UI
 
             if (_pointSharer != null)
             {
+                _pointSharer.DataReceived -= (s, gde) => CrossAppDataReceivedCallback(s, gde);
                 _pointSharer.Dispose();
             }
-            
-            _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file, 
-                _settings.MulticastEp,
-                System.Diagnostics.Process.GetCurrentProcess().Id,
-                (point) => 
-                { 
-                    CenterImageAtPoint(point, false);
-                });
-            
 
+            _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file,
+                 new Behaviors.CrossAppCommunication.UdpExchange(_settings.MulticastEp, Behaviors.CrossAppCommunication.CommunicationType.Multicast),
+                 System.Diagnostics.Process.GetCurrentProcess().Id);
+
+            _pointSharer.DataReceived += (s, gde) => CrossAppDataReceivedCallback(s, gde);
         }
 
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -462,6 +490,7 @@ namespace RlViewer.UI
                 _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
             }
 
+
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("File opening cancelled"));
@@ -469,17 +498,8 @@ namespace RlViewer.UI
             }
             else if (e.Error != null)
             {
-                string errMess = string.Format("File opening cancelled");
-                Logging.SeverityGrades grade = Logging.SeverityGrades.Info;
-
-                if (e.Error.GetType() != typeof(OperationCanceledException))
-                {
-                    grade = Logging.SeverityGrades.Blocking;
-                    errMess = string.Format("Error occured while opening file: {0}", e.Error.Message);
-                    Forms.FormsHelper.ShowErrorMsg("Unable to open file");
-                }
-
-                Logging.Logger.Log(grade, errMess);
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while opening file: {0}", e.Error.Message));
+                Forms.FormsHelper.ShowErrorMsg("Unable to open file");
                 InitializeWindow();
             }
             else
@@ -487,7 +507,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
                     _file.Properties.Type, _file.Properties.FilePath));
 
-                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);              
+                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
             }
         }
         #endregion
@@ -501,8 +521,22 @@ namespace RlViewer.UI
             ((WorkerEventController)_creator).Report += (s, pe) => ProgressReporter(pe.Percent);
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
             _cancellableAction = ((WorkerEventController)_creator);
-            _tiles = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
-            e.Cancel = ((WorkerEventController)_creator).Cancelled;
+
+            try
+            {
+                e.Result = _creator.GetTiles(_file.Properties.FilePath, _settings.ForceTileGeneration, _settings.AllowViewWhileLoading);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
+            catch (AggregateException aggrex)
+            {
+                if (aggrex.InnerException.GetType() == typeof(OperationCanceledException))
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
 
@@ -516,20 +550,23 @@ namespace RlViewer.UI
 
             if (e.Cancelled)
             {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Tile creation cancelled"));
                 ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Tile creation operation cancelled");
                 InitializeWindow();
             }
             else if (e.Error != null)
             {
-                ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}",
-                    e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
+                e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
+                ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
                 Forms.FormsHelper.ShowErrorMsg("Ошибка генерации изображения из файла");
                 InitializeWindow();
+
             }
             else
             {
+                _tiles = (Behaviors.TileCreator.Tile[])e.Result;
+
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
                     string.Format("Tile creation process succeed. {0} {1} generated", _tiles.Length, _tiles.Length == 1 ? "tile" : "tiles"));
 
@@ -555,9 +592,19 @@ namespace RlViewer.UI
                 ((WorkerEventController)_reporter).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
             }
 
-            var reportFileName = (string)e.Argument;
+            var reportArgs = (object[])e.Argument;
+            var reportFileName = (string)reportArgs[0];
+            var reporterSettings = (Behaviors.ReportGenerator.ReporterSettings)reportArgs[1];
 
-            _reporter.GenerateReport(reportFileName);
+
+            try
+            {
+                _reporter.GenerateReport(reportFileName, reporterSettings);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
             e.Result = reportFileName;
         }
 
@@ -569,16 +616,14 @@ namespace RlViewer.UI
                 ((WorkerEventController)_reporter).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
             }
 
-
             if (e.Cancelled)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Report generation operation cancelled");
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Report generation cancelled"));
+                InitializeWindow();
             }
             else if (e.Error != null)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Error,
-                    string.Format("Unable to make report: {0}", e.Error.Message));
-                Forms.FormsHelper.ShowErrorMsg("Ошибка при создании отчета");
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to make report: {0}", e.Error.Message));
                 InitializeWindow();
             }
             else
@@ -603,7 +648,7 @@ namespace RlViewer.UI
                 {
                     _areaAligningWrapper.RemoveArea();
                     _pointSelector.RemoveLast();
-                    BlockAlignButton();                 
+                    BlockAlignButton();
                 }
                 else if (_form.MarkAreaRb.Checked)
                 {
@@ -616,7 +661,7 @@ namespace RlViewer.UI
         }
 
         #region drawing
-        
+
         public void InitDrawImage()
         {
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null && _file != null)
@@ -629,7 +674,7 @@ namespace RlViewer.UI
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed,
                     _settings.IsPaletteGroupped, _settings.UseTemperaturePalette);
                 InitScrollBars(_scaler.ScaleFactor);
-                
+
                 DrawImage();
             }
         }
@@ -637,39 +682,38 @@ namespace RlViewer.UI
 
         public void DrawImage(Func<Image, Image> RedrawWithItems = null)
         {
-            if (_tiles != null && _drawer != null)
+            //if (_tiles != null && _drawer != null)
+            //{
+            Task.Run(() =>
             {
-                Task.Run(() =>
+                Image img = null;
+                // lock (_animationLock)
+                // {
+                if (_tiles != null && _drawer != null)
                 {
-                    Image img = null;
-                    lock (_animationLock)
+                    try
                     {
-                        if (_tiles != null && _drawer != null)
-                        {
-                            try
-                            {
-                                img = _drawer.Draw(_tiles,
-                                        new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Generic type drawing error: {0}", ex.Message));
-                            }
-                        }
+                        img = _drawer.Draw(_tiles,
+                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
                     }
-
-                    if (RedrawWithItems != null)
+                    catch (Exception ex)
                     {
-
-                        OnImageDrawn(null, RedrawWithItems(img));
+                        Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Generic type drawing error: {0}", ex.Message));
                     }
-                    else
-                    {
-                        OnImageDrawn(null, img);
-                    }
-                }).Wait();
+                }
+                // }
 
-            }
+                if (RedrawWithItems != null)
+                {
+                    OnImageDrawn(null, RedrawWithItems(img));
+                }
+                else
+                {
+                    OnImageDrawn(null, img);
+                }
+            }).Wait();
+
+            //}
         }
 
 
@@ -683,16 +727,13 @@ namespace RlViewer.UI
 
         public void ScaleImage(int delta)
         {
-            if (_file != null && _drawer != null)
+            if (delta > 0)
             {
-                if (delta > 0)
-                {
-                    ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
-                }
-                else
-                {
-                    ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
-                }
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
+            }
+            else
+            {
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
             }
         }
 
@@ -704,7 +745,10 @@ namespace RlViewer.UI
             float scaleFactor = (float)Math.Pow(2, value);
             _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
 
-            CenterScaledImage(scaleFactor);
+            if (_file != null)
+            {
+                CenterScaledImage(scaleFactor);
+            }
 
             _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, scaleFactor);
             InitDrawImage();
@@ -744,7 +788,7 @@ namespace RlViewer.UI
 
                     DrawImage((image) => _drawer.DrawSharedPoint(image, center,
                         new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size));
-                    
+
                 }
                 else if (showWarning)
                 {
@@ -775,8 +819,8 @@ namespace RlViewer.UI
                 (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Height ?
                 _form.Vertical.Maximum : newVerticalValue;
 
-            _form.Horizontal.Value = (int)newHorizontalValue;
-            _form.Vertical.Value = (int)newVerticalValue;
+            _form.Horizontal.Value = (int)Math.Round(newHorizontalValue);
+            _form.Vertical.Value = (int)Math.Round(newVerticalValue);
         }
 
         private void ProgressReporter(int progress)
@@ -788,11 +832,11 @@ namespace RlViewer.UI
 
         private void BlockAlignButton()
         {
-            if(_pointSelector != null)
-            { 
+            if (_pointSelector != null)
+            {
                 var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
 
-                if(_settings.SurfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.Custom)
+                if (_settings.SurfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.Custom)
                 {
                     if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
                     {
@@ -803,7 +847,7 @@ namespace RlViewer.UI
                         _form.AlignBtn.Enabled = false;
                     }
                 }
-                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16 )
+                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16)
                 {
                     _form.AlignBtn.Enabled = true;
                 }
@@ -857,8 +901,9 @@ namespace RlViewer.UI
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
             ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
-            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode = 
+            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode =
                 DataGridViewAutoSizeColumnsMode.Fill;
+            ThreadHelper.ThreadSafeUpdate<Label>(_form.ScaleLabel).Text = string.Format("Масштаб: {0}%", _scaler.ScaleFactor * 100);
             ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
             ThreadHelper.ThreadSafeUpdate<System.Windows.Forms.DataVisualization.Charting.Chart>(_form.HistogramChart)
                 .Series[0].Points.Clear();
@@ -926,8 +971,8 @@ namespace RlViewer.UI
         private string GetSaveDialogFilter(Files.LocatorFile file)
         {
             string filter = Resources.SaveFilter;
-            
-            if(file.Properties.Type == FileType.raw || file.Properties.Type == FileType.r)
+
+            if (file.Properties.Type == FileType.raw || file.Properties.Type == FileType.r)
             {
                 filter = Resources.RawSaveFilter;
             }
@@ -938,7 +983,7 @@ namespace RlViewer.UI
 
             return filter;
         }
-        
+
         public void Save()
         {
             if (_file != null && _file.Properties.Type != FileType.k)
@@ -957,7 +1002,8 @@ namespace RlViewer.UI
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
                                 StartTask("Сохранение", loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
-                                    new Behaviors.Saving.SaverParams(sfd.FileName, sSize.LeftTop, sSize.ImageWidth, sSize.ImageHeight, sSize.KeepFiltering));
+                                    new Behaviors.Saving.SaverParams(sfd.FileName, sSize.LeftTop,
+                                        sSize.ImageWidth, sSize.ImageHeight, sSize.KeepFiltering, sSize.KeepPalette));
                             }
                         }
                     }
@@ -977,7 +1023,7 @@ namespace RlViewer.UI
         {
             _filterProxy.ChangeFilterValue(newValue);
             if (_drawer != null)
-            { 
+            {
                 OnImageDrawn(null, _drawer.RedrawImage());
             }
         }
@@ -1051,6 +1097,7 @@ namespace RlViewer.UI
         }
 
 
+
         public void ClickStarted(MouseEventArgs e)
         {
             if (_file != null && _drawer != null)
@@ -1088,10 +1135,16 @@ namespace RlViewer.UI
                         if (!_settings.UsePointsForAligning)
                         {
 
-                            _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
-                                new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                    (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
-
+                            try
+                            {
+                                _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
+                                    new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
+                                        (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
+                            }
+                            catch (Exception)
+                            {
+                                Forms.FormsHelper.ShowErrorMsg("Unable to set point");
+                            }
                         }
                         else
                         {
@@ -1165,7 +1218,7 @@ namespace RlViewer.UI
 
         public void TraceMouseMovement(MouseEventArgs e)
         {
-            if (_file != null)
+            if (_file != null && _drawer != null)
             {
                 if (_drag.Trace(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor))))
                 {
@@ -1179,7 +1232,7 @@ namespace RlViewer.UI
                     newHor = newHor < 0 ? 0 : newHor;
                     newHor = newHor > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : newHor;
                     _form.Horizontal.Value = newHor;
-                    
+
                     DrawImage();
                 }
                 else if (_form.MarkAreaRb.Checked && _areaSelector != null)
@@ -1234,8 +1287,8 @@ namespace RlViewer.UI
                                                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
 
                         _form.Canvas.Image = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                            (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor))
-                            , new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
+                            (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
+                            new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
                              (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
 
                         _form.DistanceLabel.Text = _ruler.GetDistance(endPoint);
@@ -1292,7 +1345,7 @@ namespace RlViewer.UI
                     {
                         _areaSelector.StopResizing();
                     }
-                 
+
                     _analyzer.StopTracing();
                     _toolTip.Hide(_win);
 
@@ -1321,7 +1374,7 @@ namespace RlViewer.UI
                     }
 
                 }
-                
+
                 _form.Canvas.Invalidate();
             }
 
@@ -1329,12 +1382,50 @@ namespace RlViewer.UI
 
         #endregion
 
+        #region dispose
+        private bool _disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing && _pointSharer != null)
+            {
+                _pointSharer.DataReceived -= (s, gde) => CrossAppDataReceivedCallback(s, gde);
+                _pointSharer.Dispose();
+            }
+
+            OnImageDrawn -= (s, img) => _form.Canvas.Image = img;
+            _toolTip.Dispose();
+            _disposed = true;
+
+        }
+        #endregion
+
         #region newFormTools
-     
+
         public void ShowFileInfo()
         {
             if (_file != null)
             {
+                try
+                {
+                    var headerInfo = _file.Header.HeaderInfo;
+                }
+                catch
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Error,
+                        string.Format("Unable to parse file header {0}", _file.Properties.FilePath));
+                    return;
+                }
+
+
                 using (var iFrm = new Forms.InfoForm(_file.Header.HeaderInfo))
                 {
                     iFrm.ShowDialog();
@@ -1355,7 +1446,7 @@ namespace RlViewer.UI
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Error while applying new settings: {0}", ex.Message));
             }
@@ -1371,7 +1462,7 @@ namespace RlViewer.UI
             }
         }
 
-        
+
 
         public void ShowLog()
         {
@@ -1408,14 +1499,23 @@ namespace RlViewer.UI
         {
             if (_file != null && _searcher != null)
             {
-                using (var ff = new Forms.FindPointForm(_file.Navigation != null))
+                try
                 {
-                    MessageBox.Show("Функция работает в тестовом режиме!");
-                    if (ff.ShowDialog() == DialogResult.OK)
+                    using (var ff = new Forms.FindPointForm(_file.Navigation != null))
                     {
-                        StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted,
-                            new Tuple<string, string>(ff.XLat, ff.YLon));
-                    };
+#if DEBUG
+                    MessageBox.Show("Функция работает в тестовом режиме!");
+#endif
+                        if (ff.ShowDialog() == DialogResult.OK)
+                        {
+                            StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted, ff.Params);
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Error,
+                        string.Format("Error occured while parsing input: {0}", ex.Message));
                 }
             }
         }
@@ -1441,21 +1541,39 @@ namespace RlViewer.UI
 
         public void GetAreaStatistics()
         {
-            if (_file != null)
+            if (_file == null)
             {
-                if (_areaSelector.Area != null && _areaSelector.Area.Width != 0
-                    && _areaSelector.Area.Width < 3000 && _areaSelector.Area.Height < 3000)
-                {           
-                    using (var statFrm = new Forms.StatisticsForm(_file, _areaSelector))
-                    {
-                        statFrm.ShowDialog();
-                    }
-                }
-                else
-                {
-                    Forms.FormsHelper.ShowErrorMsg("Невозможно построить статистику области");
-                }
+                return;
+            }
 
+            if (_areaSelector == null || _areaSelector.Area == null || _areaSelector.Area.Width == 0 || _areaSelector.Area.Height == 0)
+            {
+                Forms.FormsHelper.ShowErrorMsg("Невозможно построить статистику области");
+                return;
+            }
+            else if (_areaSelector.Area.Width >= _settings.AligningAreaBorderSize || _areaSelector.Area.Height >= _settings.AligningAreaBorderSize)
+            {
+                Forms.FormsHelper.ShowErrorMsg(string.Format("Выделен слишком большой участок (максимум: {0})", _settings.AligningAreaBorderSize));
+                return;
+            }
+
+            Form statFrm = null;
+
+            try
+            {
+                statFrm = new Forms.StatisticsForm(_file, _areaSelector);
+                statFrm.ShowDialog();
+            }
+            catch (Exception)
+            {
+                Forms.FormsHelper.ShowErrorMsg("Unable to determine area statistics");
+            }
+            finally
+            {
+                if (statFrm != null)
+                {
+                    statFrm.Dispose();
+                }
             }
         }
 
@@ -1473,7 +1591,32 @@ namespace RlViewer.UI
 
         private void EmbedNavigation(string brl4FileName, bool forced = true)
         {
-            var naviChanger = new Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger(brl4FileName);
+            Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger naviChanger = null;
+
+
+            try
+            {
+                naviChanger = new Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger(brl4FileName);
+            }
+            catch (InvalidCastException icex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Provided header is not of brl4 type: {0}", icex.Message));
+                return;
+            }
+            catch (ArgumentException aex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Unable to parse blr4 header: {0}", aex.Message));
+                return;
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Unknown brl4 opening exception: {0}", ex.Message));
+                return;
+            }
+
 
             if (!forced)
             {
@@ -1493,7 +1636,7 @@ namespace RlViewer.UI
                         Logging.Logger.Log(Logging.SeverityGrades.Info,
                             string.Format("Successfully applied navigation to {0}", brl4FileName));
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Error,
                             string.Format("Unable to embed new navigation: {0}", ex.Message));
@@ -1505,7 +1648,20 @@ namespace RlViewer.UI
 
 
 
-        public void MakeReport()
+        public void ReportDialog()
+        {
+            using (var reportSettings = new Forms.ReportSettingsForm())
+            {
+                if (reportSettings.ShowDialog() == DialogResult.OK)
+                {
+                    MakeReport(reportSettings.ReporterType, reportSettings.ReporterSettings);
+                }
+            }
+        }
+
+
+        private void MakeReport(Behaviors.ReportGenerator.Abstract.ReporterTypes reportType,
+            Behaviors.ReportGenerator.ReporterSettings reporterSettings)
         {
             using (var ofd = new OpenFileDialog())
             {
@@ -1533,11 +1689,11 @@ namespace RlViewer.UI
                         if (fsd.ShowDialog() == DialogResult.OK)
                         {
                             _reporter = Factories.Reporter.Abstract.ReporterFactory
-                                                .GetFactory(Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx)
+                                                .GetFactory(reportType)
                                                 .Create(validFiles.ToArray());
 
                             StartTask("Генерация отчета", loaderWorker_GenerateReport,
-                                loaderWorker_GenerateReportCompleted, fsd.FileName);
+                                loaderWorker_GenerateReportCompleted, new object[] { fsd.FileName, reporterSettings });
                         }
                     }
                 }
@@ -1614,7 +1770,7 @@ namespace RlViewer.UI
         }
 
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Checks if started in admin mode. Allows restarting in admin mode if process is in user mode
@@ -1633,8 +1789,8 @@ namespace RlViewer.UI
                     return;
                 }
 
-                var confirmation = MessageBox.Show("Система обнаружила запуск без привилегий администратора. Их отсутствие может повлиять на работу программы.",
-                                "Перезапустить в режиме администратора?",
+                var confirmation = MessageBox.Show(string.Format(@"Система обнаружила запуск без привилегий администратора.{0}Их отсутствие может повлиять на работу программы.{1}Перезапустить в режиме администратора?", Environment.NewLine, Environment.NewLine),
+                                "Повышение уровня доступа",
                                 MessageBoxButtons.YesNo);
                 if (confirmation == DialogResult.Yes)
                 {
@@ -1679,6 +1835,14 @@ namespace RlViewer.UI
             }
         }
 
+
+        private void CrossAppDataReceivedCallback(object sender, Behaviors.CrossAppCommunication.GotDataEventArgs gde)
+        {
+            if (_pointSharer != null)
+            {
+                _pointSharer.ProcessMessage(gde.Data, (point) => CenterImageAtPoint(point, false));
+            }
+        }
 
     }
 }

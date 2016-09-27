@@ -206,7 +206,6 @@
             // 
             // inverseCheckBox
             // 
-            this.inverseCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.inverseCheckBox.AutoSize = true;
             this.inverseCheckBox.Location = new System.Drawing.Point(118, 42);
             this.inverseCheckBox.Name = "inverseCheckBox";
@@ -218,7 +217,6 @@
             // 
             // highResCb
             // 
-            this.highResCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.highResCb.AutoSize = true;
             this.highResCb.Location = new System.Drawing.Point(6, 106);
             this.highResCb.Name = "highResCb";
@@ -259,7 +257,7 @@
             this.rbfInterpolationcSettingsGb.Size = new System.Drawing.Size(255, 139);
             this.rbfInterpolationcSettingsGb.TabIndex = 14;
             this.rbfInterpolationcSettingsGb.TabStop = false;
-            this.rbfInterpolationcSettingsGb.Text = "РБФ интерполяция";
+            this.rbfInterpolationcSettingsGb.Text = "Параметры многослойной РБФ";
             // 
             // label7
             // 

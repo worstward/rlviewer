@@ -55,8 +55,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
         {
             float[] image = new float[area.Width * area.Height];
            
-            //iterate over X axis
-
             int toInclusiveX = area.Location.X + area.Width;
             toInclusiveX = toInclusiveX > file.Width ? file.Width : toInclusiveX;
 

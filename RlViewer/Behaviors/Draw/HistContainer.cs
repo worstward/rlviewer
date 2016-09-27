@@ -69,7 +69,9 @@ namespace RlViewer.Behaviors.Draw
             byte[] imgBytes = new byte[visibleWidth * 3 * visibleHeight];
 
             //since bmp format requests certain image width (of multiples of 4) we have to take padding into account
-            var padding = img.Width - (int)(Math.Floor((double)(img.Width / 4f))) * 4;
+            var padding = (img.Width % 4);
+            padding = padding == 0 ? 0 : 4 - padding;
+
             var bitmapHeaderOffset = 54;
 
             using (var ms = new System.IO.MemoryStream())

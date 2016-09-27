@@ -12,6 +12,8 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
     /// </summary>
     public abstract class Surface : WorkerEventController
     {
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Surface(PointSelector.CompressedPointSelectorWrapper selector)
         {
             Selector = selector;
@@ -71,10 +73,6 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Abstract
 
             return sortedList;
         }
-
-
-
-
 
     }
 }

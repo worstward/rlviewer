@@ -46,13 +46,6 @@ namespace RlViewer.Headers.Concrete.Raw
             }
         }
 
-        public override HeaderInfoOutput[] HeaderInfo
-        {
-            get
-            {
-                return _headerInfo = _headerInfo ?? GetHeaderInfo();
-            }
-        }
 
         private int _bytesPerSample;
         private const int _strHeaderLength = 0;
@@ -60,7 +53,6 @@ namespace RlViewer.Headers.Concrete.Raw
         private byte[] _signature = new byte[_headerLength];
         private byte[] _header = new byte[_headerLength];
         private string _path;
-        private HeaderInfoOutput[] _headerInfo;
         private System.Drawing.Size _imgSize = new System.Drawing.Size();
 
         public System.Drawing.Size ImgSize

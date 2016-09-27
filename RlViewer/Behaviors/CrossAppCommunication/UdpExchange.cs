@@ -12,7 +12,7 @@ namespace RlViewer.Behaviors.CrossAppCommunication
     /// <summary>
     /// Provides cross app event based communication
     /// </summary>
-    public class UdpExchange
+    public class UdpExchange : Behaviors.CrossAppCommunication.ICrossAppExchange
     {
         public UdpExchange(IPEndPoint endPoint, CommunicationType type)
         {
@@ -26,8 +26,22 @@ namespace RlViewer.Behaviors.CrossAppCommunication
         private UdpClient _udpClient;
         public UdpClient UdpClient
         {
-            get { return _udpClient; }
+            get
+            {
+                return _udpClient;
+            }
         }
+
+        public void SetUp()
+        {
+            ListenAndNotify();
+        }
+
+        public void Dispose()
+        {
+            _udpClient.Client.Close();
+        }
+
 
         public void ListenAndNotify()
         {
@@ -35,19 +49,39 @@ namespace RlViewer.Behaviors.CrossAppCommunication
             {
                 while (true)
                 {
-                    var data = await GetDataAsync();
-                    DataReceived(null, new GotDataEventArgs(data));
+                    try
+                    {
+                        var data = await ReceiveDataAsync();
+                        DataReceived(null, new GotDataEventArgs(data));
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //in case awaiting object is disposed
+                        return;
+                    }
                 }
             });
         }
 
 
-        public async Task<byte[]> GetDataAsync()
+        public async Task<byte[]> ReceiveDataAsync()
         {
-            return (await _udpClient.ReceiveAsync()).Buffer;
+            byte[] data;
+
+            try
+            {
+                data = (await _udpClient.ReceiveAsync()).Buffer;
+            }
+            catch (ObjectDisposedException)
+            {
+                //in case awaiting object is disposed
+                throw;
+            }
+
+            return data;
         }
 
-        public byte[] GetData(IPEndPoint ipEp)
+        public byte[] ReceiveData(IPEndPoint ipEp)
         {
             return _udpClient.Receive(ref ipEp);
         }
@@ -67,17 +101,11 @@ namespace RlViewer.Behaviors.CrossAppCommunication
             switch (type)
             {
                 case CommunicationType.Multicast:
-                    StartAsMulticast(ep);
+                    _udpClient = GetMulticastClient(ep);
                     break;
                 default:
                     throw new NotSupportedException("CommunicationType");
             }
-        }
-
-
-        private void StartAsMulticast(IPEndPoint multicastEp)
-        {
-            _udpClient = GetMulticastClient(multicastEp);
         }
 
 
@@ -97,7 +125,7 @@ namespace RlViewer.Behaviors.CrossAppCommunication
 
     }
 
-   
+
 
 
 }

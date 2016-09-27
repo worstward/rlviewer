@@ -143,7 +143,6 @@ namespace RlViewer.Forms
                 Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Unauthorized access to files error: {0}", uaex));
                 return;
             }
-
           
             var locatorFiles = await GetLocatorFiles(files);
 

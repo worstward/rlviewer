@@ -69,5 +69,47 @@ namespace RlViewer.Forms
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// Adds textbox click event to provide user-friendly performance
+        /// </summary>
+        /// <param name="controls">Controls container</param>
+        public static void AddTbClickEvent(Control.ControlCollection controls)
+        {
+            AddClickEvent<MaskedTextBox>(controls, (t) =>
+                    {
+                        if (t.SelectionStart > t.Text.Length)
+                        {
+                            t.Select(t.Text.Length, 0);
+                        }
+                        else t.Select(t.SelectionStart, t.SelectionLength);
+                    });
+        }
+
+        /// <summary>
+        /// Adds click event to each control in the container
+        /// </summary>
+        /// <typeparam name="T">Control type</typeparam>
+        /// <param name="controls">Control container</param>
+        /// <param name="callback">Delegate to call when event fires</param>
+        public static void AddClickEvent<T>(Control.ControlCollection controls, Action<T> callback) where T : Control
+        {
+            foreach (var control in controls)
+            {
+                if (control.GetType() == typeof(MaskedTextBox))
+                {
+                    var genericControl = ((T)control);
+                    genericControl.Click += (s, e) => callback(genericControl);
+                }
+
+                var controlAsContainer = ((Control)control).Controls;
+
+                if (controlAsContainer.Count != 0)
+                {
+                    AddClickEvent<T>(controlAsContainer, callback);
+                }
+            }
+            
+        }
+
     }
 }

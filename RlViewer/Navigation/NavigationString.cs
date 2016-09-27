@@ -8,7 +8,8 @@ namespace RlViewer.Navigation
 {
     public class NavigationString
     {
-        public NavigationString(double longitude, double latitude, double height, double track, byte board, DateTime timeArm)
+        public NavigationString(double longitude, double latitude, double height, double track,
+            byte board, DateTime timeArm)//, DateTime timeUtc)
         {
             AircraftLongitude = longitude;
             AircraftLatitude = latitude;
@@ -16,6 +17,7 @@ namespace RlViewer.Navigation
             Track = track;
             Board = board;
             TimeArm = timeArm;
+            //TimeUtc = timeUtc;
         }
 
         public DateTime TimeArm
@@ -23,6 +25,7 @@ namespace RlViewer.Navigation
             get;
             private set;
         }
+
 
         public double AircraftLongitude
         {

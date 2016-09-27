@@ -16,6 +16,7 @@ namespace RlViewer.Forms
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
+            FormsHelper.AddTbClickEvent(this.Controls);
         }
 
         private int _bytesPerSample;
@@ -103,17 +104,6 @@ namespace RlViewer.Forms
             maskedTextBox1.Focus();
         }
 
-        private void maskedTextBox1_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
-
-        private void maskedTextBox2_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
 
     }
 }

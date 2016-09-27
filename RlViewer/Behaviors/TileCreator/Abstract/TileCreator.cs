@@ -68,13 +68,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromFileAsync(string path);
         protected abstract Tile[] GetTilesFromFile(string path);
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
-        protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, int tileHeight, TileOutputType outputType);
+        protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, float normalizationFactor,
+            int tileHeight, TileOutputType outputType);
         protected abstract Tile[] GetTilesFromFile(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
         protected abstract Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
 
-
+        protected abstract T[] GetSampleData(byte[] sourceBytes);
+        
         /// <summary>
         /// Determines if there are no missing tiles for current file
         /// </summary>
@@ -133,27 +135,37 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return tiles;
         }
 
-        
 
-        protected T GetMaxValue<T>(LocatorFile loc, int strDataLen, int strHeadLen, Func<T[], T> GetMax) where T : new()
+
+        protected T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen, int fromStr, int toStr)
         {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-            T[] rliString = new T[strDataLen / Marshal.SizeOf(new T())];
+            byte[] bRliString = new byte[strDataLen];
             T maxSampleValue = default(T);
             var comparer = Comparer<T>.Default;
 
 
             using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+                var estimatedFileSize = (loc.Width * loc.Header.BytesPerSample + loc.Header.StrHeaderLength) * loc.Height + loc.Header.FileHeaderLength;
 
-                while (s.Position != s.Length)
+                if (s.Length != estimatedFileSize)
                 {
+                    throw new ArgumentException(string.Format(@"Wrong image dimensions provided, calculated size:
+                        {0} bytes, real size: {1} bytes", estimatedFileSize, s.Length));
+                }
+
+                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
+                var preReadingOffset = (long)(strDataLen + strHeadLen) * (long)fromStr;
+                var postReadingOffset = (long)loc.Header.FileHeaderLength + ((long)(strDataLen + strHeadLen) * (long)toStr);
+
+                s.Seek(preReadingOffset, SeekOrigin.Current);
+
+                while (s.Position != postReadingOffset)
+                {
+                    s.Seek(strHeadLen, SeekOrigin.Current);
                     s.Read(bRliString, 0, bRliString.Length);
-
-                    Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
-
-                    var localMax = GetMax(rliString);
+                    var rliString = GetSampleData(bRliString);
+                    var localMax = rliString.Max();
 
                     Array.Clear(rliString, 0, rliString.Length);
 
@@ -163,19 +175,21 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     }
 
                     OnProgressReport((int)(s.Position / (float)s.Length * 100));
-                    if (OnCancelWorker())
-                    {
-                        return default(T);
-                    }
+                    OnCancelWorker();
                 }
             }
 
-            if(comparer.Compare(maxSampleValue, default(T)) == 0)
+            if (comparer.Compare(maxSampleValue, default(T)) == 0)
             {
                 throw new ArgumentException("File is corrupted (zero sample values)");
             }
 
             return maxSampleValue;
+        }
+
+        protected T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
+        {
+            return GetMaxValue(loc, strDataLen, strHeadLen, 0, loc.Height - 1);
         }
 
 

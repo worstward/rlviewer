@@ -40,8 +40,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalFactor == 0)
                         {
                             _normalFactor = ComputeNormalizationFactor(_rhg, _rhg.Width * _rhg.Header.BytesPerSample,
-                                System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.K.KStrHeaderStruct())
-                                , Math.Min(_rhg.Height, 4096));
+                                System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.K.KStrHeaderStruct)),
+                                Math.Min(_rhg.Height, 4096));
                         }
                     }
                 }
@@ -50,163 +50,45 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
-      
 
-        protected override short ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
+        private short _maxValue;
+        private object _maxLocker = new object();
+        public override float MaxValue
         {
-            byte[] bRliString = new byte[strDataLen + strHeadLen];
-            short[] rliString = new short[strDataLen / sizeof(short)];
-            short normal = 0;
-
-            frameHeight = frameHeight > 1024 ? 1024 : frameHeight;
-
-            long frameLength = loc.Header.FileHeaderLength + (strDataLen + strHeadLen) * frameHeight;
-
-            MaxValue = GetMaxValue<short>(loc, strDataLen, strHeadLen,
-                (short[] arr) => 
+            get
+            {
+                //double lock checking
+                if (_maxValue == 0)
                 {
-                    var amplitudeModulus = new short[arr.Length / 2];
-
-                    for (int i = 0; i < arr.Length; i += 2)
+                    lock (_maxLocker)
                     {
-                        amplitudeModulus[i / 2] = (short)Math.Sqrt(arr[i] * arr[i] + arr[i + 1] * arr[i + 1]);
-                    }
-
-                    return amplitudeModulus.Max();
-                });
-
-            if (Cancelled)
-            {
-                return 0;
-            }
-
-            float histogramStep = MaxValue / 1000f;
-            var histogram = new List<int>();
-
-            for (float i = 0; i < 1000; i += histogramStep)
-            {
-                histogram.Add(0);
-            }
-
-            using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                float avg = 0;
-                int parts = 0;
-
-                while (s.Position != frameLength && s.Position != s.Length)
-                {
-                    parts++;
-
-                    s.Read(bRliString, 0, bRliString.Length);
-                    Buffer.BlockCopy(bRliString, strHeadLen, rliString, 0, bRliString.Length - strHeadLen);
-
-                    var amplitudeModulus = new short[rliString.Length / 2];
-
-                    for (int i = 0; i < rliString.Length; i += 2)
-                    {
-                        amplitudeModulus[i / 2] = (short)Math.Sqrt(rliString[i] * rliString[i] +
-                            rliString[i + 1] * rliString[i + 1]);
-                    }
-
-                    avg += (float)rliString.Average(x => x);
-
-                    //fill histogram:
-                    //count distinct float values, eg:
-                    //numbers 1.4, 5, 6, 9, 24
-                    //steps 1-10, 11-20
-                    //1st step - 4 numbers, 2nd step 1 number
-                    for (int i = 0; i < rliString.Length; i++)
-                    {
-                        int index = (int)(rliString[i] / histogramStep);
-                        if (index < 0) continue;
-
-                        if (index >= histogram.Count)
-                            histogram[histogram.Count - 1]++;
-                        else histogram[index]++;
+                        if (_maxValue == 0)
+                        {
+                            _maxValue = GetMaxValue(_rhg, _rhg.Width * _rhg.Header.BytesPerSample,
+                                System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.K.KStrHeaderStruct)));
+                        }
                     }
                 }
+                return (float)_maxValue;
 
-                //find average value of samples array
-                avg /= parts;
-
-                //select max histogram value (most often occuring element)
-                var max = histogram.Max();
-
-                //get index of max histogram value
-                var maxIndex = histogram.Where(x => x == max).Select((x, i) => i).FirstOrDefault();
-
-                //find histogram index of average value sample and shift it
-                var avgIndex = avg / histogramStep * 5;
-
-
-                //get abs distance from max to avg values of histogram
-                var dst = Math.Abs(maxIndex - avgIndex);
-
-                normal = (short)((maxIndex + dst) * histogramStep);
-
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
-
-                if ((int)normal == 0) normal = (short)histogramStep;
-                return normal;
             }
         }
 
-
-        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength,
-            int tileHeight, TileOutputType outputType)
+        protected override short[] GetSampleData(byte[] sourceBytes)
         {
-            byte[] line = new byte[signalDataLength * tileHeight];
-            short[] sLine = new short[line.Length / sizeof(short)];
-            byte[] normalizedLine = new byte[sLine.Length];
+            short[] sampleData = new short[sourceBytes.Length / sizeof(short)];
 
-            int index = 0;
+            Buffer.BlockCopy(sourceBytes, 0, sampleData, 0, sourceBytes.Length);
 
-            float border = NormalizationFactor / 9f * 7;// *3;
+            var amplitudeModulus = new short[sampleData.Length / 2];
 
-            if (Cancelled)
+            for (int i = 0; i < sampleData.Length; i += 2)
             {
-                return null;
+                amplitudeModulus[i / 2] = (short)Math.Sqrt(sampleData[i] * sampleData[i] +
+                    sampleData[i + 1] * sampleData[i + 1]);
             }
 
-            while (index != line.Length && s.Position != s.Length)
-            {
-                s.Seek(strHeaderLength, SeekOrigin.Current);
-                index += s.Read(line, index, signalDataLength);
-            }
-
-            Buffer.BlockCopy(line, 0, sLine, 0, line.Length);
-
-            var amplitudeModulus = new short[sLine.Length / 2];
-
-            for (int i = 0; i < sLine.Length; i += 2)
-            {
-                amplitudeModulus[i / 2] = (short)Math.Sqrt(sLine[i] * sLine[i] +
-                    sLine[i + 1] * sLine[i + 1]);
-            }
-
-
-
-            switch (outputType)
-            {
-                case TileOutputType.Linear:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(x / NormalizationFactor * 255)).ToArray();
-                    break;
-                case TileOutputType.Logarithmic:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
-                    break;
-                case TileOutputType.LinearLogarithmic:
-                    normalizedLine = amplitudeModulus.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLinearLogarithmicValue(x, border, MaxValue, NormalizationFactor))).ToArray();
-                    break;
-                default:
-                    break;
-
-            }
-
-            return normalizedLine;
+            return amplitudeModulus;
         }
 
 

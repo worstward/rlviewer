@@ -7,7 +7,7 @@ using System.Net;
 
 namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
 {
-    public class MulticastPointSharer : IDisposable
+    public sealed class MulticastPointSharer : IDisposable
     {
 
         /// <summary>
@@ -18,37 +18,45 @@ namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
         /// <param name="shiftX">Image shift by X axis</param>
         /// <param name="shiftY">Image shift by Y axis</param>
         /// <param name="triggeredAction">Action to perform when event triggered</param>
-        public MulticastPointSharer(IPEndPoint multicastEp, int guid, int shiftX, int shiftY,
-            Action<System.Drawing.Point> triggeredAction)
+        public MulticastPointSharer(ICrossAppExchange server, int guid, int shiftX, int shiftY)
         {
-            _triggeredAction = triggeredAction;
-            _server = new UdpExchange(multicastEp, CommunicationType.Multicast);
-            _server.ListenAndNotify();
+            server.SetUp();
+            _server = server;
 
             _shiftX = shiftX;
             _shiftY = shiftY;
             _guid = guid;
-
-            _server.DataReceived += (s, e) =>
-            {
-                var receivedMessage = Converters.StructIO.ReadStruct<PointSharerMessage>(e.Data);
-                if (receivedMessage.guid != guid)
-                {
-                    SharedPoint = new System.Drawing.Point(receivedMessage.x - _shiftX, receivedMessage.y - _shiftY);
-                    triggeredAction(SharedPoint);
-                }
-            };
-
         }
 
 
-        
-
-        private UdpExchange _server;
+        private ICrossAppExchange _server;
         private int _guid;
         private int _shiftX;
         private int _shiftY;
-        private Action<System.Drawing.Point> _triggeredAction;
+
+
+        public event GotDataEventHandler DataReceived
+        {
+            add
+            {
+                _server.DataReceived += value;
+            }
+            remove
+            {
+                _server.DataReceived -= value;
+            }
+        }
+
+
+        public void ProcessMessage(byte[] receivedMessage, Action<System.Drawing.Point> callBack)
+        {
+            var messageStruct = Behaviors.Converters.StructIO.ReadStruct<PointSharerMessage>(receivedMessage);
+            if (messageStruct.Guid != _guid)
+            {
+                var shared = new System.Drawing.Point(messageStruct.X - _shiftX, messageStruct.Y - _shiftY);
+                callBack(shared);
+            }
+        }
 
 
         public System.Drawing.Point SharedPoint
@@ -70,7 +78,7 @@ namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
 
         public void Dispose()
         {
-            _server.UdpClient.Close();
+            _server.Dispose();
         }
 
 
@@ -78,14 +86,32 @@ namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
         {
             public PointSharerMessage(int guid, int x, int y)
             {
-                this.guid = guid;
-                this.x = x;
-                this.y = y;
+                _guid = guid;
+                _x = x;
+                _y = y;
             }
 
-            public int guid;
-            public int x;
-            public int y;
+            private int _guid;
+            public int Guid
+            {
+                get { return _guid; }
+                private set { _guid = value; }
+            }
+
+            private int _x;
+            public int X
+            {
+                get { return _x; }
+                private set { _x = value; }
+            }
+
+            private int _y;
+            public int Y
+            {
+                get { return _y; }
+                private set { _y = value; }
+            }
+
         }
 
 

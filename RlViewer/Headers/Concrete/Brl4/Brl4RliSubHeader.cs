@@ -19,8 +19,8 @@ namespace RlViewer.Headers.Concrete.Brl4
         public long fileHeaderLength;
         public long fileTailLength;
 
-        // тип файла
-        public byte type; // 2 - float, 3 - {float, float}
+        // тип отсчета 
+        public Headers.Concrete.Rl4.SampleType type;
 
         // формат строки
         public int strHeaderLength;

@@ -36,8 +36,17 @@ namespace RlViewer.Files
         /// <summary>
         /// Amount of data strings in a file
         /// </summary>
-        public abstract int Height { get; }
+        public abstract int Height { get; protected set; }
 
+        /// <summary>
+        /// Increases image height by provided amount
+        /// </summary>
+        public void ExpandImageHeight(int delta)
+        {
+            if (delta < 0) 
+                throw new ArgumentException("delta");
 
+            Height += delta;
+        }
     }
 }

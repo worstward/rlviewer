@@ -48,9 +48,13 @@ namespace RlViewer.Files.Rhg.Concrete
             {
                 //(file size - file header size) / (string header size + string data size) = string count
                 return _height == 0 ? _height = (int)((new System.IO.FileInfo(Properties.FilePath).Length
-                    - Marshal.SizeOf(new Headers.Concrete.K.KFileHeaderStruct()))
+                    - Marshal.SizeOf(typeof(Headers.Concrete.K.KFileHeaderStruct)))
                     / (_header.HeaderStruct.lineInfoHeader.lineLength * _header.BytesPerSample +
-                       Marshal.SizeOf(new RlViewer.Headers.Concrete.K.KStrHeaderStruct()))) : _height;
+                       Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.K.KStrHeaderStruct)))) : _height;
+            }
+            protected set
+            {
+                _height = value;
             }
         }
 

@@ -33,7 +33,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
         public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
-            Filters.ImageFilterProxy filter, float normalization, float maxValue)
+            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
         {
             switch (destinationType)
             {
@@ -47,7 +47,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     SaveAsRl4(path, area);
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue, filter);
+                    SaveAsBmp(path, area, normalization, maxValue, new DataProcessor.Concrete.DataStringSampleProcessor(),
+                    palette, filter);
                     break;
                 default:
                     throw new NotSupportedException("Unsupported destination type");
@@ -81,15 +82,17 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
                         var headBytes = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
+                        long offset = ((long)(strHeader.Length + _file.Width * _file.Header.BytesPerSample)) * area.Y;
                         fw.Write(headBytes, 0, headBytes.Length);
                         fr.Seek(_file.Header.FileHeaderLength, SeekOrigin.Current);
-                        fr.Seek((strHeader.Length + _file.Width * _file.Header.BytesPerSample) * area.Y, SeekOrigin.Current);
+                        fr.Seek(offset, SeekOrigin.Current);
 
                         for (int i = 0; i < area.Height; i++)
                         {
                             fr.Read(strHeader, 0, strHeader.Length);
                             fr.Seek(_file.Width * _file.Header.BytesPerSample, SeekOrigin.Current);
                             ms.Read(strData, 0, strData.Length);
+
                             fw.Write(strHeader, 0, strHeader.Length);
                             fw.Write(strData, 0, strData.Length);
                         }
@@ -128,8 +131,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
                     byte[] frameData = new byte[area.Width * _file.Header.BytesPerSample];
 
-                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
-                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
+                    long lineToStartSaving = (long)area.Y * (long)(_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
+                    long sampleToStartSaving = area.X * _file.Header.BytesPerSample;
                         //+ leftTop.X * _file.Header.BytesPerSample;
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
@@ -187,8 +190,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
                     byte[] frameData = new byte[area.Width * _file.Header.BytesPerSample];
 
-                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
-                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
+                    long lineToStartSaving = (long)area.Y * (long)(_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
+                    long sampleToStartSaving = area.X * _file.Header.BytesPerSample;
 
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);

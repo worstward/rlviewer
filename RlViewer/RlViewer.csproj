@@ -122,6 +122,7 @@
     <Compile Include="Behaviors\Converters\FileHeaderConverters.cs" />
     <Compile Include="Behaviors\Converters\StructIO.cs" />
     <Compile Include="Behaviors\CrossAppCommunication\CommunicationTypesEnum.cs" />
+    <Compile Include="Behaviors\CrossAppCommunication\ICrossAppExchange.cs" />
     <Compile Include="Behaviors\CrossAppCommunication\UdpExchange.cs" />
     <Compile Include="Behaviors\CrossAppCommunication\PointSharer\MulticastPointSharer.cs" />
     <Compile Include="Behaviors\CrossAppCommunication\SharerEventHelper.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Rl4PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Rl8PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\RPointFinder.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationSearcher\SearcherParams.cs" />
     <Compile Include="Behaviors\PointSelector\CompressedPointSelectorWrapper.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\ReporterTypes.cs" />
@@ -164,9 +166,13 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\RCornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl4CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
+    <Compile Include="Behaviors\ReportGenerator\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
+    <Compile Include="Behaviors\Saving\DataProcessor\Abstract\DataStringProcessor.cs" />
+    <Compile Include="Behaviors\Saving\DataProcessor\Concrete\DataStringModulusProcessor.cs" />
+    <Compile Include="Behaviors\Saving\DataProcessor\Concrete\DataStringSampleProcessor.cs" />
     <Compile Include="Behaviors\Saving\SaverParams.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
@@ -264,6 +270,12 @@
       <DependentUpon>FindPointForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormsHelper.cs" />
+    <Compile Include="Forms\ReportSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReportSettingsForm.Designer.cs">
+      <DependentUpon>ReportSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -290,7 +302,7 @@
     <Compile Include="Factories\NavigationContainer\Concrete\RawNavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\Rl4NavigationContainerFactory.cs" />
     <Compile Include="Factories\NavigationContainer\Concrete\RNavigationContainerFactory.cs" />
-    <Compile Include="Factories\Saver\RSaverFactory.cs" />
+    <Compile Include="Factories\Saver\Concrete\RSaverFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\RTileCreatorFactory.cs" />
     <Compile Include="Files\Rli\Concrete\R.cs" />
     <Compile Include="Forms\About.cs">
@@ -458,6 +470,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindPointForm.resx">
       <DependentUpon>FindPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReportSettingsForm.resx">
+      <DependentUpon>ReportSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StatisticsForm.resx">
       <DependentUpon>StatisticsForm.cs</DependentUpon>

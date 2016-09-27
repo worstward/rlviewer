@@ -15,6 +15,7 @@ namespace RlViewer.Forms
         public EprInputForm()
         {
             InitializeComponent();
+            FormsHelper.AddTbClickEvent(this.Controls);
         }
 
         private float _eprValue;
@@ -29,17 +30,17 @@ namespace RlViewer.Forms
 
         private void SubmitEprValue()
         {
-            
+
             if (!Single.TryParse(maskedTextBox1.Text, out _eprValue))
             {
                 MessageBox.Show("Неверный параметр", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 maskedTextBox1.Focus();
                 return;
             }
-                        
+
             DialogResult = DialogResult.OK;
             this.Close();
-            
+
         }
 
 
@@ -65,11 +66,6 @@ namespace RlViewer.Forms
             maskedTextBox1.Focus();
         }
 
-        private void maskedTextBox1_Click(object sender, EventArgs e)
-        {
-            var tb = ((MaskedTextBox)sender);
-            tb.Select(tb.Text.Length, 0);
-        }
 
     }
 }

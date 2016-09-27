@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Factories.Saver
+namespace RlViewer.Factories.Saver.Concrete
 {
     class RSaverFactory : RlViewer.Factories.Saver.Abstract.SaverFactory
     {

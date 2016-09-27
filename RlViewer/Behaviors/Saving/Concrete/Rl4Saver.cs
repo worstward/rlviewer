@@ -30,9 +30,18 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private RlViewer.Files.Rli.Concrete.Rl4 _file;
         private RlViewer.Headers.Concrete.Rl4.Rl4Header _head;
-       
 
-        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterProxy filter, float normalization, float maxValue)
+        private DataProcessor.Abstract.DataStringProcessor _processor;
+        protected virtual DataProcessor.Abstract.DataStringProcessor Processor
+        {
+            get
+            {
+                return _processor = _processor ?? new DataProcessor.Concrete.DataStringSampleProcessor();
+            }
+        }
+
+        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
         {           
             switch (destinationType)
             {
@@ -43,10 +52,12 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     SaveAsRaw(path, area);
                     break;
                 case FileType.rl4:
-                    SaveAsRl4(path, area, ".rl4");
+                    SaveAsRl4(path, area, ".rl4", RlViewer.Headers.Concrete.Rl4.SampleType.Float,
+                         new DataProcessor.Concrete.DataStringSampleProcessor());
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue, filter);
+                    SaveAsBmp(path, area, normalization, maxValue, new DataProcessor.Concrete.DataStringSampleProcessor(),
+                        palette, filter);
                     break;
                 default:
                     throw new NotSupportedException("Unsupported destination type");
@@ -81,9 +92,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
                         var headBytes = RlViewer.Behaviors.Converters.StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brlHeadStruct);
+                        long offset = (strHeader.Length + _file.Width * _file.Header.BytesPerSample) * area.Y;
                         fw.Write(headBytes, 0, headBytes.Length);
                         fr.Seek(_file.Header.FileHeaderLength, SeekOrigin.Current);
-                        fr.Seek((strHeader.Length + _file.Width * _file.Header.BytesPerSample) * area.Y, SeekOrigin.Current);
+                        fr.Seek(offset, SeekOrigin.Current);
 
                         for (int i = 0; i < area.Height; i++)
                         {
@@ -91,8 +103,10 @@ namespace RlViewer.Behaviors.Saving.Concrete
                             fr.Seek(_file.Width * _file.Header.BytesPerSample, SeekOrigin.Current);
                             ms.Read(strData, 0, strData.Length);
                             fw.Write(strHeader, 0, strHeader.Length);
-                            
-                            fw.Write(strData, 0, strData.Length);
+
+                            var processedStr = Processor.ProcessRawDataString(strData);
+
+                            fw.Write(processedStr, 0, processedStr.Length);
                         }
                     }
                 }
@@ -101,7 +115,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        protected virtual void SaveAsRl4(string path, Rectangle area, string newExt)
+        protected virtual void SaveAsRl4(string path, Rectangle area, string newExt,
+            RlViewer.Headers.Concrete.Rl4.SampleType sampleType, DataProcessor.Abstract.DataStringProcessor processor)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -117,36 +132,38 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader rl4Header =
                         new Headers.Concrete.Rl4.Rl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
                             _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
+                    
+                    rl4Header.rlParams.type = sampleType;
 
                     fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Header),
                     0, Marshal.SizeOf(rl4Header));
-
 
                     byte[] strHeader = new byte[SourceFile.Header.StrHeaderLength];
 
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
                     byte[] frameData = new byte[area.Width * _file.Header.BytesPerSample];
 
-                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
-                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
+                    long lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
+                    long sampleToStartSaving = area.X * _file.Header.BytesPerSample;
 
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
 
+
                     for (int i = 0; i < area.Height; i++)
                     {
                         OnProgressReport((int)((double)i / (double)area.Height * 100));
-                        if (OnCancelWorker())
-                        {
-                            return;
-                        }
+                        OnCancelWorker();
 
                         fr.Read(strHeader, 0, SourceFile.Header.StrHeaderLength);
                         fw.Write(strHeader, 0, SourceFile.Header.StrHeaderLength);
 
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameData, 0, frameData.Length);
-                        fw.Write(frameData, 0, frameData.Length);
+
+                        var processedFrame = processor.ProcessRawDataString(frameData);
+
+                        fw.Write(processedFrame, 0, processedFrame.Length);
                         fr.Seek(strDataLength - frameData.Length - sampleToStartSaving, SeekOrigin.Current);
                     }
 
@@ -163,7 +180,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 var fname = Path.ChangeExtension(path, newExt);
                 using (var fw = System.IO.File.Open(fname, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
-                    fr.Seek(Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader()), SeekOrigin.Begin);
+                    fr.Seek(Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader)), SeekOrigin.Begin);
 
                     var rlSubHeader = _head.HeaderStruct.rlParams
                         .ChangeImgDimensions(area.Width, area.Height)
@@ -183,8 +200,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     int strDataLength = _file.Width * _file.Header.BytesPerSample;
                     byte[] frameData = new byte[area.Width * _file.Header.BytesPerSample];
 
-                    var lineToStartSaving = area.Y * (_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
-                    var sampleToStartSaving = area.X * _file.Header.BytesPerSample;
+                    long lineToStartSaving = (long)area.Y * (long)(_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
+                    long sampleToStartSaving = area.X * _file.Header.BytesPerSample;
 
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
@@ -205,6 +222,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameData, 0, frameData.Length);
+
                         fw.Write(frameData, 0, frameData.Length);
                         fr.Seek(strDataLength - frameData.Length - sampleToStartSaving, SeekOrigin.Current);
                     }

@@ -92,11 +92,7 @@ namespace RlViewer.Behaviors.ImageAligning.Surfaces.Concrete
 
                 System.Threading.Interlocked.Increment(ref counter);
                 OnProgressReport((int)(counter / Math.Ceiling((double)(toInclusiveX - area.Location.X)) * 100));
-
-                if (OnCancelWorker())
-                {
-                    loopState.Break();
-                }
+                OnCancelWorker();
 
             });
 

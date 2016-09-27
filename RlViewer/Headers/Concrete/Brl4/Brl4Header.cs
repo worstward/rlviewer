@@ -12,11 +12,7 @@ namespace RlViewer.Headers.Concrete.Brl4
         public Brl4Header(string path)
         {
             _headerStruct =  ReadHeader<Brl4RliFileHeader>(path);
-
-            if (!CheckSignature(_headerStruct.fileSign))
-            {
-                throw new ArgumentException(string.Format("Unexpected header signature in file {0}", path));
-            }
+            CheckSignature(_headerStruct.fileSign);
         }
 
         protected override byte[] Signature
@@ -51,19 +47,11 @@ namespace RlViewer.Headers.Concrete.Brl4
             }
         }
 
-        public override HeaderInfoOutput[] HeaderInfo
-        {
-            get
-            {
-                return _headerInfo = _headerInfo ?? GetHeaderInfo();
-            }
-        }
 
         private int _bytesPerSample = 4;
-        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Brl4StrHeaderStruct());
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Brl4StrHeaderStruct));
         private const int _headerLength = 16384;
         private byte[] _signature = new byte[] { 0x52, 0x4c, 0x49, 0x00 };
-        private HeaderInfoOutput[] _headerInfo;
 
         private Brl4RliFileHeader _headerStruct;
 
@@ -75,22 +63,9 @@ namespace RlViewer.Headers.Concrete.Brl4
             }
         }
 
-
         protected override HeaderInfoOutput[] GetHeaderInfo()
         {
-            HeaderInfoOutput[] parsedHeader = null;
-
-            try
-            {
-                parsedHeader = ParseHeader(_headerStruct);
-            }
-            catch (ArgumentException arex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, arex.Message);
-                return null;
-            }
-
-            return parsedHeader;
+            return ParseHeader(_headerStruct);
         }
 
         private HeaderInfoOutput[] ParseHeader(Brl4RliFileHeader headerStruct)

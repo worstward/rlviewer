@@ -29,5 +29,22 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
             get { return _dy; }
         }
 
+        //private float _freq;
+        //protected override float Frequency
+        //{
+        //    get 
+        //    {
+        //        return _freq;
+        //    }
+        //}
+
+        //private float _impulseLength;
+        //protected override float ImpulseLength
+        //{
+        //    get
+        //    {
+        //        return _impulseLength;
+        //    }
+        //}
     }
 }

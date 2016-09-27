@@ -50,14 +50,12 @@ namespace RlViewer
 
         protected virtual bool OnCancelWorker()
         {
-            EventHandler<CancelEventArgs> handler = CancelJob;
-
-            if (handler != null)
+            if (CancelJob != null)
             {
-                var e = new CancelEventArgs();
-                handler(null, e);
-                _cancelled = e.Cancel;
-                return e.Cancel;
+                if (Cancelled)
+                {
+                    throw new OperationCanceledException(this.ToString());
+                }
             }
             return false;
         }

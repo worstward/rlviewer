@@ -9,13 +9,14 @@ namespace RlViewer.Behaviors.Saving
 {
     public class SaverParams
     {
-        public SaverParams(string path, Point leftTop, int width, int height, bool keepFiltering)
+        public SaverParams(string path, Point leftTop, int width, int height, bool keepFiltering, bool keepPalette)
         {
             _path = path;
             _leftTop = leftTop;
             _width = width;
             _height = height;
             _keepFiltering = keepFiltering;
+            _keepPalette = keepPalette;
         }
 
 
@@ -47,6 +48,12 @@ namespace RlViewer.Behaviors.Saving
         public bool KeepFiltering
         {
             get { return _keepFiltering; }
+        }
+
+        private bool _keepPalette;
+        public bool KeepPalette
+        {
+            get { return _keepPalette; }
         }
 
     }

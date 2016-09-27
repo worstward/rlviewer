@@ -30,7 +30,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Headers.Concrete.Raw.RawHeader _head;
 
 
-        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area, Filters.ImageFilterProxy filter, float normalization, float maxValue)
+        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
         {           
             switch (destinationType)
             {
@@ -38,15 +39,32 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     SaveAsRaw(path, area);
                     break;
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue, filter);
-                    break;
+                    {
+                        DataProcessor.Abstract.DataStringProcessor processor = null;
+
+                        if (_file.Header.BytesPerSample == 4)
+                        {
+                            processor = new DataProcessor.Concrete.DataStringSampleProcessor();
+                        }
+                        else if (_file.Header.BytesPerSample == 8)
+                        {
+                            processor = new DataProcessor.Concrete.DataStringModulusProcessor();
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Bytes per sample");
+                        }
+
+                        SaveAsBmp(path, area, normalization, maxValue, processor, palette, filter);
+                        break;
+                    }
                 default:
                     throw new NotSupportedException("Unsupported destination type");
             }
         }
 
 
-        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image, 
+        public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image,
             int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             alignedFileName = Path.ChangeExtension(alignedFileName, "raw");

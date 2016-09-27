@@ -37,7 +37,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalFactor == 0)
                         {
                             _normalFactor = ComputeNormalizationFactor(_rli, _rli.Width * _rli.Header.BytesPerSample,
-                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct()),
+                            System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct)),
                             Math.Min(_rli.Height, (_rli.Header as RlViewer.Headers.Concrete.Rl4.Rl4Header).HeaderStruct.rlParams.cadrHeight));
                         }
                     }
@@ -47,6 +47,35 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             }
         }
 
+
+        private float _maxValue;
+        private object _maxLocker = new object();
+        public override float MaxValue
+        {
+            get
+            {
+                //double lock checking
+                if (_maxValue == 0)
+                {
+                    lock (_maxLocker)
+                    {
+                        if (_maxValue == 0)
+                        {
+                            _maxValue = GetMaxValue(_rli, _rli.Width * _rli.Header.BytesPerSample,
+                                System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct)));
+                        }
+                    }
+                }
+                return _maxValue;
+            }
+        }
+
+        protected override float[] GetSampleData(byte[] sourceBytes)
+        {
+            float[] sampleData = new float[sourceBytes.Length / sizeof(float)];
+            Buffer.BlockCopy(sourceBytes, 0, sampleData, 0, sourceBytes.Length);
+            return sampleData;
+        }
 
         /// <summary>
         /// Creates tile objects array from existing tile files

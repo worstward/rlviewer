@@ -8,9 +8,9 @@ namespace RlViewer.Factories.CornerCoords.Concrete
 {
     class Brl4CornerCoordFactory : Abstract.CornerCoordFactory
     {
-        public override Behaviors.ReportGenerator.CornerCoord.Abstract.CornerCoordinates Create(Files.LocatorFile file)
+        public override Behaviors.ReportGenerator.CornerCoord.Abstract.CornerCoordinates Create(Files.LocatorFile file, int firstLine, int lastLine, bool readToEnd)
         {
-            return new Behaviors.ReportGenerator.CornerCoord.Concrete.Brl4CornerCoord(file);
+            return new Behaviors.ReportGenerator.CornerCoord.Concrete.Brl4CornerCoord(file, firstLine, lastLine, readToEnd);
         }
     }
 }

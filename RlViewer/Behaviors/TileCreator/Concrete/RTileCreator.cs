@@ -14,7 +14,7 @@ using RlViewer.Behaviors.TileCreator.Abstract;
 
 namespace RlViewer.Behaviors.TileCreator.Concrete
 {
-    class RTileCreator: TileCreator.Abstract.FloatSampleTileCreator
+    class RTileCreator : TileCreator.Abstract.FloatSampleTileCreator
     {
         public RTileCreator(LocatorFile rli, TileOutputType type)
             : base(type)
@@ -39,7 +39,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                         if (_normalFactor == 0)
                         {
                             _normalFactor = ComputeNormalizationFactor(_rli, _rli.Width * _rli.Header.BytesPerSample,
-                            System.Runtime.InteropServices.Marshal.SizeOf(new RlViewer.Headers.Concrete.R.RStrHeaderStruct()),
+                            System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.R.RStrHeaderStruct)),
                             Math.Min(_rli.Height, (int)(_rli.Header as RlViewer.Headers.Concrete.R.RHeader).HeaderStruct.synthesisHeader.NShift));
                         }
                     }
@@ -47,6 +47,36 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
                 return _normalFactor;
 
             }
+        }
+
+
+        private float _maxValue;
+        private object _maxLocker = new object();
+        public override float MaxValue
+        {
+            get
+            {
+                //double lock checking
+                if (_maxValue == 0)
+                {
+                    lock (_maxLocker)
+                    {
+                        if (_maxValue == 0)
+                        {
+                            _maxValue = GetMaxValue(_rli, _rli.Width * _rli.Header.BytesPerSample,
+                            System.Runtime.InteropServices.Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.R.RStrHeaderStruct)));
+                        }
+                    }
+                }
+                return _maxValue;
+            }
+        }
+
+        protected override float[] GetSampleData(byte[] sourceBytes)
+        {
+            float[] sampleData = new float[sourceBytes.Length / sizeof(float)];
+            Buffer.BlockCopy(sourceBytes, 0, sampleData, 0, sourceBytes.Length);
+            return sampleData;
         }
 
         /// <summary>

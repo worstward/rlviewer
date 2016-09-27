@@ -8,6 +8,13 @@ namespace RlViewer.Behaviors.Filters.Abstract
 {
     public abstract class ImageFiltering : ILuTable
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ImageFiltering()
+        {
+            RegisterFilter();
+            FilterValue = Filters[GetType().ToString()].FilterValue;
+        }
+
         public abstract byte[] LuTable { get; protected set; }
 
         public abstract byte[] InitLut(int step);

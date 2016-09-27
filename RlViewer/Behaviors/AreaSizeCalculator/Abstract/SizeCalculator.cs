@@ -18,6 +18,15 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Abstract
             get;
         }
 
+        //protected abstract float Frequency
+        //{
+        //    get;
+        //}
+
+        //protected abstract float ImpulseLength
+        //{
+        //    get;
+        //}
 
         /// <summary>
         /// Calculates area in square meters

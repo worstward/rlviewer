@@ -18,7 +18,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private Files.LocatorFile _source;
 
         public override void Save(string path, FileType destinationType, System.Drawing.Rectangle area,
-            Filters.ImageFilterProxy filter, float normalization, float maxValue)
+            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
         {
             throw new NotImplementedException();
         }
@@ -28,6 +28,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
         {
             throw new NotImplementedException();
         }
+
+
 
         public override Files.LocatorFile SourceFile
         {

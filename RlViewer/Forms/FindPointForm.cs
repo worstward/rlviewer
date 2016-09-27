@@ -21,29 +21,22 @@ namespace RlViewer.Forms
 
         private void InitControls()
         {
+            FormsHelper.AddTbClickEvent(panel1.Controls);
+            FormsHelper.AddTbClickEvent(panel2.Controls);
             radioButton1.Checked = true;
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
-            maskedTextBox1.PromptChar = ' ';
-            maskedTextBox2.PromptChar = ' ';
-            maskedTextBox3.PromptChar = ' ';
-            maskedTextBox4.PromptChar = ' ';
+            accuracyTb.Text = "00° 00' 10''";
         }
 
         private bool _hasNavigation;
 
-        public string XLat
+        internal Behaviors.Navigation.NavigationSearcher.SearcherParams Params
         {
             get;
             private set;
         }
 
-        public string YLon
-        {
-            get;
-            private set;
-        }
-        
         private void ControlSwitch(Control controlContainer, bool enable)
         {
             foreach (Control control in controlContainer.Controls)
@@ -55,13 +48,19 @@ namespace RlViewer.Forms
         {
             if (radioButton1.Checked)
             {
-                XLat = string.IsNullOrEmpty(maskedTextBox3.Text) ? "0" : maskedTextBox3.Text;
-                YLon = string.IsNullOrEmpty(maskedTextBox4.Text) ? "0" : maskedTextBox4.Text;
+                string x = string.IsNullOrEmpty(xCoordTb.Text) ? "0" : xCoordTb.Text;
+                string y = string.IsNullOrEmpty(yCoordTb.Text) ? "0" : yCoordTb.Text;
+                Params = new Behaviors.Navigation.NavigationSearcher.SearcherParams(Convert.ToInt32(x), Convert.ToInt32(y), 0, 0, 0, false);
             }
             else if (radioButton2.Checked && _hasNavigation)
             {
-                XLat = string.IsNullOrEmpty(maskedTextBox1.Text) ? "00° 00' 00''" + comboBox1.Text : "0" + maskedTextBox1.Text + comboBox1.Text;
-                YLon = string.IsNullOrEmpty(maskedTextBox2.Text) ? "000° 00' 00''" + comboBox2.Text : maskedTextBox2.Text + comboBox2.Text;
+                string lat = string.IsNullOrEmpty(latitudeTb.Text) ? "00° 00' 00''" + comboBox1.Text : "0" + latitudeTb.Text + comboBox1.Text;
+                string lon = string.IsNullOrEmpty(longtitudeTb.Text) ? "000° 00' 00''" + comboBox2.Text : longtitudeTb.Text + comboBox2.Text;
+                var error = string.IsNullOrEmpty(accuracyTb.Text) ? "00° 00' 00''" : accuracyTb.Text;
+
+                Params = new Behaviors.Navigation.NavigationSearcher.SearcherParams(0, 0,
+                Navigation.NaviStringConverters.ParseToRadians(lat), Navigation.NaviStringConverters.ParseToRadians(lon),
+                Navigation.NaviStringConverters.ParseToRadians(accuracyTb.Text), true);
             }
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -74,6 +73,7 @@ namespace RlViewer.Forms
             {
                 ControlSwitch(panel1, true);
                 ControlSwitch(panel2, false);
+                xCoordTb.Focus();
             }
 
         }
@@ -84,6 +84,7 @@ namespace RlViewer.Forms
             {
                 ControlSwitch(panel2, true);
                 ControlSwitch(panel1, false);
+                latitudeTb.Focus();
             }
         }
 
@@ -97,7 +98,7 @@ namespace RlViewer.Forms
 
         private void FindPointForm_Shown(object sender, EventArgs e)
         {
-            maskedTextBox3.Focus();
+            xCoordTb.Focus();
         }
 
     }

@@ -8,12 +8,12 @@ namespace RlViewer.Factories.PointSharer.Concrete
 {
     class Brl4PointSharerFactory : Abstract.PointSharerFactory
     {
-        public override Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer Create(Files.LocatorFile file, 
-            System.Net.IPEndPoint multicastEp, int guid, Action<System.Drawing.Point> triggered)
+        public override Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer Create(Files.LocatorFile file,
+            Behaviors.CrossAppCommunication.ICrossAppExchange server, int guid)
         {
-            var header = file.Header as Headers.Concrete.Brl4.Brl4Header;
-            return new Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer(multicastEp, guid, 
-                header.HeaderStruct.rlParams.sx, header.HeaderStruct.rlParams.sy, triggered);
+            var header = (Headers.Concrete.Brl4.Brl4Header)file.Header;
+            return new Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer(server, guid, 
+                header.HeaderStruct.rlParams.sx, header.HeaderStruct.rlParams.sy);
         }
     }
 }

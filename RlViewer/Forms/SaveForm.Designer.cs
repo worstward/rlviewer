@@ -53,6 +53,7 @@
             this.x2CoordTextBox = new System.Windows.Forms.MaskedTextBox();
             this.y1CoordTextBox = new System.Windows.Forms.MaskedTextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.keepPaletteCb = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.sizePanel.SuspendLayout();
             this.coordPanel.SuspendLayout();
@@ -60,7 +61,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 410);
+            this.button1.Location = new System.Drawing.Point(12, 440);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 9;
@@ -70,6 +71,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.keepPaletteCb);
             this.groupBox1.Controls.Add(this.keepFilteringCb);
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.radioButton1);
@@ -78,7 +80,7 @@
             this.groupBox1.Controls.Add(this.coordPanel);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(273, 392);
+            this.groupBox1.Size = new System.Drawing.Size(273, 422);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Параметры сохранения";
@@ -305,7 +307,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(210, 410);
+            this.button2.Location = new System.Drawing.Point(210, 440);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 10;
@@ -313,11 +315,21 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // keepPaletteCb
+            // 
+            this.keepPaletteCb.AutoSize = true;
+            this.keepPaletteCb.Location = new System.Drawing.Point(6, 386);
+            this.keepPaletteCb.Name = "keepPaletteCb";
+            this.keepPaletteCb.Size = new System.Drawing.Size(122, 17);
+            this.keepPaletteCb.TabIndex = 10;
+            this.keepPaletteCb.Text = "Сохранить палитру";
+            this.keepPaletteCb.UseVisualStyleBackColor = true;
+            // 
             // SaveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(297, 444);
+            this.ClientSize = new System.Drawing.Size(297, 470);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
@@ -364,5 +376,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox keepFilteringCb;
+        private System.Windows.Forms.CheckBox keepPaletteCb;
     }
 }

@@ -16,17 +16,13 @@ namespace RlViewer.Headers.Concrete.R
     {
         public RHeader(string path)
         {
-            _headerStruct =  ReadHeader<RFileHeaderStruct>(path);
-
-            if (!CheckSignature(_headerStruct.signatureHeader.fileSign))
-            {
-                throw new ArgumentException(string.Format("Unexpected header signature in file {0}", path));
-            }
+            _headerStruct = ReadHeader<RFileHeaderStruct>(path);
+            CheckSignature(_headerStruct.signatureHeader.fileSign);
         }
 
         protected override byte[] Signature
         {
-            get 
+            get
             {
                 return _signature;
             }
@@ -42,7 +38,7 @@ namespace RlViewer.Headers.Concrete.R
 
         public override int StrHeaderLength
         {
-            get 
+            get
             {
                 return _strHeaderLength;
             }
@@ -55,20 +51,12 @@ namespace RlViewer.Headers.Concrete.R
             }
         }
 
-        public override HeaderInfoOutput[] HeaderInfo
-        {
-            get
-            {
-                return _headerInfo = _headerInfo ?? GetHeaderInfo();
-            }
-        }
 
         private int _bytesPerSample = 4;
-        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.R.RStrHeaderStruct());
-        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.R.RFileHeaderStruct());
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.R.RStrHeaderStruct));
+        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.R.RFileHeaderStruct));
         private byte[] _signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
         private RFileHeaderStruct _headerStruct;
-        private HeaderInfoOutput[] _headerInfo;
 
         public RFileHeaderStruct HeaderStruct
         {
@@ -81,19 +69,7 @@ namespace RlViewer.Headers.Concrete.R
 
         protected override HeaderInfoOutput[] GetHeaderInfo()
         {
-            HeaderInfoOutput[] parsedHeader = null;
-
-            try
-            {
-                parsedHeader = ParseHeader(_headerStruct);
-            }
-            catch (ArgumentException arex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, arex.Message);
-                return null;
-            }
-
-            return parsedHeader;
+            return ParseHeader(_headerStruct);
         }
 
 
@@ -147,13 +123,13 @@ namespace RlViewer.Headers.Concrete.R
 
             var antennaHeader = new List<Tuple<string, string>>();
             antennaHeader.Add(new Tuple<string, string>("Угол раскрыва антенны, град", headerStruct.antennaSystemHeader.antennaAngle.ToString()));
-          
+
             var synthHeader = new List<Tuple<string, string>>();
-            synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза",                headerStruct.synthesisHeader.processAlgorithm == 1 ? "ЕОК" : "Не определено"));
-            synthHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м",  headerStruct.synthesisHeader.dx.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",    headerStruct.synthesisHeader.dy.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Начальная дальность, м",          headerStruct.synthesisHeader.initialRange.ToString()));
-            synthHeader.Add(new Tuple<string, string>("Борт",                            headerStruct.synthesisHeader.sideObservation == 0 ? "Левый" : "Правый"));
+            synthHeader.Add(new Tuple<string, string>("Алгоритм синтеза", headerStruct.synthesisHeader.processAlgorithm == 1 ? "ЕОК" : "Не определено"));
+            synthHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м", headerStruct.synthesisHeader.dx.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м", headerStruct.synthesisHeader.dy.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Начальная дальность, м", headerStruct.synthesisHeader.initialRange.ToString()));
+            synthHeader.Add(new Tuple<string, string>("Борт", headerStruct.synthesisHeader.sideObservation == 0 ? "Левый" : "Правый"));
 
             return new HeaderInfoOutput[]
             {

@@ -26,11 +26,10 @@ namespace RlViewer.UI
         private Action Log;
         private Action Report;
 
-        public void ProceedKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
+        public void ProcessKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
         {
             if (kEvent.Control)
             {
-
                 switch (kEvent.KeyCode)
                 {
                     case Keys.Z:

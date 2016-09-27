@@ -251,17 +251,10 @@ namespace RlViewer.Forms
 
         private void AddTbClickEvent(TabControl container)
         {
-
+            
             foreach (TabPage page in container.TabPages)
             {
-                foreach(var control in page.Controls)
-                { 
-                    if (control.GetType() == typeof(MaskedTextBox))
-                    {
-                        var tb = ((MaskedTextBox)control);
-                        tb.Click += (s, e) => tb.Select(tb.Text.Length, 0);
-                    }
-                }
+                FormsHelper.AddTbClickEvent(page.Controls);
             }
            
         }
@@ -311,7 +304,7 @@ namespace RlViewer.Forms
             {
                 rbfInterpolationcSettingsGb.Enabled = false;
             }
-            
+
         }
 
        

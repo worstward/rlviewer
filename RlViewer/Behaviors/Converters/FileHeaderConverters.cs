@@ -32,7 +32,8 @@ namespace RlViewer.Behaviors.Converters
         public static Rl4RliSubHeaderStruct ChangeImgDimensions(this Rl4RliSubHeaderStruct head, int width, int height)
         {
             var header = head;
-            header.cadrHeight = height;
+            //header.cadrHeight = height;
+            header.cadrWidth = width;
             header.height = height;
             header.width = width;
 
@@ -42,7 +43,8 @@ namespace RlViewer.Behaviors.Converters
         public static Brl4RliSubHeaderStruct ChangeImgDimensions(this Brl4RliSubHeaderStruct head, int width, int height)
         {           
             var header = head;
-            header.cadrHeight = height;
+            //header.cadrHeight = height;
+            header.cadrWidth = width;
             header.height = height;
             header.width = width;
 

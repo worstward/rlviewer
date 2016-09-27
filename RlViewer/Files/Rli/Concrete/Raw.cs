@@ -37,13 +37,20 @@ namespace RlViewer.Files.Rli.Concrete
             }
         }
 
+        private int _height;
         public override int Height
         {
             get
-            { 
-                return _header.ImgSize.Height;
+            {
+                return _height = _height == 0 ? _header.ImgSize.Height : _height;
+            }
+            protected set
+            {
+                _height = value;
             }
         }
+
+
         public override int Width
         {
             get 

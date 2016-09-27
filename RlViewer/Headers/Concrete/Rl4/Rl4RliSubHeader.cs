@@ -7,6 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace RlViewer.Headers.Concrete.Rl4
 {
+
+    public enum SampleType : byte
+    {
+        Float = 2,
+        Complex = 3
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Rl4RliSubHeaderStruct
     {
@@ -18,8 +25,9 @@ namespace RlViewer.Headers.Concrete.Rl4
         public long fileHeaderLength;
         public long fileTailLength;
 
-        // тип файла
-        public byte type; // 2 - float, 3 - {float, float}
+
+        // тип отсчета 
+        public SampleType type;
 
         // формат строки
         public int strHeaderLength;

@@ -232,6 +232,17 @@ namespace RlViewer.Settings
             set { _maxScale = value; }
         }
 
+        private float _initialScale = 1f;
+
+        [DataMember(IsRequired = true)]
+        public float InitialScale
+        {
+            get { return _initialScale; }
+            set { _initialScale = value; }
+        }
+
+
+
         private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType =
             Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn;
 

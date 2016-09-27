@@ -8,12 +8,6 @@ namespace RlViewer.Behaviors.Filters.Concrete
 {
     class ContrastFilter : RlViewer.Behaviors.Filters.Abstract.ImageFiltering
     {
-        public ContrastFilter()
-        {
-            RegisterFilter();
-            FilterValue = Filters[GetType().ToString()].FilterValue;
-        }
-
 
         private byte[] contrastLookUp;
         public override byte[] LuTable

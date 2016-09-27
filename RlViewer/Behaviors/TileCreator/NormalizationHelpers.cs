@@ -8,6 +8,19 @@ namespace RlViewer.Behaviors.TileCreator
 {
     public static class NormalizationHelpers
     {
+
+
+        public static float GetLinearValue(float sample, float normalizationFactor)
+        {
+            return sample / normalizationFactor * 255;
+        }
+
+        /// <summary>
+        /// Gets a logarithmic grade value of a provided sample
+        /// </summary>
+        /// <param name="sample">sample to convert</param>
+        /// <param name="maxvalue">max sample value for full image</param>
+        /// <returns></returns>
         public static float GetLogarithmicValue(float sample, float maxvalue)
         {
             var sampleLog = Math.Log10(sample);
@@ -16,9 +29,19 @@ namespace RlViewer.Behaviors.TileCreator
             return 255 * (float)quotient;
         }
 
-
-        public static float GetLinearLogarithmicValue(float sample, float border, float maxvalue, float normalizationFactor)
+        /// <summary>
+        /// Gets a linear-logarithmic grade value of a provided sample
+        /// </summary>
+        /// <param name="sample">sample to convert</param>
+        /// <param name="maxvalue">max sample value for full image</param>
+        /// <param name="normalizationFactor">normalization value for full image</param>
+        /// <returns></returns>
+        public static float GetLinearLogarithmicValue(float sample, float maxvalue, float normalizationFactor)
         {
+
+            float border = normalizationFactor / 9f * 7;
+
+            //if sample is less then border value then it gets linear value, then logarithmic
             if (sample < border)
             {
                 return 191 * sample / normalizationFactor;
@@ -29,7 +52,11 @@ namespace RlViewer.Behaviors.TileCreator
             }
         }
 
-
+        /// <summary>
+        /// Casts float value to byte range
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static byte ToByteRange(float val)
         {
             val = val > 255 ? 255 : val;

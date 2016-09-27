@@ -8,12 +8,6 @@ namespace RlViewer.Behaviors.Filters.Concrete
 {
     class BrightnessFilter : RlViewer.Behaviors.Filters.Abstract.ImageFiltering
     {
-        public BrightnessFilter()
-        {
-            RegisterFilter();
-            FilterValue = Filters[GetType().ToString()].FilterValue;
-        }
-
 
         private byte[] brightnessLookUp;
 

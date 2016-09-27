@@ -14,10 +14,10 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
         public DocFileReporter(params string[] fileNames)
             : base(fileNames)
         {
-            
+
         }
 
-        public override void GenerateReport(string reportFilePath)
+        public override void GenerateReport(string reportFilePath, ReporterSettings reporterSettings)
         {
             using (DocX document = DocX.Create(reportFilePath))
             {
@@ -29,16 +29,12 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
                         try
                         {
-                            docToInsert = PrepareReport(reportFilePath, FilesToProcess[i]);
+                            docToInsert = PrepareReport(reportFilePath, FilesToProcess[i], reporterSettings);
                         }
                         catch (Exception ex)
                         {
-                            Logging.Logger.Log(Logging.SeverityGrades.Error, 
-                                string.Format("Can't create report for file {0}, reason: {1}", FilesToProcess[i],  ex.Message));
-                        }
-
-                        if (docToInsert == null)
-                        {
+                            Logging.Logger.Log(Logging.SeverityGrades.Error,
+                                string.Format("Can't create report for file {0}, reason: {1}", FilesToProcess[i], ex.Message));
                             continue;
                         }
 
@@ -62,11 +58,11 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
         }
 
 
-        private DocX PrepareReport(string reportFilePath, string locatorFilePath)
+        private DocX PrepareReport(string reportFilePath, string locatorFilePath, ReporterSettings reporterSettings)
         {
-            
+
             DocX document = DocX.Create(reportFilePath);
-            
+
             var prop = new Files.FileProperties(locatorFilePath);
             var fileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(prop)
                 .Create(locatorFilePath);
@@ -82,40 +78,63 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
             .Append(Environment.NewLine);
 
 
-            p.Append(string.Format("Площадь засвеченной поверхности: {0}м2",
-            Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
-            .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
-            .ToString(".################################")))
-            .Append(Environment.NewLine);
-
-
-
-            var cornerCoord = Factories.CornerCoords.Abstract.CornerCoordFactory.GetFactory(file.Properties).Create(file);
-
-
-            Paragraph timesParagraph = document.InsertParagraph();
-            timesParagraph.Alignment = Alignment.left;
-            foreach (var entry in cornerCoord.GetZoneStartAndEndTimes())
+            if (reporterSettings.AddArea)
             {
-                timesParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
-                timesParagraph.Append(Environment.NewLine);
+                p.Append(string.Format("Площадь засвеченной поверхности: {0}м2",
+                Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
+                .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
+                .ToString(".################################")))
+                .Append(Environment.NewLine);
             }
 
 
-            Paragraph cornersParagraph = document.InsertParagraph();
-            cornersParagraph.Alignment = Alignment.left;
-            foreach (var entry in cornerCoord.GetCoornerCoordinates())
+            var cornerCoord = Factories.CornerCoords.Abstract.CornerCoordFactory
+                .GetFactory(file.Properties)
+                .Create(file, reporterSettings.FirstLine, reporterSettings.LastLine, reporterSettings.ReadToEnd);
+
+
+            if (reporterSettings.AddTimes)
             {
-                cornersParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
-                cornersParagraph.Append(Environment.NewLine);
+                Paragraph timesParagraph = document.InsertParagraph();
+                timesParagraph.Alignment = Alignment.left;
+                foreach (var entry in cornerCoord.GetZoneStartAndEndTimes())
+                {
+                    timesParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
+                    timesParagraph.Append(Environment.NewLine);
+                }
+            }
+
+            if (reporterSettings.AddCenter)
+            {
+                Paragraph cornersParagraph = document.InsertParagraph();
+                cornersParagraph.Alignment = Alignment.left;
+                foreach (var entry in cornerCoord.GetCenterCoordinates())
+                {
+                    cornersParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
+                    cornersParagraph.Append(Environment.NewLine);
+                }
             }
 
 
-            foreach (var subHeaderInfo in file.Header.HeaderInfo)
+            if (reporterSettings.AddCorners)
             {
-                var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
-                headerTable.AutoFit = AutoFit.Window;
-                document.InsertTable(headerTable);
+                Paragraph cornersParagraph = document.InsertParagraph();
+                cornersParagraph.Alignment = Alignment.left;
+                foreach (var entry in cornerCoord.GetCoornerCoordinates())
+                {
+                    cornersParagraph.Append(string.Format("{0}: {1}", entry.Item1, entry.Item2));
+                    cornersParagraph.Append(Environment.NewLine);
+                }
+            }
+
+            if (reporterSettings.AddParametersTable)
+            {
+                foreach (var subHeaderInfo in file.Header.HeaderInfo)
+                {
+                    var headerTable = PrepareHeaderInfoTable(document, subHeaderInfo);
+                    headerTable.AutoFit = AutoFit.Window;
+                    document.InsertTable(headerTable);
+                }
             }
 
             return document;

@@ -162,16 +162,16 @@ namespace RlViewer
         }
 
 
-        public static string ToRliFileType(this byte type)
+        public static string ToRliFileType(this RlViewer.Headers.Concrete.Rl4.SampleType type)
         {
             string sType;
 
             switch (type)
             {
-                case 2:
+                case RlViewer.Headers.Concrete.Rl4.SampleType.Float:
                     sType = "В число с плавающей точкой";
                     break;
-                case 3:
+                case RlViewer.Headers.Concrete.Rl4.SampleType.Complex:
                     sType = "В комплексное число";
                     break;
                 default:

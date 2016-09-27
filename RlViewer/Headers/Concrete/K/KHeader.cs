@@ -12,11 +12,7 @@ namespace RlViewer.Headers.Concrete.K
         public KHeader(string path)
         {
             _headerStruct =  ReadHeader<KFileHeaderStruct>(path);
-
-            if (!CheckSignature(_headerStruct.signatureHeader.fileSign))
-            {
-                throw new ArgumentException(string.Format("Unexpected header signature in file {0}", path));
-            }
+            CheckSignature(_headerStruct.signatureHeader.fileSign);
         }
 
         protected override byte[] Signature
@@ -50,20 +46,12 @@ namespace RlViewer.Headers.Concrete.K
             }
         }
 
-        public override HeaderInfoOutput[] HeaderInfo
-        {
-            get
-            {
-                return _headerInfo = _headerInfo ?? GetHeaderInfo();
-            }
-        }
 
         private int _bytesPerSample = 4;
-        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.K.KStrHeaderStruct());
-        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(new Headers.Concrete.K.KFileHeaderStruct());
+        private int _strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.K.KStrHeaderStruct));
+        private int _headerLength = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.K.KFileHeaderStruct));
         private byte[] _signature = new byte[] { 0xFF, 0x00, 0xFF, 0x00, 0xFE, 0x01, 0xFC, 0x01, 0xF8, 0x01, 0xF0, 0x01, 0xAA, 0x55, 0xAA, 0x56 };
         private KFileHeaderStruct _headerStruct;
-        private HeaderInfoOutput[] _headerInfo;
 
         public KFileHeaderStruct HeaderStruct
         {
@@ -76,19 +64,7 @@ namespace RlViewer.Headers.Concrete.K
 
         protected override HeaderInfoOutput[] GetHeaderInfo()
         {
-            HeaderInfoOutput[] parsedHeader = null;
-
-            try
-            {
-                parsedHeader = ParseHeader(_headerStruct);
-            }
-            catch (ArgumentException arex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Blocking, arex.Message);
-                return null;
-            }
-
-            return parsedHeader;
+            return ParseHeader(_headerStruct);
         }
 
 

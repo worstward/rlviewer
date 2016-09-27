@@ -9,7 +9,7 @@ namespace RlViewer.Factories.PointSharer.Abstract
     public abstract class PointSharerFactory
     {
         public abstract RlViewer.Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer Create(Files.LocatorFile file,
-            System.Net.IPEndPoint multicastEp, int guid, Action<System.Drawing.Point> triggered);
+            Behaviors.CrossAppCommunication.ICrossAppExchange server, int guid);
 
         public static PointSharerFactory GetFactory(RlViewer.Files.FileProperties properties)
         {
