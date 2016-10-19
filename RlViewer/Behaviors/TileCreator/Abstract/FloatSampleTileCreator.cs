@@ -19,100 +19,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected abstract override float[] GetSampleData(byte[] sourceBytes);
 
-        protected override Tile[] GetTilesFromFile(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
-        {
-            if (file.Width == 0 || file.Height == 0)
-            {
-                throw new ArgumentException(
-                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
-            }
-
-            var tileFolder = GetDirectoryName(filePath);
-            CreateTileFolder(tileFolder);
-
-            List<Tile> tiles = new List<Tile>();
-            byte[] tileLine;
-            using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
-                int signalDataLength = file.Width * file.Header.BytesPerSample;
-
-                int strHeaderLength = 0;
-                if (strHeader != null)
-                {
-                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                }
-                else if (file.Properties.Type != FileType.raw)
-                {
-                    throw new ArgumentException("string header");
-                } 
-
-                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
-                for (int i = 0; i < totalLines; i++)
-                {
-
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor, TileSize.Height, outputType);
-
-                    if (OnCancelWorker())
-                    {
-                        return null;
-                    }
-
-                    OnProgressReport((int)(i / totalLines * 100));
-
-                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
-                }
-            }
-            return tiles.ToArray();
-        }
-
-
-        protected override Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
-        {
-            if (file.Width == 0 || file.Height == 0)
-            {
-                throw new ArgumentException(
-                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
-            }
-
-            var tileFolder = GetDirectoryName(filePath);
-            CreateTileFolder(tileFolder);
-
-
-            Task.Factory.StartNew(() =>
-            {
-                List<Tile> tiles = new List<Tile>();
-                byte[] tileLine;
-                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                    int strHeaderLength = 0;
-                    if (strHeader != null)
-                    {
-                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                    }
-
-                    int signalDataLength = file.Width * file.Header.BytesPerSample;
-
-                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
-                    for (int i = 0; i < totalLines; i++)
-                    {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
-                            TileSize.Height, outputType);
-                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
-                    }
-                }
-            });
-            return GetTilesFromTl(tileFolder);
-        }
-
-      
 
         protected override float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
+            OnReportName("Вычисление коэффициента нормировки");
             byte[] bRliString = new byte[strDataLen];
             float normal = 0;
 

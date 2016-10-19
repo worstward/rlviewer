@@ -43,10 +43,13 @@ namespace RlViewer
 
         protected virtual void OnProgressReport(int percentage)
         {
-            Report(null, new ProgressEventArgs(percentage));     
+            Report(null, new ProgressEventArgs(percentage));
         }
 
-        public virtual event EventHandler<CancelEventArgs> CancelJob;
+
+        public delegate void CancelEventHandler(object sender, CancelEventArgs e);
+
+        public virtual event CancelEventHandler CancelJob = delegate { };
 
         protected virtual bool OnCancelWorker()
         {
@@ -64,6 +67,30 @@ namespace RlViewer
         {
 
             public bool Cancel;
+        }
+
+
+        public delegate void ReportTaskName(object sender, TaskNameEventArgs e);
+
+        public virtual event ReportTaskName ReportName = delegate { };
+
+        protected void OnReportName(string name)
+        {
+            ReportName(null, new TaskNameEventArgs(name));
+        }
+
+        public class TaskNameEventArgs : EventArgs
+        {
+            public TaskNameEventArgs(string name)
+            {
+                Name = name;
+            }
+
+            public string Name 
+            {
+                get; 
+                private set;
+            }
         }
 
     }

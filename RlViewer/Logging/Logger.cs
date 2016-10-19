@@ -21,19 +21,22 @@ namespace RlViewer.Logging
             }
         }
 
-        public static void Log(SeverityGrades severity, string message)
+        public static void Log(SeverityGrades severity, string message, bool saveEntry = true)
         {
             var logEntry = new LogEntry(DateTime.Now, severity, message);
 
             _logs.Add(logEntry);
-            SaveEntry(logEntry);
+            if (saveEntry)
+            {
+                SaveEntry(logEntry);
+            }
         }
 
 
         private static object saveLocker = new object();
         private static void SaveEntry(LogEntry entry)
         {
-            
+
             lock (saveLocker)
             {
                 StreamWriter stream = null;

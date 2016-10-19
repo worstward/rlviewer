@@ -8,11 +8,11 @@ namespace RlViewer.Behaviors.ReportGenerator
 {
     public class ReporterSettings
     {
-        public ReporterSettings(int firstLine, int lastLine, bool readToEnd,
+        public ReporterSettings(int firstLineOffset, int lastLineOffset, bool readToEnd,
             bool addArea, bool addCenter, bool addCorners, bool addParametersTable, bool addTimes)
         {
-            FirstLine = firstLine;
-            LastLine = lastLine;
+            FirstLineOffset = firstLineOffset;
+            LastLineOffset = lastLineOffset;
             ReadToEnd = readToEnd;
             AddCorners = addCorners;
             AddCenter = addCenter;
@@ -21,13 +21,13 @@ namespace RlViewer.Behaviors.ReportGenerator
             AddTimes = addTimes;
         }
 
-        public int FirstLine
+        public int FirstLineOffset
         {
             get;
             private set;
         }
 
-        public int LastLine
+        public int LastLineOffset
         {
             get;
             private set;

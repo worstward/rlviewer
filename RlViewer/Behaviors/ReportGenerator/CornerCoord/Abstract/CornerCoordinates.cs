@@ -9,12 +9,15 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
 {
     public abstract class CornerCoordinates
     {
-        public CornerCoordinates(RlViewer.Files.LocatorFile file, int firstLine, int lastLine, bool readToEnd)
+
+
+        public CornerCoordinates(RlViewer.Files.LocatorFile file, int firstLineOffset, int lastLineOffset, bool readToEnd)
         {
             _file = file;
-            _firstLine = firstLine;
-            _lastLine = lastLine;
+            _firstLine = firstLineOffset;
+            _lastLine = _file.Height - lastLineOffset;
             _readToEnd = readToEnd;
+            CheckLineInput(file.Properties.FilePath);
         }
 
         private RlViewer.Files.LocatorFile _file;
@@ -31,6 +34,39 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
 
         protected abstract RlViewer.Navigation.NavigationContainer GetContainer(int firstLine, int lastLine, bool readToEnd);
 
+        private void CheckLineInput(string path)
+        {
+            if (_readToEnd)
+            {
+                _lastLine = _file.Height - 1;
+            }
+
+            if (_lastLine < 0)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("In file: {0}: last line number is less than 0, reverting to total line number", path));
+                _lastLine = _file.Height - 1;
+            }
+
+            if (_firstLine >= _file.Height)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("In file: {0}: first line number is larger than file total lines count, reverting to 0", path));
+                _firstLine = 0;
+            }
+
+            if (_lastLine > _file.Height)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("In file: {0}: last line number is larger than file total lines count, reverting to total line number", path));
+                _lastLine = _file.Height - 1;
+            }
+
+            if (_firstLine > _lastLine)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("In file: {0}: first line number is larger than last line number, reverting both to defaults", path));
+                _firstLine = 0;
+                _lastLine = _file.Height - 1;
+            }
+        }
+
 
         /// <summary>
         /// Gets first and last navigation strings from a selected file
@@ -43,24 +79,6 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
         protected virtual T[] GetFirstAndLastNaviStrings<T>(string path, int fileHeaderLength, 
             int strDataLength,int firstLine, int lastLine, bool readToEnd) where T : Headers.Abstract.IStrHeader
         {
-            if (readToEnd)
-            {
-                lastLine = _file.Height - 1;
-            }
-
-            if (firstLine >= _file.Height)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Warning, "First line number is larger than file total lines count, reverting to 0");
-                firstLine = 0;
-            }
-
-            if (lastLine >= _file.Height)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Warning, "Last line number is larger than file total lines count, reverting to total line number");
-                lastLine = _file.Height - 1;
-            }
-
-
             var header = new byte[System.Runtime.InteropServices.Marshal.SizeOf(typeof(T))];
             List<T> naviCollection = new List<T>();
 

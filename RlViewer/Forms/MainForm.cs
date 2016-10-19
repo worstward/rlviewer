@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace RlViewer.Forms
 {
+
     public partial class MainForm : Form, RlViewer.UI.ISuitableForm
     {
         public MainForm()
@@ -373,7 +374,7 @@ namespace RlViewer.Forms
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            GuiFacade.ScaleImage(e.Delta);
+            GuiFacade.ScaleImage(e.Delta, e.Location);
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)

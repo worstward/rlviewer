@@ -43,7 +43,7 @@ namespace RlViewer.Behaviors.ImageAligning
             }
         }
 
-        public override event EventHandler<CancelEventArgs> CancelJob
+        public override event CancelEventHandler CancelJob
         {
             add
             {
@@ -60,7 +60,8 @@ namespace RlViewer.Behaviors.ImageAligning
 
 
         public byte[] Resample(string fileName, System.Drawing.Rectangle area)
-        {           
+        {
+            OnReportName("Выравнивание изображения");
             return _surface.ResampleImage(_file, area);
         }
 

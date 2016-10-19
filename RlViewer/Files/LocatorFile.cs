@@ -39,14 +39,14 @@ namespace RlViewer.Files
         public abstract int Height { get; protected set; }
 
         /// <summary>
-        /// Increases image height by provided amount
+        /// Sets image height to provided value
         /// </summary>
-        public void ExpandImageHeight(int delta)
+        public void SetHeight(int height)
         {
-            if (delta < 0) 
-                throw new ArgumentException("delta");
+            if (height < 0)
+                throw new ArgumentException("height");
 
-            Height += delta;
+            Height = height;
         }
     }
 }

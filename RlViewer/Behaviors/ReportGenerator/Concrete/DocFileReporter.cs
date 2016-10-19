@@ -25,6 +25,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                 {
                     if (System.IO.File.Exists(FilesToProcess[i]))
                     {
+                        OnReportName("Генерация отчета");
                         DocX docToInsert = null;
 
                         try
@@ -46,10 +47,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                         }
 
                         OnProgressReport((int)(i / (float)FilesToProcess.Length * 100));
-                        if (OnCancelWorker())
-                        {
-                            return;
-                        }
+                        OnCancelWorker();
 
                     }
                 }
@@ -80,9 +78,9 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
             if (reporterSettings.AddArea)
             {
-                p.Append(string.Format("Площадь засвеченной поверхности: {0}м2",
-                Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
-                .Properties).Create(file.Header).CalculateArea(file.Width, file.Height)
+                p.Append(string.Format("Площадь засвеченной поверхности: {0}км2",
+                (Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
+                .Properties).Create(file.Header).CalculateArea(file.Width, file.Height) / 1000 / 1000)
                 .ToString(".################################")))
                 .Append(Environment.NewLine);
             }
@@ -90,7 +88,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
             var cornerCoord = Factories.CornerCoords.Abstract.CornerCoordFactory
                 .GetFactory(file.Properties)
-                .Create(file, reporterSettings.FirstLine, reporterSettings.LastLine, reporterSettings.ReadToEnd);
+                .Create(file, reporterSettings.FirstLineOffset, reporterSettings.LastLineOffset, reporterSettings.ReadToEnd);
 
 
             if (reporterSettings.AddTimes)

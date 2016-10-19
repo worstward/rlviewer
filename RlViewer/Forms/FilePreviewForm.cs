@@ -116,7 +116,7 @@ namespace RlViewer.Forms
 
         private async Task<IEnumerable<string>> GetLocatorFiles(IEnumerable<string> allFiles)
         {
-            var locatorExt = Enum.GetNames(typeof(FileType)).Except(new List<string>(){ "bmp" });
+            var locatorExt = Enum.GetNames(typeof(FileType)).Except(new List<string>() { "bmp" });
 
             return await Task<IEnumerable<string>>.Run(() =>
             {
@@ -132,18 +132,15 @@ namespace RlViewer.Forms
             List<HeaderInfoOutput> headerInfos = new List<HeaderInfoOutput>();
 
             string[] files = null;
-
             try
             {
                 files = Directory.GetFiles(treeView1.SelectedNode == null ? GetFullName(treeView1.Nodes[0])
-               : GetFullName(treeView1.SelectedNode));
+                   : GetFullName(treeView1.SelectedNode));
             }
-            catch (UnauthorizedAccessException uaex)
+            catch (IOException)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Unauthorized access to files error: {0}", uaex));
                 return;
             }
-          
             var locatorFiles = await GetLocatorFiles(files);
 
             foreach (var file in locatorFiles)
@@ -185,9 +182,9 @@ namespace RlViewer.Forms
             {
                 FillDataGrid();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Unable to fill preview data grid");
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Unable to fill preview data grid: {0}", ex));
             }
         }
 
@@ -219,8 +216,15 @@ namespace RlViewer.Forms
         {
             //remove tmpNode
             e.Node.Nodes[0].Remove();
-
-            LoadChildNodes(GetFullName(e.Node), e.Node.Nodes);
+            try
+            {
+                LoadChildNodes(GetFullName(e.Node), e.Node.Nodes);
+            }
+            catch (System.Reflection.TargetInvocationException)
+            {
+                int a = 1;
+                int b = a++;
+            }
         }
 
         private void treeView1_AfterCollapse(object sender, TreeViewEventArgs e)

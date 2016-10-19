@@ -39,7 +39,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
             }
         }
 
-        public override void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+        protected override void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
             float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
         {
             switch (destinationType)

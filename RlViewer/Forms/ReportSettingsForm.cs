@@ -12,19 +12,34 @@ namespace RlViewer.Forms
 {
     public partial class ReportSettingsForm : Form
     {
-        public ReportSettingsForm()
+        public ReportSettingsForm(Behaviors.ReportGenerator.ReporterSettings reporterSettings = null)
         {
             InitializeComponent();
             reportTypeComboBox.Items.AddRange(Enum.GetNames(typeof(Behaviors.ReportGenerator.Abstract.ReporterTypes)));
             reportTypeComboBox.SelectedIndex = 0;
-            finishAtLastCb.Checked = true;
-            areaCb.Checked = true;
-            centerCb.Checked = false;
-            cornersCb.Checked = true;
-            headerInfoCb.Checked = false;
-            timeCb.Checked = true;
+
+            if (reporterSettings == null)
+            {
+                finishAtLastCb.Checked = true;
+                areaCb.Checked = true;
+                centerCb.Checked = false;
+                cornersCb.Checked = true;
+                headerInfoCb.Checked = false;
+                timeCb.Checked = true;
+            }
+            else
+            {
+                finishAtLastCb.Checked = reporterSettings.ReadToEnd;
+                areaCb.Checked = reporterSettings.AddArea;
+                centerCb.Checked = reporterSettings.AddCenter;
+                cornersCb.Checked = reporterSettings.AddCorners;
+                headerInfoCb.Checked = reporterSettings.AddParametersTable;
+                timeCb.Checked = reporterSettings.AddTimes;
+            }
             FormsHelper.AddTbClickEvent(this.Controls);
         }
+
+
 
         public Behaviors.ReportGenerator.ReporterSettings ReporterSettings
         {
@@ -61,11 +76,13 @@ namespace RlViewer.Forms
             }
 
 
-            if (!readToEnd && firstLine >= lastLine)
-            {
-                Forms.FormsHelper.ShowErrorMsg("Номер последней строки меньше или равен номеру первой");
-                return;
-            }
+            //if (!readToEnd && firstLine >= lastLine)
+            //{
+            //    Forms.FormsHelper.ShowErrorMsg("Номер последней строки меньше или равен номеру первой");
+            //    return;
+            //}
+            lastLine = lastLine == 0 ? 1 : lastLine;
+
 
             ReporterSettings = new Behaviors.ReportGenerator.ReporterSettings(firstLine, lastLine, readToEnd, areaCb.Checked,
                 centerCb.Checked, cornersCb.Checked, headerInfoCb.Checked, timeCb.Checked);
@@ -77,7 +94,7 @@ namespace RlViewer.Forms
 
         private void createReportBtn_Click(object sender, EventArgs e)
         {
-            ConfirmSettings();   
+            ConfirmSettings();
         }
 
         private void cancelReportBtn_Click(object sender, EventArgs e)
@@ -91,6 +108,7 @@ namespace RlViewer.Forms
         {
             var cb = (CheckBox)sender;
             lastLineTb.Visible = !(cb.Checked);
+            label3.Visible = !(cb.Checked);
         }
 
         private void ReportSettingsForm_KeyDown(object sender, KeyEventArgs e)

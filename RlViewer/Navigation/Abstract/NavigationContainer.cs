@@ -51,6 +51,7 @@ namespace RlViewer.Navigation
 
         protected virtual T[] GetNaviStrings<T>(string path, int fileHeaderLength, int strDataLength) where T : struct
         {
+            OnReportName("Чтение навигации");
             var header = new byte[System.Runtime.InteropServices.Marshal.SizeOf(typeof(T))];
             List<T> naviCollection = new List<T>();
 

@@ -43,7 +43,7 @@ namespace RlViewer.UI
         private Behaviors.Filters.ImageFilterProxy _filterProxy;
         private Behaviors.Saving.Abstract.Saver _saver;
         private Behaviors.Scaling.Scaler _scaler;
-        private Behaviors.Analyzing.Abstract.SampleAnalyzer _analyzer;
+        private Behaviors.Analyzing.SampleAnalyzer _analyzer;
         private Behaviors.Ruler.RulerProxy _ruler;
         private Behaviors.ImageAligning.Aligning _aligner;
         private Behaviors.Sections.Abstract.Section _section;
@@ -137,7 +137,6 @@ namespace RlViewer.UI
                     e.Effect = DragDropEffects.None;
                     return false;
                 }
-
             }
             return false;
         }
@@ -198,7 +197,7 @@ namespace RlViewer.UI
 
 
             InitializeWindow();
-            StartTask("Чтение навигации", loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);
+            StartTask(loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);
             _form.NavigationDgv.Rows.Clear();
             caption = _caption = fileName;
             return caption;
@@ -208,11 +207,11 @@ namespace RlViewer.UI
 
         #region tasks
 
-        private void StartTask(string caption, System.ComponentModel.DoWorkEventHandler d,
+        private void StartTask(System.ComponentModel.DoWorkEventHandler d,
             System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
         {
 
-            InitProgressControls(true, caption);
+            InitProgressControls(true);
             _worker = ThreadHelper.InitWorker(d, c);
             _worker.RunWorkerAsync(arg);
         }
@@ -257,6 +256,8 @@ namespace RlViewer.UI
 
             _searcher.Report += (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob += (s, ce) => ce.Cancel = _searcher.Cancelled;
+            _searcher.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
             _cancellableAction = _searcher;
 
             var searcherParams = (Behaviors.Navigation.NavigationSearcher.SearcherParams)e.Argument;
@@ -282,6 +283,7 @@ namespace RlViewer.UI
         {
             _searcher.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob -= (s, ce) => ce.Cancel = _searcher.Cancelled;
+            _searcher.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
 
             if (e.Cancelled)
             {
@@ -322,6 +324,8 @@ namespace RlViewer.UI
 
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
+            _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
             _cancellableAction = _saver;
 
             var filter = parameters.KeepFiltering ? _filterProxy : null;
@@ -350,6 +354,7 @@ namespace RlViewer.UI
         {
             _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
+            _saver.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
 
             if (e.Cancelled)
             {
@@ -378,6 +383,8 @@ namespace RlViewer.UI
 
             _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
             _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
+            _aligner.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
             _cancellableAction = _aligner;
 
             var resamplingArea = GeometryHelper.GetArea(_pointSelector, _settings.AligningAreaBorderSize);
@@ -440,23 +447,24 @@ namespace RlViewer.UI
 
         private void loaderWorker_InitFile(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-
-            _properties = new Files.FileProperties((string)e.Argument);
-            _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);
-
-            _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
-
-            _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
-            _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
-            _cancellableAction = _navi;
-
             try
             {
+                _properties = new Files.FileProperties((string)e.Argument);
+                _header = Factories.Header.Abstract.HeaderFactory.GetFactory(_properties).Create(_properties.FilePath);
+
+                _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
+
+                _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
+                _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
+                _navi.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
+                _cancellableAction = _navi;
                 _navi.GetNavigation();
             }
             catch (OperationCanceledException)
             {
                 e.Cancel = true;
+                return;
             }
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
@@ -464,7 +472,7 @@ namespace RlViewer.UI
             _ruler = new Behaviors.Ruler.RulerProxy(_file);
             _saver = SaverFactory.GetFactory(_properties).Create(_file);
             _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
-            _analyzer = Factories.Analyzer.AnalyzerFactory.Create(_file);
+            _analyzer = new Behaviors.Analyzing.SampleAnalyzer();
             _pointSelector = new Behaviors.PointSelector.PointSelector();
             _areaSelector = new Behaviors.AreaSelector.AreaSelector(_file);
             _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
@@ -488,6 +496,17 @@ namespace RlViewer.UI
             {
                 _navi.Report -= (s, pe) => ProgressReporter(pe.Percent);
                 _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
+                _navi.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            }
+
+
+            if (_settings.ForceImageHeightAdjusting && _file != null && _file.Navigation != null)
+            {
+                if (_file.Navigation.Count() != _file.Height)
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Warning, "Incorrect height detected, reverting to navigation strings count");
+                    _file.SetHeight(_file.Navigation.Count());
+                }
             }
 
 
@@ -507,7 +526,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
                     _file.Properties.Type, _file.Properties.FilePath));
 
-                StartTask("Генерация тайлов", loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                StartTask(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
             }
         }
         #endregion
@@ -520,6 +539,9 @@ namespace RlViewer.UI
 
             ((WorkerEventController)_creator).Report += (s, pe) => ProgressReporter(pe.Percent);
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
+            ((WorkerEventController)_creator).ReportName += (s, tne) =>
+                ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
             _cancellableAction = ((WorkerEventController)_creator);
 
             try
@@ -546,6 +568,9 @@ namespace RlViewer.UI
             {
                 ((WorkerEventController)_creator).Report -= (s, pe) => ProgressReporter(pe.Percent);
                 ((WorkerEventController)_creator).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
+                ((WorkerEventController)_creator).ReportName -= (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
             }
 
             if (e.Cancelled)
@@ -588,9 +613,13 @@ namespace RlViewer.UI
         {
             if (_reporter != null)
             {
-                ((WorkerEventController)_reporter).Report += (s, pe) => ProgressReporter(pe.Percent);
-                ((WorkerEventController)_reporter).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
+                _reporter.Report += (s, pe) => ProgressReporter(pe.Percent);
+                _reporter.CancelJob += (s, ce) => ce.Cancel = _reporter.Cancelled;
+                _reporter.ReportName += (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
             }
+
+            _cancellableAction = _reporter;
 
             var reportArgs = (object[])e.Argument;
             var reportFileName = (string)reportArgs[0];
@@ -612,14 +641,16 @@ namespace RlViewer.UI
         {
             if (_reporter != null)
             {
-                ((WorkerEventController)_reporter).Report -= (s, pe) => ProgressReporter(pe.Percent);
-                ((WorkerEventController)_reporter).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_reporter).Cancelled;
+                _reporter.Report -= (s, pe) => ProgressReporter(pe.Percent);
+                _reporter.CancelJob -= (s, ce) => ce.Cancel = _reporter.Cancelled;
+                _reporter.ReportName -= (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
             }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Report generation cancelled"));
-                InitializeWindow();
+                InitProgressControls(false);
             }
             else if (e.Error != null)
             {
@@ -636,7 +667,6 @@ namespace RlViewer.UI
         }
 
         #endregion
-
 
         #endregion
 
@@ -667,8 +697,7 @@ namespace RlViewer.UI
             if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null && _file != null)
             {
                 var tDrawer = new Behaviors.Draw.TileDrawer(_filterProxy.Filter, _scaler);
-                var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector,
-                    _scaler, _areaAligningWrapper);
+                var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler, _areaAligningWrapper);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed,
@@ -725,20 +754,20 @@ namespace RlViewer.UI
             }
         }
 
-        public void ScaleImage(int delta)
+        public void ScaleImage(int delta, Point mousePos = default(Point))
         {
             if (delta > 0)
             {
-                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1);
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) + 1, mousePos);
             }
             else
             {
-                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1);
+                ChangeScaleFactor((int)Math.Log(_scaler.ScaleFactor, 2) - 1, mousePos);
             }
         }
 
 
-        private void ChangeScaleFactor(float value)
+        private void ChangeScaleFactor(float value, Point mousePos)
         {
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;
 
@@ -747,7 +776,7 @@ namespace RlViewer.UI
 
             if (_file != null)
             {
-                CenterScaledImage(scaleFactor);
+                CenterScaledImage(scaleFactor, mousePos);
             }
 
             _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, scaleFactor);
@@ -797,24 +826,33 @@ namespace RlViewer.UI
             }
         }
 
-        private void CenterScaledImage(float scaleFactor)
+        private void CenterScaledImage(float scaleFactor, Point currentMousePos = default(Point))
         {
             InitScrollBars(scaleFactor);
 
-            float visibleImageWidthHalf = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / 2;
-            visibleImageWidthHalf = _scaler.ScaleFactor > scaleFactor ? -visibleImageWidthHalf / 2 : visibleImageWidthHalf;
+            float mouseDividedFactorX = 2;
+            float mouseDividedFactorY = 2;
 
-            float visibleImageHeightHalf = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / 2;
-            visibleImageHeightHalf = _scaler.ScaleFactor > scaleFactor ? -visibleImageHeightHalf / 2 : visibleImageHeightHalf;
+            if (currentMousePos != default(Point))
+            {
+                mouseDividedFactorX = _form.Canvas.Width / (float)currentMousePos.X;
+                mouseDividedFactorY = _form.Canvas.Height / (float)currentMousePos.Y;
+            }
 
-            float newHorizontalValue = _form.Horizontal.Value + visibleImageWidthHalf < 0 ? 0 :
-                _form.Horizontal.Value + visibleImageWidthHalf;
+            float dividedImageWidth = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / mouseDividedFactorX;
+            dividedImageWidth = _scaler.ScaleFactor > scaleFactor ? -dividedImageWidth / 2 : dividedImageWidth;
+
+            float dividedImageHeight = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / mouseDividedFactorY;
+            dividedImageHeight = _scaler.ScaleFactor > scaleFactor ? -dividedImageHeight / 2 : dividedImageHeight;
+
+            float newHorizontalValue = _form.Horizontal.Value + dividedImageWidth < 0 ? 0 :
+                _form.Horizontal.Value + dividedImageWidth;
             newHorizontalValue = newHorizontalValue + _form.Canvas.Width /
                 (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Width ?
                 _form.Horizontal.Maximum : newHorizontalValue;
 
-            float newVerticalValue = _form.Vertical.Value + visibleImageHeightHalf < 0 ? 0
-                : _form.Vertical.Value + visibleImageHeightHalf;
+            float newVerticalValue = _form.Vertical.Value + dividedImageHeight < 0 ? 0
+                : _form.Vertical.Value + dividedImageHeight;
             newVerticalValue = newVerticalValue + _form.Canvas.Height /
                 (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Height ?
                 _form.Vertical.Maximum : newVerticalValue;
@@ -913,11 +951,10 @@ namespace RlViewer.UI
             _chart.InitChart(_form.HistogramChart);
         }
 
-        private void InitProgressControls(bool isVisible, string caption = "")
+        private void InitProgressControls(bool isVisible)
         {
             ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
             ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = caption; });
             ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });
             ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
             ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
@@ -960,7 +997,6 @@ namespace RlViewer.UI
             _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
             _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
             _form.Vertical.Visible = _form.Vertical.Maximum > 0 ? true : false;
-
         }
 
 
@@ -1001,7 +1037,7 @@ namespace RlViewer.UI
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                StartTask("Сохранение", loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
+                                StartTask(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
                                     new Behaviors.Saving.SaverParams(sfd.FileName, sSize.LeftTop,
                                         sSize.ImageWidth, sSize.ImageHeight, sSize.KeepFiltering, sSize.KeepPalette));
                             }
@@ -1474,7 +1510,6 @@ namespace RlViewer.UI
 
         public void AlignImage()
         {
-            //new Behaviors.ImageAligning.LeastSquares.Concrete.PolynomialLeastSquares(_pointSelector)
             using (var alignedSaveDlg = new SaveFileDialog())
             {
                 alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
@@ -1489,7 +1524,7 @@ namespace RlViewer.UI
                         new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector),
                         _settings.SurfaceType, _settings.RbfMlBaseRaduis, _settings.RbfMlLayersNumber, _settings.RbfMlRegularizationCoef);
 
-                    StartTask("Выравнивание изображения", loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
+                    StartTask(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         Path.ChangeExtension(alignedSaveDlg.FileName, Path.GetExtension(_file.Properties.FilePath)));
                 }
             }
@@ -1508,7 +1543,7 @@ namespace RlViewer.UI
 #endif
                         if (ff.ShowDialog() == DialogResult.OK)
                         {
-                            StartTask("Поиск точки", loaderWorker_FindPoint, loaderWorker_FindPointCompleted, ff.Params);
+                            StartTask(loaderWorker_FindPoint, loaderWorker_FindPointCompleted, ff.Params);
                         };
                     }
                 }
@@ -1648,13 +1683,16 @@ namespace RlViewer.UI
 
 
 
+        private Behaviors.ReportGenerator.ReporterSettings _reporterSettings;
+
         public void ReportDialog()
         {
-            using (var reportSettings = new Forms.ReportSettingsForm())
+            using (var reportSettings = new Forms.ReportSettingsForm(_reporterSettings))
             {
                 if (reportSettings.ShowDialog() == DialogResult.OK)
                 {
                     MakeReport(reportSettings.ReporterType, reportSettings.ReporterSettings);
+                    _reporterSettings = reportSettings.ReporterSettings;
                 }
             }
         }
@@ -1685,14 +1723,14 @@ namespace RlViewer.UI
                     using (var fsd = new SaveFileDialog())
                     {
                         fsd.Title = "Имя для файла отчета";
-                        fsd.Filter = "Документ MS Word|.docx";
+                        fsd.Filter = "Документ MS Word|*.docx";
                         if (fsd.ShowDialog() == DialogResult.OK)
                         {
                             _reporter = Factories.Reporter.Abstract.ReporterFactory
                                                 .GetFactory(reportType)
                                                 .Create(validFiles.ToArray());
 
-                            StartTask("Генерация отчета", loaderWorker_GenerateReport,
+                            StartTask(loaderWorker_GenerateReport,
                                 loaderWorker_GenerateReportCompleted, new object[] { fsd.FileName, reporterSettings });
                         }
                     }
@@ -1835,12 +1873,17 @@ namespace RlViewer.UI
             }
         }
 
-
         private void CrossAppDataReceivedCallback(object sender, Behaviors.CrossAppCommunication.GotDataEventArgs gde)
         {
             if (_pointSharer != null)
             {
-                _pointSharer.ProcessMessage(gde.Data, (point) => CenterImageAtPoint(point, false));
+                _pointSharer.ProcessMessage(gde.Data, (point) =>
+                {
+                    if (_form.SharerRb.Checked)
+                    {
+                        CenterImageAtPoint(point, false);
+                    }
+                });
             }
         }
 

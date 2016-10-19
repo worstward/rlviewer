@@ -64,16 +64,98 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
-        protected abstract Tile[] GetTilesFromTl(string path);
-        protected abstract Tile[] GetTilesFromFileAsync(string path);
-        protected abstract Tile[] GetTilesFromFile(string path);
+        protected abstract Tile[] GetExistingTiles(string path);
+        protected abstract Tile[] GetTilesFromFileAsync();
+        protected abstract Tile[] GetTilesFromFile();
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
         protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, float normalizationFactor,
             int tileHeight, TileOutputType outputType);
-        protected abstract Tile[] GetTilesFromFile(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
-        protected abstract Tile[] GetTilesFromFileAsync(string filePath, LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType);
+        protected virtual Tile[] GetTilesFromFile(LocatorFile file,
+            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
+        {
+            if (file.Width == 0 || file.Height == 0)
+            {
+                throw new ArgumentException(
+                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
+            }
+
+            var tileFolder = GetDirectoryName(file.Properties.FilePath);
+            CreateTileFolder(tileFolder);
+
+            List<Tile> tiles = new List<Tile>();
+            byte[] tileLine;
+            using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+                int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                int strHeaderLength = 0;
+                if (strHeader != null)
+                {
+                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                }
+
+                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                for (int i = 0; i < totalLines; i++)
+                {
+                    OnReportName("Генерация тайлов");
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
+                        TileSize.Height, outputType);
+
+                    OnProgressReport((int)(i / totalLines * 100));
+                    if (OnCancelWorker())
+                    {
+                        return null;
+                    }
+
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
+                }
+            }
+            return tiles.ToArray();
+        }
+
+
+        protected virtual Tile[] GetTilesFromFileAsync(LocatorFile file,
+           RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
+        {
+            if (file.Width == 0 || file.Height == 0)
+            {
+                throw new ArgumentException(
+                    string.Format("Image dimensions can't be equal to zero. Detected width: {0}, height: {1}", file.Width, file.Height));
+            }
+
+            var tileFolder = GetDirectoryName(file.Properties.FilePath);
+            CreateTileFolder(tileFolder);
+
+
+            Task.Factory.StartNew(() =>
+            {
+                List<Tile> tiles = new List<Tile>();
+                byte[] tileLine;
+                using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+
+                    int strHeaderLength = 0;
+                    if (strHeader != null)
+                    {
+                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
+                    }
+
+                    int signalDataLength = file.Width * file.Header.BytesPerSample;
+
+                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                    for (int i = 0; i < totalLines; i++)
+                    {
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
+                            TileSize.Height, outputType);
+                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
+                    }
+                }
+            });
+            return GetExistingTiles(tileFolder);
+        }
+
 
         protected abstract T[] GetSampleData(byte[] sourceBytes);
         
@@ -112,7 +194,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             if (!forceTileGeneration && Directory.Exists(path))
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
-                tiles = GetTilesFromTl(path);
+                tiles = GetExistingTiles(path);
             }
             else
             {
@@ -124,11 +206,11 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
                 if (allowScrolling)
                 {
-                    tiles = GetTilesFromFileAsync(filePath);
+                    tiles = GetTilesFromFileAsync();
                 }
                 else
                 {
-                    tiles = GetTilesFromFile(filePath);
+                    tiles = GetTilesFromFile();
                 }
             }
 
@@ -143,15 +225,15 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             T maxSampleValue = default(T);
             var comparer = Comparer<T>.Default;
 
-
             using (var s = File.Open(loc.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var estimatedFileSize = (loc.Width * loc.Header.BytesPerSample + loc.Header.StrHeaderLength) * loc.Height + loc.Header.FileHeaderLength;
+                long estimatedFileSize = ((long)(loc.Width * loc.Header.BytesPerSample + loc.Header.StrHeaderLength)) * (long)loc.Height + loc.Header.FileHeaderLength;
 
                 if (s.Length != estimatedFileSize)
                 {
-                    throw new ArgumentException(string.Format(@"Wrong image dimensions provided, calculated size:
-                        {0} bytes, real size: {1} bytes", estimatedFileSize, s.Length));
+                    var msg = string.Format(@"Wrong image dimensions provided, calculated size: {0} bytes, real size: {1} bytes", estimatedFileSize, s.Length);
+                    Logging.Logger.Log(Logging.SeverityGrades.Warning, msg);
+                    //throw new ArgumentException(msg);
                 }
 
                 s.Seek(loc.Header.FileHeaderLength, SeekOrigin.Begin);
@@ -189,6 +271,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
         {
+            OnReportName("Поиск максимальной амплитуды");
             return GetMaxValue(loc, strDataLen, strHeadLen, 0, loc.Height - 1);
         }
 

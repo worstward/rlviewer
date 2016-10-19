@@ -22,6 +22,7 @@ namespace RlViewer.Behaviors.Navigation.NavigationSearcher.Abstract
 
         public Point GetCoordinates(double latitude, double longitude, double error)
         {
+            OnReportName("Поиск точки");
             Point foundPoint = new Point();
             int progress = 0;
             var navigationLength = _file.Navigation.Count();

@@ -16,9 +16,16 @@ namespace RlViewer.Behaviors.Saving.Abstract
             
         }
         public abstract Files.LocatorFile SourceFile { get; }
-
-        public abstract void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+        protected abstract void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
             float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter);
+
+        public void Save(string path, RlViewer.FileType destinationType, Rectangle area,
+            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
+        {
+            OnReportName("Сохранение изображения");
+            SaveAndReport(path, destinationType, area, normalization, maxValue, palette, filter);
+        }
+
 
         public virtual void SaveAsAligned(string fileName, System.Drawing.Rectangle area, byte[] image)
         {

@@ -66,7 +66,7 @@ namespace RlViewer.Settings
             set { _useTemperaturePalette = value; }
         }
 
-        private int _sectionSize = 50;
+        private int _sectionSize = 500;
 
         /// <summary>
         /// Amount of points for section graph
@@ -78,7 +78,7 @@ namespace RlViewer.Settings
             set { _sectionSize = value; }
         }
 
-        private int _areaSize = 3;
+        private int _areaSize = 40;
         /// <summary>
         /// Rectangle area side length
         /// </summary>
@@ -293,6 +293,17 @@ namespace RlViewer.Settings
             get { return _dragAccelerator; }
             set { _dragAccelerator = value; }
         }
+
+        private bool _forceImageHeightAdjusting = false;
+
+        [DataMember(IsRequired = true)]
+        public bool ForceImageHeightAdjusting
+        {
+            get { return _forceImageHeightAdjusting; }
+            set { _forceImageHeightAdjusting = value; }
+        }
+
+
       
     }
 }

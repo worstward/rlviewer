@@ -11,7 +11,7 @@ using RlViewer.Settings;
 
 namespace RlViewer.Forms
 {
-    public partial class  SettingsForm : Form
+    public partial class SettingsForm : Form
     {
         public SettingsForm(Settings.Settings settings)
         {
@@ -47,6 +47,8 @@ namespace RlViewer.Forms
             baseRadiusTb.Text = _settings.RbfMlBaseRaduis.ToString();
             layersNumTb.Text = _settings.RbfMlLayersNumber.ToString();
             regularizationCoefTb.Text = _settings.RbfMlRegularizationCoef.ToString();
+
+            forceImageHeightAdjustingCb.Checked = _settings.ForceImageHeightAdjusting;
         }
 
 
@@ -64,6 +66,8 @@ namespace RlViewer.Forms
         private bool _forceAdmin;
         private bool _customFileOpenDlg;
         private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType;
+        private bool _forceImageHeightAdjusting;
+
 
         private void FillComboBox()
         {
@@ -176,7 +180,7 @@ namespace RlViewer.Forms
             _settings.ForceAdminMode = _forceAdmin;
             _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
             _settings.SurfaceType = _surfaceType;
-            
+            _settings.ForceImageHeightAdjusting = _forceImageHeightAdjusting;
 
             _settings.ToXml();
 
@@ -307,6 +311,10 @@ namespace RlViewer.Forms
 
         }
 
+        private void forceImageHeightAdjustingCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _forceImageHeightAdjusting = ((CheckBox)sender).Checked;
+        }
        
 
     }

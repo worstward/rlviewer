@@ -39,11 +39,12 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.cornersCb = new System.Windows.Forms.CheckBox();
-            this.centerCb = new System.Windows.Forms.CheckBox();
-            this.areaCb = new System.Windows.Forms.CheckBox();
-            this.headerInfoCb = new System.Windows.Forms.CheckBox();
             this.timeCb = new System.Windows.Forms.CheckBox();
+            this.headerInfoCb = new System.Windows.Forms.CheckBox();
+            this.areaCb = new System.Windows.Forms.CheckBox();
+            this.centerCb = new System.Windows.Forms.CheckBox();
+            this.cornersCb = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -95,20 +96,21 @@
             this.lastLineTb.ResetOnPrompt = false;
             this.lastLineTb.Size = new System.Drawing.Size(61, 20);
             this.lastLineTb.TabIndex = 3;
+            this.lastLineTb.Text = "0";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 13);
+            this.label1.Size = new System.Drawing.Size(164, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Начать со строки";
+            this.label1.Text = "Отступ от начала файла, строк";
             // 
             // finishAtLastCb
             // 
             this.finishAtLastCb.AutoSize = true;
-            this.finishAtLastCb.Location = new System.Drawing.Point(9, 40);
+            this.finishAtLastCb.Location = new System.Drawing.Point(9, 71);
             this.finishAtLastCb.Name = "finishAtLastCb";
             this.finishAtLastCb.Size = new System.Drawing.Size(139, 17);
             this.finishAtLastCb.TabIndex = 6;
@@ -120,7 +122,7 @@
             // 
             this.reportTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.reportTypeComboBox.FormattingEnabled = true;
-            this.reportTypeComboBox.Location = new System.Drawing.Point(120, 75);
+            this.reportTypeComboBox.Location = new System.Drawing.Point(120, 99);
             this.reportTypeComboBox.Name = "reportTypeComboBox";
             this.reportTypeComboBox.Size = new System.Drawing.Size(121, 21);
             this.reportTypeComboBox.TabIndex = 7;
@@ -128,7 +130,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 78);
+            this.label2.Location = new System.Drawing.Point(6, 102);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 13);
             this.label2.TabIndex = 8;
@@ -146,6 +148,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.firstLineTb);
@@ -175,35 +178,15 @@
             this.tabPage2.Text = "Блоки отчета";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // cornersCb
+            // timeCb
             // 
-            this.cornersCb.AutoSize = true;
-            this.cornersCb.Location = new System.Drawing.Point(7, 16);
-            this.cornersCb.Name = "cornersCb";
-            this.cornersCb.Size = new System.Drawing.Size(82, 17);
-            this.cornersCb.TabIndex = 0;
-            this.cornersCb.Text = "Углы зоны";
-            this.cornersCb.UseVisualStyleBackColor = true;
-            // 
-            // centerCb
-            // 
-            this.centerCb.AutoSize = true;
-            this.centerCb.Location = new System.Drawing.Point(7, 39);
-            this.centerCb.Name = "centerCb";
-            this.centerCb.Size = new System.Drawing.Size(86, 17);
-            this.centerCb.TabIndex = 1;
-            this.centerCb.Text = "Центр зоны";
-            this.centerCb.UseVisualStyleBackColor = true;
-            // 
-            // areaCb
-            // 
-            this.areaCb.AutoSize = true;
-            this.areaCb.Location = new System.Drawing.Point(7, 62);
-            this.areaCb.Name = "areaCb";
-            this.areaCb.Size = new System.Drawing.Size(123, 17);
-            this.areaCb.TabIndex = 2;
-            this.areaCb.Text = "Площадь засветки";
-            this.areaCb.UseVisualStyleBackColor = true;
+            this.timeCb.AutoSize = true;
+            this.timeCb.Location = new System.Drawing.Point(7, 108);
+            this.timeCb.Name = "timeCb";
+            this.timeCb.Size = new System.Drawing.Size(99, 17);
+            this.timeCb.TabIndex = 4;
+            this.timeCb.Text = "Время работы";
+            this.timeCb.UseVisualStyleBackColor = true;
             // 
             // headerInfoCb
             // 
@@ -215,15 +198,44 @@
             this.headerInfoCb.Text = "Инфо заголовка";
             this.headerInfoCb.UseVisualStyleBackColor = true;
             // 
-            // timeCb
+            // areaCb
             // 
-            this.timeCb.AutoSize = true;
-            this.timeCb.Location = new System.Drawing.Point(7, 108);
-            this.timeCb.Name = "timeCb";
-            this.timeCb.Size = new System.Drawing.Size(99, 17);
-            this.timeCb.TabIndex = 4;
-            this.timeCb.Text = "Время работы";
-            this.timeCb.UseVisualStyleBackColor = true;
+            this.areaCb.AutoSize = true;
+            this.areaCb.Location = new System.Drawing.Point(7, 62);
+            this.areaCb.Name = "areaCb";
+            this.areaCb.Size = new System.Drawing.Size(123, 17);
+            this.areaCb.TabIndex = 2;
+            this.areaCb.Text = "Площадь засветки";
+            this.areaCb.UseVisualStyleBackColor = true;
+            // 
+            // centerCb
+            // 
+            this.centerCb.AutoSize = true;
+            this.centerCb.Location = new System.Drawing.Point(7, 39);
+            this.centerCb.Name = "centerCb";
+            this.centerCb.Size = new System.Drawing.Size(86, 17);
+            this.centerCb.TabIndex = 1;
+            this.centerCb.Text = "Центр зоны";
+            this.centerCb.UseVisualStyleBackColor = true;
+            // 
+            // cornersCb
+            // 
+            this.cornersCb.AutoSize = true;
+            this.cornersCb.Location = new System.Drawing.Point(7, 16);
+            this.cornersCb.Name = "cornersCb";
+            this.cornersCb.Size = new System.Drawing.Size(82, 17);
+            this.cornersCb.TabIndex = 0;
+            this.cornersCb.Text = "Углы зоны";
+            this.cornersCb.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 43);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Отступ от конца файла, строк";
             // 
             // ReportSettingsForm
             // 
@@ -266,5 +278,6 @@
         private System.Windows.Forms.CheckBox centerCb;
         private System.Windows.Forms.CheckBox cornersCb;
         private System.Windows.Forms.CheckBox timeCb;
+        private System.Windows.Forms.Label label3;
     }
 }

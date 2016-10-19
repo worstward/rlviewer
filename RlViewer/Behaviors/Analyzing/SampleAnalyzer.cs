@@ -3,16 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using System.Drawing;
-using RlViewer.Behaviors;
-using RlViewer.Behaviors.Analyzing.Abstract;
 
-namespace RlViewer.Behaviors.Analyzing.Concrete
+namespace RlViewer.Behaviors.Analyzing
 {
-    class FloatSampleAnalyzer : SampleAnalyzer
+    public class SampleAnalyzer
     {
-        public override bool Analyze(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
+
+        protected bool _isMouseDown;
+        protected Point _currentLocation;
+
+        public void StartTracing()
+        {
+            _isMouseDown = true;
+        }
+
+        public void StopTracing()
+        {
+            _currentLocation = new Point(-1, -1);
+            _isMouseDown = false;
+        }
+
+
+        /// <summary>
+        /// Amplitude in current point
+        /// </summary>
+        public float Amplitude
+        {
+            get;
+            protected set;
+        }
+
+
+        /// <summary>
+        /// Gets amplitude in the provided point
+        /// </summary>
+        /// <param name="file">File to get amplitude from</param>
+        /// <param name="p">Point to get amplitude at</param>
+        /// <returns></returns>
+        public virtual bool Analyze(RlViewer.Files.LocatorFile file, System.Drawing.Point location)
         {
             bool hasLocationChanged = false;
             if (_isMouseDown)
@@ -37,10 +66,8 @@ namespace RlViewer.Behaviors.Analyzing.Concrete
                 }
             }
 
-            return hasLocationChanged;                     
+            return hasLocationChanged;
         }
-
-
 
     }
 }

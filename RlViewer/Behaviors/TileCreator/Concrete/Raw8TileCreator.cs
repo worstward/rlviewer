@@ -86,7 +86,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
             return amplitudeModulus;
         }
 
-        protected override Tile[] GetTilesFromTl(string directoryPath)
+        protected override Tile[] GetExistingTiles(string directoryPath)
         {
             return GetTilesFromTl(directoryPath, _rli.Width, _rli.Height);
         }
@@ -96,18 +96,18 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Raw file.  Reports progress to backgroundworker object.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFile(string filePath)
+        protected override Tile[] GetTilesFromFile()
         {
-            return GetTilesFromFile(filePath, _rli, null, OutputType);
+            return GetTilesFromFile(_rli, null, OutputType);
         }
 
         /// <summary>
         /// Saves tiles to local folder and creates tile objects array from Raw file.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFileAsync(string filePath)
+        protected override Tile[] GetTilesFromFileAsync()
         {
-            return GetTilesFromFileAsync(filePath, _rli, null, OutputType);
+            return GetTilesFromFileAsync(_rli, null, OutputType);
         }
 
     }

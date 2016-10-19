@@ -83,7 +83,7 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// </summary>
         /// <param name="directoryPath">Directory with tiles</param>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromTl(string directoryPath)
+        protected override Tile[] GetExistingTiles(string directoryPath)
         {
             return GetTilesFromTl(directoryPath, _rli.Width, _rli.Height);
         }
@@ -92,9 +92,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.  Reports progress to backgroundworker object.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFile(string path)
+        protected override Tile[] GetTilesFromFile()
         {
-            return GetTilesFromFile(path, _rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
+            return GetTilesFromFile(_rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
         }
 
 
@@ -102,9 +102,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFileAsync(string path)
+        protected override Tile[] GetTilesFromFileAsync()
         {
-            return GetTilesFromFileAsync(path, _rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
+            return GetTilesFromFileAsync(_rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
         }
 
 
