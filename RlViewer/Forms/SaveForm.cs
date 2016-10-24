@@ -13,12 +13,17 @@ namespace RlViewer.Forms
 {
     public partial class SaveForm : Form
     {
-        public SaveForm(int fileWidth, int fileHeight, AreaSelector selector)
+        public SaveForm(string savePath, int fileWidth, int fileHeight, AreaSelector selector, Behaviors.TileCreator.TileOutputType outputType,
+            Behaviors.Filters.ImageFilterProxy imageFilter = null, System.Drawing.Imaging.ColorPalette palette = null)
         {
 
             InitializeComponent();
+
+            _savePath = savePath;
             _fileWidth = fileWidth;
             _fileHeight = fileHeight;
+            _imageFilter = imageFilter;
+            _palette = palette;
 
             _selector = selector;
 
@@ -27,46 +32,35 @@ namespace RlViewer.Forms
                 radioButton3.Checked = true;
             }
 
-            FormsHelper.AddTbClickEvent(this.Controls);
+            _outputType = outputType;
+            outputTypeCb.SelectedIndex = (int)outputType;
+
+            FormsHelper.AddTbClickEvent<MaskedTextBox>(this.Controls);
             InitControls(selector.Area.Location.X, selector.Area.Location.Y, selector.Area.Width, selector.Area.Height);
         }
 
-
+        private string _savePath;
         private AreaSelector _selector;
         private int _fileWidth;
         private int _fileHeight;
-
         private bool _keepFiltering;
-
-        public bool KeepFiltering
-        {
-            get { return _keepFiltering; }
-        }
-
-        private bool _keepPalette;
-
-        public bool KeepPalette
-        {
-            get { return _keepPalette; }
-        }
-       
+        private bool _keepPalette;   
         private Point _leftTop;
-        public Point LeftTop
-        {
-            get { return _leftTop; }
-        }
-
-        private int _width;
-        public int ImageWidth
-        {
-            get { return _width; }
-        }
-
+        private int _width;       
         private int _height;
-        public int ImageHeight
+        private Behaviors.TileCreator.TileOutputType _outputType;
+        private Behaviors.Filters.ImageFilterProxy _imageFilter;
+        private System.Drawing.Imaging.ColorPalette _palette;
+
+
+        private Behaviors.Saving.SaverParams _saverParams;
+
+        public Behaviors.Saving.SaverParams SaverParams
         {
-            get { return _height; }
+            get { return _saverParams; }
         }
+
+
 
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -99,6 +93,8 @@ namespace RlViewer.Forms
 
         private void InitControls(int x, int y, int width, int height)
         {
+
+
             if (radioButton1.Checked)
             {
                 ControlSwitch(coordPanel, false);
@@ -218,7 +214,11 @@ namespace RlViewer.Forms
             {
                 _keepFiltering = keepFilteringCb.Checked;
                 _keepPalette = keepPaletteCb.Checked;
+                var imageFilter = _keepFiltering ? _imageFilter : null;
+                var palette = _keepPalette ? _palette : null;
 
+                _saverParams = new Behaviors.Saving.SaverParams(_savePath, _leftTop, _width, _height, _outputType, imageFilter, palette);
+                 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -238,6 +238,37 @@ namespace RlViewer.Forms
             if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
+            }
+        }
+
+        private void outputTypeCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (((ComboBox)sender).Text)
+            {
+                case "Линейный":
+                    _outputType = Behaviors.TileCreator.TileOutputType.Linear;
+                    break;
+                case "Логарифмический":
+                    _outputType = Behaviors.TileCreator.TileOutputType.Logarithmic;
+                    break;
+                case "Линейно-Логарифмический":
+                    _outputType = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
+                    break;
+                default:
+                    throw new NotSupportedException("Tile Output settings");
+            }
+        }
+
+        private void SaveForm_Shown(object sender, EventArgs e)
+        {
+            var type = (FileType)Enum.Parse(typeof(FileType), System.IO.Path.GetExtension(_savePath).ToLowerInvariant().TrimStart('.'));
+
+            if (type != FileType.bmp)
+            {
+                this.Height -= groupBox2.Height;
+                button1.Top -= groupBox2.Height;
+                button2.Top -= groupBox2.Height;
+                groupBox2.Visible = false;
             }
         }
 

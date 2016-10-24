@@ -304,6 +304,65 @@ namespace RlViewer.UI
         }
         #endregion
 
+        #region NormalizeFileWorkerMethods
+        private void loaderWorker_NormalizeFile(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {          
+            _saver = SaverFactory.GetFactory(_file.Properties).Create(_file);
+
+            _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
+            _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
+            _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _cancellableAction = _saver;
+
+            var fileName = (string)e.Argument;
+
+            try
+            {            
+                var targetPoint = _pointSelector.First();
+                var normalizationCoef = targetPoint.Value / targetPoint.Rcs;
+
+                _saver.SaveAsNormalized(fileName, normalizationCoef);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
+
+            if (_saver.Cancelled)
+            {
+                ClearWorkerData(() => File.Delete(fileName));
+            }
+
+            e.Result = fileName;
+        }
+
+        private void loaderWorker_NormalizeFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
+            _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
+            _saver.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Normalization cancelled"));
+                string errMess = string.Format("Normalization cancelled");
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while normalizing image: {0}", e.Error.Message));
+                Forms.FormsHelper.ShowErrorMsg("Невозможно выполнить нормировку");
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Normalization completed: {0}", (string)e.Result));
+            }
+
+            InitProgressControls(false);
+        }
+        #endregion
+
+
+
         #region saveFileWorkerMethods
 
         private void loaderWorker_SaveFile(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -326,16 +385,20 @@ namespace RlViewer.UI
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
 
-            _cancellableAction = _saver;
+            float maxSampleValue = 0;
+            
 
-            var filter = parameters.KeepFiltering ? _filterProxy : null;
-            var palette = parameters.KeepPalette ? _drawer.Palette : null;
 
             try
             {
-                _saver.Save(parameters.Path, Path.GetExtension(parameters.Path).Replace(".", "")
-                    .ToEnum<RlViewer.FileType>(), new Rectangle(parameters.LeftTop.X, parameters.LeftTop.Y, parameters.Width, parameters.Height),
-                    _creator.NormalizationFactor, _creator.MaxValue, palette, filter);
+                if (parameters.OutputType != Behaviors.TileCreator.TileOutputType.Linear)
+                {
+                    _cancellableAction = ((WorkerEventController)_creator);
+                    maxSampleValue = _creator.MaxValue;
+                }
+                _cancellableAction = _saver;
+
+                _saver.Save(parameters, _creator.NormalizationFactor, maxSampleValue);
             }
             catch (OperationCanceledException)
             {
@@ -364,7 +427,7 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while saving image: {0}", e.Error.Message));
-                Forms.FormsHelper.ShowErrorMsg("Unable to save image");
+                Forms.FormsHelper.ShowErrorMsg("Невозможно выполнить сохранение");
             }
             else
             {
@@ -668,6 +731,10 @@ namespace RlViewer.UI
 
         #endregion
 
+
+
+
+
         #endregion
 
         public void Undo()
@@ -876,7 +943,7 @@ namespace RlViewer.UI
 
                 if (_settings.SurfaceType == Behaviors.ImageAligning.Surfaces.SurfaceType.Custom)
                 {
-                    if (selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
+                    if (selectedPointsCount == 1 || selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
                     {
                         _form.AlignBtn.Enabled = true;
                     }
@@ -885,7 +952,7 @@ namespace RlViewer.UI
                         _form.AlignBtn.Enabled = false;
                     }
                 }
-                else if (selectedPointsCount >= 3 && selectedPointsCount <= 16)
+                else if (selectedPointsCount == 1 || selectedPointsCount >= 3 && selectedPointsCount <= 16)
                 {
                     _form.AlignBtn.Enabled = true;
                 }
@@ -1033,13 +1100,12 @@ namespace RlViewer.UI
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        using (var sSize = new Forms.SaveForm(_file.Width, _file.Height, _areaSelector))
+                        using (var sSize = new Forms.SaveForm(sfd.FileName, _file.Width, _file.Height, _areaSelector, 
+                            _settings.TileOutputAlgorithm, _filterProxy, _drawer.Palette))
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                StartTask(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted,
-                                    new Behaviors.Saving.SaverParams(sfd.FileName, sSize.LeftTop,
-                                        sSize.ImageWidth, sSize.ImageHeight, sSize.KeepFiltering, sSize.KeepPalette));
+                                StartTask(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted, sSize.SaverParams);
                             }
                         }
                     }
@@ -1168,6 +1234,7 @@ namespace RlViewer.UI
                     }
                     else if (_form.MarkPointRb.Checked)
                     {
+
                         if (!_settings.UsePointsForAligning)
                         {
 
@@ -1508,11 +1575,38 @@ namespace RlViewer.UI
             }
         }
 
-        public void AlignImage()
+
+        public void ResampleImage()
+        {
+            if(_pointSelector != null)
+            {
+                if (_pointSelector.Count() == 1)
+                {
+                    NormalizeImage();
+                }
+                else AlignImage();
+            }
+        }
+
+
+        private void NormalizeImage()
+        {
+            using (var normalizeSaveDlg = new SaveFileDialog())
+            {
+                normalizeSaveDlg.Filter = Resources.SaveFilter;
+                if (normalizeSaveDlg.ShowDialog() == DialogResult.OK)
+                {
+                    StartTask(loaderWorker_NormalizeFile, loaderWorker_NormalizeFileCompleted, normalizeSaveDlg.FileName);
+                }
+            }
+        }
+
+
+        private void AlignImage()
         {
             using (var alignedSaveDlg = new SaveFileDialog())
             {
-                alignedSaveDlg.Filter = "Обработанные файлы|*.brl4;*.raw";
+                alignedSaveDlg.Filter = Resources.AlignFilter;
                 if (alignedSaveDlg.ShowDialog() == DialogResult.OK)
                 {
                     var selectedPoints = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint));

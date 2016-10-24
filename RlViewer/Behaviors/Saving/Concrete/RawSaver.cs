@@ -30,21 +30,25 @@ namespace RlViewer.Behaviors.Saving.Concrete
         private RlViewer.Headers.Concrete.Raw.RawHeader _head;
 
 
-        protected override void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
-        {           
-            switch (destinationType)
+
+
+
+        protected override void SaveAndReport(SaverParams saverParams, float normalization, float maxValue)
+        {
+            switch (saverParams.DestinationType)
             {
                 case FileType.raw:
-                    SaveAsRaw(path, area);
-                    break;
+                    {
+                        SaveAsRaw(saverParams.Path, saverParams.SavingArea);
+                        break;
+                    }
                 case FileType.bmp:
                     {
                         DataProcessor.Abstract.DataStringProcessor processor = null;
 
                         if (_file.Header.BytesPerSample == 4)
                         {
-                            processor = new DataProcessor.Concrete.DataStringSampleProcessor();
+                            processor = Processor;
                         }
                         else if (_file.Header.BytesPerSample == 8)
                         {
@@ -55,7 +59,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                             throw new ArgumentException("Bytes per sample");
                         }
 
-                        SaveAsBmp(path, area, normalization, maxValue, processor, palette, filter);
+                        SaveAsBmp(saverParams.Path, saverParams.SavingArea, normalization, maxValue, processor, saverParams.OutputType, saverParams.Palette, saverParams.ImageFilter);
                         break;
                     }
                 default:
@@ -68,7 +72,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
             int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             alignedFileName = Path.ChangeExtension(alignedFileName, "raw");
-            File.WriteAllBytes(alignedFileName, image);                    
+            File.WriteAllBytes(alignedFileName, image);
         }
 
 

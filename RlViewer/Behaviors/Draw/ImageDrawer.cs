@@ -100,7 +100,6 @@ namespace RlViewer.Behaviors.Draw
                     }
                     else
                     {
-                        //var color = Color.FromArgb(alpha, GroupValues(r), GroupValues(g), GroupValues(b));
                         colorPalette.Entries[i] = Color.FromArgb(alpha, TrimToByteRange(r), TrimToByteRange(g), TrimToByteRange(b));
                     }
                 }

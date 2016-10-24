@@ -39,7 +39,6 @@ namespace RlViewer.Forms
 
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areasOrPointsForAligningCb.Checked = settings.UsePointsForAligning;
-            plot3dSizeTb.Text = settings.Plot3dAreaBorderSize.ToString();
             adminReminderCb.Checked = _settings.ForceAdminMode;
             useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
             surfaceTypeCb.SelectedIndex = (int)_settings.SurfaceType;
@@ -139,14 +138,6 @@ namespace RlViewer.Forms
             {
                 _settings.UseTemperaturePalette = false;
             }
-
-
-            int plot3dSize;
-            if (Int32.TryParse(plot3dSizeTb.Text, out plot3dSize))
-            {
-                _settings.Plot3dAreaBorderSize = plot3dSize == 0 ? 10 : plot3dSize;
-            }
-            else return;
 
             int rbfMlBaseRadius;
             if (Int32.TryParse(baseRadiusTb.Text, out rbfMlBaseRadius))
@@ -258,7 +249,7 @@ namespace RlViewer.Forms
             
             foreach (TabPage page in container.TabPages)
             {
-                FormsHelper.AddTbClickEvent(page.Controls);
+                FormsHelper.AddTbClickEvent<MaskedTextBox>(page.Controls);
             }
            
         }

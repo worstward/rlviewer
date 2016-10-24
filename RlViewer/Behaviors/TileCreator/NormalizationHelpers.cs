@@ -9,7 +9,6 @@ namespace RlViewer.Behaviors.TileCreator
     public static class NormalizationHelpers
     {
 
-
         public static float GetLinearValue(float sample, float normalizationFactor)
         {
             return sample / normalizationFactor * 255;
@@ -60,7 +59,7 @@ namespace RlViewer.Behaviors.TileCreator
         public static byte ToByteRange(float val)
         {
             val = val > 255 ? 255 : val;
-            val = val < 1 ? 0 : val;
+            val = val < 0 ? 0 : val;
             byte b = (byte)val;
             return b;
         }

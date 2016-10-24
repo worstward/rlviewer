@@ -98,48 +98,24 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             }
         }
 
-        protected override byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, float normalizationFactor,
-            int tileHeight, TileOutputType outputType)
+
+
+        protected override byte[] ProcessLinear(short[] samples)
         {
-            byte[] line = new byte[signalDataLength * tileHeight];
-            
-            int index = 0;
+            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                            NormalizationHelpers.GetLinearValue(x, NormalizationFactor))).ToArray();
+        }
 
-            while (index != line.Length && s.Position != s.Length)
-            {
-                s.Seek(strHeaderLength, SeekOrigin.Current);
-                index += s.Read(line, index, signalDataLength);
-            }
-
-            var sLine = GetSampleData(line);
-            byte[] normalizedLine = new byte[sLine.Length];
-
-            switch (outputType)
-            {
-                case TileOutputType.Linear:
-                    {
-                        normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                            NormalizationHelpers.GetLinearValue(x, normalizationFactor))).ToArray();
-                        break;
-                    }
-                case TileOutputType.Logarithmic:
-                    {
-                        normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+        protected override byte[] ProcessLogarithmic(short[] samples)
+        {
+            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
                             NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
-                        break;
-                    }
-                case TileOutputType.LinearLogarithmic:
-                    {
-                        normalizedLine = sLine.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
-                        NormalizationHelpers.GetLinearLogarithmicValue(x, MaxValue, normalizationFactor))).ToArray();
-                        break;
-                    }
-                default:
-                    break;
+        }
 
-            }
-
-            return normalizedLine;
+        protected override byte[] ProcessLinLog(short[] samples)
+        {
+            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+                        NormalizationHelpers.GetLinearLogarithmicValue(x, MaxValue, NormalizationFactor))).ToArray();
         }
 
     }

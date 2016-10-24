@@ -30,7 +30,8 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private RlViewer.Files.Rli.Concrete.Rl8 _file;
         private RlViewer.Headers.Concrete.Rl8.Rl8Header _head;
-        private DataProcessor.Abstract.DataStringProcessor _processor;
+
+        private DataProcessor.Concrete.DataStringModulusProcessor _processor;
         protected override DataProcessor.Abstract.DataStringProcessor Processor
         {
             get
@@ -38,26 +39,35 @@ namespace RlViewer.Behaviors.Saving.Concrete
                 return _processor = _processor ?? new DataProcessor.Concrete.DataStringModulusProcessor();
             }
         }
+       
 
-        protected override void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
+
+        protected override void SaveAndReport(SaverParams saverParams, float normalization, float maxValue)
         {
-            switch (destinationType)
+            switch (saverParams.DestinationType)
             {
                 case FileType.raw:
-                    SaveAsRaw(path, area);
+                    { 
+                    SaveAsRaw(saverParams.Path, saverParams.SavingArea);
                     break;
+                    }
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue, Processor,
-                        palette, filter);
-                    break;
+                    {
+                        SaveAsBmp(saverParams.Path, saverParams.SavingArea, normalization, maxValue, Processor, saverParams.OutputType,
+                            saverParams.Palette, saverParams.ImageFilter);
+                        break;
+                    }
                 case FileType.rl4:
-                    SaveAsRl4(path, area, ".rl4", RlViewer.Headers.Concrete.Rl4.SampleType.Float, Processor);
+                    { 
+                    SaveAsRl4(saverParams.Path, saverParams.SavingArea, ".rl4", RlViewer.Headers.Concrete.Rl4.SampleType.Float, Processor);
                     break;
+                    }
                 case FileType.rl8:
-                    SaveAsRl4(path, area, ".rl8", RlViewer.Headers.Concrete.Rl4.SampleType.Complex,
+                    {
+                        SaveAsRl4(saverParams.Path, saverParams.SavingArea, ".rl8", RlViewer.Headers.Concrete.Rl4.SampleType.Complex,
                         new DataProcessor.Concrete.DataStringSampleProcessor());
-                    break;
+                        break;
+                    }
                 default:
                     throw new NotSupportedException("Unsupported destination type");
             }

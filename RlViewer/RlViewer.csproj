@@ -137,6 +137,7 @@
     <Compile Include="Behaviors\FilePreview\Concrete\RPreview.cs" />
     <Compile Include="Behaviors\Filters\FilterTypes.cs" />
     <Compile Include="Behaviors\ImageAligning\IInterpolationProvider.cs" />
+    <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\NormalizingPlane.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfMultilayer.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfMultilayerCoef.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfQnn.cs" />

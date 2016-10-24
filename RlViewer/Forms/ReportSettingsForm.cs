@@ -36,7 +36,7 @@ namespace RlViewer.Forms
                 headerInfoCb.Checked = reporterSettings.AddParametersTable;
                 timeCb.Checked = reporterSettings.AddTimes;
             }
-            FormsHelper.AddTbClickEvent(this.Controls);
+            FormsHelper.AddTbClickEvent<MaskedTextBox>(this.Controls);
         }
 
 

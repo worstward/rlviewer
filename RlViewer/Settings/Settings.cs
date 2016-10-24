@@ -170,22 +170,6 @@ namespace RlViewer.Settings
             }
         }
 
-        private int _plot3dAreaBorderSize = 100;
-
-        [DataMember(IsRequired = true)]
-        public int Plot3dAreaBorderSize
-        {
-            get
-            {
-                return _plot3dAreaBorderSize;
-            }
-            set
-            {
-                _plot3dAreaBorderSize = value > 999 ? 999 : value;
-            }
-        }
-
-
         private bool _forceAdminMode = true;
 
         [DataMember(IsRequired = true)]

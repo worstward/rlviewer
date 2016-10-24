@@ -16,14 +16,60 @@ namespace RlViewer.Behaviors.Saving.Abstract
             
         }
         public abstract Files.LocatorFile SourceFile { get; }
-        protected abstract void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter);
 
-        public void Save(string path, RlViewer.FileType destinationType, Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
+        protected abstract void SaveAndReport(SaverParams saverParams, float normalization, float maxValue);
+        public void Save(SaverParams saverParams, float normalization, float maxValue)
         {
             OnReportName("Сохранение изображения");
-            SaveAndReport(path, destinationType, area, normalization, maxValue, palette, filter);
+            SaveAndReport(saverParams, normalization, maxValue);
+        }
+
+
+        private DataProcessor.Concrete.DataStringSampleProcessor _processor;
+        protected virtual DataProcessor.Abstract.DataStringProcessor Processor
+        {
+            get
+            {
+                return _processor = _processor ?? new DataProcessor.Concrete.DataStringSampleProcessor();
+            }
+        }
+
+        public void SaveAsNormalized(string path, float normalizingCoef)
+        {
+            OnReportName("Нормировка к точке");
+
+            path = Path.ChangeExtension(path, SourceFile.Properties.Type.ToString());
+
+            using (var fr = System.IO.File.Open(SourceFile.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var fw = System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    var headArray = new byte[SourceFile.Header.FileHeaderLength];
+                    fr.Read(headArray, 0, headArray.Length);
+                    fw.Write(headArray, 0, headArray.Length);
+
+                    for (int i = 0; i < SourceFile.Height; i++)
+                    {
+                        var strHeadArray = new byte[SourceFile.Header.StrHeaderLength];
+                        fr.Read(strHeadArray, 0, strHeadArray.Length);
+                        fw.Write(strHeadArray, 0, strHeadArray.Length);
+
+                        byte[] byteData = new byte[SourceFile.Width * SourceFile.Header.BytesPerSample];
+                        fr.Read(byteData, 0, byteData.Length);
+
+                        var processed = Processor.ProcessDataString(byteData).Select(x => x / normalizingCoef).ToArray();
+                        Buffer.BlockCopy(processed, 0, byteData, 0, byteData.Length);
+                        fw.Write(byteData, 0, byteData.Length);
+
+
+                        OnProgressReport((int)((double)i / (double)SourceFile.Height * 100));
+                        if (OnCancelWorker())
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -77,8 +123,8 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
 
         protected void SaveAsBmp(string path, Rectangle area, float normalization, float maxValue,
-            DataProcessor.Abstract.DataStringProcessor processor, System.Drawing.Imaging.ColorPalette palette = null, 
-            Filters.ImageFilterProxy filter = null)
+            DataProcessor.Abstract.DataStringProcessor processor, Behaviors.TileCreator.TileOutputType outputType,
+            System.Drawing.Imaging.ColorPalette palette = null, Filters.ImageFilterProxy filter = null)
         {
             var destinationFileName = Path.ChangeExtension(path, ".bmp");
             var padding = (area.Width % 4);
@@ -103,7 +149,6 @@ namespace RlViewer.Behaviors.Saving.Abstract
                     fr.Seek(SourceFile.Header.FileHeaderLength, SeekOrigin.Begin);
                     fr.Seek(offset, SeekOrigin.Current);
 
-
                     fw.Write(bmpHeader, 0, bmpHeader.Length);
 
                     for (int i = 0; i < area.Height; i++)
@@ -120,15 +165,41 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
                         var processedData  = processor.ProcessDataString(frameStrData);
 
-                        var bytes = processedData.Select(x => TileCreator.NormalizationHelpers.ToByteRange(
+                        byte[] processedBytes = null;
+
+
+                        switch (outputType)
+                        {
+                            case Behaviors.TileCreator.TileOutputType.Linear:
+                                {
+                                    processedBytes = processedData.AsParallel().Select(x => TileCreator.NormalizationHelpers.ToByteRange(
                             TileCreator.NormalizationHelpers.GetLinearValue(x, normalization))).ToArray();
+                                    break;
+                                }
+                            case Behaviors.TileCreator.TileOutputType.Logarithmic:
+                                {
+                                    processedBytes = processedData.AsParallel().Select(x => TileCreator.NormalizationHelpers.ToByteRange(
+                            TileCreator.NormalizationHelpers.GetLogarithmicValue(x, maxValue))).ToArray();
+                                    break;
+                                }
+                            case Behaviors.TileCreator.TileOutputType.LinearLogarithmic:
+                                {
+                                    processedBytes = processedData.AsParallel().Select(x => TileCreator.NormalizationHelpers.ToByteRange(
+                        TileCreator.NormalizationHelpers.GetLinearLogarithmicValue(x, maxValue, normalization))).ToArray();
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+
+
 
                         if (filter != null)
                         {
-                            bytes = filter.Filter.ApplyFilters(bytes);
+                            processedBytes = filter.Filter.ApplyFilters(processedBytes);
                         }
 
-                        fw.Write(bytes, 0, floatFrameStrData.Length);
+                        fw.Write(processedBytes, 0, floatFrameStrData.Length);
                         fw.Write(padBytes, 0, padBytes.Length);
                         fr.Seek(strDataLength - frameStrData.Length, SeekOrigin.Current);
                     }

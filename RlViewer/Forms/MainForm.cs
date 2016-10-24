@@ -467,7 +467,7 @@ namespace RlViewer.Forms
 
         private void alignBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.AlignImage();
+            GuiFacade.ResampleImage();
         }
 
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)

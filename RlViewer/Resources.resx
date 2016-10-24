@@ -129,4 +129,7 @@
   <data name="Rl8SaveFilter" xml:space="preserve">
     <value>Файлы РЛИ МРК2 с плавающей точкой(*.rl4)|*.rl4|Файлы РЛИ МРК2 с комплексными отсчетами(*.rl8)|*.rl8|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
   </data>
+  <data name="AlignFilter" xml:space="preserve">
+    <value>Обработанные файлы|*.brl4;*.raw</value>
+  </data>
 </root>

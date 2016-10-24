@@ -73,9 +73,9 @@ namespace RlViewer.Forms
         /// Adds textbox click event to provide user-friendly performance
         /// </summary>
         /// <param name="controls">Controls container</param>
-        public static void AddTbClickEvent(Control.ControlCollection controls)
+        public static void AddTbClickEvent<T>(Control.ControlCollection controls) where T : TextBoxBase
         {
-            AddClickEvent<MaskedTextBox>(controls, (t) =>
+            AddClickEvent<T>(controls, (t) =>
                     {
                         if (t.SelectionStart > t.Text.Length)
                         {

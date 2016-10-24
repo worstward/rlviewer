@@ -21,8 +21,8 @@ namespace RlViewer.Forms
 
         private void InitControls()
         {
-            FormsHelper.AddTbClickEvent(panel1.Controls);
-            FormsHelper.AddTbClickEvent(panel2.Controls);
+            FormsHelper.AddTbClickEvent<MaskedTextBox>(panel1.Controls);
+            FormsHelper.AddTbClickEvent<MaskedTextBox>(panel2.Controls);
             radioButton1.Checked = true;
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;

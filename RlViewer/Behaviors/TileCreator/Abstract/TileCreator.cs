@@ -68,8 +68,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         protected abstract Tile[] GetTilesFromFileAsync();
         protected abstract Tile[] GetTilesFromFile();
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
-        protected abstract byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength, float normalizationFactor,
-            int tileHeight, TileOutputType outputType);
+
         protected virtual Tile[] GetTilesFromFile(LocatorFile file,
             RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
         {
@@ -99,8 +98,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 for (int i = 0; i < totalLines; i++)
                 {
                     OnReportName("Генерация тайлов");
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
-                        TileSize.Height, outputType);
+                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
 
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
@@ -147,8 +145,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                     var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                     for (int i = 0; i < totalLines; i++)
                     {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, NormalizationFactor,
-                            TileSize.Height, outputType);
+                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
                         SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
                     }
                 }
@@ -273,6 +270,53 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         {
             OnReportName("Поиск максимальной амплитуды");
             return GetMaxValue(loc, strDataLen, strHeadLen, 0, loc.Height - 1);
+        }
+
+
+        protected abstract byte[] ProcessLinear(T[] samples);
+        protected abstract byte[] ProcessLogarithmic(T[] samples);
+        protected abstract byte[] ProcessLinLog(T[] samples);
+
+
+
+        protected byte[] GetTileLine(Stream s, int strHeaderLength, int signalDataLength,
+          int tileHeight, TileOutputType outputType)
+        {
+            byte[] line = new byte[signalDataLength * tileHeight];
+
+            int index = 0;
+
+            while (index != line.Length && s.Position != s.Length)
+            {
+                s.Seek(strHeaderLength, SeekOrigin.Current);
+                index += s.Read(line, index, signalDataLength);
+            }
+
+            var sampleLine = GetSampleData(line);
+            byte[] normalizedLine = new byte[sampleLine.Length];
+
+            switch (outputType)
+            {
+                case TileOutputType.Linear:
+                    {
+                        normalizedLine = ProcessLinear(sampleLine);
+                        break;
+                    }
+                case TileOutputType.Logarithmic:
+                    {
+                        normalizedLine = ProcessLogarithmic(sampleLine);
+                        break;
+                    }
+                case TileOutputType.LinearLogarithmic:
+                    {
+                        normalizedLine = ProcessLinLog(sampleLine);  
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            return normalizedLine;
         }
 
 

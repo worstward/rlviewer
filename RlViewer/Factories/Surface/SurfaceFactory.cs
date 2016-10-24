@@ -12,13 +12,15 @@ namespace RlViewer.Factories.Surface
     {
         public static Behaviors.ImageAligning.Surfaces.Abstract.Surface CreateSurface
             (Behaviors.PointSelector.CompressedPointSelectorWrapper selector,
-            Behaviors.ImageAligning.IInterpolationProvider rcsProvider, 
+            Behaviors.ImageAligning.IInterpolationProvider rcsProvider,
             Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType, int baseRadius, int layers, double lambda)
         {
             var pointCount = selector.CompessedSelector.Count();
 
             if (pointCount < 3 || pointCount > 16)
+            {
                 throw new ArgumentException("Selected point count");
+            }
 
             switch (surfaceType)
             {
@@ -48,6 +50,7 @@ namespace RlViewer.Factories.Surface
                         default:
                             throw new NotSupportedException("Not supported points number");
                     }
+
                 default:
                     throw new ArgumentException("Unknown surface type");
             }

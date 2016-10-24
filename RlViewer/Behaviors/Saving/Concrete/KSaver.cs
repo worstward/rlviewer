@@ -17,8 +17,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private Files.LocatorFile _source;
 
-        protected override void SaveAndReport(string path, FileType destinationType, System.Drawing.Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
+        protected override void SaveAndReport(SaverParams saverParams, float normalization, float maxValue)
         {
             throw new NotImplementedException();
         }

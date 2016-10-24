@@ -10,11 +10,11 @@ namespace RlViewer.Behaviors.ImageAligning
 {
     class Aligning : WorkerEventController
     {
-        public Aligning(Files.LocatorFile file, PointSelector.CompressedPointSelectorWrapper selector, 
+        public Aligning(Files.LocatorFile file, PointSelector.CompressedPointSelectorWrapper selector,
             Behaviors.ImageAligning.IInterpolationProvider rcsProvider,
             Behaviors.ImageAligning.Surfaces.SurfaceType surfaceType, int baseRadius, int layers, double lambda)
         {
-            _file = file;     
+            _file = file;
             _selector = selector;
             _surface = Factories.Surface.SurfaceFactory.CreateSurface(_selector, rcsProvider, surfaceType, baseRadius, layers, lambda);
         }
@@ -33,7 +33,7 @@ namespace RlViewer.Behaviors.ImageAligning
 
         public override event ReportProgress Report
         {
-            add 
+            add
             {
                 _surface.Report += value;
             }
@@ -57,6 +57,7 @@ namespace RlViewer.Behaviors.ImageAligning
 
         private Surfaces.Abstract.Surface _surface;
         private PointSelector.CompressedPointSelectorWrapper _selector;
+
 
 
         public byte[] Resample(string fileName, System.Drawing.Rectangle area)

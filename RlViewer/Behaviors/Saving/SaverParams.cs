@@ -9,14 +9,16 @@ namespace RlViewer.Behaviors.Saving
 {
     public class SaverParams
     {
-        public SaverParams(string path, Point leftTop, int width, int height, bool keepFiltering, bool keepPalette)
+        public SaverParams(string path, Point leftTop, int width, int height, Behaviors.TileCreator.TileOutputType outputType,
+            Behaviors.Filters.ImageFilterProxy imageFilter, System.Drawing.Imaging.ColorPalette palette)
         {
             _path = path;
             _leftTop = leftTop;
             _width = width;
             _height = height;
-            _keepFiltering = keepFiltering;
-            _keepPalette = keepPalette;
+            _outputType = outputType;
+            _imageFilter = imageFilter;
+            _palette = palette;
         }
 
 
@@ -25,6 +27,25 @@ namespace RlViewer.Behaviors.Saving
         {
             get { return _path; }
         }
+
+        public FileType DestinationType
+        {
+            get
+            {
+                return (FileType)Enum.Parse(typeof(FileType), System.IO.Path.GetExtension(_path).ToLowerInvariant().TrimStart('.'));
+            }
+        }
+        
+        public System.Drawing.Rectangle SavingArea
+        {
+        
+            get
+            {
+                
+                return new Rectangle(_leftTop.X, _leftTop.Y, _width, _height);
+            }
+        }
+
 
         private Point _leftTop;
         public Point LeftTop
@@ -44,17 +65,42 @@ namespace RlViewer.Behaviors.Saving
             get { return _height; }
         }
 
-        private bool _keepFiltering;
-        public bool KeepFiltering
+
+        private Behaviors.TileCreator.TileOutputType _outputType;
+
+        public Behaviors.TileCreator.TileOutputType OutputType
         {
-            get { return _keepFiltering; }
+            get { return _outputType; }
         }
 
-        private bool _keepPalette;
-        public bool KeepPalette
+
+        private Behaviors.Filters.ImageFilterProxy _imageFilter;
+        public Behaviors.Filters.ImageFilterProxy ImageFilter
         {
-            get { return _keepPalette; }
+            get
+            {
+                return _imageFilter;
+            }
+            set
+            {
+                _imageFilter = value;
+            }
         }
+
+
+        private System.Drawing.Imaging.ColorPalette _palette;
+        public System.Drawing.Imaging.ColorPalette Palette
+        {
+            get
+            {
+                return _palette;
+            }
+            set
+            {
+                _palette = value;
+            }
+        }
+
 
     }
 }

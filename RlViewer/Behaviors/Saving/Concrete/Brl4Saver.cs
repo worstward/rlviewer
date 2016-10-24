@@ -21,51 +21,66 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         public override Files.LocatorFile SourceFile
         {
-            get 
+            get
             {
-                return _file;    
+                return _file;
             }
         }
 
-      
+        private DataProcessor.Concrete.DataStringSampleProcessor _processor;
+        protected override DataProcessor.Abstract.DataStringProcessor Processor
+        {
+            get
+            {
+                return _processor = _processor ?? new DataProcessor.Concrete.DataStringSampleProcessor();
+            }
+        }
 
         private RlViewer.Files.Rli.Concrete.Brl4 _file;
         private RlViewer.Headers.Concrete.Brl4.Brl4Header _head;
 
-        protected override void SaveAndReport(string path, RlViewer.FileType destinationType, Rectangle area,
-            float normalization, float maxValue, System.Drawing.Imaging.ColorPalette palette, Filters.ImageFilterProxy filter)
+        protected override void SaveAndReport(SaverParams saverParams, float normalization, float maxValue)
         {
-            switch (destinationType)
+            switch (saverParams.DestinationType)
             {
                 case FileType.brl4:
-                    SaveAsBrl4(path, area);
-                    break;
+                    {
+                        SaveAsBrl4(saverParams.Path, saverParams.SavingArea);
+                        break;
+                    }
                 case FileType.raw:
-                    SaveAsRaw(path, area);
-                    break;
+                    {
+                        SaveAsRaw(saverParams.Path, saverParams.SavingArea);
+                        break;
+                    }
                 case FileType.rl4:
-                    SaveAsRl4(path, area);
-                    break;
+                    {
+                        SaveAsRl4(saverParams.Path, saverParams.SavingArea);
+                        break;
+                    }
                 case FileType.bmp:
-                    SaveAsBmp(path, area, normalization, maxValue, new DataProcessor.Concrete.DataStringSampleProcessor(),
-                    palette, filter);
-                    break;
+                    {
+                        SaveAsBmp(saverParams.Path, saverParams.SavingArea, normalization, maxValue, Processor, saverParams.OutputType,
+                        saverParams.Palette, saverParams.ImageFilter);
+                        break;
+                    }
                 default:
                     throw new NotSupportedException("Unsupported destination type");
             }
         }
 
 
+
         public override void SaveAsAligned(string alignedFileName, System.Drawing.Rectangle area, byte[] image,
             int aligningPointsCount, int rangeCompressionCoef, int azimuthCompressionCoef)
         {
             alignedFileName = Path.ChangeExtension(alignedFileName, "brl4");
-            
+
             Headers.Concrete.Brl4.Brl4RliFileHeader brlHeadStruct;
 
             byte[] strHeader = new byte[SourceFile.Header.StrHeaderLength];
             byte[] strData = new byte[area.Width * _file.Header.BytesPerSample];
-            
+
             var brlHead = _file.Header as Headers.Concrete.Brl4.Brl4Header;
 
             var rlParams = brlHead.HeaderStruct.rlParams
@@ -76,7 +91,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
             using (var ms = new MemoryStream(image))
             {
-                
+
                 using (var fr = File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     using (var fw = File.Open(alignedFileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
@@ -120,7 +135,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
                             _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, 0, 0, 0, _head.HeaderStruct.reserved);
 
-                    var rl4Header = brl4Header.ToRl4(); 
+                    var rl4Header = brl4Header.ToRl4();
 
                     fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader>(rl4Header),
                     0, Marshal.SizeOf(rl4Header));
@@ -133,7 +148,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
                     long lineToStartSaving = (long)area.Y * (long)(_file.Width * _file.Header.BytesPerSample + SourceFile.Header.StrHeaderLength);
                     long sampleToStartSaving = area.X * _file.Header.BytesPerSample;
-                        //+ leftTop.X * _file.Header.BytesPerSample;
+                    //+ leftTop.X * _file.Header.BytesPerSample;
 
                     fr.Seek(lineToStartSaving, SeekOrigin.Current);
 
@@ -164,7 +179,6 @@ namespace RlViewer.Behaviors.Saving.Concrete
 
         private void SaveAsBrl4(string path, Rectangle area)
         {
-
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 var fname = Path.ChangeExtension(path, ".brl4");
@@ -179,7 +193,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                     RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader rl4Header =
                         new Headers.Concrete.Brl4.Brl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
                             _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams,
-                            _head.HeaderStruct.aligningPointsCount, _head.HeaderStruct.rangeCompressionCoef, 
+                            _head.HeaderStruct.aligningPointsCount, _head.HeaderStruct.rangeCompressionCoef,
                             _head.HeaderStruct.azimuthCompressionCoef, _head.HeaderStruct.reserved);
 
                     fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(rl4Header),
