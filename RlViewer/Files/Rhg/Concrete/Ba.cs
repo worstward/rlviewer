@@ -9,28 +9,29 @@ using RlViewer.Headers.Abstract;
 using RlViewer.Headers.Concrete.K;
 using RlViewer.Navigation.Concrete;
 
+
 namespace RlViewer.Files.Rhg.Concrete
 {
 
     /// <summary>
-    /// Incapsulates radiohologram file of a ".k" format
+    /// Incapsulates radiohologram file of a ".ba" format
     /// </summary>
-    public class K : RhgFile
+    class Ba : RhgFile
     {
-        public K(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
+        public Ba(FileProperties properties, Headers.Abstract.LocatorFileHeader header, RlViewer.Navigation.NavigationContainer navi)
             : base(properties, header, navi)
         {
-            _header = header as KHeader;
+            _header = header as Headers.Concrete.Ba.BaHeader;
             _navi = navi;
         }
 
 
-        private KHeader _header;
+        private Headers.Concrete.Ba.BaHeader _header;
         public override LocatorFileHeader Header
         {
             get 
             {
-                return _header;
+                return _header; 
             }
         }
 
@@ -49,11 +50,7 @@ namespace RlViewer.Files.Rhg.Concrete
         {
             get
             {
-                //(file size - file header size) / (string header size + string data size) = string count
-                return _height == 0 ? _height = (int)((new System.IO.FileInfo(Properties.FilePath).Length
-                    - Marshal.SizeOf(typeof(Headers.Concrete.K.KFileHeaderStruct)))
-                    / (_header.HeaderStruct.lineInfoHeader.lineLength * _header.BytesPerSample +
-                       Marshal.SizeOf(typeof(RlViewer.Headers.Concrete.K.KStrHeaderStruct)))) : _height;
+                return _height;
             }
             protected set
             {
@@ -61,11 +58,12 @@ namespace RlViewer.Files.Rhg.Concrete
             }
         }
 
+
         public override int Width
         {         
             get
-            {             
-                return (int)_header.HeaderStruct.lineInfoHeader.lineLength;
+            {
+                return (int)8064;
             }
         }
 

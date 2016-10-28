@@ -41,7 +41,12 @@ namespace RlViewer.Headers.Concrete.Rl4
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] dummy4;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3754)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 49)]
+        public byte[] reserved1;
+        public float dx;
+        public float dy;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3697)]
         public byte[] reserved2;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]

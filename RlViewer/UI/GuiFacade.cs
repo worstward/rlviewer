@@ -1709,7 +1709,7 @@ namespace RlViewer.UI
 
         public void EmbedNavigation()
         {
-            using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл Банк-РЛ", Filter = "РЛИ Банк-РЛ (*.brl4)|*.brl4;" })
+            using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл Банк-РЛ", Filter = Resources.NaviEmbeddingFilterDest })
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
@@ -1718,52 +1718,38 @@ namespace RlViewer.UI
             }
         }
 
-        private void EmbedNavigation(string brl4FileName, bool forced = true)
+        private void EmbedNavigation(string rliFileName, bool forced = true)
         {
-            Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger naviChanger = null;
+            Behaviors.Navigation.NavigationChanger.Abstract.NavigationChanger naviChanger = null;
+                       
+            //if (!forced)
+            //{
+            //    if (!naviChanger.CheckIsBaRhg())
+            //    {
+            //        return;
+            //    }
+            //}
 
-
-            try
-            {
-                naviChanger = new Behaviors.Navigation.NavigationChanger.Brl4NavigationChanger(brl4FileName);
-            }
-            catch (InvalidCastException icex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error,
-                    string.Format("Provided header is not of brl4 type: {0}", icex.Message));
-                return;
-            }
-            catch (ArgumentException aex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error,
-                    string.Format("Unable to parse blr4 header: {0}", aex.Message));
-                return;
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Log(Logging.SeverityGrades.Error,
-                    string.Format("Unknown brl4 opening exception: {0}", ex.Message));
-                return;
-            }
-
-
-            if (!forced)
-            {
-                if (!naviChanger.CheckIsBaRhg())
-                {
-                    return;
-                }
-            }
-
-            using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл РГГ", Filter = "РГГ Ba (*.ba)|*.ba;" })
+            using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл РГГ", Filter = Resources.NaviEmbeddingFilterSource })
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        naviChanger.ChangeNavigation(ofd.FileName);
+                        var fileToChangeProp = new Files.FileProperties(rliFileName);
+                        var fileToChangeHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(fileToChangeProp).Create(rliFileName);
+                        var fileToChange = Factories.File.Abstract.FileFactory.GetFactory(fileToChangeProp).Create(fileToChangeProp, fileToChangeHeader, null);
+
+                        var sourceFileProp = new Files.FileProperties(ofd.FileName);
+                        var sourceFileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(sourceFileProp).Create(ofd.FileName);
+                        var sourceFile = Factories.File.Abstract.FileFactory.GetFactory(sourceFileProp).Create(sourceFileProp, sourceFileHeader, null);
+
+                        naviChanger = Factories.NavigationChanger.Abstract.NavigationChangerFactory.GetFactory(fileToChangeProp).Create(fileToChange, sourceFile);
+
+
+                        naviChanger.ChangeNavigation();
                         Logging.Logger.Log(Logging.SeverityGrades.Info,
-                            string.Format("Successfully applied navigation to {0}", brl4FileName));
+                            string.Format("Successfully applied navigation to {0}", rliFileName));
                     }
                     catch (Exception ex)
                     {

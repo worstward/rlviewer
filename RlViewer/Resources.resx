@@ -132,4 +132,10 @@
   <data name="AlignFilter" xml:space="preserve">
     <value>Обработанные файлы|*.brl4;*.raw</value>
   </data>
+  <data name="NaviEmbeddingFilterDest" xml:space="preserve">
+    <value>Локационные файлы |*.rl4;*.brl4|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4</value>
+  </data>
+  <data name="NaviEmbeddingFilterSource" xml:space="preserve">
+    <value>Локационные файлы |*.k;*.ba|РГГ Ba (*.ba)|*.ba|РГГ МРК(*.k)|*.k</value>
+  </data>
 </root>

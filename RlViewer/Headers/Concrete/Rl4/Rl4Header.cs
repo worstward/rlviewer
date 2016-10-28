@@ -81,12 +81,15 @@ namespace RlViewer.Headers.Concrete.Rl4
             
             rhgHeader.Add(new Tuple<string, string>("Имя файла",                         fname));
             rhgHeader.Add(new Tuple<string, string>("Размер файла", headerStruct.rhgParams.fileLength == 0 ? "Не определено" : headerStruct.rhgParams.fileLength.ToReadableFileSize()));
-            rhgHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rhgParams.fileTime.ToDateTime().ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Дата и время полета",             headerStruct.rhgParams.fileTime.ToDateTime().ToString()));
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в кадре по дальности",     headerStruct.rhgParams.cadrWidth.ToString()));
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в кадре по азимуту",       headerStruct.rhgParams.cadrHeight.ToString()));
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по дальности",       headerStruct.rhgParams.width.ToString()));
             rhgHeader.Add(new Tuple<string, string>("Отсчетов в РГГ по азимуту",         headerStruct.rhgParams.height.ToString()));
-        
+            rhgHeader.Add(new Tuple<string, string>("Шаг разложения по дальности",       headerStruct.rhgParams.dx.ToString()));
+            rhgHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту",         (headerStruct.rhgParams.dy == 0 ? headerStruct.synthParams.VH : headerStruct.rhgParams.dy) .ToString()));
+
+
             var rliHeader = new List<Tuple<string, string>>();
             //rliHeader.Add(new Tuple<string, string>("Размер файла",                      new FileInfo(path).Length.ToReadableFileSize()));
             rliHeader.Add(new Tuple<string, string>("Дата и время создания",             headerStruct.rlParams.fileTime.ToDateTime().ToString()));

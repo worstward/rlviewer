@@ -147,7 +147,9 @@
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationChanger\Abstract\NavigationChanger.cs" />
     <Compile Include="Behaviors\Navigation\NavigationChanger\Brl4NavigationChanger.cs" />
+    <Compile Include="Behaviors\Navigation\NavigationChanger\Rl4NavigationChanger.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Abstract\GeodesicPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\Brl4PointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\KPointFinder.cs" />
@@ -211,6 +213,11 @@
     <Compile Include="Factories\FilePreview\Concrete\RFilePreviewFactory.cs" />
     <Compile Include="Factories\FilePreview\Concrete\Rl4FilePreviewFactory.cs" />
     <Compile Include="Factories\FilePreview\Concrete\Rl8FilePreviewFactory.cs" />
+    <Compile Include="Factories\File\Concrete\BaFactory.cs" />
+    <Compile Include="Factories\NavigationChanger\Abstract\NavigationChangerFactory.cs" />
+    <Compile Include="Factories\NavigationChanger\Concrete\Brl4NavigationChangerFactory.cs" />
+    <Compile Include="Factories\NavigationChanger\Concrete\Rl4NavigationChangerFactory.cs" />
+    <Compile Include="Factories\NavigationContainer\Concrete\BaNavigationContainerFactory.cs" />
     <Compile Include="Factories\PointSharer\Concrete\Brl4PointSharerFactory.cs" />
     <Compile Include="Factories\PointSharer\Abstract\PointSharerFactory.cs" />
     <Compile Include="Factories\PointSharer\Concrete\KPointSharerFactory.cs" />
@@ -253,6 +260,7 @@
     <Compile Include="Factories\TileCreator\Concrete\Raw8TileCreatorFactory.cs" />
     <Compile Include="Factories\TileCreator\Concrete\Rl8TileCreatorFactory.cs" />
     <Compile Include="Files\EnumExt.cs" />
+    <Compile Include="Files\Rhg\Concrete\Ba.cs" />
     <Compile Include="Files\Rli\Concrete\Rl8.cs" />
     <Compile Include="Forms\ChartHelper.cs" />
     <Compile Include="Forms\FilePreviewForm.cs">
@@ -316,12 +324,14 @@
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Headers\Abstract\IStrHeader.cs" />
+    <Compile Include="Headers\Concrete\Ba\BaHeader.cs" />
     <Compile Include="Headers\Concrete\Ba\BaStrHeader.cs" />
     <Compile Include="Headers\Concrete\K\KHeader.cs" />
     <Compile Include="Headers\Concrete\K\KHeaderStruct.cs" />
     <Compile Include="Headers\Concrete\Rl8\Rl8Header.cs" />
     <Compile Include="Headers\Concrete\R\RHeader.cs" />
     <Compile Include="Headers\Concrete\R\RHeaderStruct.cs" />
+    <Compile Include="Navigation\Concrete\BaNavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\Rl8NavigationContainer.cs" />
     <Compile Include="Navigation\Concrete\RNavigationContainer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

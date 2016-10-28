@@ -70,6 +70,24 @@ namespace RlViewer {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Локационные файлы |*.rl4;*.brl4|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4.
+        /// </summary>
+        internal static string NaviEmbeddingFilterDest {
+            get {
+                return ResourceManager.GetString("NaviEmbeddingFilterDest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Локационные файлы |*.k;*.ba|РГГ Ba (*.ba)|*.ba|РГГ МРК(*.k)|*.k.
+        /// </summary>
+        internal static string NaviEmbeddingFilterSource {
+            get {
+                return ResourceManager.GetString("NaviEmbeddingFilterSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Локационные файлы |*.k;*.rl4;*.brl4;*.rl8;*.r;*.raw|Файлы РГГ (*.k)|*.k;|Файлы РЛИ МРК2 (*.rl4;*.rl8)|*.rl4;*.rl8|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Бортовые файлы РЛИ МРК2 (*.r)|*.r|Файлы МРК411 без заголовка (*.raw)|*.raw.
         /// </summary>
         internal static string OpenFilter {

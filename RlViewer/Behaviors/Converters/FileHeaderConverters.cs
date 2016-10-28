@@ -51,6 +51,44 @@ namespace RlViewer.Behaviors.Converters
             return header;
         }
 
+        public static RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct ToBrl4StrHeader(this RlViewer.Headers.Concrete.K.KStrHeaderStruct kStrHeader)
+        {
+            var brl4StrHead = new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct();
+
+            brl4StrHead.Ve = kStrHeader.navigationHeader.speedLatIns;
+            brl4StrHead.Vu = kStrHeader.navigationHeader.verticalSpeed;
+            brl4StrHead.Vn = kStrHeader.navigationHeader.speedLongIns;
+            brl4StrHead.V =  kStrHeader.navigationHeader.speedIns;
+            brl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns;
+            brl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns;
+            brl4StrHead.H = kStrHeader.navigationHeader.heightInsSns;
+            brl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns;
+            brl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns;
+            brl4StrHead.a = kStrHeader.navigationHeader.kursAngle;
+
+            return brl4StrHead;
+        }
+
+        public static RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct ToRl4StrHeader(this RlViewer.Headers.Concrete.K.KStrHeaderStruct kStrHeader)
+        {
+            var rl4StrHead = new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct();
+
+            rl4StrHead.Ve = kStrHeader.navigationHeader.speedLatIns;
+            rl4StrHead.Vu = kStrHeader.navigationHeader.verticalSpeed;
+            rl4StrHead.Vn = kStrHeader.navigationHeader.speedLongIns;
+            rl4StrHead.V = kStrHeader.navigationHeader.speedIns;
+            rl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns;
+            rl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns;
+            rl4StrHead.H = kStrHeader.navigationHeader.heightInsSns;
+            rl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns;
+            rl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns;
+            rl4StrHead.a = kStrHeader.navigationHeader.kursAngle;
+
+            return rl4StrHead;
+        }
+
+
+
 
         public static RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct ToBrl4StrHeader(this RlViewer.Headers.Concrete.Ba.BaStrHeader baStrHeader)
         {
@@ -70,7 +108,38 @@ namespace RlViewer.Behaviors.Converters
             return brl4StrHead;
         }
 
+        public static RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct ToRl4StrHeader(this RlViewer.Headers.Concrete.Ba.BaStrHeader baStrHeader)
+        {
+            var rl4StrHead = new RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct();
 
+            rl4StrHead.Ve = baStrHeader.Ve;
+            rl4StrHead.Vu = baStrHeader.Vh;
+            rl4StrHead.Vn = baStrHeader.Vn;
+            rl4StrHead.V = baStrHeader.V;
+            rl4StrHead.latitude = baStrHeader.latitude;
+            rl4StrHead.longtitude = baStrHeader.longtitude;
+            rl4StrHead.H = baStrHeader.H;
+            rl4StrHead.f = baStrHeader.pitch;
+            rl4StrHead.g = baStrHeader.roll;
+            rl4StrHead.a = baStrHeader.heading;
+
+            return rl4StrHead;
+        }
+
+
+
+
+        public static Headers.Concrete.Brl4.Brl4RliFileHeader ChangeFlightTime(this RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader brl4Header, DateTime newTime)
+        {
+            brl4Header.rhgParams.fileTime = newTime.ToSystime();
+            return brl4Header;
+        }
+
+        public static Headers.Concrete.Rl4.Rl4RliFileHeader ChangeFlightTime(this RlViewer.Headers.Concrete.Rl4.Rl4RliFileHeader rl4Header, DateTime newTime)
+        {
+            rl4Header.rhgParams.fileTime = newTime.ToSystime();
+            return rl4Header;
+        }
         //public static RlViewer.Headers.Concrete.Ba.BaStrHeader ToBa(this RlViewer.Headers.Concrete.Rl4.Rl4StrHeaderStruct rl4StrHeader)
         //{
         //    var ba = new Headers.Concrete.Ba.BaStrHeader();

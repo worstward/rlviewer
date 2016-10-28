@@ -8,20 +8,17 @@ using RlViewer.Behaviors.Converters;
 
 namespace RlViewer.Behaviors.Navigation.NavigationChanger
 {
-    public class Brl4NavigationChanger
+    public class Brl4NavigationChanger : NavigationChanger.Abstract.NavigationChanger
     {
-        public Brl4NavigationChanger(string fileName)
+        public Brl4NavigationChanger(Files.LocatorFile fileToChange, Files.LocatorFile sourceFile)
+            : base(fileToChange, sourceFile)
         {
-            _brlFileName = fileName;
-            var prop = new Files.FileProperties(fileName);
-
-            _header = (Headers.Concrete.Brl4.Brl4Header)Factories.Header.Abstract.HeaderFactory.GetFactory(prop).Create(fileName);
-            _brl4File = (Files.Rli.Concrete.Brl4)Factories.File.Abstract.FileFactory.GetFactory(prop).Create(prop, _header, null);
+            _brl4File = (Files.Rli.Concrete.Brl4)fileToChange;
+            _header = ((Headers.Concrete.Brl4.Brl4Header)fileToChange.Header).HeaderStruct;
         }
 
-        private string _brlFileName;
-        private Headers.Concrete.Brl4.Brl4Header _header;
         private Files.Rli.Concrete.Brl4 _brl4File;
+        private Headers.Concrete.Brl4.Brl4RliFileHeader _header;
 
         /// <summary>
         /// Checks if RLI has .ba RHG as its source
@@ -41,44 +38,65 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
         }
 
 
+        protected Headers.Concrete.Brl4.Brl4StrHeaderStruct ConvertToStrHeader(Headers.Abstract.IStrHeader sourceHeader)
+        {
+            switch (SourceFile.Properties.Type)
+            {
+                case FileType.k:
+                    return ((Headers.Concrete.K.KStrHeaderStruct)sourceHeader).ToBrl4StrHeader();
+                case FileType.ba:
+                    return ((Headers.Concrete.Ba.BaStrHeader)sourceHeader).ToBrl4StrHeader();
+                default:
+                    throw new ArgumentException("SourceFile type");
+            }
+        }
+
         /// <summary>
-        /// Changes selected brl4 rli navigation based on .ba rhg file
+        /// Changes selected brl4 rli navigation based on source rhg file
         /// </summary>
-        /// <param name="baFilename">Path to .ba source rhg</param>
-        public void ChangeNavigation(string baFilename)
+        /// <param name="baFilename">Path to the source rhg</param>
+        public override void ChangeNavigation()
         {   
             if (_brl4File != null)
             {
-                var baHeaderLength = 512;//header for .ba files is 512 bytes
-                var offsetToNavigation = 48;
-                var strDataLength = 32768 - 512;
+                var strDataLength = SourceFile.Width * SourceFile.Header.BytesPerSample;
 
-                var headerData = new byte[baHeaderLength];
+                var baCreationTime = new FileInfo(SourceFile.Properties.FilePath).LastWriteTime;
 
-
-                using (var fr = File.Open(baFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var sourceReader = File.Open(SourceFile.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (var fw = File.Open(_brl4File.Properties.FilePath, FileMode.Open, FileAccess.Write, FileShare.Write))
+                    using (var brl4Changer = File.Open(_brl4File.Properties.FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
-                        fw.Seek(_brl4File.Header.FileHeaderLength, SeekOrigin.Current);
+                        var brl4Head = Converters.StructIO.ReadStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brl4Changer);
+                        var currentAzimuthDecompositionStep = brl4Head.rlParams.dy;
+                        var initialAzimuthDecompositionStep = brl4Head.rhgParams.dy == 0 ? brl4Head.synthParams.VH : brl4Head.rhgParams.dy;
 
-                        for (int i = 0; i < _header.HeaderStruct.rlParams.sy; i++)
+                        var rhgLinesInRliLine = (int)Math.Ceiling(currentAzimuthDecompositionStep / initialAzimuthDecompositionStep);
+
+
+                        brl4Head = brl4Head.ChangeFlightTime(baCreationTime);
+
+                        brl4Changer.Position = 0;
+                        brl4Changer.Write(StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(brl4Head), 0, _brl4File.Header.FileHeaderLength);
+
+
+                        sourceReader.Seek(SourceFile.Header.FileHeaderLength, SeekOrigin.Begin);
+                        for (int i = 0; i < _header.rlParams.sy; i++)
                         {
-                            fr.Seek(baHeaderLength + strDataLength, SeekOrigin.Current);
+                            sourceReader.Seek((SourceFile.Header.StrHeaderLength + strDataLength) * rhgLinesInRliLine, SeekOrigin.Current);
                         }
 
                         for (int i = 0; i < _brl4File.Height; i++)
                         {
-                            fr.Seek(offsetToNavigation, SeekOrigin.Current);
-                            var brl4StrHeader = StructIO.ReadStruct<Headers.Concrete.Ba.BaStrHeader>(fr).ToBrl4StrHeader();
-                            fr.Seek(baHeaderLength - offsetToNavigation - 
-                                System.Runtime.InteropServices.Marshal.SizeOf(typeof(Headers.Concrete.Ba.BaStrHeader)), SeekOrigin.Current);                           
-                            fr.Seek(strDataLength, SeekOrigin.Current);
+                            var sourceStrHeader = GetSourceNavigationHeader(sourceReader);
+                            var brl4StrHeader = ConvertToStrHeader(sourceStrHeader);
+                            sourceReader.Seek(strDataLength, SeekOrigin.Current);
+
+                            sourceReader.Seek((SourceFile.Header.StrHeaderLength + strDataLength) * rhgLinesInRliLine, SeekOrigin.Current); 
 
                             var brl4HeaderBytes = StructIO.WriteStruct<Headers.Concrete.Brl4.Brl4StrHeaderStruct>(brl4StrHeader);
-
-                            fw.Write(brl4HeaderBytes, 0, brl4HeaderBytes.Length);
-                            fw.Seek(_brl4File.Width * _brl4File.Header.BytesPerSample, SeekOrigin.Current);
+                            brl4Changer.Write(brl4HeaderBytes, 0, brl4HeaderBytes.Length);
+                            brl4Changer.Seek(_brl4File.Width * _brl4File.Header.BytesPerSample, SeekOrigin.Current);
                         }                
                     }
                 }

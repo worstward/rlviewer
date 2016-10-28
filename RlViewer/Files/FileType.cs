@@ -35,7 +35,11 @@ namespace RlViewer
         /// <summary>
         /// Формат файла рли (8 байт на отсчет)
         /// </summary>
-        rl8       
+        rl8,
+        /// <summary>
+        /// Формат файла РГГ Банк-РЛ
+        /// </summary>
+        ba
     }
 
 }
