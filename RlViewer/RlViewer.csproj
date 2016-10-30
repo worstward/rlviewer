@@ -214,6 +214,7 @@
     <Compile Include="Factories\FilePreview\Concrete\Rl4FilePreviewFactory.cs" />
     <Compile Include="Factories\FilePreview\Concrete\Rl8FilePreviewFactory.cs" />
     <Compile Include="Factories\File\Concrete\BaFactory.cs" />
+    <Compile Include="Factories\Header\Concrete\BaHeaderFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Abstract\NavigationChangerFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Concrete\Brl4NavigationChangerFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Concrete\Rl4NavigationChangerFactory.cs" />
@@ -435,7 +436,7 @@
     <Compile Include="Forms\InfoForm.Designer.cs">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InfoOutputHelper.cs" />
+    <Compile Include="HeaderInfoOutput.cs" />
     <Compile Include="Logging\LogEntry.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\SeverityGrades.cs" />

@@ -306,7 +306,7 @@ namespace RlViewer.UI
 
         #region NormalizeFileWorkerMethods
         private void loaderWorker_NormalizeFile(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {          
+        {
             _saver = SaverFactory.GetFactory(_file.Properties).Create(_file);
 
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
@@ -317,7 +317,7 @@ namespace RlViewer.UI
             var fileName = (string)e.Argument;
 
             try
-            {            
+            {
                 var targetPoint = _pointSelector.First();
                 var normalizationCoef = targetPoint.Value / targetPoint.Rcs;
 
@@ -386,7 +386,7 @@ namespace RlViewer.UI
             _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
 
             float maxSampleValue = 0;
-            
+
 
 
             try
@@ -490,12 +490,11 @@ namespace RlViewer.UI
             else
             {
                 var fileName = Path.GetFullPath((string)e.Result);
+                fileName = Path.ChangeExtension(fileName, "brl4");
 
                 var type = new Files.FileProperties(fileName).Type;
-
                 if (type != FileType.raw && type != FileType.r)
-                {
-                    fileName = Path.ChangeExtension(fileName, "brl4");
+                {               
                     EmbedNavigation(fileName, false);
                 }
 
@@ -1100,7 +1099,7 @@ namespace RlViewer.UI
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        using (var sSize = new Forms.SaveForm(sfd.FileName, _file.Width, _file.Height, _areaSelector, 
+                        using (var sSize = new Forms.SaveForm(sfd.FileName, _file.Width, _file.Height, _areaSelector,
                             _settings.TileOutputAlgorithm, _filterProxy, _drawer.Palette))
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
@@ -1578,7 +1577,7 @@ namespace RlViewer.UI
 
         public void ResampleImage()
         {
-            if(_pointSelector != null)
+            if (_pointSelector != null)
             {
                 if (_pointSelector.Count() == 1)
                 {
@@ -1720,15 +1719,21 @@ namespace RlViewer.UI
 
         private void EmbedNavigation(string rliFileName, bool forced = true)
         {
+            var fileToChangeProp = new Files.FileProperties(rliFileName);
+            var fileToChangeHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(fileToChangeProp).Create(rliFileName);
+            var fileToChange = Factories.File.Abstract.FileFactory.GetFactory(fileToChangeProp).Create(fileToChangeProp, fileToChangeHeader, null);
+
+            if (!forced)
+            {
+                if (!Behaviors.Navigation.NavigationChanger.Abstract.NavigationChanger.HasBaRhgSource(fileToChange))
+                {
+                    Logging.Logger.Log(Logging.SeverityGrades.Info, @"Aligned image doesn't have .ba file as its source, navigation embedding process stopped.
+                    Consider using manual embedding");
+                    return;
+                }
+            }
+
             Behaviors.Navigation.NavigationChanger.Abstract.NavigationChanger naviChanger = null;
-                       
-            //if (!forced)
-            //{
-            //    if (!naviChanger.CheckIsBaRhg())
-            //    {
-            //        return;
-            //    }
-            //}
 
             using (var ofd = new OpenFileDialog() { Title = "Выберите исходный файл РГГ", Filter = Resources.NaviEmbeddingFilterSource })
             {
@@ -1736,17 +1741,13 @@ namespace RlViewer.UI
                 {
                     try
                     {
-                        var fileToChangeProp = new Files.FileProperties(rliFileName);
-                        var fileToChangeHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(fileToChangeProp).Create(rliFileName);
-                        var fileToChange = Factories.File.Abstract.FileFactory.GetFactory(fileToChangeProp).Create(fileToChangeProp, fileToChangeHeader, null);
-
                         var sourceFileProp = new Files.FileProperties(ofd.FileName);
                         var sourceFileHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(sourceFileProp).Create(ofd.FileName);
                         var sourceFile = Factories.File.Abstract.FileFactory.GetFactory(sourceFileProp).Create(sourceFileProp, sourceFileHeader, null);
 
                         naviChanger = Factories.NavigationChanger.Abstract.NavigationChangerFactory.GetFactory(fileToChangeProp).Create(fileToChange, sourceFile);
 
-
+                        naviChanger.ChangeFlightTime();
                         naviChanger.ChangeNavigation();
                         Logging.Logger.Log(Logging.SeverityGrades.Info,
                             string.Format("Successfully applied navigation to {0}", rliFileName));

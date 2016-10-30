@@ -27,6 +27,8 @@ namespace RlViewer.Factories.Header.Abstract
                     return new RHeaderFactory();
                 case FileType.rl8:
                     return new Rl8HeaderFactory();
+                case FileType.ba:
+                    return new BaHeaderFactory();
                 default:
                     throw new NotSupportedException("Unsupported file type");
             }
