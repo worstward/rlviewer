@@ -186,8 +186,8 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
-    <Compile Include="Behaviors\RhgAggregator\AggregatorParams.cs" />
-    <Compile Include="Behaviors\RhgAggregator\BaAggregator.cs" />
+    <Compile Include="Behaviors\FilesAggregator\AggregatorParams.cs" />
+    <Compile Include="Behaviors\FilesAggregator\LocatorFilesAggregator.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
     <Compile Include="Behaviors\Saving\DataProcessor\Abstract\DataStringProcessor.cs" />
@@ -630,6 +630,7 @@
     <None Include="Resources\Up.png" />
     <None Include="Resources\Down.png" />
     <Content Include="GdalConfiguration.vb" />
+    <None Include="Resources\Remove.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace RlViewer.Behaviors.RhgAggregator
+namespace RlViewer.Behaviors.FilesAggregator
 {
-    public class BaAggregator : WorkerEventController
+    public class LocatorFilesAggregator : WorkerEventController
     {
         public void Aggregate(string aggregatedFile, params string[] sourceFiles)
         {
@@ -65,7 +65,7 @@ namespace RlViewer.Behaviors.RhgAggregator
 
                 List<Files.LocatorFile> sourceFiles = new List<Files.LocatorFile>(sourceFilesNames.Length);
 
-                foreach (var filePath in sourceFilesNames.OrderBy(x => x))
+                foreach (var filePath in sourceFilesNames)
                 {
                     var fileProp = new Files.FileProperties(filePath);
                     var header = Factories.Header.Abstract.HeaderFactory.GetFactory(fileProp).Create(filePath);

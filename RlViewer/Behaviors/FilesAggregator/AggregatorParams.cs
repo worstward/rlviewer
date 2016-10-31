@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.RhgAggregator
+namespace RlViewer.Behaviors.FilesAggregator
 {
     class AggregatorParams
     {
@@ -17,13 +17,19 @@ namespace RlViewer.Behaviors.RhgAggregator
         private string _aggregateFileName;
         public string AggregateFileName
         {
-            get { return _aggregateFileName; }
+            get 
+            {
+                return _aggregateFileName; 
+            }
         }
 
         private string[] _sourceFilesNames;
         public string[] SourceFilesNames
         {
-            get { return _sourceFilesNames; }
+            get
+            {
+                return _sourceFilesNames;
+            }
         }
     }
 }

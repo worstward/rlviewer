@@ -33,6 +33,7 @@
             this.upBtn = new System.Windows.Forms.Button();
             this.downBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.removeFileBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // sourceFilesListBox
@@ -85,11 +86,23 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // removeFileBtn
+            // 
+            this.removeFileBtn.BackgroundImage = global::RlViewer.Properties.Resources.Remove;
+            this.removeFileBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.removeFileBtn.Location = new System.Drawing.Point(293, 80);
+            this.removeFileBtn.Name = "removeFileBtn";
+            this.removeFileBtn.Size = new System.Drawing.Size(33, 36);
+            this.removeFileBtn.TabIndex = 5;
+            this.removeFileBtn.UseVisualStyleBackColor = true;
+            this.removeFileBtn.Click += new System.EventHandler(this.removeFileBtn_Click);
+            // 
             // AggregatorOrderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(338, 301);
+            this.Controls.Add(this.removeFileBtn);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
             this.Controls.Add(this.upBtn);
@@ -113,5 +126,6 @@
         private System.Windows.Forms.Button upBtn;
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.Button removeFileBtn;
     }
 }

@@ -196,7 +196,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         new Headers.Concrete.Rl4.Rl4RliFileHeader(_head.HeaderStruct.fileSign, _head.HeaderStruct.fileVersion,
                             _head.HeaderStruct.rhgParams, rlSubHeader, _head.HeaderStruct.synthParams, _head.HeaderStruct.reserved);
 
-                    var brl4Head = rl4Header.ToBrl4(0, 1, 30);
+                    var brl4Head = rl4Header.ToBrl4(0, 1, 0);
 
                     fw.Write(RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Headers.Concrete.Brl4.Brl4RliFileHeader>(brl4Head),
                     0, Marshal.SizeOf(brl4Head));

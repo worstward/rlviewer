@@ -50,7 +50,7 @@ namespace RlViewer.UI
         private Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder _searcher;
         private Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer _pointSharer;
         private Behaviors.ReportGenerator.Abstract.Reporter _reporter;
-        private Behaviors.RhgAggregator.BaAggregator _aggregator = new Behaviors.RhgAggregator.BaAggregator();
+        private Behaviors.FilesAggregator.LocatorFilesAggregator _aggregator = new Behaviors.FilesAggregator.LocatorFilesAggregator();
         private WorkerEventController _cancellableAction;
 
 
@@ -745,7 +745,7 @@ namespace RlViewer.UI
 
             _cancellableAction = _aggregator;
 
-            var aggregatorParams = (Behaviors.RhgAggregator.AggregatorParams)e.Argument;
+            var aggregatorParams = (Behaviors.FilesAggregator.AggregatorParams)e.Argument;
 
             try
             {
@@ -2024,7 +2024,7 @@ namespace RlViewer.UI
 
                             if (aggregatorOrder.ShowDialog() == DialogResult.OK)
                             {
-                                var aggregatorParams = new Behaviors.RhgAggregator.AggregatorParams(sfd.FileName, aggregatorOrder.SourceFiles);
+                                var aggregatorParams = new Behaviors.FilesAggregator.AggregatorParams(sfd.FileName, aggregatorOrder.SourceFiles);
                                 StartTask(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
                             }
                         }
