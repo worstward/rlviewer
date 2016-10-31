@@ -38,13 +38,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timeCb = new System.Windows.Forms.CheckBox();
             this.headerInfoCb = new System.Windows.Forms.CheckBox();
             this.areaCb = new System.Windows.Forms.CheckBox();
             this.centerCb = new System.Windows.Forms.CheckBox();
             this.cornersCb = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -163,6 +163,15 @@
             this.tabPage1.Text = "Основные параметры";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 43);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Отступ от конца файла, строк";
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.timeCb);
@@ -228,15 +237,6 @@
             this.cornersCb.Text = "Углы зоны";
             this.cornersCb.UseVisualStyleBackColor = true;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 43);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(159, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Отступ от конца файла, строк";
-            // 
             // ReportSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,6 +247,7 @@
             this.Controls.Add(this.createReportBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.Name = "ReportSettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Параметры отчета";

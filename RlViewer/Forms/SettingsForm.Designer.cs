@@ -42,7 +42,7 @@
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
-            this.toolsTab = new System.Windows.Forms.TabPage();
+            this.toolstab = new System.Windows.Forms.TabPage();
             this.rbfInterpolationcSettingsGb = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.regularizationCoefTb = new System.Windows.Forms.MaskedTextBox();
@@ -71,7 +71,7 @@
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.toolsTab.SuspendLayout();
+            this.toolstab.SuspendLayout();
             this.rbfInterpolationcSettingsGb.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +80,7 @@
             // 
             this.tabControl1.Controls.Add(this.commonTab);
             this.tabControl1.Controls.Add(this.viewTab);
-            this.tabControl1.Controls.Add(this.toolsTab);
+            this.tabControl1.Controls.Add(this.toolstab);
             this.tabControl1.Location = new System.Drawing.Point(13, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -239,23 +239,23 @@
             this.highResCb.UseVisualStyleBackColor = true;
             this.highResCb.CheckedChanged += new System.EventHandler(this.highResCb_CheckedChanged);
             // 
-            // toolsTab
+            // toolstab
             // 
-            this.toolsTab.Controls.Add(this.rbfInterpolationcSettingsGb);
-            this.toolsTab.Controls.Add(this.areasOrPointsForAligningCb);
-            this.toolsTab.Controls.Add(this.surfaceTypeLbl);
-            this.toolsTab.Controls.Add(this.surfaceTypeCb);
-            this.toolsTab.Controls.Add(this.label2);
-            this.toolsTab.Controls.Add(this.areaSizeTextBox);
-            this.toolsTab.Controls.Add(this.label1);
-            this.toolsTab.Controls.Add(this.sectionSizeTextBox);
-            this.toolsTab.Location = new System.Drawing.Point(4, 22);
-            this.toolsTab.Name = "toolsTab";
-            this.toolsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.toolsTab.Size = new System.Drawing.Size(270, 303);
-            this.toolsTab.TabIndex = 2;
-            this.toolsTab.Text = "Инструменты";
-            this.toolsTab.UseVisualStyleBackColor = true;
+            this.toolstab.Controls.Add(this.rbfInterpolationcSettingsGb);
+            this.toolstab.Controls.Add(this.areasOrPointsForAligningCb);
+            this.toolstab.Controls.Add(this.surfaceTypeLbl);
+            this.toolstab.Controls.Add(this.surfaceTypeCb);
+            this.toolstab.Controls.Add(this.label2);
+            this.toolstab.Controls.Add(this.areaSizeTextBox);
+            this.toolstab.Controls.Add(this.label1);
+            this.toolstab.Controls.Add(this.sectionSizeTextBox);
+            this.toolstab.Location = new System.Drawing.Point(4, 22);
+            this.toolstab.Name = "toolstab";
+            this.toolstab.Padding = new System.Windows.Forms.Padding(3);
+            this.toolstab.Size = new System.Drawing.Size(270, 303);
+            this.toolstab.TabIndex = 2;
+            this.toolstab.Text = "Инструменты";
+            this.toolstab.UseVisualStyleBackColor = true;
             // 
             // rbfInterpolationcSettingsGb
             // 
@@ -544,8 +544,8 @@
             this.viewTab.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.toolsTab.ResumeLayout(false);
-            this.toolsTab.PerformLayout();
+            this.toolstab.ResumeLayout(false);
+            this.toolstab.PerformLayout();
             this.rbfInterpolationcSettingsGb.ResumeLayout(false);
             this.rbfInterpolationcSettingsGb.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -563,7 +563,7 @@
         private System.Windows.Forms.CheckBox inverseCheckBox;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TabPage toolsTab;
+        private System.Windows.Forms.TabPage toolstab;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MaskedTextBox sectionSizeTextBox;
         private System.Windows.Forms.Label label2;

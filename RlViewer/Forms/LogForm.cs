@@ -15,8 +15,6 @@ namespace RlViewer.Forms
         public LogForm()
         {
             InitializeComponent();
-            
-            MaximumSize = Size;
             _dgv = GetDataGrid();
             panel1.Controls.Add(_dgv);
         }

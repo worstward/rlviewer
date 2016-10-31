@@ -46,7 +46,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
             {
                 case FileType.brl4:
                     {
-                        SaveAsBrl4(saverParams.Path, saverParams.SavingArea, ".brl4");
+                        SaveAsBrl4(saverParams.Path, saverParams.SavingArea, ".brl4", Processor);
                         break;
                     }
                 case FileType.raw:
@@ -179,7 +179,7 @@ namespace RlViewer.Behaviors.Saving.Concrete
         }
 
 
-        private void SaveAsBrl4(string path, Rectangle area, string newExt)
+        protected void SaveAsBrl4(string path, Rectangle area, string newExt, DataProcessor.Abstract.DataStringProcessor processor)
         {
             using (var fr = System.IO.File.Open(_file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -229,7 +229,9 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         fr.Seek(sampleToStartSaving, SeekOrigin.Current);
                         fr.Read(frameData, 0, frameData.Length);
 
-                        fw.Write(frameData, 0, frameData.Length);
+                        var processedFrame = processor.ProcessRawDataString(frameData);
+
+                        fw.Write(processedFrame, 0, processedFrame.Length);
                         fr.Seek(strDataLength - frameData.Length - sampleToStartSaving, SeekOrigin.Current);
                     }
 

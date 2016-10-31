@@ -68,6 +68,11 @@ namespace RlViewer.Behaviors.Saving.Concrete
                         new DataProcessor.Concrete.DataStringSampleProcessor());
                         break;
                     }
+                case FileType.brl4:
+                    {
+                        SaveAsBrl4(saverParams.Path, saverParams.SavingArea, ".brl4", new DataProcessor.Concrete.DataStringModulusProcessor());
+                        break;
+                    }
                 default:
                     throw new NotSupportedException("Unsupported destination type");
             }

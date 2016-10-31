@@ -117,25 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RawSaveFilter" xml:space="preserve">
-    <value>Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
-  </data>
-  <data name="OpenFilter" xml:space="preserve">
-    <value>Локационные файлы |*.k;*.rl4;*.brl4;*.rl8;*.r;*.raw|Файлы РГГ (*.k)|*.k;|Файлы РЛИ МРК2 (*.rl4;*.rl8)|*.rl4;*.rl8|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Бортовые файлы РЛИ МРК2 (*.r)|*.r|Файлы МРК411 без заголовка (*.raw)|*.raw</value>
-  </data>
-  <data name="SaveFilter" xml:space="preserve">
-    <value>Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы изображений (*.bmp)|*.bmp</value>
-  </data>
-  <data name="Rl8SaveFilter" xml:space="preserve">
-    <value>Файлы РЛИ МРК2 с плавающей точкой(*.rl4)|*.rl4|Файлы РЛИ МРК2 с комплексными отсчетами(*.rl8)|*.rl8|Файлы МРК411 без заголовка (*.raw)|*.raw|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4|Файлы изображений (*.bmp)|*.bmp</value>
-  </data>
-  <data name="AlignFilter" xml:space="preserve">
-    <value>Обработанные файлы|*.brl4;*.raw</value>
-  </data>
-  <data name="NaviEmbeddingFilterDest" xml:space="preserve">
-    <value>Локационные файлы |*.rl4;*.brl4|Файлы РЛИ МРК2 (*.rl4)|*.rl4|Файлы РЛИ Банк-РЛ (*.brl4)|*.brl4</value>
-  </data>
-  <data name="NaviEmbeddingFilterSource" xml:space="preserve">
-    <value>Локационные файлы |*.k;*.ba|РГГ Ba (*.ba)|*.ba|РГГ МРК(*.k)|*.k</value>
-  </data>
 </root>

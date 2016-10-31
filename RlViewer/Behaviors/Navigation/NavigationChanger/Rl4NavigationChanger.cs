@@ -42,11 +42,11 @@ namespace RlViewer.Behaviors.Navigation.NavigationChanger
 
                 using (var rhgStream = File.Open(SourceFile.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (var rlStream = File.Open(DestinationFile.Properties.FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    using (var rlstream = File.Open(DestinationFile.Properties.FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
 
                         _header = _header.ChangeFlightTime(rhgCreationTime);
-                        rlStream.Write(StructIO.WriteStruct<Headers.Concrete.Rl4.Rl4RliFileHeader>(_header), 0, DestinationFile.Header.FileHeaderLength);
+                        rlstream.Write(StructIO.WriteStruct<Headers.Concrete.Rl4.Rl4RliFileHeader>(_header), 0, DestinationFile.Header.FileHeaderLength);
 
                     }
                 }

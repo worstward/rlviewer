@@ -25,7 +25,7 @@ namespace RlViewer.Forms
 
             _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(), () => this.Text = GuiFacade.OpenFile(),
                  () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
-                 () => GuiFacade.ReportDialog());
+                 () => GuiFacade.ReportDialog(), () => GuiFacade.AggregateFiles(), () => GuiFacade.EmbedNavigation());
         }
 
         UI.KeyPressProcessor _keyProcessor;
@@ -544,6 +544,11 @@ namespace RlViewer.Forms
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             GuiFacade.DrawItems(e.Graphics);
+        }
+
+        private void совместитьФайлыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _guiFacade.AggregateFiles();
         }
 
     }

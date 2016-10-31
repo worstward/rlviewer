@@ -50,7 +50,9 @@ namespace RlViewer.Files.Rhg.Concrete
         {
             get
             {
-                return _height;
+                return _height = _height == 0 ? (int)(new System.IO.FileInfo(Properties.FilePath).Length /
+                    (Width * _header.BytesPerSample + _header.StrHeaderLength)) 
+                    : _height;
             }
             protected set
             {

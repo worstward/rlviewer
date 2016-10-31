@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.fileNameCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fileType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -70,8 +70,8 @@
             // 
             // fileNameCol
             // 
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fileNameCol.DefaultCellStyle = dataGridViewCellStyle1;
+            DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fileNameCol.DefaultCellStyle = DataGridViewCellStyle1;
             this.fileNameCol.Frozen = true;
             this.fileNameCol.HeaderText = "Имя файла";
             this.fileNameCol.Name = "fileNameCol";
@@ -79,8 +79,8 @@
             // 
             // fileType
             // 
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fileType.DefaultCellStyle = dataGridViewCellStyle2;
+            DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fileType.DefaultCellStyle = DataGridViewCellStyle2;
             this.fileType.Frozen = true;
             this.fileType.HeaderText = "Тип файла";
             this.fileType.Name = "fileType";
@@ -88,8 +88,8 @@
             // 
             // dateCol
             // 
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dateCol.DefaultCellStyle = dataGridViewCellStyle3;
+            DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dateCol.DefaultCellStyle = DataGridViewCellStyle3;
             this.dateCol.Frozen = true;
             this.dateCol.HeaderText = "Дата";
             this.dateCol.Name = "dateCol";
@@ -97,8 +97,8 @@
             // 
             // timeCol
             // 
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.timeCol.DefaultCellStyle = dataGridViewCellStyle4;
+            DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.timeCol.DefaultCellStyle = DataGridViewCellStyle4;
             this.timeCol.Frozen = true;
             this.timeCol.HeaderText = "Время";
             this.timeCol.Name = "timeCol";
@@ -106,8 +106,8 @@
             // 
             // BoardCol
             // 
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.BoardCol.DefaultCellStyle = dataGridViewCellStyle5;
+            DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.BoardCol.DefaultCellStyle = DataGridViewCellStyle5;
             this.BoardCol.Frozen = true;
             this.BoardCol.HeaderText = "Борт";
             this.BoardCol.Name = "BoardCol";
@@ -115,8 +115,8 @@
             // 
             // InitRangeCol
             // 
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.InitRangeCol.DefaultCellStyle = dataGridViewCellStyle6;
+            DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.InitRangeCol.DefaultCellStyle = DataGridViewCellStyle6;
             this.InitRangeCol.Frozen = true;
             this.InitRangeCol.HeaderText = "Начальная дальность";
             this.InitRangeCol.Name = "InitRangeCol";

@@ -75,8 +75,24 @@
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="gdalconst_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdalconst_csharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="gdal_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdal_csharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ogr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="osr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.1.11.1\lib\net40\osr_csharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System">
@@ -170,6 +186,8 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
+    <Compile Include="Behaviors\RhgAggregator\AggregatorParams.cs" />
+    <Compile Include="Behaviors\RhgAggregator\BaAggregator.cs" />
     <Compile Include="Behaviors\Saving\Concrete\KSaver.cs" />
     <Compile Include="Behaviors\Saving\Concrete\Rl8Saver.cs" />
     <Compile Include="Behaviors\Saving\DataProcessor\Abstract\DataStringProcessor.cs" />
@@ -263,6 +281,12 @@
     <Compile Include="Files\EnumExt.cs" />
     <Compile Include="Files\Rhg\Concrete\Ba.cs" />
     <Compile Include="Files\Rli\Concrete\Rl8.cs" />
+    <Compile Include="Forms\AggregatorOrderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AggregatorOrderForm.Designer.cs">
+      <DependentUpon>AggregatorOrderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ChartHelper.cs" />
     <Compile Include="Forms\FilePreviewForm.cs">
       <SubType>Form</SubType>
@@ -324,6 +348,7 @@
     <Compile Include="Forms\SectionGraphForm.Designer.cs">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Headers\Abstract\IStrHeader.cs" />
     <Compile Include="Headers\Concrete\Ba\BaHeader.cs" />
     <Compile Include="Headers\Concrete\Ba\BaStrHeader.cs" />
@@ -475,6 +500,9 @@
     <Compile Include="Forms\RawSizeForm.Designer.cs">
       <DependentUpon>RawSizeForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\AggregatorOrderForm.resx">
+      <DependentUpon>AggregatorOrderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FilePreviewForm.resx">
       <DependentUpon>FilePreviewForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -599,6 +627,9 @@
     <None Include="Resources\3dPlot.png" />
     <None Include="Resources\Sharer.png" />
     <None Include="Resources\AcidGreen.png" />
+    <None Include="Resources\Up.png" />
+    <None Include="Resources\Down.png" />
+    <Content Include="GdalConfiguration.vb" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

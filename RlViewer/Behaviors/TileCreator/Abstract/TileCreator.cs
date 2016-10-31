@@ -239,7 +239,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 s.Seek(preReadingOffset, SeekOrigin.Current);
 
-                while (s.Position != postReadingOffset)
+                while (s.Position < postReadingOffset)
                 {
                     s.Seek(strHeadLen, SeekOrigin.Current);
                     s.Read(bRliString, 0, bRliString.Length);

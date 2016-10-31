@@ -50,6 +50,7 @@ namespace RlViewer.UI
         private Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder _searcher;
         private Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer _pointSharer;
         private Behaviors.ReportGenerator.Abstract.Reporter _reporter;
+        private Behaviors.RhgAggregator.BaAggregator _aggregator = new Behaviors.RhgAggregator.BaAggregator();
         private WorkerEventController _cancellableAction;
 
 
@@ -233,7 +234,7 @@ namespace RlViewer.UI
         /// <param name="disposer">Action that clears all redundant data after task cancelling</param>
         private void ClearWorkerData(Action disposer)
         {
-            if (_worker != null && _file != null)
+            if (_worker != null)
             {
                 try
                 {
@@ -288,6 +289,7 @@ namespace RlViewer.UI
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Searching cancelled"));
+                
             }
             else if (e.Error != null)
             {
@@ -360,8 +362,6 @@ namespace RlViewer.UI
             InitProgressControls(false);
         }
         #endregion
-
-
 
         #region saveFileWorkerMethods
 
@@ -494,7 +494,7 @@ namespace RlViewer.UI
 
                 var type = new Files.FileProperties(fileName).Type;
                 if (type != FileType.raw && type != FileType.r)
-                {               
+                {
                     EmbedNavigation(fileName, false);
                 }
 
@@ -731,7 +731,72 @@ namespace RlViewer.UI
         #endregion
 
 
+        #region aggregateFilesWorkerMethods
 
+        private void loaderWorker_AggregateFiles(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            if (_aggregator != null)
+            {
+                _aggregator.Report += (s, pe) => ProgressReporter(pe.Percent);
+                _aggregator.CancelJob += (s, ce) => ce.Cancel = _aggregator.Cancelled;
+                _aggregator.ReportName += (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            }
+
+            _cancellableAction = _aggregator;
+
+            var aggregatorParams = (Behaviors.RhgAggregator.AggregatorParams)e.Argument;
+
+            try
+            {
+                _aggregator.Aggregate(aggregatorParams.AggregateFileName, aggregatorParams.SourceFilesNames);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+                ClearWorkerData(
+                    () =>
+                    {
+                        if (File.Exists(aggregatorParams.AggregateFileName))
+                        {
+                            File.Delete(aggregatorParams.AggregateFileName);
+                        }
+                    });
+            }
+            e.Result = aggregatorParams.AggregateFileName;
+        }
+
+        private void loaderWorker_AggregateFilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (_aggregator != null)
+            {
+                _aggregator.Report -= (s, pe) => ProgressReporter(pe.Percent);
+                _aggregator.CancelJob -= (s, ce) => ce.Cancel = _aggregator.Cancelled;
+                _aggregator.ReportName -= (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            }
+
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Files aggregation cancelled"));
+                InitProgressControls(false);
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to aggregate files: {0}", e.Error.Message));
+                Forms.FormsHelper.ShowErrorMsg("Невозможно совместить файлы");
+                InitializeWindow();
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                        string.Format("Aggregation completed: {0}", (string)e.Result));
+            }
+
+            InitProgressControls(false);
+        }
+
+        #endregion
 
 
         #endregion
@@ -1632,7 +1697,7 @@ namespace RlViewer.UI
                     using (var ff = new Forms.FindPointForm(_file.Navigation != null))
                     {
 #if DEBUG
-                    MessageBox.Show("Функция работает в тестовом режиме!");
+                        MessageBox.Show("Функция работает в тестовом режиме!");
 #endif
                         if (ff.ShowDialog() == DialogResult.OK)
                         {
@@ -1936,6 +2001,39 @@ namespace RlViewer.UI
             }
 
         }
+
+
+        public void AggregateFiles()
+        {
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Title = @"Выберите путь для сохранения";
+                sfd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {                  
+                    using (var ofd = new OpenFileDialog())
+                    {
+                        ofd.Title = @"Выберите файлы для совмещения";
+                        ofd.Multiselect = true;
+                        ofd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
+
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            var aggregatorOrder = new Forms.AggregatorOrderForm(ofd.FileNames);
+
+                            if (aggregatorOrder.ShowDialog() == DialogResult.OK)
+                            {
+                                var aggregatorParams = new Behaviors.RhgAggregator.AggregatorParams(sfd.FileName, aggregatorOrder.SourceFiles);
+                                StartTask(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// Gets settings from xml file
