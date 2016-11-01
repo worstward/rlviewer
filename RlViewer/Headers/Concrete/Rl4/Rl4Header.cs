@@ -103,6 +103,7 @@ namespace RlViewer.Headers.Concrete.Rl4
             rliHeader.Add(new Tuple<string, string>("Тип дальности",                     headerStruct.rlParams.rangeType == 0 ? "Наклонная" : "Не определено"));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по дальности, м",    headerStruct.rlParams.dx.ToString()));
             rliHeader.Add(new Tuple<string, string>("Шаг разложения по азимуту, м",      headerStruct.rlParams.dy.ToString()));
+            rliHeader.Add(new Tuple<string, string>("Ближний край зоны",                 headerStruct.rlParams.flipType == 0 ? "Слева" : "Справа"));
             rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по X, пикс",    headerStruct.rlParams.sx.ToString()));
             rliHeader.Add(new Tuple<string, string>("Отступ от оригинала по Y, пикс",    headerStruct.rlParams.sy.ToString()));
 

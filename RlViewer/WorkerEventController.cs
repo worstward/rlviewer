@@ -74,7 +74,7 @@ namespace RlViewer
 
         public virtual event ReportTaskName ReportName = delegate { };
 
-        protected void OnReportName(string name)
+        protected void OnNameReport(string name)
         {
             ReportName(null, new TaskNameEventArgs(name));
         }

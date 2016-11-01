@@ -160,6 +160,12 @@
     <Compile Include="Behaviors\ImageAligning\Surfaces\Abstract\RbfSurface.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\Concrete\RbfQnnCoef.cs" />
     <Compile Include="Behaviors\ImageAligning\Surfaces\SurfaceType.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Abstract\ImageMirrorer.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Concrete\Brl4ImageMirrorer.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Concrete\RawImageMirrorer.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Concrete\RImageMirrorer.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Concrete\Rl4ImageMirrorer.cs" />
+    <Compile Include="Behaviors\ImageMirroring\Concrete\Rl8ImageMirrorer.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Abstract\LeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\LeastSquares\Concrete\PolynomialLeastSquares.cs" />
     <Compile Include="Behaviors\Interpolators\Linear\Polygonal.cs" />
@@ -233,6 +239,7 @@
     <Compile Include="Factories\FilePreview\Concrete\Rl8FilePreviewFactory.cs" />
     <Compile Include="Factories\File\Concrete\BaFactory.cs" />
     <Compile Include="Factories\Header\Concrete\BaHeaderFactory.cs" />
+    <Compile Include="Factories\ImageMirrorer\ImageMirrorerFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Abstract\NavigationChangerFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Concrete\Brl4NavigationChangerFactory.cs" />
     <Compile Include="Factories\NavigationChanger\Concrete\Rl4NavigationChangerFactory.cs" />
@@ -631,6 +638,7 @@
     <None Include="Resources\Down.png" />
     <Content Include="GdalConfiguration.vb" />
     <None Include="Resources\Remove.png" />
+    <None Include="Resources\mirror.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

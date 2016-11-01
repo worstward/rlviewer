@@ -45,6 +45,7 @@ namespace RlViewer.UI
         Button ZoomInBtn { get; }
         Button ZoomOutBtn { get; }
         RadioButton SquareAreaRb { get; }
+        Button MirrorImageBtn { get; }
         System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart { get; }
     }
 }

@@ -8,14 +8,15 @@ namespace RlViewer.Behaviors.Navigation
 {
     public class NavigationComputing
     {
-        public NavigationComputing(double initialRange, double step)
+        public NavigationComputing(double initialRange, double step, byte flipType, int imageWidth)
         {
             _initialRange = initialRange;
             _step = step;
+            _flipType = flipType;
+            _imageWidth = imageWidth;
         }
 
         private double _initialRange;
-
         public double InitialRange
         {
             get { return _initialRange; }
@@ -29,6 +30,10 @@ namespace RlViewer.Behaviors.Navigation
             get { return _step; }
         }
 
+
+        private byte _flipType;
+
+        private int _imageWidth;
 
         public Tuple<double, double> Interpolate(int sampleNum, double aircraftLongitude,
             double aircraftLatitude, double aircraftHeight, double track, byte board)
@@ -45,13 +50,17 @@ namespace RlViewer.Behaviors.Navigation
 
         public double InterpolateLatitude(int sampleNum, double aircraftLatitude, double aircraftHeight, double track, byte board)
         {
-            var alpha = ComputeAlpha(_initialRange, _step, sampleNum, aircraftHeight);
+            var realSampleNum = _flipType == 0 ? sampleNum : _imageWidth - sampleNum;
+
+            var alpha = ComputeAlpha(_initialRange, _step, realSampleNum, aircraftHeight);
             return GetSampleLatitude(aircraftLatitude, track, alpha, board);
         }
 
         public double InterpolateLongtitude(int sampleNum, double aircraftLongitude, double aircraftLatitude, double aircraftHeight, double track, byte board)
         {
-            var alpha = ComputeAlpha(_initialRange, _step, sampleNum, aircraftHeight);
+            var realSampleNum = _flipType == 0 ? sampleNum : _imageWidth - sampleNum;
+
+            var alpha = ComputeAlpha(_initialRange, _step, realSampleNum, aircraftHeight);
             return GetSampleLongtitude(aircraftLongitude, aircraftLatitude, track, alpha, board);
         }
 

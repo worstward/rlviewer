@@ -9,8 +9,8 @@ namespace RlViewer.Navigation.Concrete
 {
     class KNavigationContainer : NavigationContainer
     {
-        public KNavigationContainer(string path, float initialRange, float rangeStep, byte board, int fileHeaderLength, int strDataLength)
-            : base(initialRange, rangeStep)
+        public KNavigationContainer(string path, float initialRange, byte flipType, int imageWidth, float rangeStep, byte board, int fileHeaderLength, int strDataLength)
+            : base(initialRange, rangeStep, flipType, imageWidth)
         {
             _path = path;
             _board = board;

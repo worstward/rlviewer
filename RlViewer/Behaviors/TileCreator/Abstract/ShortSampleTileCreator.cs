@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected override short ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
-            OnReportName("Вычисление коэффициента нормировки");
+            OnNameReport("Вычисление коэффициента нормировки");
             byte[] bRliString = new byte[strDataLen];
             short normal = 0;
 

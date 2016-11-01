@@ -13,8 +13,8 @@ namespace RlViewer.Factories.NavigationContainer.Concrete
         {
             var brl4header = header as RlViewer.Headers.Concrete.Brl4.Brl4Header;
             if (brl4header == null) throw new ArgumentException("brl4header");
-            return new Brl4NavigationContainer(properties.FilePath, brl4header.HeaderStruct.synthParams.D0, brl4header.HeaderStruct.rlParams.dx,
-                brl4header.HeaderStruct.synthParams.board, brl4header.FileHeaderLength, brl4header.HeaderStruct.rlParams.width * brl4header.BytesPerSample,
+            return new Brl4NavigationContainer(properties.FilePath, brl4header.HeaderStruct.synthParams.D0, brl4header.HeaderStruct.rlParams.flipType, brl4header.HeaderStruct.rlParams.width,
+                brl4header.HeaderStruct.rlParams.dx, brl4header.HeaderStruct.synthParams.board, brl4header.FileHeaderLength, brl4header.HeaderStruct.rlParams.width * brl4header.BytesPerSample,
                 brl4header.HeaderStruct.rlParams.sx, brl4header.HeaderStruct.rlParams.sy);
         }
     }

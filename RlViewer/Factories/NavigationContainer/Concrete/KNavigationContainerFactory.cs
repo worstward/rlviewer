@@ -13,12 +13,9 @@ namespace RlViewer.Factories.NavigationContainer.Concrete
         {
             var kHeader = header as RlViewer.Headers.Concrete.K.KHeader;
             if (kHeader == null) throw new ArgumentException("kHeader");
-            return new KNavigationContainer(properties.FilePath, kHeader.HeaderStruct.synchronizerHeader.initialRange,
+            return new KNavigationContainer(properties.FilePath, kHeader.HeaderStruct.synchronizerHeader.initialRange, 0, 0,
                 0, (byte)kHeader.HeaderStruct.synchronizerHeader.board, header.FileHeaderLength,
                 (int)kHeader.HeaderStruct.lineInfoHeader.lineLength * header.BytesPerSample);
-            //return new KNavigationContainer(properties.FilePath, kHeader.HeaderStruct.synthesisHeader.initialRange,
-            //    kHeader.HeaderStruct.synthesisHeader.dx, kHeader.HeaderStruct.synthesisHeader.sideObservation,
-            //    kHeader.FileHeaderLength, (int)kHeader.HeaderStruct.lineInfoHeader.lineLength * kHeader.BytesPerSample);
         }
     }
 }

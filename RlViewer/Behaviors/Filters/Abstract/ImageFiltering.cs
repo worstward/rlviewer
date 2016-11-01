@@ -32,7 +32,6 @@ namespace RlViewer.Behaviors.Filters.Abstract
         protected void RegisterFilter()
         {
             var filterType = GetType().ToString();
-            //Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} initialized", filterType));
             filters[filterType] = this;
         }
 

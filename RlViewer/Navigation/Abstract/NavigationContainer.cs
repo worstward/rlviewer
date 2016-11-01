@@ -10,9 +10,9 @@ namespace RlViewer.Navigation
     public abstract class NavigationContainer : WorkerEventController, IEnumerable<NavigationString>
     {
 
-        public NavigationContainer(float initialRange, float step)
+        public NavigationContainer(float initialRange, float step, byte flipType, int imageWidth)
         {
-            _computer = new Behaviors.Navigation.NavigationComputing(initialRange, step);
+            _computer = new Behaviors.Navigation.NavigationComputing(initialRange, step, flipType, imageWidth);
         }
 
         public abstract NavigationString this[int stringNumber] { get; }
@@ -51,7 +51,7 @@ namespace RlViewer.Navigation
 
         protected virtual T[] GetNaviStrings<T>(string path, int fileHeaderLength, int strDataLength) where T : struct
         {
-            OnReportName("Чтение навигации");
+            OnNameReport("Чтение навигации");
             var header = new byte[System.Runtime.InteropServices.Marshal.SizeOf(typeof(T))];
             List<T> naviCollection = new List<T>();
 

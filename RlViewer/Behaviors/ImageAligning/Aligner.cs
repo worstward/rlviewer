@@ -62,7 +62,7 @@ namespace RlViewer.Behaviors.ImageAligning
 
         public byte[] Resample(string fileName, System.Drawing.Rectangle area)
         {
-            OnReportName("Выравнивание изображения");
+            OnNameReport("Выравнивание изображения");
             return _surface.ResampleImage(_file, area);
         }
 

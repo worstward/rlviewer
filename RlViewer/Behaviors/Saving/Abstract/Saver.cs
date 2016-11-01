@@ -20,7 +20,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
         protected abstract void SaveAndReport(SaverParams saverParams, float normalization, float maxValue);
         public void Save(SaverParams saverParams, float normalization, float maxValue)
         {
-            OnReportName("Сохранение изображения");
+            OnNameReport("Сохранение изображения");
             SaveAndReport(saverParams, normalization, maxValue);
         }
 
@@ -36,7 +36,7 @@ namespace RlViewer.Behaviors.Saving.Abstract
 
         public void SaveAsNormalized(string path, float normalizingCoef)
         {
-            OnReportName("Нормировка к точке");
+            OnNameReport("Нормировка к точке");
 
             path = Path.ChangeExtension(path, SourceFile.Properties.Type.ToString());
 

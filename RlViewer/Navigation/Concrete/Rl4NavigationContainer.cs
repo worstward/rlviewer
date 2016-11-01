@@ -9,9 +9,9 @@ namespace RlViewer.Navigation.Concrete
 {
     public class Rl4NavigationContainer : NavigationContainer
     {
-        public Rl4NavigationContainer(string path, float initialRange, float step, byte board,
+        public Rl4NavigationContainer(string path, float initialRange, byte flipType, int imageWidth, float step, byte board,
             int headerLength, int dataLength, int sx, int sy)
-            : base(initialRange, step)
+            : base(initialRange, step, flipType, imageWidth)
         {
             _path = path;
             _board = board;
@@ -24,7 +24,6 @@ namespace RlViewer.Navigation.Concrete
         private byte _board;
         private int _headerLength;
         private int _dataLength;
-                        
         private int _sx;
 
 

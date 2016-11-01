@@ -25,7 +25,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
                 {
                     if (System.IO.File.Exists(FilesToProcess[i]))
                     {
-                        OnReportName("Генерация отчета");
+                        OnNameReport("Генерация отчета");
                         DocX docToInsert = null;
 
                         try

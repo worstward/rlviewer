@@ -331,6 +331,14 @@ namespace RlViewer.Forms
             }
         }
 
+        public Button MirrorImageBtn
+        {
+            get
+            {
+                return mirrorImageBtn;
+            }
+        }
+
 
         #endregion
 
@@ -548,8 +556,14 @@ namespace RlViewer.Forms
 
         private void совместитьФайлыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.AggregateFiles();
+            GuiFacade.AggregateFiles();
         }
+
+        private void mirrorImageBtn_Click(object sender, EventArgs e)
+        {
+            GuiFacade.MirrorImage();
+        }
+
 
     }
 }

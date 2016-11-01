@@ -11,8 +11,8 @@ namespace RlViewer.Navigation.Concrete
     class Brl4NavigationContainer : NavigationContainer
     {
 
-        public Brl4NavigationContainer(string path, float initialRange, float step, byte board,
-            int headerLength, int dataLength, int sx, int sy) : base(initialRange, step)
+        public Brl4NavigationContainer(string path, float initialRange, byte flipType, int imageWidth, float step, byte board,
+            int headerLength, int dataLength, int sx, int sy) : base(initialRange, step, flipType, imageWidth)
         {
             _path = path;
             _board = board;

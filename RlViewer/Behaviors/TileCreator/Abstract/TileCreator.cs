@@ -97,7 +97,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
                 for (int i = 0; i < totalLines; i++)
                 {
-                    OnReportName("Генерация тайлов");
+                    OnNameReport("Генерация тайлов");
                     tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
 
                     OnProgressReport((int)(i / totalLines * 100));
@@ -239,7 +239,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 s.Seek(preReadingOffset, SeekOrigin.Current);
 
-                while (s.Position < postReadingOffset)
+                for (int i = fromStr; i < toStr; i++)
                 {
                     s.Seek(strHeadLen, SeekOrigin.Current);
                     s.Read(bRliString, 0, bRliString.Length);
@@ -253,7 +253,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                         maxSampleValue = localMax;
                     }
 
-                    OnProgressReport((int)(s.Position / (float)s.Length * 100));
+                    OnProgressReport((int)(i / (float)toStr * 100));
                     OnCancelWorker();
                 }
             }
@@ -268,7 +268,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected T GetMaxValue(LocatorFile loc, int strDataLen, int strHeadLen)
         {
-            OnReportName("Поиск максимальной амплитуды");
+            OnNameReport("Поиск максимальной амплитуды");
             return GetMaxValue(loc, strDataLen, strHeadLen, 0, loc.Height - 1);
         }
 

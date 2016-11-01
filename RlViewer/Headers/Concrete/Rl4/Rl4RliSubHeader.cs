@@ -61,7 +61,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         public int v1;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        byte[] reserved2;
+        public byte[] reserved2;
 
         // проекция
         public byte rangeType;
@@ -71,7 +71,7 @@ namespace RlViewer.Headers.Concrete.Rl4
         public float dy;
 
         // флип
-        byte flipType;
+        public byte flipType;
         //135
         // смещение фрагмента изображения
         public int sx;

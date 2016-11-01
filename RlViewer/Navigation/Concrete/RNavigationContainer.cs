@@ -8,8 +8,8 @@ namespace RlViewer.Navigation.Concrete
 {
     public class RNavigationContainer : NavigationContainer
     {
-        public RNavigationContainer(string path, float initialRange, float step, byte board, int headerLength, int dataLength)
-            : base(initialRange, step)
+        public RNavigationContainer(string path, float initialRange, byte flipType, int imageWidth, float step, byte board, int headerLength, int dataLength)
+            : base(initialRange, step, flipType, imageWidth)
         {
             _path = path;
             _board = board;

@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.FilesAggregator
     {
         public void Aggregate(string aggregatedFile, params string[] sourceFiles)
         {
-            OnReportName("Совмещение файлов");
+            OnNameReport("Совмещение файлов");
             CreateAggregatedFile(aggregatedFile, sourceFiles);
         }
 

@@ -31,9 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle DataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -42,6 +42,7 @@
             this.сохранитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьОтчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.вшитьНавигациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.совместитьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +51,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.logCorrectionRb = new System.Windows.Forms.RadioButton();
             this.resetFilterBtn = new System.Windows.Forms.Button();
             this.gammaCorrRb = new System.Windows.Forms.RadioButton();
             this.contrastRb = new System.Windows.Forms.RadioButton();
@@ -78,12 +80,12 @@
             this.statisticsBtn = new System.Windows.Forms.Button();
             this.sharerRb = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
+            this.mirrorImageBtn = new System.Windows.Forms.Button();
             this.zoomInBtn = new System.Windows.Forms.Button();
             this.zoomOutBtn = new System.Windows.Forms.Button();
             this.naviPanelCb = new System.Windows.Forms.CheckBox();
             this.filterPanelCb = new System.Windows.Forms.CheckBox();
             this.scaleLabel = new System.Windows.Forms.Label();
-            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.statusLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -93,7 +95,7 @@
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.совместитьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -186,6 +188,13 @@
             this.вшитьНавигациюToolStripMenuItem.Text = "Вшить навигацию";
             this.вшитьНавигациюToolStripMenuItem.Click += new System.EventHandler(this.вшитьНавигациюToolStripMenuItem_Click);
             // 
+            // совместитьФайлыToolStripMenuItem
+            // 
+            this.совместитьФайлыToolStripMenuItem.Name = "совместитьФайлыToolStripMenuItem";
+            this.совместитьФайлыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.совместитьФайлыToolStripMenuItem.Text = "Совместить файлы";
+            this.совместитьФайлыToolStripMenuItem.Click += new System.EventHandler(this.совместитьФайлыToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
@@ -240,6 +249,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.logCorrectionRb);
             this.groupBox2.Controls.Add(this.resetFilterBtn);
             this.groupBox2.Controls.Add(this.gammaCorrRb);
             this.groupBox2.Controls.Add(this.contrastRb);
@@ -248,10 +258,17 @@
             this.groupBox2.Controls.Add(this.trackBar1);
             this.groupBox2.Location = new System.Drawing.Point(9, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(313, 98);
+            this.groupBox2.Size = new System.Drawing.Size(343, 98);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Фильтр";
+            // 
+            // logCorrectionRb
+            // 
+            this.logCorrectionRb.Location = new System.Drawing.Point(0, 0);
+            this.logCorrectionRb.Name = "logCorrectionRb";
+            this.logCorrectionRb.Size = new System.Drawing.Size(104, 24);
+            this.logCorrectionRb.TabIndex = 0;
             // 
             // resetFilterBtn
             // 
@@ -261,7 +278,7 @@
             this.resetFilterBtn.FlatAppearance.BorderSize = 0;
             this.resetFilterBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.resetFilterBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.resetFilterBtn.Location = new System.Drawing.Point(274, 35);
+            this.resetFilterBtn.Location = new System.Drawing.Point(296, 35);
             this.resetFilterBtn.Name = "resetFilterBtn";
             this.resetFilterBtn.Size = new System.Drawing.Size(30, 30);
             this.resetFilterBtn.TabIndex = 13;
@@ -323,7 +340,7 @@
             // filterLbl
             // 
             this.filterLbl.AutoSize = true;
-            this.filterLbl.Location = new System.Drawing.Point(142, 55);
+            this.filterLbl.Location = new System.Drawing.Point(153, 55);
             this.filterLbl.Name = "filterLbl";
             this.filterLbl.Size = new System.Drawing.Size(109, 13);
             this.filterLbl.TabIndex = 11;
@@ -332,9 +349,9 @@
             // trackBar1
             // 
             this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(113, 33);
+            this.trackBar1.Location = new System.Drawing.Point(143, 33);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(155, 32);
+            this.trackBar1.Size = new System.Drawing.Size(135, 32);
             this.trackBar1.TabIndex = 10;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
@@ -393,7 +410,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel2Collapsed = true;
             this.splitContainer2.Size = new System.Drawing.Size(872, 519);
-            this.splitContainer2.SplitterDistance = 373;
+            this.splitContainer2.SplitterDistance = 365;
             this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -422,7 +439,7 @@
             this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
-            this.chart1.Location = new System.Drawing.Point(328, 3);
+            this.chart1.Location = new System.Drawing.Point(358, 3);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.IsVisibleInLegend = false;
@@ -437,38 +454,38 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
-            DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            DataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.paramColumn,
             this.valueColumn});
-            DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            DataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = DataGridViewCellStyle2;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
-            DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            DataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowHeadersDefaultCellStyle = DataGridViewCellStyle3;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(96, 100);
@@ -506,6 +523,7 @@
             this.flowLayoutPanel1.Controls.Add(this.statisticsBtn);
             this.flowLayoutPanel1.Controls.Add(this.sharerRb);
             this.flowLayoutPanel1.Controls.Add(this.label1);
+            this.flowLayoutPanel1.Controls.Add(this.mirrorImageBtn);
             this.flowLayoutPanel1.Controls.Add(this.zoomInBtn);
             this.flowLayoutPanel1.Controls.Add(this.zoomOutBtn);
             this.flowLayoutPanel1.Controls.Add(this.naviPanelCb);
@@ -717,6 +735,20 @@
             this.label1.Size = new System.Drawing.Size(0, 13);
             this.label1.TabIndex = 27;
             // 
+            // mirrorImageBtn
+            // 
+            this.mirrorImageBtn.BackgroundImage = global::RlViewer.Properties.Resources.mirror;
+            this.mirrorImageBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.mirrorImageBtn.FlatAppearance.BorderSize = 0;
+            this.mirrorImageBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.mirrorImageBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mirrorImageBtn.Location = new System.Drawing.Point(441, 3);
+            this.mirrorImageBtn.Name = "mirrorImageBtn";
+            this.mirrorImageBtn.Size = new System.Drawing.Size(30, 30);
+            this.mirrorImageBtn.TabIndex = 28;
+            this.mirrorImageBtn.UseVisualStyleBackColor = true;
+            this.mirrorImageBtn.Click += new System.EventHandler(this.mirrorImageBtn_Click);
+            // 
             // zoomInBtn
             // 
             this.zoomInBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -725,7 +757,7 @@
             this.zoomInBtn.FlatAppearance.BorderSize = 0;
             this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomInBtn.Location = new System.Drawing.Point(441, 3);
+            this.zoomInBtn.Location = new System.Drawing.Point(477, 3);
             this.zoomInBtn.Name = "zoomInBtn";
             this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomInBtn.TabIndex = 25;
@@ -740,7 +772,7 @@
             this.zoomOutBtn.FlatAppearance.BorderSize = 0;
             this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomOutBtn.Location = new System.Drawing.Point(477, 3);
+            this.zoomOutBtn.Location = new System.Drawing.Point(513, 3);
             this.zoomOutBtn.Name = "zoomOutBtn";
             this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomOutBtn.TabIndex = 26;
@@ -757,7 +789,7 @@
             this.naviPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.naviPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.naviPanelCb.Location = new System.Drawing.Point(513, 3);
+            this.naviPanelCb.Location = new System.Drawing.Point(549, 3);
             this.naviPanelCb.Name = "naviPanelCb";
             this.naviPanelCb.Size = new System.Drawing.Size(30, 30);
             this.naviPanelCb.TabIndex = 20;
@@ -773,7 +805,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(549, 3);
+            this.filterPanelCb.Location = new System.Drawing.Point(585, 3);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -783,29 +815,12 @@
             // scaleLabel
             // 
             this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.scaleLabel.Location = new System.Drawing.Point(585, 3);
+            this.scaleLabel.Location = new System.Drawing.Point(621, 3);
             this.scaleLabel.Name = "scaleLabel";
             this.scaleLabel.Size = new System.Drawing.Size(85, 30);
             this.scaleLabel.TabIndex = 22;
             this.scaleLabel.Text = "Масштаб: 100%";
             this.scaleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // squareAreaRb
-            // 
-            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
-            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
-            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
-            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.squareAreaRb.FlatAppearance.BorderSize = 0;
-            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squareAreaRb.Location = new System.Drawing.Point(873, 72);
-            this.squareAreaRb.Name = "squareAreaRb";
-            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
-            this.squareAreaRb.TabIndex = 25;
-            this.squareAreaRb.UseVisualStyleBackColor = false;
-            this.squareAreaRb.Visible = false;
             // 
             // statusLabel
             // 
@@ -877,12 +892,22 @@
             this.toolStripDropDownButton1.Text = "Cancel";
             this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
-            // совместитьФайлыToolStripMenuItem
+            // squareAreaRb
             // 
-            this.совместитьФайлыToolStripMenuItem.Name = "совместитьФайлыToolStripMenuItem";
-            this.совместитьФайлыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.совместитьФайлыToolStripMenuItem.Text = "Совместить файлы";
-            this.совместитьФайлыToolStripMenuItem.Click += new System.EventHandler(this.совместитьФайлыToolStripMenuItem_Click);
+            this.squareAreaRb.Appearance = System.Windows.Forms.Appearance.Button;
+            this.squareAreaRb.BackColor = System.Drawing.Color.Transparent;
+            this.squareAreaRb.BackgroundImage = global::RlViewer.Properties.Resources.Plot3d;
+            this.squareAreaRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.squareAreaRb.FlatAppearance.BorderSize = 0;
+            this.squareAreaRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.squareAreaRb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.squareAreaRb.Location = new System.Drawing.Point(873, 72);
+            this.squareAreaRb.Name = "squareAreaRb";
+            this.squareAreaRb.Size = new System.Drawing.Size(30, 30);
+            this.squareAreaRb.TabIndex = 25;
+            this.squareAreaRb.UseVisualStyleBackColor = false;
+            this.squareAreaRb.Visible = false;
             // 
             // MainForm
             // 
@@ -996,6 +1021,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripMenuItem совместитьФайлыToolStripMenuItem;
+        private System.Windows.Forms.Button mirrorImageBtn;
+        private System.Windows.Forms.RadioButton logCorrectionRb;
     }
 }
 

@@ -51,6 +51,7 @@ namespace RlViewer.UI
         private Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer _pointSharer;
         private Behaviors.ReportGenerator.Abstract.Reporter _reporter;
         private Behaviors.FilesAggregator.LocatorFilesAggregator _aggregator = new Behaviors.FilesAggregator.LocatorFilesAggregator();
+        private Behaviors.ImageMirroring.Abstract.ImageMirrorer _mirrorer;
         private WorkerEventController _cancellableAction;
 
 
@@ -172,9 +173,31 @@ namespace RlViewer.UI
 
         private string OpenFile(string fileName)
         {
-            string caption;
+
+            if (ConfirmTaskStart(loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName))
+            {
+                InitializeWindow(true);
+                _form.NavigationDgv.Rows.Clear();
+                _caption = fileName;
+                return _caption;
+            }
 
 
+            if (_file != null)
+            {
+                return _file.Properties.FilePath;
+            }
+
+            return string.Empty;
+        }
+        #endregion
+
+        #region tasks
+
+
+        private bool ConfirmTaskStart(System.ComponentModel.DoWorkEventHandler workerCallBack,
+            System.ComponentModel.RunWorkerCompletedEventHandler afterTaskCallback, object arg = null)
+        {
             if (_worker != null && _worker.IsBusy)
             {
                 var confirmation = MessageBox.Show("Вы уверены, что хотите отменить выполняемую операцию?",
@@ -182,38 +205,34 @@ namespace RlViewer.UI
                                 MessageBoxButtons.YesNo);
                 if (confirmation == DialogResult.Yes)
                 {
-                    CancelLoading();
-                }
-                else
-                {
-                    DrawImage();
-                    if (_file != null)
-                    {
-                        return _file.Properties.FilePath;
-                    }
-
-                    return string.Empty;
+                    StartTask(workerCallBack, afterTaskCallback, arg);
+                    return true;
                 }
             }
+            else
+            {
+                StartTask(workerCallBack, afterTaskCallback, arg);
+                return true;
+            }
 
-
-            InitializeWindow();
-            StartTask(loaderWorker_InitFile, loaderWorker_InitFileCompleted, fileName);
-            _form.NavigationDgv.Rows.Clear();
-            caption = _caption = fileName;
-            return caption;
-
+            return false;
         }
-        #endregion
 
-        #region tasks
 
-        private void StartTask(System.ComponentModel.DoWorkEventHandler d,
-            System.ComponentModel.RunWorkerCompletedEventHandler c, object arg = null)
+
+        /// <summary>
+        /// Starts backgroundWorker with provided callbacks
+        /// </summary>
+        /// <param name="workerCallBack"></param>
+        /// <param name="afterTaskCallback"></param>
+        /// <param name="arg"></param>
+        /// <returns>True if task started, false otherwise</returns>
+        private void StartTask(System.ComponentModel.DoWorkEventHandler workerCallBack,
+            System.ComponentModel.RunWorkerCompletedEventHandler afterTaskCallback, object arg = null)
         {
-
+            CancelLoading();
             InitProgressControls(true);
-            _worker = ThreadHelper.InitWorker(d, c);
+            _worker = ThreadHelper.InitWorker(workerCallBack, afterTaskCallback);
             _worker.RunWorkerAsync(arg);
         }
 
@@ -289,7 +308,7 @@ namespace RlViewer.UI
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Searching cancelled"));
-                
+
             }
             else if (e.Error != null)
             {
@@ -588,7 +607,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
                     _file.Properties.Type, _file.Properties.FilePath));
 
-                StartTask(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
+                ConfirmTaskStart(loaderWorker_CreateTiles, loaderWorker_CreateTilesCompleted);
             }
         }
         #endregion
@@ -730,7 +749,6 @@ namespace RlViewer.UI
 
         #endregion
 
-
         #region aggregateFilesWorkerMethods
 
         private void loaderWorker_AggregateFiles(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -797,6 +815,75 @@ namespace RlViewer.UI
         }
 
         #endregion
+
+        #region mirrorImageWorkerMethods
+
+        private void loaderWorker_MirrorImage(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            if (_mirrorer != null)
+            {
+                _mirrorer.Report += (s, pe) => ProgressReporter(pe.Percent);
+                _mirrorer.CancelJob += (s, ce) => ce.Cancel = _mirrorer.Cancelled;
+                _mirrorer.ReportName += (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            }
+
+            _cancellableAction = _mirrorer;
+
+
+            var destinationPath = (string)e.Argument;
+
+            try
+            {
+                _mirrorer.MirrorImage(destinationPath);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+                ClearWorkerData(
+                    () =>
+                    {
+                        if (File.Exists(destinationPath))
+                        {
+                            File.Delete(destinationPath);
+                        }
+                    });
+            }
+
+            e.Result = destinationPath;
+        }
+
+        private void loaderWorker_MirrorImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (_mirrorer != null)
+            {
+                _mirrorer.Report -= (s, pe) => ProgressReporter(pe.Percent);
+                _mirrorer.CancelJob -= (s, ce) => ce.Cancel = _mirrorer.Cancelled;
+                _mirrorer.ReportName -= (s, tne) =>
+                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            }
+
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("File mirroring cancelled"));
+                InitProgressControls(false);
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to mirror file: {0}", e.Error.Message));
+                Forms.FormsHelper.ShowErrorMsg("Невозможно отразить файл");
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                        string.Format("Mirroring completed: {0}", (string)e.Result));
+            }
+
+            InitProgressControls(false);
+        }
+
+        #endregion
+
 
 
         #endregion
@@ -1050,7 +1137,7 @@ namespace RlViewer.UI
             InitDrawImage();
         }
 
-        private void InitializeWindow()
+        private void InitializeWindow(bool showProgress = false)
         {
             _file = null;
             _drawer = null;
@@ -1077,7 +1164,7 @@ namespace RlViewer.UI
             ThreadHelper.ThreadSafeUpdate<System.Windows.Forms.DataVisualization.Charting.Chart>(_form.HistogramChart)
                 .Series[0].Points.Clear();
 
-            InitProgressControls(false);
+            InitProgressControls(showProgress);
             AddToolTips(_form);
             _chart.InitChart(_form.HistogramChart);
         }
@@ -1115,6 +1202,7 @@ namespace RlViewer.UI
             Forms.FormsHelper.AddToolTip(frm.StatisticsBtn, "Статистика");
             Forms.FormsHelper.AddToolTip(frm.SquareAreaRb, "Трехмерный график");
             Forms.FormsHelper.AddToolTip(frm.SharerRb, "Сравнить точки");
+            Forms.FormsHelper.AddToolTip(frm.MirrorImageBtn, "Отразить изображение");
         }
 
 
@@ -1169,7 +1257,7 @@ namespace RlViewer.UI
                         {
                             if (sSize.ShowDialog() == DialogResult.OK)
                             {
-                                StartTask(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted, sSize.SaverParams);
+                                ConfirmTaskStart(loaderWorker_SaveFile, loaderWorker_SaveFileCompleted, sSize.SaverParams);
                             }
                         }
                     }
@@ -1660,7 +1748,7 @@ namespace RlViewer.UI
                 normalizeSaveDlg.Filter = Resources.SaveFilter;
                 if (normalizeSaveDlg.ShowDialog() == DialogResult.OK)
                 {
-                    StartTask(loaderWorker_NormalizeFile, loaderWorker_NormalizeFileCompleted, normalizeSaveDlg.FileName);
+                    ConfirmTaskStart(loaderWorker_NormalizeFile, loaderWorker_NormalizeFileCompleted, normalizeSaveDlg.FileName);
                 }
             }
         }
@@ -1682,7 +1770,7 @@ namespace RlViewer.UI
                         new Behaviors.Interpolators.LeastSquares.Concrete.LinearLeastSquares(compressedSelector),
                         _settings.SurfaceType, _settings.RbfMlBaseRaduis, _settings.RbfMlLayersNumber, _settings.RbfMlRegularizationCoef);
 
-                    StartTask(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
+                    ConfirmTaskStart(loaderWorker_AlignImage, loaderWorker_AlignImageCompleted,
                         Path.ChangeExtension(alignedSaveDlg.FileName, Path.GetExtension(_file.Properties.FilePath)));
                 }
             }
@@ -1701,7 +1789,7 @@ namespace RlViewer.UI
 #endif
                         if (ff.ShowDialog() == DialogResult.OK)
                         {
-                            StartTask(loaderWorker_FindPoint, loaderWorker_FindPointCompleted, ff.Params);
+                            ConfirmTaskStart(loaderWorker_FindPoint, loaderWorker_FindPointCompleted, ff.Params);
                         };
                     }
                 }
@@ -1876,7 +1964,7 @@ namespace RlViewer.UI
                                                 .GetFactory(reportType)
                                                 .Create(validFiles.ToArray());
 
-                            StartTask(loaderWorker_GenerateReport,
+                            ConfirmTaskStart(loaderWorker_GenerateReport,
                                 loaderWorker_GenerateReportCompleted, new object[] { fsd.FileName, reporterSettings });
                         }
                     }
@@ -2011,7 +2099,7 @@ namespace RlViewer.UI
                 sfd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
-                {                  
+                {
                     using (var ofd = new OpenFileDialog())
                     {
                         ofd.Title = @"Выберите файлы для совмещения";
@@ -2025,7 +2113,7 @@ namespace RlViewer.UI
                             if (aggregatorOrder.ShowDialog() == DialogResult.OK)
                             {
                                 var aggregatorParams = new Behaviors.FilesAggregator.AggregatorParams(sfd.FileName, aggregatorOrder.SourceFiles);
-                                StartTask(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
+                                ConfirmTaskStart(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
                             }
                         }
                     }
@@ -2033,6 +2121,23 @@ namespace RlViewer.UI
             }
         }
 
+
+        public void MirrorImage()
+        {
+            if (_file != null && _file is Files.Rli.Abstract.RliFile)
+            {
+                using (var sfd = new SaveFileDialog())
+                {
+                    sfd.Title = @"Выберите путь для сохранения";
+                    sfd.Filter = @"Файлы изображений (*.brl4; *.rl4; *.rl8)|*.brl4;*.rl4;*.rl8";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        _mirrorer = Factories.ImageMirrorer.ImageMirrorerFactory.Create(_file);
+                        ConfirmTaskStart(loaderWorker_MirrorImage, loaderWorker_MirrorImageCompleted, sfd.FileName);
+                    }
+                }
+            }
+        }
 
 
         /// <summary>

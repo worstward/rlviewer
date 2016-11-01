@@ -22,7 +22,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected override float ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight)
         {
-            OnReportName("Вычисление коэффициента нормировки");
+            OnNameReport("Вычисление коэффициента нормировки");
             byte[] bRliString = new byte[strDataLen];
             float normal = 0;
 
@@ -102,19 +102,19 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
         protected override byte[] ProcessLinear(float[] samples)
         {
-            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+            return samples.Select(x => NormalizationHelpers.ToByteRange(
                             NormalizationHelpers.GetLinearValue(x, NormalizationFactor))).ToArray();
         }
 
         protected override byte[] ProcessLogarithmic(float[] samples)
         {
-            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+            return samples.Select(x => NormalizationHelpers.ToByteRange(
                             NormalizationHelpers.GetLogarithmicValue(x, MaxValue))).ToArray();
         }
 
         protected override byte[] ProcessLinLog(float[] samples)
         {
-            return samples.AsParallel().Select(x => NormalizationHelpers.ToByteRange(
+            return samples.Select(x => NormalizationHelpers.ToByteRange(
                         NormalizationHelpers.GetLinearLogarithmicValue(x, MaxValue, NormalizationFactor))).ToArray();
         }
    

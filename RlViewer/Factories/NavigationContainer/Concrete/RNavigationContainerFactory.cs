@@ -13,7 +13,7 @@ namespace RlViewer.Factories.NavigationContainer.Concrete
         {
             var rHeader = header as RlViewer.Headers.Concrete.R.RHeader;
             if (rHeader == null) throw new ArgumentException("rHeader");
-            return new RNavigationContainer(properties.FilePath, rHeader.HeaderStruct.synthesisHeader.initialRange,
+            return new RNavigationContainer(properties.FilePath, rHeader.HeaderStruct.synthesisHeader.initialRange, 0, (int)rHeader.HeaderStruct.lineInfoHeader.lineLength,
                 rHeader.HeaderStruct.synthesisHeader.dx, rHeader.HeaderStruct.synthesisHeader.sideObservation,
                 rHeader.FileHeaderLength, (int)rHeader.HeaderStruct.lineInfoHeader.lineLength * rHeader.BytesPerSample);
         }

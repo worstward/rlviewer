@@ -9,7 +9,7 @@ namespace RlViewer.Navigation.Concrete
     class RawNavigationContainer : NavigationContainer
     {
         public RawNavigationContainer(string path)
-            : base(0, 0)
+            : base(0, 0, 0, 0)
         {
         }
 
