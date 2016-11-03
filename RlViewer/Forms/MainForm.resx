@@ -172,7 +172,7 @@
         RU5ErkJggg==
 </value>
   </data>
-  <data name="verSection.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="verticalSectionRb.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA0AAAAbCAYAAACnZAX6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC45bDN+TgAAAFFJREFUOE/dz0EK
@@ -180,7 +180,7 @@
         Ud69qfgogjHm1gCcyuNHjlCeAAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="horSection.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="horizontalSectionRb.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABkAAAANCAYAAABcrsXuAAAABGdBTUEAALGPC/xhBQAAACtJREFUOE9j
         GNHgP5SmKRi1BKwRHcMANjl0DAP45EgCZGskBYxaMuQBAwMA2Qga5gVCVrIAAAAASUVORK5CYII=

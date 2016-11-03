@@ -104,7 +104,7 @@ namespace RlViewer.Settings
         private bool _areasOrPointsForAligning = false;
 
         [DataMember(IsRequired = true)]
-        public bool UsePointsForAligning
+        public bool UseAreasForAligning
         {
             get { return _areasOrPointsForAligning; }
             set { _areasOrPointsForAligning = value; }

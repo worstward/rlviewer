@@ -23,7 +23,7 @@ namespace RlViewer.Behaviors.AreaSelector
         public bool IsActive
         {
             get { return _isActive; }
-            set { _isActive = value; }
+            protected set { _isActive = value; }
         }
 
         /// <summary>

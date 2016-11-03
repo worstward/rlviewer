@@ -16,17 +16,73 @@ namespace RlViewer.Forms
         public MainForm()
         {
             InitializeComponent();
-          
+
+            GuiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
+            GuiFacade.OnTaskNameChanged += (s, e) => ChangeStatusText(e.TaskName);
+            GuiFacade.OnScaleFactorChanged += (s, e) => scaleLabel.Text = string.Format("Масштаб: {0}%", e.ScaleFactor * 100);
+            GuiFacade.OnProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
+
+            GuiFacade.OnImageDrawn += (s, image) => pictureBox1.Image = image;
+            GuiFacade.OnDistanceChanged += (s, e) => distanceLabel.Text = e.DistanceString;
+            GuiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
+
+
+            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), () => this.Text = GuiFacade.OpenFile(),
+                 () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
+                 () => GuiFacade.ReportDialog(), () => GuiFacade.AggregateFiles(), () => GuiFacade.EmbedNavigation());
+
+            InitForm();
+            InitDataBindings();
+        }
+
+        private void InitForm()
+        {
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
 
             FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Normal;
 
-            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(), () => this.Text = GuiFacade.OpenFile(),
-                 () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
-                 () => GuiFacade.ReportDialog(), () => GuiFacade.AggregateFiles(), () => GuiFacade.EmbedNavigation());
+            AddToolTips();
+            navigationDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            alignBtn.Enabled = false;
+
+            filterTrackBar.SmallChange = 1;
+            filterTrackBar.LargeChange = 1;
+            filterTrackBar.Minimum = -16;
+            filterTrackBar.Maximum = 16;
+            filterTrackBar.Value = 0;
+
+            horizontalScrollBar.Visible = false;
+            verticalScrollBar.Visible = false;
+
+            InitProgressControls(false);
         }
+
+        private void InitDataBindings()
+        {
+            verticalScrollBar.DataBindings.Add("Value", GuiFacade, "YPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
+            verticalScrollBar.DataBindings.Add("Maximum", GuiFacade, "YPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
+            horizontalScrollBar.DataBindings.Add("Value", GuiFacade, "XPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
+            horizontalScrollBar.DataBindings.Add("Maximum", GuiFacade, "XPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        private void ChangeStatusText(string statusText)
+        {
+            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripLabel>(statusLabel, lbl => { lbl.Text = statusText; });
+        }
+
+        private void InitProgressControls(bool isVisible)
+        {
+            progressBar.Visible = isVisible;
+            progressBar.Value = 0;
+            statusLabel.Visible = isVisible;
+            progressLabel.Visible = isVisible;
+            progressLabel.Text = "0%";
+            cancelBtn.Visible = isVisible;
+        }
+
 
         UI.KeyPressProcessor _keyProcessor;
 
@@ -35,10 +91,9 @@ namespace RlViewer.Forms
         {
             get
             {
-                return _guiFacade = _guiFacade ?? new UI.GuiFacade(this); 
+                return _guiFacade = _guiFacade ?? new UI.GuiFacade(this, pictureBox1.Size);
             }
         }
-
 
 
         #region ISuitableForm controls
@@ -50,73 +105,30 @@ namespace RlViewer.Forms
             }
         }
 
-        public HScrollBar Horizontal
-        {
-            get
-            {
-                return hScrollBar1;
-            }
-        }
-        public VScrollBar Vertical
-        {
-            get
-            {
-                return vScrollBar1;
-            }
-        }
         public TrackBar FilterTrackBar
         {
             get
             {
-                return trackBar1;
+                return filterTrackBar;
             }
         }
-        public Label FilterValueLabel
-        {
-            get
-            {
-                return filterLbl;
-            }
-        }
+
 
         public ToolStripProgressBar ProgressBar
         {
             get
             {
-                return toolStripProgressBar1;
+                return progressBar;
             }
         }
-        public ToolStripStatusLabel ProgressLabel 
+        public ToolStripStatusLabel ProgressLabel
         {
             get
             {
-                return toolStripStatusLabel1;
+                return progressLabel;
             }
         }
 
-        public ToolStripStatusLabel StatusLabel
-        {
-            get
-            {
-                return toolStripStatusLabel2;
-            }
-        }
-
-        public Label ScaleLabel
-        {
-            get
-            {
-                return scaleLabel;
-            }
-        }
-
-        public new ToolStripDropDownButton  CancelButton
-        {
-            get
-            {
-                return toolStripDropDownButton1;
-            }
-        }
 
         public Button AlignBtn
         {
@@ -126,54 +138,7 @@ namespace RlViewer.Forms
             }
         }
 
-        public Button FindPointBtn
-        {
-            get
-            {
-                return findPointBtn;
-            }
-        }
 
-        public RadioButton BrightnessRb
-        {
-            get
-            {
-                return brightnessRb;
-            }
-        }
-
-        public RadioButton ContrastRb
-        {
-            get
-            {
-                return contrastRb;
-            }
-        }
-
-        public RadioButton GammaRb
-        {
-            get
-            {
-                return gammaCorrRb;
-            }
-        }
-
-        public Button ResetFilter
-        {
-            get
-            {
-                return resetFilterBtn;
-            }
-        }
-
-
-        public RadioButton DragRb
-        {
-            get
-            {
-                return dragRb;
-            }
-        }
         public RadioButton MarkPointRb
         {
             get
@@ -189,44 +154,7 @@ namespace RlViewer.Forms
             }
         }
 
-        public RadioButton AnalyzePointRb
-        {
-            get
-            {
-                return analyzeRb;
-            }
-        }
-        public RadioButton VerticalSectionRb
-        {
-            get
-            {
-                return verSection;
-            }
-        }
-        public RadioButton HorizontalSectionRb
-        {
-            get
-            {
-                return horSection;
-            }
-        }
-
-        public RadioButton LinearSectionRb
-        {
-            get
-            {
-                return linSectionRb;
-            }
-        }
-
-        public RadioButton RulerRb
-        {
-            get
-            {
-                return rulerRb;
-            }
-        }
-
+      
         public RadioButton SharerRb
         {
             get
@@ -239,114 +167,189 @@ namespace RlViewer.Forms
         {
             get
             {
-                return naviPanelCb;
+                return navigationPanelCb;
             }
         }
 
-        public CheckBox FilterPanelCb
-        {
-            get
-            {
-                return filterPanelCb;
-            }
-        }
-
+       
         public DataGridView NavigationDgv
         {
             get
             {
-                return dataGridView1;
+                return navigationDgv;
             }
         }
-
-        public SplitContainer NaviSplitter
-        {
-            get
-            {
-                return splitContainer1;
-            }
-        }
-
-        public SplitContainer FilterSplitter
-        {
-            get
-            {
-                return splitContainer2;
-            }
-        }
-
-        public ToolStripStatusLabel CoordinatesLabel
-        {
-            get
-            {
-                return toolStripStatusLabel4;
-            }
-        }
-
 
         public ToolStripStatusLabel DistanceLabel
         {
             get
             {
-                return toolStripStatusLabel5;
-            }
-        }
-
-        public System.Windows.Forms.DataVisualization.Charting.Chart HistogramChart
-        {
-            get
-            {
-                return chart1;
-            }
-        }
-
-        public Button ZoomInBtn
-        {
-            get
-            {
-                return zoomInBtn;
-            }
-        }
-
-        public Button ZoomOutBtn
-        {
-            get
-            {
-                return zoomOutBtn;
-            }
-        }
-        public Button StatisticsBtn
-        {
-            get
-            {
-                return statisticsBtn;
-            }
-        }
-
-        public RadioButton SquareAreaRb 
-        {
-            get
-            {
-                return squareAreaRb;
-            }
-        }
-
-        public Button MirrorImageBtn
-        {
-            get
-            {
-                return mirrorImageBtn;
+                return distanceLabel;
             }
         }
 
 
         #endregion
 
+
+        public void ToggleNavigation()
+        {
+            TogglePanel(navigationPanelCb.Checked, naviSplitter);
+        }
+
+        public void ToggleFilters()
+        {
+            TogglePanel(filterPanelCb.Checked, filterSplitter);
+        }
+
+        private void TogglePanel(bool isPanelOpen, SplitContainer sp)
+        {
+            if (isPanelOpen)
+            {
+                sp.Panel2Collapsed = false;
+            }
+            else
+            {
+                sp.Panel2Collapsed = true;
+            }
+            GuiFacade.InitDrawImage();
+        }
+
+        private void MouseClickStarted(MouseEventArgs e)
+        {
+            if (dragRb.Checked)
+            {
+                Cursor = Cursors.SizeAll;
+                GuiFacade.DragStart(e.Location);
+                return;
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                Cursor = Cursors.SizeAll;
+                GuiFacade.DragStart(e.Location);
+                return;
+            }
+
+            if (analyzeRb.Checked)
+            {
+                Cursor = Cursors.Cross;
+                GuiFacade.GetPointAmplitudeStart(e.Location);
+            }
+            else
+            {
+                Cursor = Cursors.Arrow;
+                if (markAreaRb.Checked)
+                {
+                    GuiFacade.SelectAreaStart(e.Location);
+                }
+                else if (sharerRb.Checked)
+                {
+                    GuiFacade.ShareCoords(e.Location);
+                }
+                else if (markPointRb.Checked)
+                {
+                    GuiFacade.SelectPointStart(e.Location);
+                }
+
+                else if (verticalSectionRb.Checked)
+                {
+                    GuiFacade.VerticalSectionStart(e.Location);
+                }
+                else if (horizontalSectionRb.Checked)
+                {
+                    GuiFacade.HorizontalSectionStart(e.Location);
+                }
+                else if (linearSectionRb.Checked)
+                {
+                    GuiFacade.LinearSectionStart(e.Location);
+                }
+                else if (rulerRb.Checked)
+                {
+                    GuiFacade.RulerStart(e.Location);
+                }
+            }
+        }
+
+        private void MouseMoving(MouseEventArgs e)
+        {
+            GuiFacade.Drag(e.Location);
+            
+            if (markAreaRb.Checked)
+            {
+                GuiFacade.SelectArea(e.Location);
+            }
+            else if (markPointRb.Checked)
+            {
+                GuiFacade.SelectPoint(e.Location);
+            }
+            else if (analyzeRb.Checked)
+            {
+                GuiFacade.GetPointAmplitude(e.Location);
+            }
+            else if (verticalSectionRb.Checked)
+            {
+                GuiFacade.VerticalSection(e.Location);
+            }
+            else if (horizontalSectionRb.Checked)
+            {
+                GuiFacade.HorizontalSection(e.Location);
+            }
+            else if (linearSectionRb.Checked)
+            {
+                GuiFacade.LinearSection(e.Location);
+            }
+            else if (rulerRb.Checked)
+            {
+                GuiFacade.GetDistance(e.Location);
+            }
+
+        }
+
+        private void MouseClickFinished(MouseEventArgs e)
+        {
+            Cursor = Cursors.Arrow;
+            GuiFacade.DragFinish();
+
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                if (markAreaRb.Checked)
+                {
+                    GuiFacade.SelectAreaFinish(e.Location);
+                }
+                else if (markPointRb.Checked)
+                {
+                    GuiFacade.SelectPointFinish(e.Location);
+                }
+                else if (analyzeRb.Checked)
+                {
+                    GuiFacade.StopPointAnalyzer();
+                }
+                else if (verticalSectionRb.Checked || horizontalSectionRb.Checked || linearSectionRb.Checked)
+                {
+                    GuiFacade.StopSection(e.Location);
+                }
+                else if (rulerRb.Checked)
+                {
+                    GuiFacade.GetDistance(e.Location);
+                }
+            }
+
+
+        }
+
+
+        private void CheckScrollBarVisibility()
+        {
+            horizontalScrollBar.Visible = horizontalScrollBar.Maximum > 0 ? true : false;
+            verticalScrollBar.Visible = verticalScrollBar.Maximum > 0 ? true : false;
+        }
+
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Text = GuiFacade.OpenFile();           
+            Text = GuiFacade.OpenFile();
         }
-        
+
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             GuiFacade.DrawImage();
@@ -359,25 +362,27 @@ namespace RlViewer.Forms
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            GuiFacade.InitDrawImage();
+            GuiFacade.InitDrawImage(pictureBox1.Size);
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            GuiFacade.TraceMouseMovement(e);
-            GuiFacade.ShowMousePosition(e);
+            MouseMoving(e);
+            coordinatesLabel.Text = GuiFacade.ShowMousePosition(e.Location);
             GuiFacade.ShowNavigation(e);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            GuiFacade.ClickStarted(e);          
+            MouseClickStarted(e);
             GuiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            GuiFacade.ClickFinished(e);
+            Cursor = Cursors.Arrow;
+            MouseClickFinished(e);
+            GuiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
@@ -393,13 +398,13 @@ namespace RlViewer.Forms
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            GuiFacade.ChangeFilterValue(trackBar1.Value);
-            filterLbl.Text = string.Format("Уровень фильтра: {0}", trackBar1.Value);
+            GuiFacade.ChangeFilterValue(filterTrackBar.Value);
+            filterLbl.Text = string.Format("Уровень фильтра: {0}", filterTrackBar.Value);
         }
 
         private void contrastRb_CheckedChanged(object sender, EventArgs e)
-         {
-            if(((RadioButton)sender).Checked)
+        {
+            if (((RadioButton)sender).Checked)
             {
                 GuiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
             }
@@ -459,12 +464,12 @@ namespace RlViewer.Forms
 
         private void naviPanelCb_CheckedChanged(object sender, EventArgs e)
         {
-            GuiFacade.ToggleNavigation();
+            ToggleNavigation();
         }
 
         private void filterPanelCb_CheckedChanged(object sender, EventArgs e)
         {
-            GuiFacade.ToggleFilters();
+            ToggleFilters();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -515,7 +520,7 @@ namespace RlViewer.Forms
 
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
-             GuiFacade.InitDrawImage();
+            GuiFacade.InitDrawImage();
         }
 
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
@@ -564,6 +569,32 @@ namespace RlViewer.Forms
             GuiFacade.MirrorImage();
         }
 
+
+        private void AddToolTips()
+        {
+            Forms.FormsHelper.AddToolTip(alignBtn, "Выровнять");
+            Forms.FormsHelper.AddToolTip(analyzeRb, "Анализ амплитуды");
+            Forms.FormsHelper.AddToolTip(dragRb, "Перемещение по изображению");
+            Forms.FormsHelper.AddToolTip(horizontalSectionRb, "Горизонтальное сечение");
+            Forms.FormsHelper.AddToolTip(linearSectionRb, "Произвольное сечение");
+            Forms.FormsHelper.AddToolTip(markAreaRb, "Область");
+            Forms.FormsHelper.AddToolTip(markPointRb, "Отметка");
+            Forms.FormsHelper.AddToolTip(navigationPanelCb, "Навигация");
+            Forms.FormsHelper.AddToolTip(rulerRb, "Линейка");
+            Forms.FormsHelper.AddToolTip(findPointBtn, "Поиск точки");
+            Forms.FormsHelper.AddToolTip(verticalSectionRb, "Вертикальное сечение");
+            Forms.FormsHelper.AddToolTip(brightnessRb, "Яркость");
+            Forms.FormsHelper.AddToolTip(contrastRb, "Контрастность");
+            Forms.FormsHelper.AddToolTip(gammaCorrRb, "Гамма");
+            Forms.FormsHelper.AddToolTip(resetFilterBtn, "Сброс фильтров");
+            Forms.FormsHelper.AddToolTip(filterPanelCb, "Фильтры");
+            Forms.FormsHelper.AddToolTip(zoomInBtn, "Увеличить масштаб");
+            Forms.FormsHelper.AddToolTip(zoomOutBtn, "Уменьшить масштаб");
+            Forms.FormsHelper.AddToolTip(statisticsBtn, "Статистика");
+            Forms.FormsHelper.AddToolTip(squareAreaRb, "Трехмерный график");
+            Forms.FormsHelper.AddToolTip(sharerRb, "Сравнить точки");
+            Forms.FormsHelper.AddToolTip(mirrorImageBtn, "Отразить изображение");
+        }
 
     }
 }

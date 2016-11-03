@@ -38,7 +38,7 @@ namespace RlViewer.Forms
             azimuthCompressCoefTb.Text = _settings.AzimuthCompressionCoef.ToString();
 
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
-            areasOrPointsForAligningCb.Checked = settings.UsePointsForAligning;
+            areasOrPointsForAligningCb.Checked = settings.UseAreasForAligning;
             adminReminderCb.Checked = _settings.ForceAdminMode;
             useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
             surfaceTypeCb.SelectedIndex = (int)_settings.SurfaceType;
@@ -167,7 +167,7 @@ namespace RlViewer.Forms
             _settings.IsPaletteGroupped = _isGrouped;
             _settings.TileOutputAlgorithm = _outputType;
             _settings.HighResForDownScaled = _highRes;
-            _settings.UsePointsForAligning = _areasOrPointsForAligning;
+            _settings.UseAreasForAligning = _areasOrPointsForAligning;
             _settings.ForceAdminMode = _forceAdmin;
             _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
             _settings.SurfaceType = _surfaceType;

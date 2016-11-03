@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
+using System.ComponentModel;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
@@ -18,21 +19,24 @@ using RlViewer.Files;
 
 namespace RlViewer.UI
 {
-    public class GuiFacade : IDisposable
+
+    public class GuiFacade : IDisposable, INotifyPropertyChanged
     {
-        public GuiFacade(ISuitableForm form)
+        public GuiFacade(ISuitableForm form, Size canvasSize)
         {
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 
             _form = form;
+
+            CanvasSize = canvasSize;
+
             _filterProxy = new Behaviors.Filters.ImageFilterProxy();
             _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, _settings.InitialScale);
             _drag = new Behaviors.DragController();
-            _chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
+            //_chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
 
             _win = _form.Canvas;
-            OnImageDrawn += (s, img) => _form.Canvas.Image = img;
 
             InitializeWindow();
         }
@@ -58,7 +62,7 @@ namespace RlViewer.UI
         private Files.FileProperties _properties;
         private Headers.Abstract.LocatorFileHeader _header;
         private Navigation.NavigationContainer _navi;
-        private Forms.ChartHelper _chart;
+        //private Forms.ChartHelper _chart;
 
         private Files.LocatorFile _file;
         private Behaviors.TileCreator.Tile[] _tiles;
@@ -79,8 +83,115 @@ namespace RlViewer.UI
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event EventHandler<Image> OnImageDrawn = delegate { };
+        public event EventHandler<Events.TaskNameEventArgs> OnTaskNameChanged = delegate { };
+        public event EventHandler OnPointOfViewMaxChanged = delegate { };
+        public event EventHandler<Events.ScaleFactorChangedEventArgs> OnScaleFactorChanged = delegate { };
+        public event EventHandler<Events.ProgressControlsVisibilityEventArgs> OnProgressVisibilityChanged = delegate { };
+        public event EventHandler<Events.RulerDistanceChangedEventArgs> OnDistanceChanged = delegate { };
+        public event EventHandler<Events.AlignPossibilityEventArgs> OnAlignPossibilityChanged = delegate { };
 
         private object _animationLock = new object();
+
+        public Size CanvasSize
+        {
+            get;
+            set;
+        }
+
+
+        private string _currentTaskName;
+
+        private string CurrentTaskName
+        {
+            get
+            {
+                return _currentTaskName;
+            }
+            set
+            {
+                SetField(ref _currentTaskName, value);
+                OnTaskNameChanged(null, new Events.TaskNameEventArgs(_currentTaskName));
+            }
+        }
+
+
+        private int _xPointOfViewMax;
+
+        public int XPointOfViewMax
+        {
+            get
+            {
+                return _xPointOfViewMax;
+            }
+            set
+            {
+                if (SetField(ref _xPointOfViewMax, value))
+                {
+                    OnPointOfViewMaxChanged(null, null);
+                }
+            }
+        }
+
+
+        private int _yPointOfViewMax;
+
+        public int YPointOfViewMax
+        {
+            get
+            {
+                return _yPointOfViewMax;
+            }
+            set
+            {
+                if (SetField(ref _yPointOfViewMax, value))
+                {
+                    OnPointOfViewMaxChanged(null, null);
+                }
+            }
+        }
+
+
+        private int _xPointOfView;
+        public int XPointOfView
+        {
+            get
+            {
+                return _xPointOfView;
+            }
+            set
+            {
+                SetField(ref _xPointOfView, value);
+            }
+        }
+
+        private int _yPointOfView;
+        public int YPointOfView
+        {
+            get
+            {
+                return _yPointOfView;
+            }
+            set
+            {
+                SetField(ref _yPointOfView, value);
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+        protected bool SetField<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
 
 
         #region openFile
@@ -231,7 +342,7 @@ namespace RlViewer.UI
             System.ComponentModel.RunWorkerCompletedEventHandler afterTaskCallback, object arg = null)
         {
             CancelLoading();
-            InitProgressControls(true);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(true));
             _worker = ThreadHelper.InitWorker(workerCallBack, afterTaskCallback);
             _worker.RunWorkerAsync(arg);
         }
@@ -276,7 +387,7 @@ namespace RlViewer.UI
 
             _searcher.Report += (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob += (s, ce) => ce.Cancel = _searcher.Cancelled;
-            _searcher.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _searcher.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
             _cancellableAction = _searcher;
 
@@ -303,7 +414,7 @@ namespace RlViewer.UI
         {
             _searcher.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _searcher.CancelJob -= (s, ce) => ce.Cancel = _searcher.Cancelled;
-            _searcher.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _searcher.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
 
             if (e.Cancelled)
             {
@@ -320,8 +431,7 @@ namespace RlViewer.UI
                 CenterImageAtPoint((Point)e.Result, true);
             }
 
-
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -332,7 +442,7 @@ namespace RlViewer.UI
 
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _saver.ReportName += (s, tne) => CurrentTaskName = tne.Name;
             _cancellableAction = _saver;
 
             var fileName = (string)e.Argument;
@@ -361,7 +471,7 @@ namespace RlViewer.UI
         {
             _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _saver.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
 
             if (e.Cancelled)
             {
@@ -378,7 +488,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Normalization completed: {0}", (string)e.Result));
             }
 
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -402,7 +512,7 @@ namespace RlViewer.UI
 
             _saver.Report += (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _saver.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
             float maxSampleValue = 0;
 
@@ -436,7 +546,7 @@ namespace RlViewer.UI
         {
             _saver.Report -= (s, pe) => ProgressReporter(pe.Percent);
             _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _saver.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
 
             if (e.Cancelled)
             {
@@ -453,7 +563,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Saving completed: {0}", (string)e.Result));
             }
 
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -465,7 +575,7 @@ namespace RlViewer.UI
 
             _aligner.Report += (s, pe) => ProgressReporter(pe.Percent);
             _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
-            _aligner.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+            _aligner.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
             _cancellableAction = _aligner;
 
@@ -520,7 +630,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
                     string.Format("Image aligning completed, new file saved at: {0}", fileName));
             }
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -537,7 +647,9 @@ namespace RlViewer.UI
 
                 _navi.Report += (s, pe) => ProgressReporter(pe.Percent);
                 _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
-                _navi.ReportName += (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                _navi.ReportName += (s, tne) => CurrentTaskName = tne.Name;
+
+                OnTaskNameChanged(null, new Events.TaskNameEventArgs(_currentTaskName));
 
                 _cancellableAction = _navi;
                 _navi.GetNavigation();
@@ -577,7 +689,7 @@ namespace RlViewer.UI
             {
                 _navi.Report -= (s, pe) => ProgressReporter(pe.Percent);
                 _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
-                _navi.ReportName -= (s, tne) => ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                _navi.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
             }
 
 
@@ -621,7 +733,7 @@ namespace RlViewer.UI
             ((WorkerEventController)_creator).Report += (s, pe) => ProgressReporter(pe.Percent);
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
             ((WorkerEventController)_creator).ReportName += (s, tne) =>
-                ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                CurrentTaskName = tne.Name;
 
             _cancellableAction = ((WorkerEventController)_creator);
 
@@ -650,7 +762,7 @@ namespace RlViewer.UI
                 ((WorkerEventController)_creator).Report -= (s, pe) => ProgressReporter(pe.Percent);
                 ((WorkerEventController)_creator).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
                 ((WorkerEventController)_creator).ReportName -= (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
 
             }
 
@@ -681,7 +793,7 @@ namespace RlViewer.UI
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Missing tiles for {0} detected", _file.Properties.FilePath));
                 }
 
-                InitProgressControls(false);
+                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
                 InitDrawImage();
             }
 
@@ -697,7 +809,7 @@ namespace RlViewer.UI
                 _reporter.Report += (s, pe) => ProgressReporter(pe.Percent);
                 _reporter.CancelJob += (s, ce) => ce.Cancel = _reporter.Cancelled;
                 _reporter.ReportName += (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             _cancellableAction = _reporter;
@@ -725,13 +837,13 @@ namespace RlViewer.UI
                 _reporter.Report -= (s, pe) => ProgressReporter(pe.Percent);
                 _reporter.CancelJob -= (s, ce) => ce.Cancel = _reporter.Cancelled;
                 _reporter.ReportName -= (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Report generation cancelled"));
-                InitProgressControls(false);
+                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
@@ -744,7 +856,7 @@ namespace RlViewer.UI
                         string.Format("Report file generated: {0}", (string)e.Result));
             }
 
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -758,7 +870,7 @@ namespace RlViewer.UI
                 _aggregator.Report += (s, pe) => ProgressReporter(pe.Percent);
                 _aggregator.CancelJob += (s, ce) => ce.Cancel = _aggregator.Cancelled;
                 _aggregator.ReportName += (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             _cancellableAction = _aggregator;
@@ -791,13 +903,13 @@ namespace RlViewer.UI
                 _aggregator.Report -= (s, pe) => ProgressReporter(pe.Percent);
                 _aggregator.CancelJob -= (s, ce) => ce.Cancel = _aggregator.Cancelled;
                 _aggregator.ReportName -= (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Files aggregation cancelled"));
-                InitProgressControls(false);
+                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
@@ -811,7 +923,7 @@ namespace RlViewer.UI
                         string.Format("Aggregation completed: {0}", (string)e.Result));
             }
 
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -825,7 +937,7 @@ namespace RlViewer.UI
                 _mirrorer.Report += (s, pe) => ProgressReporter(pe.Percent);
                 _mirrorer.CancelJob += (s, ce) => ce.Cancel = _mirrorer.Cancelled;
                 _mirrorer.ReportName += (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             _cancellableAction = _mirrorer;
@@ -860,13 +972,13 @@ namespace RlViewer.UI
                 _mirrorer.Report -= (s, pe) => ProgressReporter(pe.Percent);
                 _mirrorer.CancelJob -= (s, ce) => ce.Cancel = _mirrorer.Cancelled;
                 _mirrorer.ReportName -= (s, tne) =>
-                    ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Text = tne.Name; });
+                    CurrentTaskName = tne.Name;
             }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("File mirroring cancelled"));
-                InitProgressControls(false);
+                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
@@ -879,7 +991,7 @@ namespace RlViewer.UI
                         string.Format("Mirroring completed: {0}", (string)e.Result));
             }
 
-            InitProgressControls(false);
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -888,35 +1000,40 @@ namespace RlViewer.UI
 
         #endregion
 
-        public void Undo()
+        public void Undo(bool allowPointRemoval, bool allowAreaRemoval)
         {
             if (_file != null)
             {
-                if (_form.MarkPointRb.Checked)
+                if (allowPointRemoval)
                 {
                     _areaAligningWrapper.RemoveArea();
                     _pointSelector.RemoveLast();
-                    BlockAlignButton();
+                    OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
                 }
-                else if (_form.MarkAreaRb.Checked)
+                else if (allowAreaRemoval)
                 {
                     _areaSelector.ResetArea();
                 }
 
-
-                _form.Canvas.Invalidate();
+                DrawImage();
             }
         }
 
         #region drawing
 
-        public void InitDrawImage()
+        public void InitDrawImage(Size canvasSize = default(Size))
         {
-            if (_form.Canvas.Size.Width != 0 && _form.Canvas.Size.Height != 0 && _tiles != null && _file != null)
+            if (canvasSize != default(Size))
             {
+                CanvasSize = canvasSize;
+            }
+
+            if (CanvasSize.Width != 0 && CanvasSize.Height != 0 && _tiles != null && _file != null)
+            {
+
                 var tDrawer = new Behaviors.Draw.TileDrawer(_filterProxy.Filter, _scaler);
                 var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler, _areaAligningWrapper);
-                _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(_form.Canvas.Size, iDrawer, tDrawer);
+                _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(CanvasSize, iDrawer, tDrawer);
 
                 ChangePalette(_settings.Palette, _settings.IsPaletteReversed,
                     _settings.IsPaletteGroupped, _settings.UseTemperaturePalette);
@@ -941,7 +1058,7 @@ namespace RlViewer.UI
                     try
                     {
                         img = _drawer.Draw(_tiles,
-                                new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value), _settings.HighResForDownScaled);
+                                new System.Drawing.Point(XPointOfView, YPointOfView), _settings.HighResForDownScaled);
                     }
                     catch (Exception ex)
                     {
@@ -989,15 +1106,10 @@ namespace RlViewer.UI
         {
             if (value > Math.Log(_scaler.MaxZoom, 2) || value < Math.Log(_scaler.MinZoom, 2)) return;
 
-            float scaleFactor = (float)Math.Pow(2, value);
-            _form.ScaleLabel.Text = string.Format("Масштаб: {0}%", (scaleFactor * 100).ToString());
-
-            if (_file != null)
-            {
-                CenterScaledImage(scaleFactor, mousePos);
-            }
-
-            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, scaleFactor);
+            float newScaleFactor = (float)Math.Pow(2, value);
+            CenterScaledImage(newScaleFactor, mousePos);
+            _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, newScaleFactor);
+            OnScaleFactorChanged(this, new Events.ScaleFactorChangedEventArgs(_scaler.ScaleFactor));
             InitDrawImage();
         }
 
@@ -1005,7 +1117,7 @@ namespace RlViewer.UI
         {
             if (_tiles != null && _drawer != null)
             {
-                _drawer.Draw(g, new System.Drawing.Point(_form.Horizontal.Value, _form.Vertical.Value));
+                _drawer.Draw(g, new System.Drawing.Point(XPointOfView, YPointOfView));
             }
         }
         #endregion
@@ -1021,20 +1133,19 @@ namespace RlViewer.UI
                     center.X > 0 && center.X < _file.Width && center.Y > 0 && center.Y < _file.Height)
                 {
 
-                    var horValue = (center.X - (int)(_form.Canvas.Width / 2 / _scaler.ScaleFactor));
+                    var horValue = (center.X - (int)(CanvasSize.Width / 2 / _scaler.ScaleFactor));
                     horValue = horValue < 0 ? 0 : horValue;
-                    horValue = horValue > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : horValue;
+                    horValue = horValue > XPointOfViewMax ? XPointOfViewMax : horValue;
 
-                    ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal, () => _form.Horizontal.Value = horValue);
 
-                    var vertValue = (center.Y - (int)(_form.Canvas.Height / 2 / _scaler.ScaleFactor));
+                    XPointOfView = horValue;
+                    var vertValue = (center.Y - (int)(CanvasSize.Height / 2 / _scaler.ScaleFactor));
                     vertValue = vertValue < 0 ? 0 : vertValue;
-                    vertValue = vertValue > _form.Vertical.Maximum ? _form.Vertical.Maximum : vertValue;
-
-                    ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical, () => _form.Vertical.Value = vertValue);
+                    vertValue = vertValue > YPointOfViewMax ? YPointOfViewMax : vertValue;
+                    YPointOfView = vertValue;
 
                     DrawImage((image) => _drawer.DrawSharedPoint(image, center,
-                        new Point(_form.Horizontal.Value, _form.Vertical.Value), _form.Canvas.Size));
+                        new Point(XPointOfView, YPointOfView), CanvasSize));
 
                 }
                 else if (showWarning)
@@ -1044,39 +1155,44 @@ namespace RlViewer.UI
             }
         }
 
-        private void CenterScaledImage(float scaleFactor, Point currentMousePos = default(Point))
+        private void CenterScaledImage(float newScaleFactor, Point currentMousePos = default(Point))
         {
-            InitScrollBars(scaleFactor);
+            if (_file == null)
+            {
+                return;
+            }
+
+            InitScrollBars(newScaleFactor);
 
             float mouseDividedFactorX = 2;
             float mouseDividedFactorY = 2;
 
             if (currentMousePos != default(Point))
             {
-                mouseDividedFactorX = _form.Canvas.Width / (float)currentMousePos.X;
-                mouseDividedFactorY = _form.Canvas.Height / (float)currentMousePos.Y;
+                mouseDividedFactorX = CanvasSize.Width / (float)currentMousePos.X;
+                mouseDividedFactorY = CanvasSize.Height / (float)currentMousePos.Y;
             }
 
-            float dividedImageWidth = Math.Min(_form.Canvas.Width, _file.Width) / scaleFactor / mouseDividedFactorX;
-            dividedImageWidth = _scaler.ScaleFactor > scaleFactor ? -dividedImageWidth / 2 : dividedImageWidth;
+            float dividedImageWidth = Math.Min(CanvasSize.Width, _file.Width) / newScaleFactor / mouseDividedFactorX;
+            dividedImageWidth = _scaler.ScaleFactor > newScaleFactor ? -dividedImageWidth / 2 : dividedImageWidth;
 
-            float dividedImageHeight = Math.Min(_form.Canvas.Height, _file.Height) / scaleFactor / mouseDividedFactorY;
-            dividedImageHeight = _scaler.ScaleFactor > scaleFactor ? -dividedImageHeight / 2 : dividedImageHeight;
+            float dividedImageHeight = Math.Min(CanvasSize.Height, _file.Height) / newScaleFactor / mouseDividedFactorY;
+            dividedImageHeight = _scaler.ScaleFactor > newScaleFactor ? -dividedImageHeight / 2 : dividedImageHeight;
 
-            float newHorizontalValue = _form.Horizontal.Value + dividedImageWidth < 0 ? 0 :
-                _form.Horizontal.Value + dividedImageWidth;
-            newHorizontalValue = newHorizontalValue + _form.Canvas.Width /
-                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Width ?
-                _form.Horizontal.Maximum : newHorizontalValue;
+            float newHorizontalValue = XPointOfView + dividedImageWidth < 0 ? 0 :
+                XPointOfView + dividedImageWidth;
+            newHorizontalValue = newHorizontalValue + CanvasSize.Width /
+                (_scaler.ScaleFactor > newScaleFactor ? _scaler.ScaleFactor : newScaleFactor) > _file.Width ?
+                XPointOfViewMax : newHorizontalValue;
 
-            float newVerticalValue = _form.Vertical.Value + dividedImageHeight < 0 ? 0
-                : _form.Vertical.Value + dividedImageHeight;
-            newVerticalValue = newVerticalValue + _form.Canvas.Height /
-                (_scaler.ScaleFactor > scaleFactor ? _scaler.ScaleFactor : scaleFactor) > _file.Height ?
-                _form.Vertical.Maximum : newVerticalValue;
+            float newVerticalValue = YPointOfView + dividedImageHeight < 0 ? 0
+                : YPointOfView + dividedImageHeight;
+            newVerticalValue = newVerticalValue + CanvasSize.Height /
+                (_scaler.ScaleFactor > newScaleFactor ? _scaler.ScaleFactor : newScaleFactor) > _file.Height ?
+                YPointOfViewMax : newVerticalValue;
 
-            _form.Horizontal.Value = (int)Math.Round(newHorizontalValue);
-            _form.Vertical.Value = (int)Math.Round(newVerticalValue);
+            XPointOfView = (int)Math.Round(newHorizontalValue);
+            YPointOfView = (int)Math.Round(newVerticalValue);
         }
 
         private void ProgressReporter(int progress)
@@ -1086,8 +1202,11 @@ namespace RlViewer.UI
             { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
 
-        private void BlockAlignButton()
+        private bool AllowAligning()
         {
+            bool isEnabled = false;
+
+
             if (_pointSelector != null)
             {
                 var selectedPointsCount = _pointSelector.Union(_areaAligningWrapper.Select(x => x.SelectedPoint)).Count();
@@ -1096,46 +1215,25 @@ namespace RlViewer.UI
                 {
                     if (selectedPointsCount == 1 || selectedPointsCount == 3 || selectedPointsCount == 4 || selectedPointsCount == 5 || selectedPointsCount == 16)
                     {
-                        _form.AlignBtn.Enabled = true;
+                        isEnabled = true;
                     }
                     else
                     {
-                        _form.AlignBtn.Enabled = false;
+                        isEnabled = false;
                     }
                 }
                 else if (selectedPointsCount == 1 || selectedPointsCount >= 3 && selectedPointsCount <= 16)
                 {
-                    _form.AlignBtn.Enabled = true;
+                    isEnabled = true;
                 }
                 else
                 {
-                    _form.AlignBtn.Enabled = false;
+                    isEnabled = false;
                 }
             }
+            return isEnabled;
         }
 
-        public void ToggleNavigation()
-        {
-            TogglePanel(_form.NavigationPanelCb.Checked, _form.NaviSplitter);
-        }
-
-        public void ToggleFilters()
-        {
-            TogglePanel(_form.FilterPanelCb.Checked, _form.FilterSplitter);
-        }
-
-        private void TogglePanel(bool isPanelOpen, SplitContainer sp)
-        {
-            if (isPanelOpen)
-            {
-                sp.Panel2Collapsed = false;
-            }
-            else
-            {
-                sp.Panel2Collapsed = true;
-            }
-            InitDrawImage();
-        }
 
         private void InitializeWindow(bool showProgress = false)
         {
@@ -1145,64 +1243,13 @@ namespace RlViewer.UI
             _areaSelector = null;
             _tiles = null;
 
-            ThreadHelper.ThreadSafeUpdate<PictureBox>(_form.Canvas).Image = null;
-            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).Visible = false;
-            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).SmallChange = 1;
-            ThreadHelper.ThreadSafeUpdate<HScrollBar>(_form.Horizontal).LargeChange = 1;
-            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).Visible = false;
-            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).SmallChange = 1;
-            ThreadHelper.ThreadSafeUpdate<VScrollBar>(_form.Vertical).LargeChange = 1;
-            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).SmallChange = 1;
-            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).LargeChange = 1;
-            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Minimum = -16;
-            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Maximum = 16;
-            ThreadHelper.ThreadSafeUpdate<TrackBar>(_form.FilterTrackBar).Value = 0;
-            ThreadHelper.ThreadSafeUpdate<DataGridView>(_form.NavigationDgv).AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
-            ThreadHelper.ThreadSafeUpdate<Label>(_form.ScaleLabel).Text = string.Format("Масштаб: {0}%", _scaler.ScaleFactor * 100);
-            ThreadHelper.ThreadSafeUpdate<Button>(_form.AlignBtn).Enabled = false;
-            ThreadHelper.ThreadSafeUpdate<System.Windows.Forms.DataVisualization.Charting.Chart>(_form.HistogramChart)
-                .Series[0].Points.Clear();
+            OnImageDrawn(this, null);
 
-            InitProgressControls(showProgress);
-            AddToolTips(_form);
-            _chart.InitChart(_form.HistogramChart);
-        }
+            XPointOfViewMax = 0;
+            YPointOfViewMax = 0;
 
-        private void InitProgressControls(bool isVisible)
-        {
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Visible = isVisible; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripProgressBar>(_form.ProgressBar, pb => { pb.Value = 0; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.StatusLabel, lbl => { lbl.Visible = isVisible; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Visible = isVisible; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(_form.ProgressLabel, pl => { pl.Text = "0%"; });
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripDropDownButton>(_form.CancelButton, cb => { cb.Visible = isVisible; });
-        }
-
-        private void AddToolTips(ISuitableForm frm)
-        {
-            Forms.FormsHelper.AddToolTip(frm.AlignBtn, "Выровнять");
-            Forms.FormsHelper.AddToolTip(frm.AnalyzePointRb, "Анализ амплитуды");
-            Forms.FormsHelper.AddToolTip(frm.DragRb, "Перемещение по изображению");
-            Forms.FormsHelper.AddToolTip(frm.HorizontalSectionRb, "Горизонтальное сечение");
-            Forms.FormsHelper.AddToolTip(frm.LinearSectionRb, "Произвольное сечение");
-            Forms.FormsHelper.AddToolTip(frm.MarkAreaRb, "Область");
-            Forms.FormsHelper.AddToolTip(frm.MarkPointRb, "Отметка");
-            Forms.FormsHelper.AddToolTip(frm.NavigationPanelCb, "Навигация");
-            Forms.FormsHelper.AddToolTip(frm.RulerRb, "Линейка");
-            Forms.FormsHelper.AddToolTip(frm.FindPointBtn, "Поиск точки");
-            Forms.FormsHelper.AddToolTip(frm.VerticalSectionRb, "Вертикальное сечение");
-            Forms.FormsHelper.AddToolTip(frm.BrightnessRb, "Яркость");
-            Forms.FormsHelper.AddToolTip(frm.ContrastRb, "Контрастность");
-            Forms.FormsHelper.AddToolTip(frm.GammaRb, "Гамма");
-            Forms.FormsHelper.AddToolTip(frm.ResetFilter, "Сброс фильтров");
-            Forms.FormsHelper.AddToolTip(frm.FilterPanelCb, "Фильтры");
-            Forms.FormsHelper.AddToolTip(frm.ZoomInBtn, "Увеличить масштаб");
-            Forms.FormsHelper.AddToolTip(frm.ZoomOutBtn, "Уменьшить масштаб");
-            Forms.FormsHelper.AddToolTip(frm.StatisticsBtn, "Статистика");
-            Forms.FormsHelper.AddToolTip(frm.SquareAreaRb, "Трехмерный график");
-            Forms.FormsHelper.AddToolTip(frm.SharerRb, "Сравнить точки");
-            Forms.FormsHelper.AddToolTip(frm.MirrorImageBtn, "Отразить изображение");
+            _form.AlignBtn.Enabled = false;
+            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(showProgress));
         }
 
 
@@ -1210,12 +1257,10 @@ namespace RlViewer.UI
         {
             var f = _file as RlViewer.Files.LocatorFile;
 
-            var horMax = (int)(f.Width - Math.Ceiling(_form.Canvas.Size.Width / scaleFactor));
-            var verMax = (int)(f.Height - Math.Ceiling(_form.Canvas.Size.Height / scaleFactor));
-            _form.Horizontal.Maximum = horMax > 0 ? horMax : 0;
-            _form.Vertical.Maximum = verMax > 0 ? verMax : 0;
-            _form.Horizontal.Visible = _form.Horizontal.Maximum > 0 ? true : false;
-            _form.Vertical.Visible = _form.Vertical.Maximum > 0 ? true : false;
+            var horMax = (int)(f.Width - Math.Ceiling(CanvasSize.Width / scaleFactor));
+            var verMax = (int)(f.Height - Math.Ceiling(CanvasSize.Height / scaleFactor));
+            XPointOfViewMax = horMax > 0 ? horMax : 0;
+            YPointOfViewMax = verMax > 0 ? verMax : 0;
         }
 
 
@@ -1302,20 +1347,21 @@ namespace RlViewer.UI
 
         #region mouseHandlers
 
-        public void ShowMousePosition(MouseEventArgs e)
+        public string ShowMousePosition(Point mouseLocation)
         {
-            string pos = string.Empty;
+            string mouseCoordinates = string.Empty;
             if (_file != null && !_worker.IsBusy)
             {
-                if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0 &&
-                    e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
-                    && e.X > 0 && e.X / _scaler.ScaleFactor < _file.Width)
+                if (mouseLocation.Y / _scaler.ScaleFactor + YPointOfView > 0 &&
+                    mouseLocation.Y / _scaler.ScaleFactor + YPointOfView < _file.Height
+                    && mouseLocation.X > 0 && mouseLocation.X / _scaler.ScaleFactor < _file.Width)
                 {
-                    pos = string.Format("X:{0} Y:{1}",
-                        (int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
+                    mouseCoordinates = string.Format("X:{0} Y:{1}",
+                        (int)(mouseLocation.X / _scaler.ScaleFactor) + XPointOfView, (int)(mouseLocation.Y / _scaler.ScaleFactor) + YPointOfView);
                 }
             }
-            _form.CoordinatesLabel.Text = pos;
+
+            return mouseCoordinates;
         }
 
 
@@ -1327,15 +1373,15 @@ namespace RlViewer.UI
 
                 if (_form.NavigationPanelCb.Checked && _file.Navigation != null)
                 {
-                    if (e.Y / _scaler.ScaleFactor + _form.Vertical.Value > 0
-                        && e.Y / _scaler.ScaleFactor + _form.Vertical.Value < _file.Height
+                    if (e.Y / _scaler.ScaleFactor + YPointOfView > 0
+                        && e.Y / _scaler.ScaleFactor + YPointOfView < _file.Height
                         && e.X > 0 && e.X / _scaler.ScaleFactor < _file.Width)
                     {
 
                         _form.NavigationDgv.Rows.Clear();
 
-                        foreach (var i in _file.Navigation[(int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value,
-                            (int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value])
+                        foreach (var i in _file.Navigation[(int)(e.Y / _scaler.ScaleFactor) + YPointOfView,
+                            (int)(e.X / _scaler.ScaleFactor) + XPointOfView])
                         {
                             _form.NavigationDgv.Rows.Add(i.Item1, i.Item2);
                         }
@@ -1350,232 +1396,20 @@ namespace RlViewer.UI
             }
         }
 
-
-
-        public void ClickStarted(MouseEventArgs e)
+        private void AnalyzePoint(Point mouseCoords)
         {
-            if (_file != null && _drawer != null)
+            if (_analyzer == null)
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (_form.DragRb.Checked)
-                    {
-                        _form.Canvas.Cursor = Cursors.SizeAll;
-                        _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), !_form.MarkPointRb.Checked);
-                        return;
-                    }
-                    else if (_form.MarkAreaRb.Checked)
-                    {
-                        _areaSelector.ResetArea();
-                        _areaSelector.StartArea(new Point((int)Math.Ceiling(e.X / _scaler.ScaleFactor), (int)Math.Ceiling(e.Y / _scaler.ScaleFactor)),
-                            new Point((int)(_form.Horizontal.Value), (int)(_form.Vertical.Value)));
-                    }
-                    else if (_form.SharerRb.Checked)
-                    {
-                        var clickedPoint = new Point(_form.Horizontal.Value + ((int)(e.X / _scaler.ScaleFactor)),
-                        _form.Vertical.Value + ((int)(e.Y / _scaler.ScaleFactor)));
-                        try
-                        {
-                            _pointSharer.SendPoint(clickedPoint);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logging.Logger.Log(Logging.SeverityGrades.Error,
-                                string.Format("Can't send point to remote host. Reason: {0}", ex.Message));
-                        }
-                    }
-                    else if (_form.MarkPointRb.Checked)
-                    {
-
-                        if (!_settings.UsePointsForAligning)
-                        {
-
-                            try
-                            {
-                                _pointSelector.Add((RlViewer.Files.LocatorFile)_file,
-                                    new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                        (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize));
-                            }
-                            catch (Exception)
-                            {
-                                Forms.FormsHelper.ShowErrorMsg("Unable to set point");
-                            }
-                        }
-                        else
-                        {
-                            _selectedPointArea = new Behaviors.AreaSelector.AreaSelectorDecorator(_file, _settings.MaxAlignerAreaSize);
-                            _areaAligningWrapper.AddArea(_selectedPointArea);
-                            _selectedPointArea.ResetArea();
-                            _selectedPointArea.StartArea(new Point((int)Math.Ceiling(e.X / _scaler.ScaleFactor), (int)Math.Ceiling(e.Y / _scaler.ScaleFactor)),
-                                new Point((int)(_form.Horizontal.Value), (int)(_form.Vertical.Value)));
-                        }
-
-                        BlockAlignButton();
-                    }
-                    else if (_form.AnalyzePointRb.Checked)
-                    {
-                        _analyzer.StartTracing();
-                        AnalyzePoint(e);
-                    }
-                    else if (_form.VerticalSectionRb.Checked)
-                    {
-                        _section = new Behaviors.Sections.Concrete.VerticalSection(_settings.SectionSize, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-                    }
-                    else if (_form.HorizontalSectionRb.Checked)
-                    {
-                        _section = new Behaviors.Sections.Concrete.HorizontalSection(_settings.SectionSize, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-                    }
-                    else if (_form.LinearSectionRb.Checked)
-                    {
-                        _section = new Behaviors.Sections.Concrete.LinearSection(_settings.SectionSize, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-                    }
-                    else if (_form.RulerRb.Checked)
-                    {
-                        if (!_ruler.Pt1Fixed)
-                        {
-                            _ruler.Pt1 = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                    (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
-                        }
-                        else if (!_ruler.Pt2Fixed)
-                        {
-                            _ruler.Pt2 = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                                               (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
-                        }
-                    }
-                    //else if (_form.SquareAreaRb.Checked)
-                    //{
-                    //    _squareArea = new Rectangle(new Point((int)(e.X / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Horizontal.Value,
-                    //                                           (int)(e.Y / _scaler.ScaleFactor - (int)(_settings.Plot3dAreaBorderSize / 2)) + _form.Vertical.Value),
-                    //                                           new Size(_settings.Plot3dAreaBorderSize, _settings.Plot3dAreaBorderSize));
-
-                    //    try
-                    //    {
-                    //        Show3dPlot(_squareArea);
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to build 3d plot: {0}", ex.Message));
-                    //        Forms.FormsHelper.ShowErrorMsg("Невозможно построить график");
-                    //    }
-                    //}
-
-                }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    _form.Canvas.Cursor = Cursors.SizeAll;
-                    _drag.StartTracing(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor)), true);
-                }
+                return;
             }
-        }
 
-        public void TraceMouseMovement(MouseEventArgs e)
-        {
-            if (_file != null && _drawer != null)
-            {
-                if (_drag.Trace(new Point((int)(e.X / _scaler.ScaleFactor), (int)(e.Y / _scaler.ScaleFactor))))
-                {
-                    var newHor = _form.Horizontal.Value - _drag.Delta.X * _settings.DragAccelerator;
-                    var newVert = _form.Vertical.Value - _drag.Delta.Y * _settings.DragAccelerator;
-
-                    newVert = newVert < 0 ? 0 : newVert;
-                    newVert = newVert > _form.Vertical.Maximum ? _form.Vertical.Maximum : newVert;
-                    _form.Vertical.Value = newVert;
-
-                    newHor = newHor < 0 ? 0 : newHor;
-                    newHor = newHor > _form.Horizontal.Maximum ? _form.Horizontal.Maximum : newHor;
-                    _form.Horizontal.Value = newHor;
-
-                    DrawImage();
-                }
-                else if (_form.MarkAreaRb.Checked && _areaSelector != null)
-                {
-
-                    if (_areaSelector.ResizeArea(new Point((int)(e.X / _scaler.ScaleFactor),
-                                (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
-                    {
-                        _form.Canvas.Invalidate();
-                    }
-                }
-                else if (_form.MarkPointRb.Checked)
-                {
-                    if (_settings.UsePointsForAligning && _selectedPointArea != null)
-                    {
-                        if (_selectedPointArea.ResizeArea(new Point((int)(e.X / _scaler.ScaleFactor),
-                                     (int)(e.Y / _scaler.ScaleFactor)), new Point(_form.Horizontal.Value, _form.Vertical.Value)))
-                        {
-                            _form.Canvas.Invalidate();
-                        }
-                    }
-                    else
-                    {
-                        var leftTop = new Point(e.X - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2),
-                        e.Y - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2));
-                        _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
-                    }
-                }
-                //else if (_form.SquareAreaRb.Checked && _drawer != null)
-                //{
-                //    var leftTop = new Point(e.X - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2),
-                //        e.Y - (int)(_settings.Plot3dAreaBorderSize * _scaler.ScaleFactor / 2));
-                //    _form.Canvas.Image = _drawer.DrawSquareArea(leftTop, _settings.Plot3dAreaBorderSize);
-                //}
-                else if (_form.AnalyzePointRb.Checked && _analyzer != null)
-                {
-                    AnalyzePoint(e);
-                }
-                else if (_form.VerticalSectionRb.Checked && _drawer != null)
-                {
-                    _form.Canvas.Image = _drawer.DrawVerticalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
-                }
-                else if (_form.HorizontalSectionRb.Checked && _drawer != null)
-                {
-                    _form.Canvas.Image = _drawer.DrawHorizontalSection(e.Location, (int)(_settings.SectionSize * _scaler.ScaleFactor));
-                }
-                else if (_form.RulerRb.Checked && _drawer != null)
-                {
-                    if (_ruler.Pt1Fixed || _ruler.Pt2Fixed)
-                    {
-                        var endPoint = _ruler.Pt2Fixed ? _ruler.Pt2 : new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                                               (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
-
-                        _form.Canvas.Image = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                            (int)((_ruler.Pt1.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
-                            new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
-
-                        _form.DistanceLabel.Text = _ruler.GetDistance(endPoint);
-                    }
-                }
-                else if (_form.LinearSectionRb.Checked && _drawer != null)
-                {
-                    if (_section != null && _section.InitialPoint != default(Point))
-                    {
-                        var endPoint = new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                                               (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value);
-
-                        _form.Canvas.Image = _drawer.DrawLinearSection(
-                            new Point((int)((_section.InitialPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((_section.InitialPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)),
-                            new Point((int)((endPoint.X - _form.Horizontal.Value) * _scaler.ScaleFactor),
-                             (int)((endPoint.Y - _form.Vertical.Value) * _scaler.ScaleFactor)));
-                    }
-                }
-            }
-        }
-
-
-        private void AnalyzePoint(MouseEventArgs e)
-        {
             try
             {
-                if (_analyzer.Analyze(_file, new Point((int)(e.X / _scaler.ScaleFactor)
-                     + _form.Horizontal.Value, (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value)))
+                if (_analyzer.Analyze(_file, new Point((int)(mouseCoords.X / _scaler.ScaleFactor)
+                     + XPointOfView, (int)(mouseCoords.Y / _scaler.ScaleFactor) + YPointOfView)))
                 {
                     _toolTip.Show(string.Format("Амплитуда: {0}", _analyzer.Amplitude.ToString()),
-                           _win, new Point(e.Location.X, e.Location.Y - 20));
+                           _win, new Point(mouseCoords.X, mouseCoords.Y - 20));
                 }
 
             }
@@ -1586,54 +1420,385 @@ namespace RlViewer.UI
             }
         }
 
-
-
-        public void ClickFinished(MouseEventArgs e)
+        #region mouseDown
+        public void DragStart(Point mouseCoords)
         {
-            if (_file != null && _drag != null)
+            if (_file == null || _drawer == null)
             {
-                _form.Canvas.Cursor = Cursors.Arrow;
-                _drag.StopTracing();
-                if (e.Button == MouseButtons.Left && _areaSelector != null && _analyzer != null)
-                {
-                    if (_areaSelector.IsActive)
-                    {
-                        _areaSelector.StopResizing();
-                    }
-
-                    _analyzer.StopTracing();
-                    _toolTip.Hide(_win);
-
-                    if (_settings.UsePointsForAligning)
-                    {
-                        if (_form.MarkPointRb.Checked)
-                        {
-                            using (Forms.EprInputForm epr = new Forms.EprInputForm())
-                            {
-                                if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                                {
-                                    _selectedPointArea.StopResizing(epr.EprValue);
-                                }
-                            }
-                            if (_selectedPointArea.SelectedPoint == null)
-                            {
-                                _areaAligningWrapper.RemoveArea();
-                            }
-                        }
-                    }
-
-                    if (_form.LinearSectionRb.Checked || _form.VerticalSectionRb.Checked || _form.HorizontalSectionRb.Checked)
-                    {
-                        ShowSection(_section, new Point((int)(e.X / _scaler.ScaleFactor) + _form.Horizontal.Value,
-                                (int)(e.Y / _scaler.ScaleFactor) + _form.Vertical.Value));
-                    }
-
-                }
-
-                _form.Canvas.Invalidate();
+                return;
             }
 
+            _drag.StartTracing(new Point((int)(mouseCoords.X / _scaler.ScaleFactor), (int)(mouseCoords.Y / _scaler.ScaleFactor)));
         }
+
+        public void SelectAreaStart(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            _areaSelector.ResetArea();
+            _areaSelector.StartArea(new Point((int)Math.Ceiling(mouseCoords.X / _scaler.ScaleFactor), (int)Math.Ceiling(mouseCoords.Y / _scaler.ScaleFactor)),
+                new Point((int)(XPointOfView), (int)(YPointOfView)));
+
+        }
+
+        public void ShareCoords(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+
+            var clickedPoint = new Point(XPointOfView + ((int)(mouseCoords.X / _scaler.ScaleFactor)),
+                       YPointOfView + ((int)(mouseCoords.Y / _scaler.ScaleFactor)));
+            try
+            {
+                _pointSharer.SendPoint(clickedPoint);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error,
+                    string.Format("Can't send point to remote host. Reason: {0}", ex.Message));
+            }
+
+
+        }
+
+        public void SelectPointStart(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            if (_settings.UseAreasForAligning)
+            {
+                try
+                {
+                    _selectedPointArea = new Behaviors.AreaSelector.AreaSelectorDecorator(_file, _settings.MaxAlignerAreaSize);                  
+                    _selectedPointArea.ResetArea();
+                    _selectedPointArea.StartArea(new Point((int)Math.Ceiling(mouseCoords.X / _scaler.ScaleFactor), (int)Math.Ceiling(mouseCoords.Y / _scaler.ScaleFactor)),
+                        new Point((int)(XPointOfView), (int)(YPointOfView)));
+
+                }
+                catch (Exception)
+                {
+                    Forms.FormsHelper.ShowErrorMsg("Unable to set point");
+                }
+            }
+            else
+            {
+                using (Forms.EprInputForm eprForm = new Forms.EprInputForm())
+                {
+                    if (eprForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        _pointSelector.Add((RlViewer.Files.LocatorFile)_file, new Point((int)(mouseCoords.X / _scaler.ScaleFactor) + XPointOfView,
+                        (int)(mouseCoords.Y / _scaler.ScaleFactor) + YPointOfView), new Size(_settings.SelectorAreaSize, _settings.SelectorAreaSize), eprForm.EprValue);
+                    }
+                }
+
+            }
+
+            OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
+        }
+
+        public void GetPointAmplitudeStart(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            _analyzer.StartTracing();
+            AnalyzePoint(mouseCoords);
+        }
+
+        public void VerticalSectionStart(Point mouseCoord)
+        {
+
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            _section = new Behaviors.Sections.Concrete.VerticalSection(_settings.SectionSize, new Point((int)(mouseCoord.X / _scaler.ScaleFactor) + XPointOfView,
+                                (int)(mouseCoord.Y / _scaler.ScaleFactor) + YPointOfView));
+        }
+
+
+        public void HorizontalSectionStart(Point mouseCoord)
+        {
+
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            _section = new Behaviors.Sections.Concrete.HorizontalSection(_settings.SectionSize, new Point((int)(mouseCoord.X / _scaler.ScaleFactor) + XPointOfView,
+                                (int)(mouseCoord.Y / _scaler.ScaleFactor) + YPointOfView));
+        }
+
+        public void LinearSectionStart(Point mouseCoord)
+        {
+
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            _section = new Behaviors.Sections.Concrete.LinearSection(_settings.SectionSize, new Point((int)(mouseCoord.X / _scaler.ScaleFactor) + XPointOfView,
+                                (int)(mouseCoord.Y / _scaler.ScaleFactor) + YPointOfView));
+        }
+
+
+        public void RulerStart(Point mouseCoord)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+
+            if (!_ruler.Pt1Fixed)
+            {
+                _ruler.Pt1 = new Point((int)(mouseCoord.X / _scaler.ScaleFactor) + XPointOfView,
+                        (int)(mouseCoord.Y / _scaler.ScaleFactor) + YPointOfView);
+            }
+            else if (!_ruler.Pt2Fixed)
+            {
+                _ruler.Pt2 = new Point((int)(mouseCoord.X / _scaler.ScaleFactor) + XPointOfView,
+                                                   (int)(mouseCoord.Y / _scaler.ScaleFactor) + YPointOfView);
+            }
+        }
+
+        #endregion
+
+        #region mouseMove
+
+        /// <summary>
+        /// Sets point of view to the selected point
+        /// </summary>
+        /// <param name="mouseCoords">Current mouse local coords</param>
+        /// <returns>True if dragged succeeded, false otherwise</returns>
+        public bool Drag(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return false;
+            }
+
+            var dragged = _drag.Trace(new Point((int)(mouseCoords.X / _scaler.ScaleFactor), (int)(mouseCoords.Y / _scaler.ScaleFactor)));
+
+            if (dragged)
+            {
+                var newHor = XPointOfView - _drag.Delta.X * _settings.DragAccelerator;
+                var newVert = YPointOfView - _drag.Delta.Y * _settings.DragAccelerator;
+
+                newVert = newVert < 0 ? 0 : newVert;
+                newVert = newVert > YPointOfViewMax ? YPointOfViewMax : newVert;
+                YPointOfView = newVert;
+
+                newHor = newHor < 0 ? 0 : newHor;
+                newHor = newHor > XPointOfViewMax ? XPointOfViewMax : newHor;
+                XPointOfView = newHor;
+
+                DrawImage();
+            }
+
+            return dragged;
+        }
+
+        public void SelectArea(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            if (_areaSelector != null)
+            {
+                if (_areaSelector.ResizeArea(new Point((int)(mouseCoords.X / _scaler.ScaleFactor),
+                                               (int)(mouseCoords.Y / _scaler.ScaleFactor)), new Point(XPointOfView, YPointOfView)))
+                {
+                    _form.Canvas.Invalidate();
+                }
+            }
+        }
+
+        public void SelectPoint(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            if (_settings.UseAreasForAligning)
+            {
+                if (_selectedPointArea != null)
+                {
+                    if (_selectedPointArea.ResizeArea(new Point((int)(mouseCoords.X / _scaler.ScaleFactor),
+                                 (int)(mouseCoords.Y / _scaler.ScaleFactor)), new Point(XPointOfView, YPointOfView)))
+                    {
+                        OnImageDrawn(this, _drawer.DrawAlignerAreas(new Point(XPointOfView, YPointOfView), _selectedPointArea));
+                    }
+                }
+            }
+            else
+            {
+                var leftTop = new Point(mouseCoords.X - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2),
+                mouseCoords.Y - (int)(_settings.SelectorAreaSize * _scaler.ScaleFactor / 2));
+                var img = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
+                OnImageDrawn(this, img);
+            }
+        }
+
+        public void GetPointAmplitude(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            AnalyzePoint(mouseCoords);
+        }
+
+        public void VerticalSection(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            var img = _drawer.DrawVerticalSection(mouseCoords, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+            OnImageDrawn(this, img);
+        }
+
+        public void HorizontalSection(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            var img = _drawer.DrawHorizontalSection(mouseCoords, (int)(_settings.SectionSize * _scaler.ScaleFactor));
+            OnImageDrawn(this, img);
+        }
+
+        public void LinearSection(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+
+            if (_section != null && _section.InitialPoint != default(Point))
+            {
+                var endPoint = new Point((int)(mouseCoords.X / _scaler.ScaleFactor) + XPointOfView,
+                                                       (int)(mouseCoords.Y / _scaler.ScaleFactor) + YPointOfView);
+
+                var img = _drawer.DrawLinearSection(
+                     new Point((int)((_section.InitialPoint.X - XPointOfView) * _scaler.ScaleFactor),
+                      (int)((_section.InitialPoint.Y - YPointOfView) * _scaler.ScaleFactor)),
+                     new Point((int)((endPoint.X - XPointOfView) * _scaler.ScaleFactor),
+                      (int)((endPoint.Y - YPointOfView) * _scaler.ScaleFactor)));
+
+                OnImageDrawn(this, img);
+            }
+        }
+
+        public void GetDistance(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            if (_ruler.Pt1Fixed || _ruler.Pt2Fixed)
+            {
+                var endPoint = _ruler.Pt2Fixed ? _ruler.Pt2 : new Point((int)(mouseCoords.X / _scaler.ScaleFactor) + XPointOfView,
+                                                       (int)(mouseCoords.Y / _scaler.ScaleFactor) + YPointOfView);
+
+                var img = _drawer.DrawRuler(new Point((int)((_ruler.Pt1.X - XPointOfView) * _scaler.ScaleFactor),
+                    (int)((_ruler.Pt1.Y - YPointOfView) * _scaler.ScaleFactor)),
+                    new Point((int)((endPoint.X - XPointOfView) * _scaler.ScaleFactor),
+                     (int)((endPoint.Y - YPointOfView) * _scaler.ScaleFactor)));
+
+                OnImageDrawn(this, img);
+                OnDistanceChanged(this, new Events.RulerDistanceChangedEventArgs(_ruler.GetDistance(endPoint)));
+            }
+        }
+
+        #endregion
+
+        #region mouseUp
+        public void DragFinish()
+        {
+            if (_file == null || _drawer == null || _drag == null)
+            {
+                return;
+            }
+
+            _drag.StopTracing();
+        }
+
+
+        public void SelectAreaFinish(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null || _areaSelector == null)
+            {
+                return;
+            }
+
+            if (_areaSelector.IsActive)
+            {
+                _areaSelector.StopResizing();
+            }
+        }
+
+
+        public void SelectPointFinish(Point mouseCoords)
+        {
+            if (_file == null || _drawer == null)
+            {
+                return;
+            }
+
+            if (_selectedPointArea != null && _selectedPointArea.SelectedPoint == null)
+            {
+                using (var eprForm = new Forms.EprInputForm())
+                {
+                    if (eprForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        _selectedPointArea.StopResizing(eprForm.EprValue);
+                        _areaAligningWrapper.AddArea(_selectedPointArea);
+                    }
+                    else
+                    {
+                        _selectedPointArea.ResetArea();
+                        _selectedPointArea.StopResizing();
+                    }
+                }
+
+            }
+        }
+
+        public void StopPointAnalyzer()
+        {
+            _analyzer.StopTracing();
+            _toolTip.Hide(_win);
+        }
+
+        public void StopSection(Point mouseCoords)
+        {
+            ShowSection(_section, new Point((int)(mouseCoords.X / _scaler.ScaleFactor) + XPointOfView,
+                        (int)(mouseCoords.Y / _scaler.ScaleFactor) + YPointOfView));
+        }
+
+        #endregion
 
         #endregion
 
@@ -1656,7 +1821,6 @@ namespace RlViewer.UI
                 _pointSharer.Dispose();
             }
 
-            OnImageDrawn -= (s, img) => _form.Canvas.Image = img;
             _toolTip.Dispose();
             _disposed = true;
 
@@ -1697,7 +1861,7 @@ namespace RlViewer.UI
                     if (settgingsForm.ShowDialog() == DialogResult.OK)
                     {
                         InitDrawImage();
-                        BlockAlignButton();
+                        OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
                     }
                 }
             }

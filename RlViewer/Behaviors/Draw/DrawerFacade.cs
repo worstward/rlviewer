@@ -28,7 +28,7 @@ namespace RlViewer.Behaviors.Draw
         private ItemDrawer _iDrawer;
         private TileDrawer _tDrawer;
         private Size _screenSize;
-        
+
         private Image _canvas;
 
         public ColorPalette Palette
@@ -82,7 +82,7 @@ namespace RlViewer.Behaviors.Draw
             if (_canvas != null)
             {
                 return _iDrawer.DrawSection(_canvas, new Point(current.X - size / 2, current.Y),
-                                           new Point(current.X + size / 2, current.Y)); 
+                                           new Point(current.X + size / 2, current.Y));
             }
             return null;
         }
@@ -111,6 +111,16 @@ namespace RlViewer.Behaviors.Draw
             if (_canvas != null)
             {
                 return _iDrawer.DrawSection(_canvas, from, to);
+            }
+            return null;
+        }
+
+        public Image DrawAlignerAreas(Point pointOfView, AreaSelector.AreaSelectorDecorator areaSelector)
+        {
+            if (_canvas != null)
+            {
+
+                return _iDrawer.DrawAlignerAreas(_canvas, areaSelector, pointOfView, _screenSize);
             }
             return null;
         }

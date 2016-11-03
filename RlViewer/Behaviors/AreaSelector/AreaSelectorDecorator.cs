@@ -45,11 +45,13 @@ namespace RlViewer.Behaviors.AreaSelector
 
             if (Area.Width * Area.Height > _maxAreaSize)
             {
+                ResetArea();
                 return;
             }
 
             if (Area.Location.X > _file.Width || Area.Location.Y > _file.Height || Area.Width <= 0 || Area.Height <= 0)
             {
+                ResetArea();
                 return;
             }
 

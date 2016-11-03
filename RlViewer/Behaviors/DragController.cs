@@ -33,9 +33,9 @@ namespace RlViewer.Behaviors
         /// </summary>
         /// <param name="location">Current mouse location</param>
         /// <param name="canDrag">Determines if panning is allowed</param>
-        public void StartTracing(Point location, bool isMouseDown)
+        public void StartTracing(Point location)
         {
-            _canDrag = isMouseDown;
+            _canDrag = true;
             _previousMouseLocation = location;
         }
 

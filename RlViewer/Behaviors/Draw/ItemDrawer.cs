@@ -15,7 +15,8 @@ namespace RlViewer.Behaviors.Draw
     {
         public ItemDrawer(PointSelector.PointSelector pointSelector,
             AreaSelector.AreaSelector areaSelector, RlViewer.Behaviors.Scaling.Scaler scaler,
-            AreaSelector.AreaSelectorsAlignerContainer areaAlignerWrapper) : base(scaler)
+            AreaSelector.AreaSelectorsAlignerContainer areaAlignerWrapper)
+            : base(scaler)
         {
             _pointSelector = pointSelector;
             _areaSelector = areaSelector;
@@ -25,7 +26,7 @@ namespace RlViewer.Behaviors.Draw
         private PointSelector.PointSelector _pointSelector;
         private AreaSelector.AreaSelector _areaSelector;
         private AreaSelector.AreaSelectorsAlignerContainer _areaAlignerWrapper;
-        
+
 
         public void DrawItems(Graphics g, Point leftTopPointOfView, Size screenSize)
         {
@@ -47,7 +48,7 @@ namespace RlViewer.Behaviors.Draw
                     g.DrawLine(pen, pt1, pt2);
                 }
             }
-            
+
             return img;
         }
         public Image DrawSharedPoint(Image canvas, Point shared, Point leftTopPointOfView, Size screenSize)
@@ -57,7 +58,7 @@ namespace RlViewer.Behaviors.Draw
 
             using (var g = Graphics.FromImage(canvas))
             {
-                DrawPoint(g, screen, shared, Brushes.Orange);                  
+                DrawPoint(g, screen, shared, Brushes.Orange);
             }
 
             return canvas;
@@ -74,7 +75,35 @@ namespace RlViewer.Behaviors.Draw
                         new Size((int)(borderSize * Scaler.ScaleFactor), (int)(borderSize * Scaler.ScaleFactor))));
                 }
             }
-            
+
+            return img;
+        }
+
+
+        public Image DrawAlignerAreas(Image canvas, AreaSelector.AreaSelectorDecorator areaSelector, Point pointOfView, Size screenSize)
+        {
+            Image img = (Image)canvas.Clone();
+            using (var g = Graphics.FromImage(img))
+            {
+
+                var screen = new RectangleF(pointOfView.X, pointOfView.Y, screenSize.Width / Scaler.ScaleFactor, screenSize.Height / Scaler.ScaleFactor);
+
+
+
+                var areaRect = new RectangleF(areaSelector.Area.Location.X, areaSelector.Area.Location.Y, areaSelector.Area.Width, areaSelector.Area.Height);
+
+                    if (areaRect.IntersectsWith(screen))
+                    {
+                        using (Pen p = new Pen(Color.Red))
+                        {
+                            g.DrawRectangle(p, (int)(areaRect.X - screen.X) * Scaler.ScaleFactor,
+                               (int)(areaRect.Y - screen.Y) * Scaler.ScaleFactor,
+                               areaRect.Width * Scaler.ScaleFactor, areaRect.Height * Scaler.ScaleFactor);
+                        }
+                    }
+                
+                DrawPoints(g, screen, _areaAlignerWrapper.Where(x => x.SelectedPoint != null).Select(x => x.SelectedPoint.Location));
+            }
             return img;
         }
 
@@ -88,12 +117,12 @@ namespace RlViewer.Behaviors.Draw
 
                 if (areaRect.IntersectsWith(screen))
                 {
-                    using(Pen p = new Pen(Color.Red))
+                    using (Pen p = new Pen(Color.Red))
                     {
                         g.DrawRectangle(p, (int)(areaRect.X - screen.X) * Scaler.ScaleFactor,
                            (int)(areaRect.Y - screen.Y) * Scaler.ScaleFactor,
                            areaRect.Width * Scaler.ScaleFactor, areaRect.Height * Scaler.ScaleFactor);
-                    }                   
+                    }
                 }
             }
             DrawPoints(g, screen, _areaAlignerWrapper.Where(x => x.SelectedPoint != null).Select(x => x.SelectedPoint.Location));
@@ -105,7 +134,7 @@ namespace RlViewer.Behaviors.Draw
             {
                 DrawPoint(g, screen, point, Brushes.Red);
             }
-            
+
         }
 
         private void DrawPoint(Graphics g, RectangleF screen, Point point, Brush pointBrush)
@@ -131,6 +160,6 @@ namespace RlViewer.Behaviors.Draw
             }
         }
 
-       
+
     }
 }

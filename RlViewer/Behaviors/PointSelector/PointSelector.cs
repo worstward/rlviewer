@@ -11,7 +11,7 @@ namespace RlViewer.Behaviors.PointSelector
 
         public PointSelector()
         {
- 
+
         }
 
         public PointSelector(IList<SelectedPoint> points)
@@ -65,57 +65,51 @@ namespace RlViewer.Behaviors.PointSelector
 
 
 
-        public virtual void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize)
+        public virtual void Add(RlViewer.Files.LocatorFile file, System.Drawing.Point location, System.Drawing.Size selectorSize, float rcsValue)
         {
             if (SelectedPoints.Count < 16)
             {
                 if (location.X >= 0 && location.X < file.Width && location.Y >= 0 && location.Y < file.Height)
                 {
-                    using (Forms.EprInputForm epr = new Forms.EprInputForm())
+                    int width = selectorSize.Width;
+                    int height = selectorSize.Height;
+
+
+                    int x = (location.X - (selectorSize.Width / 2));
+
+                    if (x < 0)
                     {
-                        if (epr.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-
-                            int width = selectorSize.Width;
-                            int height = selectorSize.Height;
-
-
-                            int x = (location.X - (selectorSize.Width / 2));
-                            
-                            if (x < 0)
-                            {
-                                width = width + x;
-                                x = 0;
-                            }
-                            
-                            if (x + width > file.Width)
-                            {
-                                width = file.Width - x;
-                            }
-
-                            int y = (location.Y - (selectorSize.Height / 2));
-
-                            if (y < 0)
-                            {
-                                height = height + y;
-                                y = 0;
-                            }
-
-                            if (y + height > file.Height)
-                            {
-                                height = file.Height - y;
-                            }
-                            
-                            System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
-
-                            var selectedPoint = new SelectedPoint(file, file.GetMaxSampleLocation(area), epr.EprValue);
-
-                            if (!SelectedPoints.Any(p => p.Location.Equals(selectedPoint.Location)))
-                            {
-                                SelectedPoints.Add(selectedPoint);
-                            }        
-                        }
+                        width = width + x;
+                        x = 0;
                     }
+
+                    if (x + width > file.Width)
+                    {
+                        width = file.Width - x;
+                    }
+
+                    int y = (location.Y - (selectorSize.Height / 2));
+
+                    if (y < 0)
+                    {
+                        height = height + y;
+                        y = 0;
+                    }
+
+                    if (y + height > file.Height)
+                    {
+                        height = file.Height - y;
+                    }
+
+                    System.Drawing.Rectangle area = new System.Drawing.Rectangle(x, y, width, height);
+
+                    var selectedPoint = new SelectedPoint(file, file.GetMaxSampleLocation(area), rcsValue);
+
+                    if (!SelectedPoints.Any(p => p.Location.Equals(selectedPoint.Location)))
+                    {
+                        SelectedPoints.Add(selectedPoint);
+                    }
+
                 }
 
             }
