@@ -34,7 +34,6 @@ namespace RlViewer.Behaviors.CrossAppCommunication.PointSharer
         private int _shiftX;
         private int _shiftY;
 
-
         public event GotDataEventHandler DataReceived
         {
             add

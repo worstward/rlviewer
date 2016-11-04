@@ -9,25 +9,25 @@ namespace RlViewer.Navigation
     public static class NaviStringConverters
     {
 
-        public static Tuple<string, string>[] NaviInfo(this NavigationString s)
+        public static NavigationItem[] NaviInfo(this NavigationString s)
         {
-            return new Tuple<string, string>[] 
+            return new NavigationItem[] 
             {
-                new Tuple<string, string>("Широта",  ParseLatitude(s.AircraftLatitude)),
-                new Tuple<string, string>("Долгота", ParseLongitude(s.AircraftLongitude)),
-                new Tuple<string, string>("Курс",    ParseToDegrees(s.Track)),
-                new Tuple<string, string>("Время",    s.TimeArm.ToString())
+                new NavigationItem("Широта",  ParseLatitude(s.AircraftLatitude)),
+                new NavigationItem("Долгота", ParseLongitude(s.AircraftLongitude)),
+                new NavigationItem("Курс",    ParseToDegrees(s.Track)),
+                new NavigationItem("Время",    s.TimeArm.ToString())
             };
         }
 
-        public static Tuple<string, string>[] NaviInfo(this NavigationString s, int sampleNum, RlViewer.Behaviors.Navigation.NavigationComputing computer)
+        public static NavigationItem[] NaviInfo(this NavigationString s, int sampleNum, RlViewer.Behaviors.Navigation.NavigationComputing computer)
         {
-            return new Tuple<string, string>[] 
+            return new NavigationItem[] 
             {
-                new Tuple<string, string>("Широта", ParseLatitude(computer.InterpolateLatitude(sampleNum, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
-                new Tuple<string, string>("Долгота",ParseLongitude(computer.InterpolateLongtitude(sampleNum, s.AircraftLongitude, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
-                new Tuple<string, string>("Курс", ParseToDegrees(s.Track)),
-                new Tuple<string, string>("Время",    s.TimeArm.ToString())
+                new NavigationItem("Широта", ParseLatitude(computer.InterpolateLatitude(sampleNum, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
+                new NavigationItem("Долгота",ParseLongitude(computer.InterpolateLongtitude(sampleNum, s.AircraftLongitude, s.AircraftLatitude, s.AircraftHeight, s.Track, s.Board))),
+                new NavigationItem("Курс", ParseToDegrees(s.Track)),
+                new NavigationItem("Время",    s.TimeArm.ToString())
             };
         }
 

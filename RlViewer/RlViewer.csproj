@@ -298,6 +298,12 @@
     <Compile Include="Forms\AggregatorOrderForm.Designer.cs">
       <DependentUpon>AggregatorOrderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\BindableToolStripProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\BindableToolStripLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\ChartHelper.cs" />
     <Compile Include="Forms\FilePreviewForm.cs">
       <SubType>Form</SubType>
@@ -389,11 +395,12 @@
     <Compile Include="ThreadHelpers.cs" />
     <Compile Include="AdminChecker.cs" />
     <Compile Include="UI\Events\AlignPossibilityEventArgs.cs" />
+    <Compile Include="UI\Events\ErrorOccuredEventArgs.cs" />
+    <Compile Include="UI\Events\OnPointOfViewChangedEventArgs.cs" />
+    <Compile Include="UI\Events\ProgressChangedEventArgs.cs" />
     <Compile Include="UI\Events\ProgressControlsVisibilityEventArgs.cs" />
     <Compile Include="UI\Events\InitWindowEventArgs.cs" />
-    <Compile Include="UI\Events\RulerDistanceChangedEventArgs.cs" />
-    <Compile Include="UI\Events\ScaleFactorChangedEventArgs.cs" />
-    <Compile Include="UI\Events\TaskNameEventArgs.cs" />
+    <Compile Include="Navigation\NavigationItem.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
@@ -444,7 +451,6 @@
     <Compile Include="Factories\File\Concrete\RawFactory.cs" />
     <Compile Include="UI\GuiFacade.cs" />
     <Compile Include="Behaviors\Filters\ImageFilterProxy.cs" />
-    <Compile Include="UI\ISuitableForm.cs" />
     <Compile Include="UI\KeyPressProcessor.cs" />
     <Compile Include="Forms\LogForm.cs">
       <SubType>Form</SubType>

@@ -11,27 +11,32 @@ using System.Windows.Forms;
 namespace RlViewer.Forms
 {
 
-    public partial class MainForm : Form, RlViewer.UI.ISuitableForm
+    public partial class MainForm : Form
     {
         public MainForm()
         {
             InitializeComponent();
 
             GuiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
-            GuiFacade.OnTaskNameChanged += (s, e) => ChangeStatusText(e.TaskName);
-            GuiFacade.OnScaleFactorChanged += (s, e) => scaleLabel.Text = string.Format("Масштаб: {0}%", e.ScaleFactor * 100);
             GuiFacade.OnProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
-
+            GuiFacade.OnProgressChanged += (s, e) => ReportProgress(e.Progress);
             GuiFacade.OnImageDrawn += (s, image) => pictureBox1.Image = image;
-            GuiFacade.OnDistanceChanged += (s, e) => distanceLabel.Text = e.DistanceString;
             GuiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
+            GuiFacade.OnErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
 
 
-            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), () => this.Text = GuiFacade.OpenFile(),
+            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), () =>
+                {
+                    navigationDgv.Rows.Clear();
+                    this.Text = GuiFacade.OpenFile();
+                },
                  () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
                  () => GuiFacade.ReportDialog(), () => GuiFacade.AggregateFiles(), () => GuiFacade.EmbedNavigation());
 
             InitForm();
+
+
+
             InitDataBindings();
         }
 
@@ -47,7 +52,6 @@ namespace RlViewer.Forms
             navigationDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             alignBtn.Enabled = false;
-
             filterTrackBar.SmallChange = 1;
             filterTrackBar.LargeChange = 1;
             filterTrackBar.Minimum = -16;
@@ -62,16 +66,31 @@ namespace RlViewer.Forms
 
         private void InitDataBindings()
         {
+            var scaleBinding = new Binding("Text", GuiFacade, "ScaleFactor", true, DataSourceUpdateMode.OnPropertyChanged);
+            scaleBinding.Format += delegate(object sender, ConvertEventArgs convertedArgs)
+            {
+                convertedArgs.Value = string.Format("Масштаб: {0}%", (Convert.ToSingle(convertedArgs.Value)) * 100);
+            };
+
+            scaleLabel.DataBindings.Add(scaleBinding);
+            distanceLabel.DataBindings.Add("Text", GuiFacade, "RulerDistance", false, DataSourceUpdateMode.OnPropertyChanged);
+            statusLabel.DataBindings.Add("Text", GuiFacade, "CurrentTaskName", false, DataSourceUpdateMode.OnPropertyChanged);
             verticalScrollBar.DataBindings.Add("Value", GuiFacade, "YPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
             verticalScrollBar.DataBindings.Add("Maximum", GuiFacade, "YPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
             horizontalScrollBar.DataBindings.Add("Value", GuiFacade, "XPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
             horizontalScrollBar.DataBindings.Add("Maximum", GuiFacade, "XPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        private void ChangeStatusText(string statusText)
+
+        private void ReportProgress(int progress)
         {
-            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripLabel>(statusLabel, lbl => { lbl.Text = statusText; });
+            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripProgressBar>(progressBar, pb => { pb.Value = progress; });
+            ThreadHelper.ThreadSafeUpdateToolStrip<ToolStripStatusLabel>(progressLabel, pl =>
+            { pl.Text = string.Format("{0} %", progress.ToString()); });
         }
+
+
+
 
         private void InitProgressControls(bool isVisible)
         {
@@ -81,6 +100,7 @@ namespace RlViewer.Forms
             progressLabel.Visible = isVisible;
             progressLabel.Text = "0%";
             cancelBtn.Visible = isVisible;
+
         }
 
 
@@ -91,106 +111,9 @@ namespace RlViewer.Forms
         {
             get
             {
-                return _guiFacade = _guiFacade ?? new UI.GuiFacade(this, pictureBox1.Size);
+                return _guiFacade = _guiFacade ?? new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
             }
         }
-
-
-        #region ISuitableForm controls
-        public PictureBox Canvas
-        {
-            get
-            {
-                return pictureBox1;
-            }
-        }
-
-        public TrackBar FilterTrackBar
-        {
-            get
-            {
-                return filterTrackBar;
-            }
-        }
-
-
-        public ToolStripProgressBar ProgressBar
-        {
-            get
-            {
-                return progressBar;
-            }
-        }
-        public ToolStripStatusLabel ProgressLabel
-        {
-            get
-            {
-                return progressLabel;
-            }
-        }
-
-
-        public Button AlignBtn
-        {
-            get
-            {
-                return alignBtn;
-            }
-        }
-
-
-        public RadioButton MarkPointRb
-        {
-            get
-            {
-                return markPointRb;
-            }
-        }
-        public RadioButton MarkAreaRb
-        {
-            get
-            {
-                return markAreaRb;
-            }
-        }
-
-      
-        public RadioButton SharerRb
-        {
-            get
-            {
-                return sharerRb;
-            }
-        }
-
-        public CheckBox NavigationPanelCb
-        {
-            get
-            {
-                return navigationPanelCb;
-            }
-        }
-
-       
-        public DataGridView NavigationDgv
-        {
-            get
-            {
-                return navigationDgv;
-            }
-        }
-
-        public ToolStripStatusLabel DistanceLabel
-        {
-            get
-            {
-                return distanceLabel;
-            }
-        }
-
-
-        #endregion
-
 
         public void ToggleNavigation()
         {
@@ -233,7 +156,7 @@ namespace RlViewer.Forms
             if (analyzeRb.Checked)
             {
                 Cursor = Cursors.Cross;
-                GuiFacade.GetPointAmplitudeStart(e.Location);
+                GuiFacade.GetPointAmplitudeStart(e.Location, pictureBox1);
             }
             else
             {
@@ -273,7 +196,7 @@ namespace RlViewer.Forms
         private void MouseMoving(MouseEventArgs e)
         {
             GuiFacade.Drag(e.Location);
-            
+
             if (markAreaRb.Checked)
             {
                 GuiFacade.SelectArea(e.Location);
@@ -284,7 +207,7 @@ namespace RlViewer.Forms
             }
             else if (analyzeRb.Checked)
             {
-                GuiFacade.GetPointAmplitude(e.Location);
+                GuiFacade.GetPointAmplitude(e.Location, pictureBox1);
             }
             else if (verticalSectionRb.Checked)
             {
@@ -322,7 +245,7 @@ namespace RlViewer.Forms
                 }
                 else if (analyzeRb.Checked)
                 {
-                    GuiFacade.StopPointAnalyzer();
+                    GuiFacade.StopPointAnalyzer(pictureBox1);
                 }
                 else if (verticalSectionRb.Checked || horizontalSectionRb.Checked || linearSectionRb.Checked)
                 {
@@ -347,6 +270,7 @@ namespace RlViewer.Forms
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            navigationDgv.Rows.Clear();
             Text = GuiFacade.OpenFile();
         }
 
@@ -369,7 +293,19 @@ namespace RlViewer.Forms
         {
             MouseMoving(e);
             coordinatesLabel.Text = GuiFacade.ShowMousePosition(e.Location);
-            GuiFacade.ShowNavigation(e);
+
+            if (navigationPanelCb.Checked)
+            {
+                var currentNavigation = GuiFacade.ShowNavigation(e);
+                if (currentNavigation != null)
+                {
+                    navigationDgv.Rows.Clear();
+                    foreach (var item in currentNavigation)
+                    {
+                        navigationDgv.Rows.Add(item.ParameterName, item.ParameterValue);
+                    }
+                }
+            }
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -406,7 +342,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                GuiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
+                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
             }
         }
 
@@ -414,7 +350,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                GuiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
+                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
             }
         }
 
@@ -422,7 +358,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                GuiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
+                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
             }
         }
 
@@ -490,6 +426,7 @@ namespace RlViewer.Forms
 
         private void resetFilterBtn_Click(object sender, EventArgs e)
         {
+            filterTrackBar.Value = 0;
             GuiFacade.ResetFilter();
         }
 
@@ -500,6 +437,7 @@ namespace RlViewer.Forms
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
+            navigationDgv.Rows.Clear();
             Text = GuiFacade.OpenFileDragDrop(e);
         }
 
@@ -526,6 +464,7 @@ namespace RlViewer.Forms
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
         {
             GuiFacade.ResetRuler();
+            distanceLabel.Text = string.Empty;
         }
 
         private void zoomOutBtn_Click(object sender, EventArgs e)
@@ -594,6 +533,11 @@ namespace RlViewer.Forms
             Forms.FormsHelper.AddToolTip(squareAreaRb, "Трехмерный график");
             Forms.FormsHelper.AddToolTip(sharerRb, "Сравнить точки");
             Forms.FormsHelper.AddToolTip(mirrorImageBtn, "Отразить изображение");
+        }
+
+        private void sharerRb_CheckedChanged(object sender, EventArgs e)
+        {
+            GuiFacade.AllowRemoteDataReceiving = ((RadioButton)sender).Checked;
         }
 
     }

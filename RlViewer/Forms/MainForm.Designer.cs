@@ -64,8 +64,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.navigationDgv = new System.Windows.Forms.DataGridView();
-            this.paramColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.paramNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.paramValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.dragRb = new System.Windows.Forms.RadioButton();
             this.markPointRb = new System.Windows.Forms.RadioButton();
@@ -88,9 +88,9 @@
             this.scaleLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.coordinatesLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.distanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.progressLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBtn = new System.Windows.Forms.ToolStripDropDownButton();
@@ -385,7 +385,7 @@
             this.naviSplitter.Panel2.Controls.Add(this.navigationDgv);
             this.naviSplitter.Panel2Collapsed = true;
             this.naviSplitter.Size = new System.Drawing.Size(872, 519);
-            this.naviSplitter.SplitterDistance = 649;
+            this.naviSplitter.SplitterDistance = 643;
             this.naviSplitter.SplitterWidth = 6;
             this.naviSplitter.TabIndex = 19;
             this.naviSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -463,8 +463,8 @@
             this.navigationDgv.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.navigationDgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.navigationDgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.paramColumn,
-            this.valueColumn});
+            this.paramNameColumn,
+            this.paramValueColumn});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -490,19 +490,17 @@
             this.navigationDgv.Size = new System.Drawing.Size(96, 100);
             this.navigationDgv.TabIndex = 0;
             // 
-            // paramColumn
+            // paramNameColumn
             // 
-            this.paramColumn.HeaderText = "Параметр";
-            this.paramColumn.Name = "paramColumn";
-            this.paramColumn.ReadOnly = true;
-            this.paramColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.paramNameColumn.HeaderText = "Параметр";
+            this.paramNameColumn.Name = "paramNameColumn";
+            this.paramNameColumn.ReadOnly = true;
             // 
-            // valueColumn
+            // paramValueColumn
             // 
-            this.valueColumn.HeaderText = "Значение";
-            this.valueColumn.Name = "valueColumn";
-            this.valueColumn.ReadOnly = true;
-            this.valueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.paramValueColumn.HeaderText = "Значение";
+            this.paramValueColumn.Name = "paramValueColumn";
+            this.paramValueColumn.ReadOnly = true;
             // 
             // flowLayoutPanel1
             // 
@@ -725,6 +723,7 @@
             this.sharerRb.Size = new System.Drawing.Size(30, 30);
             this.sharerRb.TabIndex = 26;
             this.sharerRb.UseVisualStyleBackColor = false;
+            this.sharerRb.CheckedChanged += new System.EventHandler(this.sharerRb_CheckedChanged);
             // 
             // label1
             // 
@@ -850,7 +849,7 @@
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(721, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(690, 17);
             this.toolStripStatusLabel3.Spring = true;
             // 
             // statusLabel
@@ -981,12 +980,8 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar progressBar;
         private System.Windows.Forms.ToolStripStatusLabel progressLabel;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripDropDownButton cancelBtn;
         private System.Windows.Forms.ToolStripStatusLabel coordinatesLabel;
-        private System.Windows.Forms.ToolStripStatusLabel distanceLabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn paramColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
         private System.Windows.Forms.Button resetFilterBtn;
@@ -1010,6 +1005,10 @@
         private System.Windows.Forms.ToolStripMenuItem совместитьФайлыToolStripMenuItem;
         private System.Windows.Forms.Button mirrorImageBtn;
         private System.Windows.Forms.RadioButton logCorrectionRb;
+        private System.Windows.Forms.DataGridViewTextBoxColumn paramNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn paramValueColumn;
+        private BindableToolStripStatusLabel statusLabel;
+        private BindableToolStripStatusLabel distanceLabel;
     }
 }
 

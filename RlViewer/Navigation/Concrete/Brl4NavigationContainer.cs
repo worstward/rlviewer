@@ -79,7 +79,7 @@ namespace RlViewer.Navigation.Concrete
             }
         }
 
-        public override Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0]
+        public override NavigationItem[] this[int stringNumber, int sampleNumber = 0]
         {
             get
             {

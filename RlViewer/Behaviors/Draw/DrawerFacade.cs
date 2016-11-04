@@ -125,6 +125,15 @@ namespace RlViewer.Behaviors.Draw
             return null;
         }
 
+        public Image DrawSelectorArea(Point pointOfView)
+        {
+            if (_canvas != null)
+            {
+                return _iDrawer.DrawSelectorArea(_canvas, pointOfView, _screenSize);
+            }
+            return null;
+        }
+
         public Image DrawSquareArea(Point leftTop, int borderSize)
         {
             if (_canvas != null)

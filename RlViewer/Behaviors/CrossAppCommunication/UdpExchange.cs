@@ -52,7 +52,7 @@ namespace RlViewer.Behaviors.CrossAppCommunication
                     try
                     {
                         var data = await ReceiveDataAsync();
-                        DataReceived(null, new GotDataEventArgs(data));
+                        DataReceived(this, new GotDataEventArgs(data));
                     }
                     catch (ObjectDisposedException)
                     {

@@ -92,16 +92,16 @@ namespace RlViewer.Behaviors.Draw
 
                 var areaRect = new RectangleF(areaSelector.Area.Location.X, areaSelector.Area.Location.Y, areaSelector.Area.Width, areaSelector.Area.Height);
 
-                    if (areaRect.IntersectsWith(screen))
+                if (areaRect.IntersectsWith(screen))
+                {
+                    using (Pen p = new Pen(Color.Red))
                     {
-                        using (Pen p = new Pen(Color.Red))
-                        {
-                            g.DrawRectangle(p, (int)(areaRect.X - screen.X) * Scaler.ScaleFactor,
-                               (int)(areaRect.Y - screen.Y) * Scaler.ScaleFactor,
-                               areaRect.Width * Scaler.ScaleFactor, areaRect.Height * Scaler.ScaleFactor);
-                        }
+                        g.DrawRectangle(p, (int)(areaRect.X - screen.X) * Scaler.ScaleFactor,
+                           (int)(areaRect.Y - screen.Y) * Scaler.ScaleFactor,
+                           areaRect.Width * Scaler.ScaleFactor, areaRect.Height * Scaler.ScaleFactor);
                     }
-                
+                }
+
                 DrawPoints(g, screen, _areaAlignerWrapper.Where(x => x.SelectedPoint != null).Select(x => x.SelectedPoint.Location));
             }
             return img;
@@ -147,6 +147,25 @@ namespace RlViewer.Behaviors.Draw
                     5 < Scaler.ScaleFactor ? Scaler.ScaleFactor : 5);
             }
         }
+
+        public Image DrawSelectorArea(Image canvas, Point leftTopPointOfView, Size screenSize)
+        {
+            var screen = new RectangleF(leftTopPointOfView.X, leftTopPointOfView.Y,
+                screenSize.Width / Scaler.ScaleFactor, screenSize.Height / Scaler.ScaleFactor);
+
+            Image img = (Image)canvas.Clone();
+            using (var g = Graphics.FromImage(img))
+            {
+                using (var pen = new Pen(Palette.Entries[240]) { DashPattern = new float[] { 5, 2, 15, 4 } })
+                {
+                    g.DrawRectangle(pen, (int)(_areaSelector.Area.Location.X - screen.X) * Scaler.ScaleFactor,
+                        (int)(_areaSelector.Area.Location.Y - screen.Y) * Scaler.ScaleFactor,
+                        _areaSelector.Area.Width * Scaler.ScaleFactor, _areaSelector.Area.Height * Scaler.ScaleFactor);
+                }
+            }
+            return img;
+        }
+
 
 
 

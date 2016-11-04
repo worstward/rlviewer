@@ -131,8 +131,8 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
 
             var center = container[0, _file.Width / 2];
 
-            var centerTuple = (center.Where(x => x.Item1.Contains("Широта") || x.Item1.Contains("Долгота"))
-                .Select(x => new Tuple<string, string>("Координаты центра изображения: " + x.Item1.ToLowerInvariant(), x.Item2)));
+            var centerTuple = (center.Where(x => x.ParameterName.Contains("Широта") || x.ParameterName.Contains("Долгота"))
+                .Select(x => new Tuple<string, string>("Координаты центра изображения: " + x.ParameterName.ToLowerInvariant(), x.ParameterValue)));
 
             return centerTuple;
         }
@@ -150,14 +150,14 @@ namespace RlViewer.Behaviors.ReportGenerator.CornerCoord.Abstract
 
 
             var naviData = new List<Tuple<string, string>>();
-            naviData.AddRange(leftTop.Where(x => x.Item1.Contains("Широта") || x.Item1.Contains("Долгота"))
-                .Select(x => new Tuple<string, string>("Левый верхний угол, " + x.Item1.ToLowerInvariant(), x.Item2)));
-            naviData.AddRange(rightTop.Where(x => x.Item1.Contains("Широта") || x.Item1.Contains("Долгота"))
-                .Select(x => new Tuple<string, string>("Правый верхний угол, " + x.Item1.ToLowerInvariant(), x.Item2)));
-            naviData.AddRange(leftBottom.Where(x => x.Item1.Contains("Широта") || x.Item1.Contains("Долгота"))
-                .Select(x => new Tuple<string, string>("Левый нижний угол, " + x.Item1.ToLowerInvariant(), x.Item2)));
-            naviData.AddRange(rightBottom.Where(x => x.Item1.Contains("Широта") || x.Item1.Contains("Долгота"))
-                .Select(x => new Tuple<string, string>("Правый нижний угол, " + x.Item1.ToLowerInvariant(), x.Item2)));
+            naviData.AddRange(leftTop.Where(x => x.ParameterName.Contains("Широта") || x.ParameterName.Contains("Долгота"))
+                .Select(x => new Tuple<string, string>("Левый верхний угол, " + x.ParameterName.ToLowerInvariant(), x.ParameterValue)));
+            naviData.AddRange(rightTop.Where(x => x.ParameterName.Contains("Широта") || x.ParameterName.Contains("Долгота"))
+                .Select(x => new Tuple<string, string>("Правый верхний угол, " + x.ParameterName.ToLowerInvariant(), x.ParameterValue)));
+            naviData.AddRange(leftBottom.Where(x => x.ParameterName.Contains("Широта") || x.ParameterName.Contains("Долгота"))
+                .Select(x => new Tuple<string, string>("Левый нижний угол, " + x.ParameterName.ToLowerInvariant(), x.ParameterValue)));
+            naviData.AddRange(rightBottom.Where(x => x.ParameterName.Contains("Широта") || x.ParameterName.Contains("Долгота"))
+                .Select(x => new Tuple<string, string>("Правый нижний угол, " + x.ParameterName.ToLowerInvariant(), x.ParameterValue)));
 
             return naviData;
         }

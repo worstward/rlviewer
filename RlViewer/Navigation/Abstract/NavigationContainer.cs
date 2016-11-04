@@ -16,7 +16,7 @@ namespace RlViewer.Navigation
         }
 
         public abstract NavigationString this[int stringNumber] { get; }
-        public abstract Tuple<string, string>[] this[int stringNumber, int sampleNumber = 0] { get; }
+        public abstract NavigationItem[] this[int stringNumber, int sampleNumber = 0] { get; }
         public abstract void GetNavigation();
 
         private NavigationString[] _naviStrings;
