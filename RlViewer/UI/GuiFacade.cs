@@ -16,10 +16,8 @@ using RlViewer.Settings;
 using RlViewer.Behaviors;
 using RlViewer.Files;
 
-
 namespace RlViewer.UI
 {
-
     public class GuiFacade : IDisposable, INotifyPropertyChanged
     {
         public GuiFacade(Size canvasSize, Action<Action> synchronizer)

@@ -10,7 +10,8 @@ namespace RlViewer.UI
     class KeyPressProcessor
     {
         public KeyPressProcessor(Action undo, Action openFile, Action saveFile,
-            Action fileInfo, Action log, Action report, Action aggregateFiles, Action embedNavigation)
+            Action fileInfo, Action log, Action report, Action aggregateFiles, 
+            Action embedNavigation, Action showCache)
         {
             Undo = undo;
             OpenFile = openFile;
@@ -20,6 +21,7 @@ namespace RlViewer.UI
             Report = report;
             EmbedNavigation = embedNavigation;
             AggregateFiles = aggregateFiles;
+            ShowCache = showCache;
         }
 
         private Action Undo;
@@ -30,6 +32,7 @@ namespace RlViewer.UI
         private Action Report;
         private Action AggregateFiles;
         private Action EmbedNavigation;
+        private Action ShowCache;
 
         public void ProcessKeyPress(System.Windows.Forms.KeyEventArgs kEvent)
         {
@@ -61,6 +64,9 @@ namespace RlViewer.UI
                         break;
                     case Keys.E:
                         EmbedNavigation();
+                        break;
+                    case Keys.C:
+                        ShowCache();
                         break;
                     default:
                         break;

@@ -16,34 +16,31 @@ namespace RlViewer.Forms
         public MainForm()
         {
             InitializeComponent();
+            _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
+            _guiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
+            _guiFacade.OnProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
+            _guiFacade.OnProgressChanged += (s, e) => ReportProgress(e.Progress);
+            _guiFacade.OnImageDrawn += (s, image) => pictureBox1.Image = image;
+            _guiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
+            _guiFacade.OnErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
 
-            GuiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
-            GuiFacade.OnProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
-            GuiFacade.OnProgressChanged += (s, e) => ReportProgress(e.Progress);
-            GuiFacade.OnImageDrawn += (s, image) => pictureBox1.Image = image;
-            GuiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
-            GuiFacade.OnErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
-
-
-            _keyProcessor = new UI.KeyPressProcessor(() => GuiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), () =>
-                {
+            _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), 
+                () => {
                     navigationDgv.Rows.Clear();
-                    this.Text = GuiFacade.OpenFile();
+                    this.Text = _guiFacade.OpenFile();
                 },
-                 () => GuiFacade.Save(), () => GuiFacade.ShowFileInfo(), () => GuiFacade.ShowLog(),
-                 () => GuiFacade.ReportDialog(), () => GuiFacade.AggregateFiles(), () => GuiFacade.EmbedNavigation());
+                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(),
+                 () => _guiFacade.ReportDialog(), () => _guiFacade.AggregateFiles(), () => _guiFacade.EmbedNavigation(),
+                 () => _guiFacade.ShowCache());
 
             InitForm();
-
-
-
             InitDataBindings();
         }
 
         private void InitForm()
         {
-            FormBorderStyle = FormBorderStyle.None;
-            WindowState = FormWindowState.Maximized;
+            //FormBorderStyle = FormBorderStyle.None;
+            //WindowState = FormWindowState.Maximized;
 
             FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Normal;
@@ -66,19 +63,20 @@ namespace RlViewer.Forms
 
         private void InitDataBindings()
         {
-            var scaleBinding = new Binding("Text", GuiFacade, "ScaleFactor", true, DataSourceUpdateMode.OnPropertyChanged);
+            var scaleBinding = new Binding("Text", _guiFacade, "ScaleFactor", true, DataSourceUpdateMode.OnPropertyChanged);
             scaleBinding.Format += delegate(object sender, ConvertEventArgs convertedArgs)
             {
                 convertedArgs.Value = string.Format("Масштаб: {0}%", (Convert.ToSingle(convertedArgs.Value)) * 100);
             };
 
+            
             scaleLabel.DataBindings.Add(scaleBinding);
-            distanceLabel.DataBindings.Add("Text", GuiFacade, "RulerDistance", false, DataSourceUpdateMode.OnPropertyChanged);
-            statusLabel.DataBindings.Add("Text", GuiFacade, "CurrentTaskName", false, DataSourceUpdateMode.OnPropertyChanged);
-            verticalScrollBar.DataBindings.Add("Value", GuiFacade, "YPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
-            verticalScrollBar.DataBindings.Add("Maximum", GuiFacade, "YPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
-            horizontalScrollBar.DataBindings.Add("Value", GuiFacade, "XPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
-            horizontalScrollBar.DataBindings.Add("Maximum", GuiFacade, "XPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
+            distanceLabel.DataBindings.Add("Text", _guiFacade, "RulerDistance", false, DataSourceUpdateMode.OnPropertyChanged);
+            statusLabel.DataBindings.Add("Text", _guiFacade, "CurrentTaskName", false, DataSourceUpdateMode.OnPropertyChanged);
+            verticalScrollBar.DataBindings.Add("Value", _guiFacade, "YPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
+            verticalScrollBar.DataBindings.Add("Maximum", _guiFacade, "YPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
+            horizontalScrollBar.DataBindings.Add("Value", _guiFacade, "XPointOfView", false, DataSourceUpdateMode.OnPropertyChanged);
+            horizontalScrollBar.DataBindings.Add("Maximum", _guiFacade, "XPointOfViewMax", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
 
@@ -104,16 +102,9 @@ namespace RlViewer.Forms
         }
 
 
-        UI.KeyPressProcessor _keyProcessor;
+        private UI.KeyPressProcessor _keyProcessor;
 
-        UI.GuiFacade _guiFacade;
-        public UI.GuiFacade GuiFacade
-        {
-            get
-            {
-                return _guiFacade = _guiFacade ?? new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
-            }
-        }
+        private UI.GuiFacade _guiFacade;
 
         public void ToggleNavigation()
         {
@@ -135,7 +126,7 @@ namespace RlViewer.Forms
             {
                 sp.Panel2Collapsed = true;
             }
-            GuiFacade.InitDrawImage();
+            _guiFacade.InitDrawImage();
         }
 
         private void MouseClickStarted(MouseEventArgs e)
@@ -143,87 +134,89 @@ namespace RlViewer.Forms
             if (dragRb.Checked)
             {
                 Cursor = Cursors.SizeAll;
-                GuiFacade.DragStart(e.Location);
+                _guiFacade.DragStart(e.Location);
                 return;
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 Cursor = Cursors.SizeAll;
-                GuiFacade.DragStart(e.Location);
+                _guiFacade.DragStart(e.Location);
                 return;
             }
 
             if (analyzeRb.Checked)
             {
                 Cursor = Cursors.Cross;
-                GuiFacade.GetPointAmplitudeStart(e.Location, pictureBox1);
+                _guiFacade.GetPointAmplitudeStart(e.Location, pictureBox1);
             }
             else
             {
                 Cursor = Cursors.Arrow;
                 if (markAreaRb.Checked)
                 {
-                    GuiFacade.SelectAreaStart(e.Location);
+                    _guiFacade.SelectAreaStart(e.Location);
                 }
                 else if (sharerRb.Checked)
                 {
-                    GuiFacade.ShareCoords(e.Location);
+                    _guiFacade.ShareCoords(e.Location);
                 }
                 else if (markPointRb.Checked)
                 {
-                    GuiFacade.SelectPointStart(e.Location);
+                    _guiFacade.SelectPointStart(e.Location);
                 }
 
                 else if (verticalSectionRb.Checked)
                 {
-                    GuiFacade.VerticalSectionStart(e.Location);
+                    _guiFacade.VerticalSectionStart(e.Location);
                 }
                 else if (horizontalSectionRb.Checked)
                 {
-                    GuiFacade.HorizontalSectionStart(e.Location);
+                    _guiFacade.HorizontalSectionStart(e.Location);
                 }
                 else if (linearSectionRb.Checked)
                 {
-                    GuiFacade.LinearSectionStart(e.Location);
+                    _guiFacade.LinearSectionStart(e.Location);
                 }
                 else if (rulerRb.Checked)
                 {
-                    GuiFacade.RulerStart(e.Location);
+                    _guiFacade.RulerStart(e.Location);
                 }
             }
         }
 
         private void MouseMoving(MouseEventArgs e)
         {
-            GuiFacade.Drag(e.Location);
-
-            if (markAreaRb.Checked)
+            if(dragRb.Checked || e.Button == System.Windows.Forms.MouseButtons.Right)
+            { 
+                _guiFacade.Drag(e.Location);
+            }
+            else if (markAreaRb.Checked)
             {
-                GuiFacade.SelectArea(e.Location);
+                _guiFacade.SelectArea(e.Location);
             }
             else if (markPointRb.Checked)
             {
-                GuiFacade.SelectPoint(e.Location);
+                _guiFacade.SelectPoint(e.Location);
             }
             else if (analyzeRb.Checked)
             {
-                GuiFacade.GetPointAmplitude(e.Location, pictureBox1);
+                _guiFacade.GetPointAmplitude(e.Location, pictureBox1);
             }
             else if (verticalSectionRb.Checked)
             {
-                GuiFacade.VerticalSection(e.Location);
+                _guiFacade.VerticalSection(e.Location);
             }
             else if (horizontalSectionRb.Checked)
             {
-                GuiFacade.HorizontalSection(e.Location);
+                _guiFacade.HorizontalSection(e.Location);
             }
             else if (linearSectionRb.Checked)
             {
-                GuiFacade.LinearSection(e.Location);
+                _guiFacade.LinearSection(e.Location);
             }
             else if (rulerRb.Checked)
             {
-                GuiFacade.GetDistance(e.Location);
+                _guiFacade.GetDistance(e.Location);
             }
 
         }
@@ -231,29 +224,29 @@ namespace RlViewer.Forms
         private void MouseClickFinished(MouseEventArgs e)
         {
             Cursor = Cursors.Arrow;
-            GuiFacade.DragFinish();
+            _guiFacade.DragFinish();
 
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 if (markAreaRb.Checked)
                 {
-                    GuiFacade.SelectAreaFinish(e.Location);
+                    _guiFacade.SelectAreaFinish(e.Location);
                 }
                 else if (markPointRb.Checked)
                 {
-                    GuiFacade.SelectPointFinish(e.Location);
+                    _guiFacade.SelectPointFinish(e.Location);
                 }
                 else if (analyzeRb.Checked)
                 {
-                    GuiFacade.StopPointAnalyzer(pictureBox1);
+                    _guiFacade.StopPointAnalyzer(pictureBox1);
                 }
                 else if (verticalSectionRb.Checked || horizontalSectionRb.Checked || linearSectionRb.Checked)
                 {
-                    GuiFacade.StopSection(e.Location);
+                    _guiFacade.StopSection(e.Location);
                 }
                 else if (rulerRb.Checked)
                 {
-                    GuiFacade.GetDistance(e.Location);
+                    _guiFacade.GetDistance(e.Location);
                 }
             }
 
@@ -271,32 +264,32 @@ namespace RlViewer.Forms
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             navigationDgv.Rows.Clear();
-            Text = GuiFacade.OpenFile();
+            Text = _guiFacade.OpenFile();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            GuiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            GuiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            GuiFacade.InitDrawImage(pictureBox1.Size);
+            _guiFacade.InitDrawImage(pictureBox1.Size);
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             MouseMoving(e);
-            coordinatesLabel.Text = GuiFacade.ShowMousePosition(e.Location);
+            coordinatesLabel.Text = _guiFacade.ShowMousePosition(e.Location);
 
             if (navigationPanelCb.Checked)
             {
-                var currentNavigation = GuiFacade.ShowNavigation(e);
+                var currentNavigation = _guiFacade.ShowNavigation(e);
                 if (currentNavigation != null)
                 {
                     navigationDgv.Rows.Clear();
@@ -311,19 +304,19 @@ namespace RlViewer.Forms
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             MouseClickStarted(e);
-            GuiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             Cursor = Cursors.Arrow;
             MouseClickFinished(e);
-            GuiFacade.DrawImage();
+            _guiFacade.DrawImage();
         }
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            GuiFacade.ScaleImage(e.Delta, e.Location);
+            _guiFacade.ScaleImage(e.Delta, e.Location);
         }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
@@ -334,7 +327,7 @@ namespace RlViewer.Forms
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            GuiFacade.ChangeFilterValue(filterTrackBar.Value);
+            _guiFacade.ChangeFilterValue(filterTrackBar.Value);
             filterLbl.Text = string.Format("Уровень фильтра: {0}", filterTrackBar.Value);
         }
 
@@ -342,7 +335,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
+                filterTrackBar.Value = _guiFacade.GetFilter(Behaviors.Filters.FilterType.Contrast, 4);
             }
         }
 
@@ -350,7 +343,7 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
+                filterTrackBar.Value = _guiFacade.GetFilter(Behaviors.Filters.FilterType.GammaCorrection, 0);
             }
         }
 
@@ -358,19 +351,19 @@ namespace RlViewer.Forms
         {
             if (((RadioButton)sender).Checked)
             {
-                filterTrackBar.Value = GuiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
+                filterTrackBar.Value = _guiFacade.GetFilter(Behaviors.Filters.FilterType.Brightness, 4);
             }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowSettings();
+            _guiFacade.ShowSettings();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            GuiFacade.CancelLoading();
-            GuiFacade.Dispose();
+            _guiFacade.CancelLoading();
+            _guiFacade.Dispose();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
@@ -380,22 +373,22 @@ namespace RlViewer.Forms
 
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowFileInfo();
+            _guiFacade.ShowFileInfo();
         }
 
         private void логToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowLog();
+            _guiFacade.ShowLog();
         }
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.Save();
+            _guiFacade.Save();
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            GuiFacade.InitDrawImage();
+            _guiFacade.InitDrawImage();
         }
 
         private void naviPanelCb_CheckedChanged(object sender, EventArgs e)
@@ -410,102 +403,102 @@ namespace RlViewer.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = GuiFacade.OpenWithDoubleClick();
+            Text = _guiFacade.OpenWithDoubleClick();
         }
 
 
         private void alignBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.ResampleImage();
+            _guiFacade.ResampleImage();
         }
 
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-            GuiFacade.CancelLoading();
+            _guiFacade.CancelLoading();
         }
 
         private void resetFilterBtn_Click(object sender, EventArgs e)
         {
             filterTrackBar.Value = 0;
-            GuiFacade.ResetFilter();
+            _guiFacade.ResetFilter();
         }
 
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
-            GuiFacade.MoveFileDragDrop(e);
+            _guiFacade.MoveFileDragDrop(e);
         }
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
             navigationDgv.Rows.Clear();
-            Text = GuiFacade.OpenFileDragDrop(e);
+            Text = _guiFacade.OpenFileDragDrop(e);
         }
 
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowAbout();
+            _guiFacade.ShowAbout();
         }
 
         private void статусКешаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowCache();
+            _guiFacade.ShowCache();
         }
 
         private void findPointBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.ShowFindPoint();
+            _guiFacade.ShowFindPoint();
         }
 
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            GuiFacade.InitDrawImage();
+            _guiFacade.InitDrawImage();
         }
 
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
         {
-            GuiFacade.ResetRuler();
+            _guiFacade.ResetRuler();
             distanceLabel.Text = string.Empty;
         }
 
         private void zoomOutBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.ScaleImage(-1);
+            _guiFacade.ScaleImage(-1);
         }
 
         private void zoomInBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.ScaleImage(1);
+            _guiFacade.ScaleImage(1);
         }
 
         private void создатьОтчетToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.ReportDialog();
+            _guiFacade.ReportDialog();
         }
 
         private void statisticsBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.GetAreaStatistics();
+            _guiFacade.GetAreaStatistics();
         }
 
 
         private void вшитьНавигациюToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.EmbedNavigation();
+            _guiFacade.EmbedNavigation();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            GuiFacade.DrawItems(e.Graphics);
+            _guiFacade.DrawItems(e.Graphics);
         }
 
         private void совместитьФайлыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GuiFacade.AggregateFiles();
+            _guiFacade.AggregateFiles();
         }
 
         private void mirrorImageBtn_Click(object sender, EventArgs e)
         {
-            GuiFacade.MirrorImage();
+            _guiFacade.MirrorImage();
         }
 
 
@@ -537,7 +530,7 @@ namespace RlViewer.Forms
 
         private void sharerRb_CheckedChanged(object sender, EventArgs e)
         {
-            GuiFacade.AllowRemoteDataReceiving = ((RadioButton)sender).Checked;
+            _guiFacade.AllowRemoteDataReceiving = ((RadioButton)sender).Checked;
         }
 
     }

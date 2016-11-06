@@ -51,7 +51,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.logCorrectionRb = new System.Windows.Forms.RadioButton();
             this.resetFilterBtn = new System.Windows.Forms.Button();
             this.gammaCorrRb = new System.Windows.Forms.RadioButton();
             this.contrastRb = new System.Windows.Forms.RadioButton();
@@ -88,13 +87,13 @@
             this.scaleLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.coordinatesLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.progressLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.squareAreaRb = new System.Windows.Forms.RadioButton();
+            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
+            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filterTrackBar)).BeginInit();
@@ -162,35 +161,40 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + O";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.openToolStripMenuItem.Text = "Открыть";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.сохранитьToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
             // создатьОтчетToolStripMenuItem
             // 
             this.создатьОтчетToolStripMenuItem.Name = "создатьОтчетToolStripMenuItem";
-            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.создатьОтчетToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + R";
+            this.создатьОтчетToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.создатьОтчетToolStripMenuItem.Text = "Создать отчет";
             this.создатьОтчетToolStripMenuItem.Click += new System.EventHandler(this.создатьОтчетToolStripMenuItem_Click);
             // 
             // вшитьНавигациюToolStripMenuItem
             // 
             this.вшитьНавигациюToolStripMenuItem.Name = "вшитьНавигациюToolStripMenuItem";
-            this.вшитьНавигациюToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.вшитьНавигациюToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + E";
+            this.вшитьНавигациюToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.вшитьНавигациюToolStripMenuItem.Text = "Вшить навигацию";
             this.вшитьНавигациюToolStripMenuItem.Click += new System.EventHandler(this.вшитьНавигациюToolStripMenuItem_Click);
             // 
             // совместитьФайлыToolStripMenuItem
             // 
             this.совместитьФайлыToolStripMenuItem.Name = "совместитьФайлыToolStripMenuItem";
-            this.совместитьФайлыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.совместитьФайлыToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + A";
+            this.совместитьФайлыToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.совместитьФайлыToolStripMenuItem.Text = "Совместить файлы";
             this.совместитьФайлыToolStripMenuItem.Click += new System.EventHandler(this.совместитьФайлыToolStripMenuItem_Click);
             // 
@@ -216,39 +220,41 @@
             // оФайлеToolStripMenuItem
             // 
             this.оФайлеToolStripMenuItem.Name = "оФайлеToolStripMenuItem";
-            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.оФайлеToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + I";
+            this.оФайлеToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.оФайлеToolStripMenuItem.Text = "О файле";
             this.оФайлеToolStripMenuItem.Click += new System.EventHandler(this.оФайлеToolStripMenuItem_Click);
             // 
             // логToolStripMenuItem1
             // 
             this.логToolStripMenuItem1.Name = "логToolStripMenuItem1";
-            this.логToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
+            this.логToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl + L";
+            this.логToolStripMenuItem1.Size = new System.Drawing.Size(190, 22);
             this.логToolStripMenuItem1.Text = "Лог";
             this.логToolStripMenuItem1.Click += new System.EventHandler(this.логToolStripMenuItem1_Click);
             // 
             // статусКешаToolStripMenuItem
             // 
             this.статусКешаToolStripMenuItem.Name = "статусКешаToolStripMenuItem";
-            this.статусКешаToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.статусКешаToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + C";
+            this.статусКешаToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.статусКешаToolStripMenuItem.Text = "Статус кеша";
             this.статусКешаToolStripMenuItem.Click += new System.EventHandler(this.статусКешаToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
             // 
             // оПрограммеToolStripMenuItem
             // 
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.logCorrectionRb);
             this.groupBox2.Controls.Add(this.resetFilterBtn);
             this.groupBox2.Controls.Add(this.gammaCorrRb);
             this.groupBox2.Controls.Add(this.contrastRb);
@@ -261,13 +267,6 @@
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Фильтр";
-            // 
-            // logCorrectionRb
-            // 
-            this.logCorrectionRb.Location = new System.Drawing.Point(0, 0);
-            this.logCorrectionRb.Name = "logCorrectionRb";
-            this.logCorrectionRb.Size = new System.Drawing.Size(104, 24);
-            this.logCorrectionRb.TabIndex = 0;
             // 
             // resetFilterBtn
             // 
@@ -409,7 +408,7 @@
             this.filterSplitter.Panel2.Controls.Add(this.groupBox2);
             this.filterSplitter.Panel2Collapsed = true;
             this.filterSplitter.Size = new System.Drawing.Size(872, 519);
-            this.filterSplitter.SplitterDistance = 365;
+            this.filterSplitter.SplitterDistance = 359;
             this.filterSplitter.SplitterWidth = 6;
             this.filterSplitter.TabIndex = 0;
             this.filterSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -841,21 +840,11 @@
             this.coordinatesLabel.Name = "coordinatesLabel";
             this.coordinatesLabel.Size = new System.Drawing.Size(0, 17);
             // 
-            // distanceLabel
-            // 
-            this.distanceLabel.Name = "distanceLabel";
-            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
-            // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(690, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(721, 17);
             this.toolStripStatusLabel3.Spring = true;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // progressBar
             // 
@@ -896,6 +885,16 @@
             this.squareAreaRb.TabIndex = 25;
             this.squareAreaRb.UseVisualStyleBackColor = false;
             this.squareAreaRb.Visible = false;
+            // 
+            // distanceLabel
+            // 
+            this.distanceLabel.Name = "distanceLabel";
+            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // MainForm
             // 
@@ -1004,7 +1003,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripMenuItem совместитьФайлыToolStripMenuItem;
         private System.Windows.Forms.Button mirrorImageBtn;
-        private System.Windows.Forms.RadioButton logCorrectionRb;
         private System.Windows.Forms.DataGridViewTextBoxColumn paramNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn paramValueColumn;
         private BindableToolStripStatusLabel statusLabel;
