@@ -87,13 +87,13 @@
             this.scaleLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.coordinatesLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.progressLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.squareAreaRb = new System.Windows.Forms.RadioButton();
-            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
-            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filterTrackBar)).BeginInit();
@@ -840,11 +840,21 @@
             this.coordinatesLabel.Name = "coordinatesLabel";
             this.coordinatesLabel.Size = new System.Drawing.Size(0, 17);
             // 
+            // distanceLabel
+            // 
+            this.distanceLabel.Name = "distanceLabel";
+            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
+            // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(721, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(690, 17);
             this.toolStripStatusLabel3.Spring = true;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // progressBar
             // 
@@ -885,16 +895,6 @@
             this.squareAreaRb.TabIndex = 25;
             this.squareAreaRb.UseVisualStyleBackColor = false;
             this.squareAreaRb.Visible = false;
-            // 
-            // distanceLabel
-            // 
-            this.distanceLabel.Name = "distanceLabel";
-            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // MainForm
             // 

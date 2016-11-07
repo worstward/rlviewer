@@ -87,6 +87,7 @@
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="ogr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
       <Private>True</Private>
@@ -205,6 +206,8 @@
     <Compile Include="Behaviors\Saving\DataProcessor\Concrete\DataStringSampleProcessor.cs" />
     <Compile Include="Behaviors\Saving\SaverParams.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
+    <Compile Include="Behaviors\Synthesis\SharedMemory\MappedFile.cs" />
+    <Compile Include="Behaviors\Synthesis\Sstp.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ShortSampleTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />

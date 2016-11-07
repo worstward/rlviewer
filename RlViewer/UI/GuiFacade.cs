@@ -22,6 +22,8 @@ namespace RlViewer.UI
     {
         public GuiFacade(Size canvasSize, Action<Action> synchronizer)
         {
+            //var a = new Behaviors.Synthesis.SharedMemory.MappedFile();
+
             LoadSettings();
             TryRunAsAdmin(_settings.ForceAdminMode);
 

@@ -7,14 +7,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
+using System.Runtime.InteropServices;
+
 
 namespace RlViewer.Forms
 {
 
     public partial class MainForm : Form
     {
+
         public MainForm()
         {
+            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
+            System.Threading.EventWaitHandle handle = new System.Threading.EventWaitHandle(false, EventResetMode.AutoReset, "SSTP_Ready");
+            handle.WaitOne();
+
+            var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting("SSTP_inSharedMem");
+            var fStream = mmf.CreateViewStream();
+
+           
+            var buf = new byte[Marshal.SizeOf(typeof(Behaviors.Synthesis.ServerSarTaskParams))];
+
+            fStream.Read(buf, 0, buf.Length);
+
+            var sstp = Behaviors.Converters.StructIO.ReadStruct<Behaviors.Synthesis.ServerSarTaskParams>(buf);
+            var asd = sstp;
+
+       
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
             _guiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
@@ -24,8 +44,9 @@ namespace RlViewer.Forms
             _guiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
             _guiFacade.OnErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
 
-            _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(markPointRb.Checked, markAreaRb.Checked), 
-                () => {
+            _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(markPointRb.Checked, markAreaRb.Checked),
+                () =>
+                {
                     navigationDgv.Rows.Clear();
                     this.Text = _guiFacade.OpenFile();
                 },
@@ -69,7 +90,7 @@ namespace RlViewer.Forms
                 convertedArgs.Value = string.Format("Масштаб: {0}%", (Convert.ToSingle(convertedArgs.Value)) * 100);
             };
 
-            
+
             scaleLabel.DataBindings.Add(scaleBinding);
             distanceLabel.DataBindings.Add("Text", _guiFacade, "RulerDistance", false, DataSourceUpdateMode.OnPropertyChanged);
             statusLabel.DataBindings.Add("Text", _guiFacade, "CurrentTaskName", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -186,8 +207,8 @@ namespace RlViewer.Forms
 
         private void MouseMoving(MouseEventArgs e)
         {
-            if(dragRb.Checked || e.Button == System.Windows.Forms.MouseButtons.Right)
-            { 
+            if (dragRb.Checked || e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
                 _guiFacade.Drag(e.Location);
             }
             else if (markAreaRb.Checked)
