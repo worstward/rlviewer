@@ -87,13 +87,13 @@
             this.scaleLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.coordinatesLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.progressLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.squareAreaRb = new System.Windows.Forms.RadioButton();
+            this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
+            this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filterTrackBar)).BeginInit();
@@ -536,7 +536,6 @@
             this.dragRb.BackColor = System.Drawing.Color.Transparent;
             this.dragRb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dragRb.BackgroundImage")));
             this.dragRb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.dragRb.Checked = true;
             this.dragRb.FlatAppearance.BorderSize = 0;
             this.dragRb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.dragRb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
@@ -545,8 +544,8 @@
             this.dragRb.Name = "dragRb";
             this.dragRb.Size = new System.Drawing.Size(30, 30);
             this.dragRb.TabIndex = 5;
-            this.dragRb.TabStop = true;
             this.dragRb.UseVisualStyleBackColor = false;
+            this.dragRb.CheckedChanged += new System.EventHandler(this.dragRb_CheckedChanged);
             // 
             // markPointRb
             // 
@@ -563,6 +562,7 @@
             this.markPointRb.Size = new System.Drawing.Size(30, 30);
             this.markPointRb.TabIndex = 6;
             this.markPointRb.UseVisualStyleBackColor = true;
+            this.markPointRb.CheckedChanged += new System.EventHandler(this.markPointRb_CheckedChanged);
             // 
             // alignBtn
             // 
@@ -593,6 +593,7 @@
             this.markAreaRb.Size = new System.Drawing.Size(30, 30);
             this.markAreaRb.TabIndex = 7;
             this.markAreaRb.UseVisualStyleBackColor = false;
+            this.markAreaRb.CheckedChanged += new System.EventHandler(this.markAreaRb_CheckedChanged);
             // 
             // analyzeRb
             // 
@@ -609,6 +610,7 @@
             this.analyzeRb.Size = new System.Drawing.Size(30, 30);
             this.analyzeRb.TabIndex = 8;
             this.analyzeRb.UseVisualStyleBackColor = false;
+            this.analyzeRb.CheckedChanged += new System.EventHandler(this.analyzeRb_CheckedChanged);
             // 
             // verticalSectionRb
             // 
@@ -626,6 +628,7 @@
             this.verticalSectionRb.Size = new System.Drawing.Size(30, 30);
             this.verticalSectionRb.TabIndex = 10;
             this.verticalSectionRb.UseVisualStyleBackColor = false;
+            this.verticalSectionRb.CheckedChanged += new System.EventHandler(this.verticalSectionRb_CheckedChanged);
             // 
             // horizontalSectionRb
             // 
@@ -642,6 +645,7 @@
             this.horizontalSectionRb.Size = new System.Drawing.Size(30, 30);
             this.horizontalSectionRb.TabIndex = 9;
             this.horizontalSectionRb.UseVisualStyleBackColor = false;
+            this.horizontalSectionRb.CheckedChanged += new System.EventHandler(this.horizontalSectionRb_CheckedChanged);
             // 
             // linearSectionRb
             // 
@@ -659,6 +663,7 @@
             this.linearSectionRb.Size = new System.Drawing.Size(30, 30);
             this.linearSectionRb.TabIndex = 14;
             this.linearSectionRb.UseVisualStyleBackColor = false;
+            this.linearSectionRb.CheckedChanged += new System.EventHandler(this.linearSectionRb_CheckedChanged);
             // 
             // rulerRb
             // 
@@ -840,21 +845,11 @@
             this.coordinatesLabel.Name = "coordinatesLabel";
             this.coordinatesLabel.Size = new System.Drawing.Size(0, 17);
             // 
-            // distanceLabel
-            // 
-            this.distanceLabel.Name = "distanceLabel";
-            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
-            // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(690, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(721, 17);
             this.toolStripStatusLabel3.Spring = true;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // progressBar
             // 
@@ -895,6 +890,16 @@
             this.squareAreaRb.TabIndex = 25;
             this.squareAreaRb.UseVisualStyleBackColor = false;
             this.squareAreaRb.Visible = false;
+            // 
+            // distanceLabel
+            // 
+            this.distanceLabel.Name = "distanceLabel";
+            this.distanceLabel.Size = new System.Drawing.Size(0, 0);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 0);
             // 
             // MainForm
             // 

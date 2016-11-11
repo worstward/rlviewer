@@ -19,22 +19,20 @@ namespace RlViewer.Forms
 
         public MainForm()
         {
-            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
-            System.Threading.EventWaitHandle handle = new System.Threading.EventWaitHandle(false, EventResetMode.AutoReset, "SSTP_Ready");
-            handle.WaitOne();
+            ////var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
+            //System.Threading.EventWaitHandle handle = new System.Threading.EventWaitHandle(false, EventResetMode.AutoReset, "SSTP_Ready");
+            //handle.WaitOne();
 
-            var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting("SSTP_inSharedMem");
-            var fStream = mmf.CreateViewStream();
+            //var buf = new byte[Marshal.SizeOf(typeof(Behaviors.Synthesis.ServerSarTaskParams))];
+            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting("SSTP_inSharedMem");
+            //var mmfStr = mmf.CreateViewStream();
 
-           
-            var buf = new byte[Marshal.SizeOf(typeof(Behaviors.Synthesis.ServerSarTaskParams))];
 
-            fStream.Read(buf, 0, buf.Length);
+            //mmfStr.Read(buf, 0, buf.Length);
 
-            var sstp = Behaviors.Converters.StructIO.ReadStruct<Behaviors.Synthesis.ServerSarTaskParams>(buf);
-            var asd = sstp;
+            //var sstp = Behaviors.Converters.StructIO.ReadStruct<Behaviors.Synthesis.ServerSarTaskParams>(buf);
+            //var asd = sstp;
 
-       
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
             _guiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
@@ -48,21 +46,20 @@ namespace RlViewer.Forms
                 () =>
                 {
                     navigationDgv.Rows.Clear();
-                    this.Text = _guiFacade.OpenFile();
+                    this.Text = OpenFile();
                 },
-                 () => _guiFacade.Save(), () => _guiFacade.ShowFileInfo(), () => _guiFacade.ShowLog(),
-                 () => _guiFacade.ReportDialog(), () => _guiFacade.AggregateFiles(), () => _guiFacade.EmbedNavigation(),
+                 () => _guiFacade.Save(), () => ShowFileInfo(), () => ShowLog(),
+                 () => MakeReport(), () => _guiFacade.AggregateFiles(), () => EmbedNavigation(),
                  () => _guiFacade.ShowCache());
 
             InitForm();
             InitDataBindings();
+
+            dragRb.Checked = true;
         }
 
         private void InitForm()
         {
-            //FormBorderStyle = FormBorderStyle.None;
-            //WindowState = FormWindowState.Maximized;
-
             FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Normal;
 
@@ -127,12 +124,43 @@ namespace RlViewer.Forms
 
         private UI.GuiFacade _guiFacade;
 
-        public void ToggleNavigation()
+
+        public string OpenFile()
+        {
+            string caption = this.Text;
+
+            if (!_guiFacade.Settings.UseCustomFileOpenDlg)
+            {
+                using (var openFileDlg = new OpenFileDialog() { Filter = Resources.OpenFilter })
+                {
+                    openFileDlg.Title = "Радиолокационный файл";
+                    if (openFileDlg.ShowDialog() == DialogResult.OK)
+                    {
+                        caption = _guiFacade.OpenFile(openFileDlg.FileName);
+                    }
+                }
+            }
+            else
+            {
+                caption = _guiFacade.OpenFileCustomDialog();
+            }
+
+            return caption;
+        }
+
+
+
+
+
+
+
+
+        private void ToggleNavigation()
         {
             TogglePanel(navigationPanelCb.Checked, naviSplitter);
         }
 
-        public void ToggleFilters()
+        private void ToggleFilters()
         {
             TogglePanel(filterPanelCb.Checked, filterSplitter);
         }
@@ -147,32 +175,40 @@ namespace RlViewer.Forms
             {
                 sp.Panel2Collapsed = true;
             }
-            _guiFacade.InitDrawImage();
+            _guiFacade.InitDrawing();
         }
+
+        private bool _rightBtnPressed = false;
+        private Cursor _toolCursor;
 
         private void MouseClickStarted(MouseEventArgs e)
         {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                _rightBtnPressed = true;
+            }
+
+
             if (dragRb.Checked)
             {
-                Cursor = Cursors.SizeAll;
+                pictureBox1.Cursor = Cursors.SizeAll;
                 _guiFacade.DragStart(e.Location);
                 return;
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+
+            if(_rightBtnPressed)
             {
-                Cursor = Cursors.SizeAll;
+                pictureBox1.Cursor = Cursors.SizeAll;
                 _guiFacade.DragStart(e.Location);
                 return;
             }
 
             if (analyzeRb.Checked)
             {
-                Cursor = Cursors.Cross;
                 _guiFacade.GetPointAmplitudeStart(e.Location, pictureBox1);
             }
             else
             {
-                Cursor = Cursors.Arrow;
                 if (markAreaRb.Checked)
                 {
                     _guiFacade.SelectAreaStart(e.Location);
@@ -207,45 +243,53 @@ namespace RlViewer.Forms
 
         private void MouseMoving(MouseEventArgs e)
         {
-            if (dragRb.Checked || e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (dragRb.Checked || _rightBtnPressed)
             {
                 _guiFacade.Drag(e.Location);
             }
-            else if (markAreaRb.Checked)
+            else
             {
-                _guiFacade.SelectArea(e.Location);
-            }
-            else if (markPointRb.Checked)
-            {
-                _guiFacade.SelectPoint(e.Location);
-            }
-            else if (analyzeRb.Checked)
-            {
-                _guiFacade.GetPointAmplitude(e.Location, pictureBox1);
-            }
-            else if (verticalSectionRb.Checked)
-            {
-                _guiFacade.VerticalSection(e.Location);
-            }
-            else if (horizontalSectionRb.Checked)
-            {
-                _guiFacade.HorizontalSection(e.Location);
-            }
-            else if (linearSectionRb.Checked)
-            {
-                _guiFacade.LinearSection(e.Location);
-            }
-            else if (rulerRb.Checked)
-            {
-                _guiFacade.GetDistance(e.Location);
+                if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                {
+                    _guiFacade.Drag(e.Location);
+                }
+
+                if (markAreaRb.Checked)
+                {
+                    _guiFacade.SelectArea(e.Location);
+                }
+                else if (markPointRb.Checked)
+                {
+                    _guiFacade.SelectPoint(e.Location);
+                }
+                else if (analyzeRb.Checked)
+                {
+                    _guiFacade.GetPointAmplitude(e.Location, pictureBox1);
+                }
+                else if (verticalSectionRb.Checked)
+                {
+                    _guiFacade.VerticalSection(e.Location);
+                }
+                else if (horizontalSectionRb.Checked)
+                {
+                    _guiFacade.HorizontalSection(e.Location);
+                }
+                else if (linearSectionRb.Checked)
+                {
+                    _guiFacade.LinearSection(e.Location);
+                }
+                else if (rulerRb.Checked)
+                {
+                    _guiFacade.GetDistance(e.Location);
+                }
             }
 
         }
 
         private void MouseClickFinished(MouseEventArgs e)
         {
-            Cursor = Cursors.Arrow;
             _guiFacade.DragFinish();
+            _rightBtnPressed = false;
 
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -263,7 +307,7 @@ namespace RlViewer.Forms
                 }
                 else if (verticalSectionRb.Checked || horizontalSectionRb.Checked || linearSectionRb.Checked)
                 {
-                    _guiFacade.StopSection(e.Location);
+                    ShowSection(e.Location);
                 }
                 else if (rulerRb.Checked)
                 {
@@ -271,7 +315,38 @@ namespace RlViewer.Forms
                 }
             }
 
+            pictureBox1.Cursor = _toolCursor;
+        }
 
+
+
+        private string GetSectionFormCaption()
+        {
+            string caption = string.Empty;
+
+            if (horizontalSectionRb.Checked)
+            {
+                caption = "Горизонтальное сечение";
+            }
+            else if (verticalSectionRb.Checked)
+            {
+                caption = "Вертикальное сечение";
+            }
+            else if (linearSectionRb.Checked)
+            {
+                caption = "Произвольное сечение";
+            }
+
+            return caption;
+        }
+
+
+        private void ShowSection(Point mouseCoords)
+        {
+            using (var sectionForm = new Forms.SectionGraphForm(_guiFacade.GetSectionInfo(mouseCoords), GetSectionFormCaption()))
+            {
+                sectionForm.ShowDialog();
+            }
         }
 
 
@@ -285,7 +360,7 @@ namespace RlViewer.Forms
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             navigationDgv.Rows.Clear();
-            Text = _guiFacade.OpenFile();
+            Text = OpenFile();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -300,8 +375,47 @@ namespace RlViewer.Forms
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            _guiFacade.InitDrawImage(pictureBox1.Size);
+            _guiFacade.InitDrawing(canvasSize: pictureBox1.Size);
         }
+
+        public void MakeReport()
+        {
+            var reporterSettings = RlViewer.Settings.Settings.LoadSettings<Settings.ReporterSettings>();
+
+            using (var reportSettingsForm = new Forms.ReportSettingsForm(reporterSettings))
+            {
+                if (reportSettingsForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                reporterSettings.ToXml<Settings.ReporterSettings>();
+
+                using (var ofd = new OpenFileDialog())
+                {
+                    ofd.Title = "Файлы для формирования отчета";
+                    ofd.Multiselect = true;
+                    ofd.Filter = Resources.OpenFilter;
+                    if (ofd.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    using (var fsd = new SaveFileDialog())
+                    {
+                        fsd.Title = "Имя для файла отчета";
+                        fsd.Filter = "Документ MS Word|*.docx";
+                        if (fsd.ShowDialog() != DialogResult.OK)
+                        {
+                            return;
+                        }
+
+                        _guiFacade.MakeReport(ofd.FileNames, fsd.FileName, reporterSettings);
+                    }
+                }
+            }
+        }
+
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -376,9 +490,21 @@ namespace RlViewer.Forms
             }
         }
 
+
+        private void ShowSettings()
+        {
+            using (var settgingsForm = new Forms.SettingsForm(_guiFacade.Settings))
+            {
+                if (settgingsForm.ShowDialog() == DialogResult.OK)
+                {
+                    _guiFacade.InitDrawing(true);
+                }
+            }
+        }
+
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowSettings();
+            ShowSettings();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -392,14 +518,41 @@ namespace RlViewer.Forms
             _keyProcessor.ProcessKeyPress(e);
         }
 
+        private void ShowFileInfo()
+        {
+            var info = _guiFacade.GetFileInfo();
+
+            if (info == null)
+            {
+                return;
+            }
+
+            using (var iFrm = new Forms.InfoForm(info))
+            {
+                iFrm.ShowDialog();
+            }
+        }
+
+
         private void оФайлеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowFileInfo();
+            ShowFileInfo();
         }
+
+
+        private void ShowLog()
+        {
+            using (var logForm = new Forms.LogForm())
+            {
+                logForm.ShowDialog();
+            }
+        }
+
+
 
         private void логToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowLog();
+            ShowLog();
         }
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -409,7 +562,7 @@ namespace RlViewer.Forms
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            _guiFacade.InitDrawImage();
+            _guiFacade.InitDrawing();
         }
 
         private void naviPanelCb_CheckedChanged(object sender, EventArgs e)
@@ -455,9 +608,18 @@ namespace RlViewer.Forms
             Text = _guiFacade.OpenFileDragDrop(e);
         }
 
+
+        private void ShowAbout()
+        {
+            using (var about = new Forms.About())
+            {
+                about.ShowDialog();
+            }
+        }
+
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ShowAbout();
+            ShowAbout();
         }
 
         private void статусКешаToolStripMenuItem_Click(object sender, EventArgs e)
@@ -472,7 +634,7 @@ namespace RlViewer.Forms
 
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            _guiFacade.InitDrawImage();
+            _guiFacade.InitDrawing();
         }
 
         private void rulerRb_CheckedChanged(object sender, EventArgs e)
@@ -493,18 +655,38 @@ namespace RlViewer.Forms
 
         private void создатьОтчетToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.ReportDialog();
+            MakeReport();
         }
 
         private void statisticsBtn_Click(object sender, EventArgs e)
         {
             _guiFacade.GetAreaStatistics();
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
         }
 
 
+
+        private void EmbedNavigation()
+        {
+            using (var destFileOpenDlg = new OpenFileDialog() { Title = "Выберите исходный файл РЛИ", Filter = Resources.NaviEmbeddingFilterDest })
+            {
+                if (destFileOpenDlg.ShowDialog() == DialogResult.OK)
+                {
+                    using (var sourceFileOpenDlg = new OpenFileDialog() { Title = "Выберите исходный файл РГГ", Filter = Resources.NaviEmbeddingFilterSource })
+                    {
+                        if (sourceFileOpenDlg.ShowDialog() == DialogResult.OK)
+                        {
+                            _guiFacade.EmbedNavigation(sourceFileOpenDlg.FileName, destFileOpenDlg.FileName);
+                        }
+                    }
+                }
+            }
+        }
+
         private void вшитьНавигациюToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.EmbedNavigation();
+            EmbedNavigation();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -552,6 +734,50 @@ namespace RlViewer.Forms
         private void sharerRb_CheckedChanged(object sender, EventArgs e)
         {
             _guiFacade.AllowRemoteDataReceiving = ((RadioButton)sender).Checked;
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void dragRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void markPointRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void markAreaRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void analyzeRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Cross;
+            _toolCursor = Cursors.Cross;
+        }
+
+        private void verticalSectionRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void horizontalSectionRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
+        }
+
+        private void linearSectionRb_CheckedChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Cursor = Cursors.Arrow;
+            _toolCursor = Cursors.Arrow;
         }
 
     }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.Behaviors.ReportGenerator.Abstract
+namespace RlViewer.Behaviors.Synthesis.Hologram.Concrete
 {
-    public enum ReporterTypes
+    class UnknownFrequencyRangeHologram
     {
-        Docx = 0
+
     }
 }

@@ -3,291 +3,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace RlViewer.Settings
 {
+
     [DataContract]
-    public class Settings
+    public abstract class Settings
     {
 
-        private bool _allowViewWhileLoading;
-
-        [DataMember(IsRequired=true)]
-        public bool AllowViewWhileLoading
-        {
-            get { return _allowViewWhileLoading; }
-            set { _allowViewWhileLoading = value; }
-        }
-
-
-        private bool _forceTileGen;
-        [DataMember(IsRequired = true)]
-        public bool ForceTileGeneration
-        {
-            get { return _forceTileGen; }
-            set { _forceTileGen = value; }
-        }
-
-
-        private float[] _palette = new float[3] { 1, 1, 1 };
-
-        [DataMember(IsRequired = true)]
-        public float[] Palette
-        {
-            get { return _palette; }
-            set { _palette = value; }
-        }
-
-        private bool _isPaletteReversed;
-
-        [DataMember(IsRequired = true)]
-        public bool IsPaletteReversed
-        {
-            get { return _isPaletteReversed; }
-            set { _isPaletteReversed = value; }
-        }
-
-        private bool isGrouped;
-
-        [DataMember(IsRequired = true)]
-        public bool IsPaletteGroupped
-        {
-            get { return isGrouped; }
-            set { isGrouped = value; }
-        }
-
-        private bool _useTemperaturePalette;
-
-        [DataMember(IsRequired = true)]
-        public bool UseTemperaturePalette
-        {
-            get { return _useTemperaturePalette; }
-            set { _useTemperaturePalette = value; }
-        }
-
-        private int _sectionSize = 500;
-
         /// <summary>
-        /// Amount of points for section graph
+        /// Gets settings from xml file
         /// </summary>
-        [DataMember(IsRequired = true)]
-        public int SectionSize
+        public static T LoadSettings<T>() where T : Settings, new()
         {
-            get { return _sectionSize; }
-            set { _sectionSize = value; }
+            T settings;
+
+            try
+            {
+                settings = new T().FromXml<T>();
+            }
+            catch (Exception)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("{0} file is corrupted, loading default values", typeof(T)));
+                settings = new T();
+                settings.ToXml<T>();
+            }
+
+            return settings;
         }
 
-        private int _areaSize = 40;
-        /// <summary>
-        /// Rectangle area side length
-        /// </summary>
-        [DataMember(IsRequired = true)]
-        public int SelectorAreaSize
+        protected abstract string SettingsPath
         {
-            get { return _areaSize; }
-            set { _areaSize = value; }
+            get;
         }
 
-        private bool _highResForDownScaled = true;
-
-        [DataMember(IsRequired = true)]
-        public bool HighResForDownScaled
-        {
-            get { return _highResForDownScaled; }
-            set { _highResForDownScaled = value; }
-        }
-
-        /// <summary>
-        /// False to use areas, true to use points
-        /// </summary>
-        private bool _areasOrPointsForAligning = false;
-
-        [DataMember(IsRequired = true)]
-        public bool UseAreasForAligning
-        {
-            get { return _areasOrPointsForAligning; }
-            set { _areasOrPointsForAligning = value; }
-        }
-
-
-        private int _maxAlignerAreaSize = 500;
-        /// <summary>
-        /// Maximum pixels covered by aligner area (if area mode selected)
-        /// </summary>
-        [DataMember(IsRequired = true)]
-        public int MaxAlignerAreaSize
-        {
-            get { return _maxAlignerAreaSize; }
-            set { _maxAlignerAreaSize = value; }
-        }
-        
-
-
-        private float _rangeCompressionCoef = 1f;
-        [DataMember(IsRequired = true)]
-        public float RangeCompressionCoef
-        {
-            get { return _rangeCompressionCoef; }
-            set { _rangeCompressionCoef = value; }
-        }
-
-
-        private float _azimuthCompressionCoef = 1f;
-        [DataMember(IsRequired = true)]
-        public float AzimuthCompressionCoef
-        {
-            get { return _azimuthCompressionCoef; }
-            set { _azimuthCompressionCoef = value; }
-        }
-
-        private Behaviors.TileCreator.TileOutputType _tileOutputAlgorithm = Behaviors.TileCreator.TileOutputType.LinearLogarithmic;
-        [DataMember(IsRequired = true)]
-        public Behaviors.TileCreator.TileOutputType TileOutputAlgorithm
+        protected string SettingsExtension
         {
             get
             {
-                return _tileOutputAlgorithm;
+                return "xml";
             }
-            set
+        }
+
+
+        public void ToXml<T>() where T : Settings
+        {
+            DataContractSerializer dcs = new DataContractSerializer(typeof(T));
+            var xmlSettings = new XmlWriterSettings() { Indent = true };
+
+            using (var stream = XmlWriter.Create(SettingsPath, xmlSettings))
             {
-                _tileOutputAlgorithm = value;
+                dcs.WriteObject(stream, this);
             }
         }
 
-        private int _aligningAreaBorderSize = 2000;
-
-        [DataMember(IsRequired = true)]
-        public int AligningAreaBorderSize
+        private T FromXml<T>() where T : Settings
         {
-            get 
+            DataContractSerializer dcs = new DataContractSerializer(typeof(T));
+
+            using (var stream = File.OpenRead(SettingsPath))
             {
-                return _aligningAreaBorderSize;
-            }
-            set 
-            {
-                _aligningAreaBorderSize = value > 9999 ? 9999 : value;
+                return (T)dcs.ReadObject(stream);
             }
         }
 
-        private bool _forceAdminMode = true;
 
-        [DataMember(IsRequired = true)]
-        public bool ForceAdminMode
-        {
-            get { return _forceAdminMode; }
-            set { _forceAdminMode = value; }
-        }
-
-
-        private bool _useCustomFileOpenDlg = false;
-
-        [DataMember(IsRequired = true)]      
-        public bool UseCustomFileOpenDlg
-        {
-            get { return _useCustomFileOpenDlg; }
-            set { _useCustomFileOpenDlg = value; }
-        }
-
-        private System.Net.IPEndPoint _multicastEp = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("234.0.1.1"), 1000);
-
-        [DataMember(IsRequired = true)]
-        public System.Net.IPEndPoint MulticastEp
-        {
-            get { return _multicastEp; }
-            set { _multicastEp = value; }
-        }
-
-        private float _minScale = 0.125f;
-
-        [DataMember(IsRequired = true)]
-        public float MinScale
-        {
-            get { return _minScale; }
-            set { _minScale = value; }
-        }
-
-        private float _maxScale = 128f;
-
-        [DataMember(IsRequired = true)]
-        public float MaxScale
-        {
-            get { return _maxScale; }
-            set { _maxScale = value; }
-        }
-
-        private float _initialScale = 1f;
-
-        [DataMember(IsRequired = true)]
-        public float InitialScale
-        {
-            get { return _initialScale; }
-            set { _initialScale = value; }
-        }
-
-
-
-        private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType =
-            Behaviors.ImageAligning.Surfaces.SurfaceType.RadicalBasisFunctionQnn;
-
-        [DataMember(IsRequired = true)]
-        public Behaviors.ImageAligning.Surfaces.SurfaceType SurfaceType
-        {
-            get { return _surfaceType; }
-            set { _surfaceType = value; }
-        }
-
-        private int _rbfMlBaseRadius = 100;
-
-        [DataMember(IsRequired = true)]
-        public int RbfMlBaseRaduis
-        {
-            get { return _rbfMlBaseRadius; }
-            set { _rbfMlBaseRadius = value; }
-        }
-
-
-        private int _rbfMlLayersNumber = 3;
-
-        [DataMember(IsRequired = true)]
-        public int RbfMlLayersNumber
-        {
-            get { return _rbfMlLayersNumber; }
-            set { _rbfMlLayersNumber = value; }
-        }
-
-        private double _rbfMlRegularizationCoef = 0.01;
-
-        [DataMember(IsRequired = true)]
-        public double RbfMlRegularizationCoef
-        {
-            get { return _rbfMlRegularizationCoef; }
-            set 
-            {
-                var newRbfReg = value;
-                _rbfMlRegularizationCoef = newRbfReg > 1 ? 0.01 : newRbfReg; 
-            }
-        }
-
-        private int _dragAccelerator = 2;
-
-        [DataMember(IsRequired = true)]
-        public int DragAccelerator
-        {
-            get { return _dragAccelerator; }
-            set { _dragAccelerator = value; }
-        }
-
-        private bool _forceImageHeightAdjusting = false;
-
-        [DataMember(IsRequired = true)]
-        public bool ForceImageHeightAdjusting
-        {
-            get { return _forceImageHeightAdjusting; }
-            set { _forceImageHeightAdjusting = value; }
-        }
-
-
-      
     }
 }

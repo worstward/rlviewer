@@ -13,7 +13,7 @@ namespace RlViewer.Forms
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm(Settings.Settings settings)
+        public SettingsForm(Settings.AppSettings settings)
         {
             _settings = settings;
 
@@ -51,7 +51,7 @@ namespace RlViewer.Forms
         }
 
 
-        private Settings.Settings _settings;
+        private Settings.AppSettings _settings;
 
 
         private float[] _palette;
@@ -173,7 +173,7 @@ namespace RlViewer.Forms
             _settings.SurfaceType = _surfaceType;
             _settings.ForceImageHeightAdjusting = _forceImageHeightAdjusting;
 
-            _settings.ToXml();
+            _settings.ToXml<Settings.AppSettings>();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();

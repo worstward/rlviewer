@@ -17,7 +17,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
         }
 
-        public override void GenerateReport(string reportFilePath, ReporterSettings reporterSettings)
+        public override void GenerateReport(string reportFilePath, Settings.ReporterSettings reporterSettings)
         {
             using (DocX document = DocX.Create(reportFilePath))
             {
@@ -56,7 +56,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
         }
 
 
-        private DocX PrepareReport(string reportFilePath, string locatorFilePath, ReporterSettings reporterSettings)
+        private DocX PrepareReport(string reportFilePath, string locatorFilePath, Settings.ReporterSettings reporterSettings)
         {
 
             DocX document = DocX.Create(reportFilePath);

@@ -85,14 +85,26 @@ namespace RlViewer.Headers.Concrete.R
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ReceiverHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte version;
+        public byte polarization;
+        public float freqWidth;
+        public float uattCoef;
+        public byte varu;     
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 53)]
         public byte[] reserved;
     };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TransmitterHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte version;
+        public float frequency;
+        public float freqWidth;
+        public float impulseLength;
+        public float dShift;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 47)]
         public byte[] reserved;
     };
 
@@ -109,8 +121,8 @@ namespace RlViewer.Headers.Concrete.R
         public enum Polarization : byte
         {
             Vertical = 0,
-            Horizontal = 2,
-            F2 = 3,
+            Horizontal = 1,
+            F2 = 2,
             F4 = 3
         }
 
@@ -132,14 +144,11 @@ namespace RlViewer.Headers.Concrete.R
         public Polarization polar;
         public float initialRange;
         public byte freqDivisor;
-        public byte emission;
-        public byte lchm;
-        public byte channel;
-        public byte antennaEquivalent;
-        public byte noiseGenerator;
-        public byte pilot;
+        public byte rangeSign;
         public byte isExternalGenerator;
-        public byte freqDivGenerator;
+        public byte freqDivisorGenerator;
+        public byte azimuthSign;
+        public float azimuthDecompositionStep;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 47)]
         public byte[] reserved;
     };
@@ -147,14 +156,27 @@ namespace RlViewer.Headers.Concrete.R
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct GeneratorHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte version;
+        public byte prdu;
+        public byte vn;
+        public byte emission;
+        public byte equivalent;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 59)]
         public byte[] reserved;
     };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SgoHeader
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+        public byte version;
+        public byte pump;
+        public byte fan1;
+        public byte fan2;
+        public byte pt;
+
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 59)]
         public byte[] reserved;
     };
 
@@ -183,8 +205,6 @@ namespace RlViewer.Headers.Concrete.R
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
         public byte[] firmWareName;
         public byte format;
-
-
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
         public byte[] reserved;

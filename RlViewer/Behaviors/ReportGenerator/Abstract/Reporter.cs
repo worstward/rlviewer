@@ -24,7 +24,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Abstract
             }
         }
 
-        public abstract void GenerateReport(string reportFilePath, ReporterSettings reporterSettings);
+        public abstract void GenerateReport(string reportFilePath, Settings.ReporterSettings reporterSettings);
     
     }
 }

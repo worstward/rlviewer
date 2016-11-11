@@ -14,10 +14,11 @@ namespace RlViewer.Forms
 {
     public partial class SectionGraphForm : Form
     {
-        public SectionGraphForm(IEnumerable<PointF> points, float initialPointMark, string caption = "")
+        public SectionGraphForm(Behaviors.Sections.SectionInfo sectionInfo, string caption = "")
         {
-            _points = points;
-            _initialPointMark = initialPointMark;
+            _section = sectionInfo.Section;
+            _points = sectionInfo.Points;
+            _initialPointMark = sectionInfo.Mark;
             _zedGraph = new ZedGraphControl();
             _zedGraph.Location = this.Location;
             
@@ -44,6 +45,7 @@ namespace RlViewer.Forms
             _zedGraph.Focus();
         }
 
+        private Behaviors.Sections.Abstract.Section _section;
         private IEnumerable<PointF> _points;
         private ZedGraphControl _zedGraph;
         private float _initialPointMark;
@@ -119,6 +121,25 @@ namespace RlViewer.Forms
 
 
 
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+
+            _section.ResetSection();
+
+            base.Dispose(disposing);
+        }
     }
 }

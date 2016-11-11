@@ -12,9 +12,12 @@ namespace RlViewer.Forms
 {
     public partial class ReportSettingsForm : Form
     {
-        public ReportSettingsForm(Behaviors.ReportGenerator.ReporterSettings reporterSettings = null)
+        public ReportSettingsForm(Settings.ReporterSettings reporterSettings)
         {
             InitializeComponent();
+            _reporterSettings = reporterSettings;
+
+
             reportTypeComboBox.Items.AddRange(Enum.GetNames(typeof(Behaviors.ReportGenerator.Abstract.ReporterTypes)));
             reportTypeComboBox.SelectedIndex = 0;
 
@@ -29,6 +32,9 @@ namespace RlViewer.Forms
             }
             else
             {
+                firstLineTb.Text = reporterSettings.FirstLineOffset.ToString();
+                lastLineTb.Text = reporterSettings.LastLineOffset.ToString();
+
                 finishAtLastCb.Checked = reporterSettings.ReadToEnd;
                 areaCb.Checked = reporterSettings.AddArea;
                 centerCb.Checked = reporterSettings.AddCenter;
@@ -41,19 +47,7 @@ namespace RlViewer.Forms
 
 
 
-        public Behaviors.ReportGenerator.ReporterSettings ReporterSettings
-        {
-            get;
-            private set;
-        }
-
-        private Behaviors.ReportGenerator.Abstract.ReporterTypes _reporterType = Behaviors.ReportGenerator.Abstract.ReporterTypes.Docx;
-        public Behaviors.ReportGenerator.Abstract.ReporterTypes ReporterType
-        {
-            get { return _reporterType; }
-        }
-
-
+        private Settings.ReporterSettings _reporterSettings;
 
         private void ConfirmSettings()
         {
@@ -83,9 +77,14 @@ namespace RlViewer.Forms
             //}
             lastLine = lastLine == 0 ? 1 : lastLine;
 
-
-            ReporterSettings = new Behaviors.ReportGenerator.ReporterSettings(firstLine, lastLine, readToEnd, areaCb.Checked,
-                centerCb.Checked, cornersCb.Checked, headerInfoCb.Checked, timeCb.Checked);
+            _reporterSettings.FirstLineOffset = firstLine;
+            _reporterSettings.LastLineOffset = lastLine;
+            _reporterSettings.ReadToEnd = readToEnd;
+            _reporterSettings.AddArea = areaCb.Checked;
+            _reporterSettings.AddCenter = centerCb.Checked;
+            _reporterSettings.AddCorners = cornersCb.Checked;
+            _reporterSettings.AddParametersTable = headerInfoCb.Checked;
+            _reporterSettings.AddTimes = timeCb.Checked;
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();

@@ -195,7 +195,13 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\RCornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl4CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
-    <Compile Include="Behaviors\ReportGenerator\ReporterSettings.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Abstract\SynthesisSourceKRhg.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FirstFrequencyRangeHologram.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FourthFrequencyRangeHologram.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\UnknownFrequencyRangeHologram.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\SecondFrequencyRangeHologram.cs" />
+    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\ThirdFrequncyRangeHologram.cs" />
+    <Compile Include="Settings\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\FilesAggregator\AggregatorParams.cs" />
     <Compile Include="Behaviors\FilesAggregator\LocatorFilesAggregator.cs" />
@@ -206,8 +212,10 @@
     <Compile Include="Behaviors\Saving\DataProcessor\Concrete\DataStringSampleProcessor.cs" />
     <Compile Include="Behaviors\Saving\SaverParams.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
+    <Compile Include="Behaviors\Synthesis\ServerSarInterop.cs" />
     <Compile Include="Behaviors\Synthesis\SharedMemory\MappedFile.cs" />
-    <Compile Include="Behaviors\Synthesis\Sstp.cs" />
+    <Compile Include="Behaviors\Synthesis\ServerSarTaskParams.cs" />
+    <Compile Include="Behaviors\Synthesis\SystemEvents\SystemEvents.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ShortSampleTileCreator.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\TileCreator.cs" />
@@ -333,6 +341,12 @@
     <Compile Include="Forms\StatisticsForm.Designer.cs">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SynthesisParamsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SynthesisParamsForm.Designer.cs">
+      <DependentUpon>SynthesisParamsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TileStatusForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -394,7 +408,8 @@
     <Compile Include="Settings\ComboBoxPics.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Settings\SettingsSerializationExt.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SynthesisSettings.cs" />
     <Compile Include="ThreadHelpers.cs" />
     <Compile Include="AdminChecker.cs" />
     <Compile Include="UI\Events\AlignPossibilityEventArgs.cs" />
@@ -404,6 +419,7 @@
     <Compile Include="UI\Events\ProgressControlsVisibilityEventArgs.cs" />
     <Compile Include="UI\Events\InitWindowEventArgs.cs" />
     <Compile Include="Navigation\NavigationItem.cs" />
+    <Compile Include="Behaviors\Sections\SectionInfo.cs" />
     <Compile Include="WorkerEventController.cs" />
     <Compile Include="Factories\Saver\Abstract\SaverFactory.cs" />
     <Compile Include="Factories\Saver\Concrete\Brl4SaverFactory.cs" />
@@ -519,7 +535,7 @@
     <Compile Include="Forms\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Forms\RawSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -540,6 +556,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StatisticsForm.resx">
       <DependentUpon>StatisticsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SynthesisParamsForm.resx">
+      <DependentUpon>SynthesisParamsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SynthesisParamsForm.ru-RU.resx">
+      <DependentUpon>SynthesisParamsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TileStatusForm.resx">
       <DependentUpon>TileStatusForm.cs</DependentUpon>
