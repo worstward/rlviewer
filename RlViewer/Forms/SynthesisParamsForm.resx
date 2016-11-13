@@ -156,6 +156,9 @@
   <data name="rliNormalizationCoefTb.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
+  <data name="rliNormalizationCoefTb.Text" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="&gt;&gt;rliNormalizationCoefTb.Name" xml:space="preserve">
     <value>rliNormalizationCoefTb</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="rhgNormalizationCoefTb.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
+  </data>
+  <data name="rhgNormalizationCoefTb.Text" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;rhgNormalizationCoefTb.Name" xml:space="preserve">
     <value>rhgNormalizationCoefTb</value>
@@ -199,13 +205,13 @@
     <value>244, 25</value>
   </data>
   <data name="rliNormalizationCoefLbl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 13</value>
+    <value>128, 13</value>
   </data>
   <data name="rliNormalizationCoefLbl.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="rliNormalizationCoefLbl.Text" xml:space="preserve">
-    <value>Коэф расширения матрицы:</value>
+    <value>Коэф нормировки РЛИ:</value>
   </data>
   <data name="&gt;&gt;rliNormalizationCoefLbl.Name" xml:space="preserve">
     <value>rliNormalizationCoefLbl</value>
@@ -229,13 +235,13 @@
     <value>3, 25</value>
   </data>
   <data name="rhgNormalizationCoefLbl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 13</value>
+    <value>121, 13</value>
   </data>
   <data name="rhgNormalizationCoefLbl.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
   <data name="rhgNormalizationCoefLbl.Text" xml:space="preserve">
-    <value>Коэф расширения матрицы:</value>
+    <value>Коэф нормировки РГГ</value>
   </data>
   <data name="&gt;&gt;rhgNormalizationCoefLbl.Name" xml:space="preserve">
     <value>rhgNormalizationCoefLbl</value>
@@ -283,13 +289,13 @@
     <value>247, 22</value>
   </data>
   <data name="radioSuppressionCoefLbl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 13</value>
+    <value>147, 13</value>
   </data>
   <data name="radioSuppressionCoefLbl.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="radioSuppressionCoefLbl.Text" xml:space="preserve">
-    <value>Коэф подавления помехи:</value>
+    <value>Коэф расширения матрицы</value>
   </data>
   <data name="&gt;&gt;radioSuppressionCoefLbl.Name" xml:space="preserve">
     <value>radioSuppressionCoefLbl</value>
@@ -303,73 +309,76 @@
   <data name="&gt;&gt;radioSuppressionCoefLbl.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="matrixExtensionLbl.AutoSize" type="System.Boolean, mscorlib">
+  <data name="radioSuppressionLbl.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="matrixExtensionLbl.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="radioSuppressionLbl.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 22</value>
   </data>
-  <data name="matrixExtensionLbl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 13</value>
+  <data name="radioSuppressionLbl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>137, 13</value>
   </data>
-  <data name="matrixExtensionLbl.TabIndex" type="System.Int32, mscorlib">
+  <data name="radioSuppressionLbl.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="matrixExtensionLbl.Text" xml:space="preserve">
-    <value>Коэф расширения матрицы:</value>
+  <data name="radioSuppressionLbl.Text" xml:space="preserve">
+    <value>Коэф подавления помехи</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionLbl.Name" xml:space="preserve">
-    <value>matrixExtensionLbl</value>
+  <data name="&gt;&gt;radioSuppressionLbl.Name" xml:space="preserve">
+    <value>radioSuppressionLbl</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionLbl.Type" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionLbl.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionLbl.Parent" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionLbl.Parent" xml:space="preserve">
     <value>preprocessingGb</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionLbl.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionLbl.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="matrixExtensionTb.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="radioSuppressionTb.Location" type="System.Drawing.Point, System.Drawing">
     <value>162, 19</value>
   </data>
-  <data name="matrixExtensionTb.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="radioSuppressionTb.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 20</value>
   </data>
-  <data name="matrixExtensionTb.TabIndex" type="System.Int32, mscorlib">
+  <data name="radioSuppressionTb.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionTb.Name" xml:space="preserve">
-    <value>matrixExtensionTb</value>
+  <data name="radioSuppressionTb.Text" xml:space="preserve">
+    <value>0,3</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionTb.Type" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionTb.Name" xml:space="preserve">
+    <value>radioSuppressionTb</value>
+  </data>
+  <data name="&gt;&gt;radioSuppressionTb.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionTb.Parent" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionTb.Parent" xml:space="preserve">
     <value>preprocessingGb</value>
   </data>
-  <data name="&gt;&gt;matrixExtensionTb.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;radioSuppressionTb.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="radioSuppressionCoefCb.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="matrixExtensionCb.Location" type="System.Drawing.Point, System.Drawing">
     <value>410, 19</value>
   </data>
-  <data name="radioSuppressionCoefCb.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="matrixExtensionCb.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 21</value>
   </data>
-  <data name="radioSuppressionCoefCb.TabIndex" type="System.Int32, mscorlib">
+  <data name="matrixExtensionCb.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;radioSuppressionCoefCb.Name" xml:space="preserve">
-    <value>radioSuppressionCoefCb</value>
+  <data name="&gt;&gt;matrixExtensionCb.Name" xml:space="preserve">
+    <value>matrixExtensionCb</value>
   </data>
-  <data name="&gt;&gt;radioSuppressionCoefCb.Type" xml:space="preserve">
+  <data name="&gt;&gt;matrixExtensionCb.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;radioSuppressionCoefCb.Parent" xml:space="preserve">
+  <data name="&gt;&gt;matrixExtensionCb.Parent" xml:space="preserve">
     <value>preprocessingGb</value>
   </data>
-  <data name="&gt;&gt;radioSuppressionCoefCb.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;matrixExtensionCb.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="preprocessingGb.Location" type="System.Drawing.Point, System.Drawing">
@@ -396,15 +405,6 @@
   <data name="&gt;&gt;preprocessingGb.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="frameSizeAzimuthCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 24</value>
-  </data>
-  <data name="frameSizeAzimuthCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="frameSizeAzimuthCb.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
   <data name="&gt;&gt;frameSizeAzimuthCb.Name" xml:space="preserve">
     <value>frameSizeAzimuthCb</value>
   </data>
@@ -416,30 +416,6 @@
   </data>
   <data name="&gt;&gt;frameSizeAzimuthCb.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="frameRangeCoefCb.Items" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="frameRangeCoefCb.Items1" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="frameRangeCoefCb.Items2" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="frameRangeCoefCb.Items3" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="frameRangeCoefCb.Items4" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="frameRangeCoefCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 103</value>
-  </data>
-  <data name="frameRangeCoefCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="frameRangeCoefCb.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
   </data>
   <data name="&gt;&gt;frameRangeCoefCb.Name" xml:space="preserve">
     <value>frameRangeCoefCb</value>
@@ -453,24 +429,6 @@
   <data name="&gt;&gt;frameRangeCoefCb.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="frameRangeCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="frameRangeCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="frameRangeCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 106</value>
-  </data>
-  <data name="frameRangeCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 13</value>
-  </data>
-  <data name="frameRangeCompressionLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="frameRangeCompressionLabel.Text" xml:space="preserve">
-    <value>Сжатие по дальности:</value>
-  </data>
   <data name="&gt;&gt;frameRangeCompressionLabel.Name" xml:space="preserve">
     <value>frameRangeCompressionLabel</value>
   </data>
@@ -482,30 +440,6 @@
   </data>
   <data name="&gt;&gt;frameRangeCompressionLabel.ZOrder" xml:space="preserve">
     <value>2</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Items" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Items1" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Items2" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Items3" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Items4" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 64</value>
-  </data>
-  <data name="frameAzimuthCoefCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="frameAzimuthCoefCb.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
   </data>
   <data name="&gt;&gt;frameAzimuthCoefCb.Name" xml:space="preserve">
     <value>frameAzimuthCoefCb</value>
@@ -519,24 +453,6 @@
   <data name="&gt;&gt;frameAzimuthCoefCb.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="frameSizeLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="frameSizeLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="frameSizeLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 27</value>
-  </data>
-  <data name="frameSizeLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 13</value>
-  </data>
-  <data name="frameSizeLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="frameSizeLabel.Text" xml:space="preserve">
-    <value>Размер кадра по азимуту:</value>
-  </data>
   <data name="&gt;&gt;frameSizeLabel.Name" xml:space="preserve">
     <value>frameSizeLabel</value>
   </data>
@@ -548,24 +464,6 @@
   </data>
   <data name="&gt;&gt;frameSizeLabel.ZOrder" xml:space="preserve">
     <value>4</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 67</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 13</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="frameAzimuthCompressionLabel.Text" xml:space="preserve">
-    <value>Сжатие по азимуту:</value>
   </data>
   <data name="&gt;&gt;frameAzimuthCompressionLabel.Name" xml:space="preserve">
     <value>frameAzimuthCompressionLabel</value>
@@ -603,15 +501,6 @@
   <data name="&gt;&gt;frameGb.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="blockSizeAzimuthCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 24</value>
-  </data>
-  <data name="blockSizeAzimuthCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="blockSizeAzimuthCb.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
   <data name="&gt;&gt;blockSizeAzimuthCb.Name" xml:space="preserve">
     <value>blockSizeAzimuthCb</value>
   </data>
@@ -623,30 +512,6 @@
   </data>
   <data name="&gt;&gt;blockSizeAzimuthCb.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="blockRangeCoefCb.Items" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="blockRangeCoefCb.Items1" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="blockRangeCoefCb.Items2" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="blockRangeCoefCb.Items3" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="blockRangeCoefCb.Items4" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="blockRangeCoefCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>151, 103</value>
-  </data>
-  <data name="blockRangeCoefCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="blockRangeCoefCb.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
   </data>
   <data name="&gt;&gt;blockRangeCoefCb.Name" xml:space="preserve">
     <value>blockRangeCoefCb</value>
@@ -660,30 +525,6 @@
   <data name="&gt;&gt;blockRangeCoefCb.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="blockAzimuthCoefCb.Items" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Items1" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Items2" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Items3" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Items4" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Location" type="System.Drawing.Point, System.Drawing">
-    <value>151, 64</value>
-  </data>
-  <data name="blockAzimuthCoefCb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 21</value>
-  </data>
-  <data name="blockAzimuthCoefCb.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
   <data name="&gt;&gt;blockAzimuthCoefCb.Name" xml:space="preserve">
     <value>blockAzimuthCoefCb</value>
   </data>
@@ -695,24 +536,6 @@
   </data>
   <data name="&gt;&gt;blockAzimuthCoefCb.ZOrder" xml:space="preserve">
     <value>2</value>
-  </data>
-  <data name="blockRangeCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="blockRangeCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="blockRangeCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 106</value>
-  </data>
-  <data name="blockRangeCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 13</value>
-  </data>
-  <data name="blockRangeCompressionLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="blockRangeCompressionLabel.Text" xml:space="preserve">
-    <value>Сжатие по дальности:</value>
   </data>
   <data name="&gt;&gt;blockRangeCompressionLabel.Name" xml:space="preserve">
     <value>blockRangeCompressionLabel</value>
@@ -726,21 +549,6 @@
   <data name="&gt;&gt;blockRangeCompressionLabel.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="blockAzimuthCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="blockAzimuthCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 67</value>
-  </data>
-  <data name="blockAzimuthCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 13</value>
-  </data>
-  <data name="blockAzimuthCompressionLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="blockAzimuthCompressionLabel.Text" xml:space="preserve">
-    <value>Сжатие по азимуту:</value>
-  </data>
   <data name="&gt;&gt;blockAzimuthCompressionLabel.Name" xml:space="preserve">
     <value>blockAzimuthCompressionLabel</value>
   </data>
@@ -752,21 +560,6 @@
   </data>
   <data name="&gt;&gt;blockAzimuthCompressionLabel.ZOrder" xml:space="preserve">
     <value>4</value>
-  </data>
-  <data name="blockSizeLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="blockSizeLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 27</value>
-  </data>
-  <data name="blockSizeLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 13</value>
-  </data>
-  <data name="blockSizeLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="blockSizeLabel.Text" xml:space="preserve">
-    <value>Размер блока по азимуту</value>
   </data>
   <data name="&gt;&gt;blockSizeLabel.Name" xml:space="preserve">
     <value>blockSizeLabel</value>
@@ -995,6 +788,366 @@
   </data>
   <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="frameSizeAzimuthCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>150, 24</value>
+  </data>
+  <data name="frameSizeAzimuthCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="frameSizeAzimuthCb.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;frameSizeAzimuthCb.Name" xml:space="preserve">
+    <value>frameSizeAzimuthCb</value>
+  </data>
+  <data name="&gt;&gt;frameSizeAzimuthCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameSizeAzimuthCb.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameSizeAzimuthCb.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="frameRangeCoefCb.Items" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="frameRangeCoefCb.Items1" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="frameRangeCoefCb.Items2" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="frameRangeCoefCb.Items3" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="frameRangeCoefCb.Items4" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="frameRangeCoefCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>150, 103</value>
+  </data>
+  <data name="frameRangeCoefCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="frameRangeCoefCb.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCoefCb.Name" xml:space="preserve">
+    <value>frameRangeCoefCb</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCoefCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCoefCb.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCoefCb.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="frameRangeCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="frameRangeCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="frameRangeCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 106</value>
+  </data>
+  <data name="frameRangeCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 13</value>
+  </data>
+  <data name="frameRangeCompressionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="frameRangeCompressionLabel.Text" xml:space="preserve">
+    <value>Сжатие по дальности:</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCompressionLabel.Name" xml:space="preserve">
+    <value>frameRangeCompressionLabel</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCompressionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCompressionLabel.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameRangeCompressionLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Items" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Items1" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Items2" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Items3" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Items4" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>150, 64</value>
+  </data>
+  <data name="frameAzimuthCoefCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="frameAzimuthCoefCb.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCoefCb.Name" xml:space="preserve">
+    <value>frameAzimuthCoefCb</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCoefCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCoefCb.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCoefCb.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="frameSizeLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="frameSizeLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="frameSizeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 27</value>
+  </data>
+  <data name="frameSizeLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>141, 13</value>
+  </data>
+  <data name="frameSizeLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="frameSizeLabel.Text" xml:space="preserve">
+    <value>Размер кадра по азимуту:</value>
+  </data>
+  <data name="&gt;&gt;frameSizeLabel.Name" xml:space="preserve">
+    <value>frameSizeLabel</value>
+  </data>
+  <data name="&gt;&gt;frameSizeLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameSizeLabel.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameSizeLabel.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 67</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 13</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="frameAzimuthCompressionLabel.Text" xml:space="preserve">
+    <value>Сжатие по азимуту:</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCompressionLabel.Name" xml:space="preserve">
+    <value>frameAzimuthCompressionLabel</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCompressionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCompressionLabel.Parent" xml:space="preserve">
+    <value>frameGb</value>
+  </data>
+  <data name="&gt;&gt;frameAzimuthCompressionLabel.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="blockSizeAzimuthCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>150, 24</value>
+  </data>
+  <data name="blockSizeAzimuthCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="blockSizeAzimuthCb.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;blockSizeAzimuthCb.Name" xml:space="preserve">
+    <value>blockSizeAzimuthCb</value>
+  </data>
+  <data name="&gt;&gt;blockSizeAzimuthCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockSizeAzimuthCb.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockSizeAzimuthCb.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="blockRangeCoefCb.Items" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="blockRangeCoefCb.Items1" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="blockRangeCoefCb.Items2" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="blockRangeCoefCb.Items3" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="blockRangeCoefCb.Items4" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="blockRangeCoefCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>151, 103</value>
+  </data>
+  <data name="blockRangeCoefCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="blockRangeCoefCb.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCoefCb.Name" xml:space="preserve">
+    <value>blockRangeCoefCb</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCoefCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCoefCb.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCoefCb.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Items" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Items1" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Items2" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Items3" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Items4" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Location" type="System.Drawing.Point, System.Drawing">
+    <value>151, 64</value>
+  </data>
+  <data name="blockAzimuthCoefCb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 21</value>
+  </data>
+  <data name="blockAzimuthCoefCb.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCoefCb.Name" xml:space="preserve">
+    <value>blockAzimuthCoefCb</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCoefCb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCoefCb.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCoefCb.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="blockRangeCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="blockRangeCompressionLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="blockRangeCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 106</value>
+  </data>
+  <data name="blockRangeCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 13</value>
+  </data>
+  <data name="blockRangeCompressionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="blockRangeCompressionLabel.Text" xml:space="preserve">
+    <value>Сжатие по дальности:</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCompressionLabel.Name" xml:space="preserve">
+    <value>blockRangeCompressionLabel</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCompressionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCompressionLabel.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockRangeCompressionLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="blockAzimuthCompressionLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="blockAzimuthCompressionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 67</value>
+  </data>
+  <data name="blockAzimuthCompressionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 13</value>
+  </data>
+  <data name="blockAzimuthCompressionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="blockAzimuthCompressionLabel.Text" xml:space="preserve">
+    <value>Сжатие по азимуту:</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCompressionLabel.Name" xml:space="preserve">
+    <value>blockAzimuthCompressionLabel</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCompressionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCompressionLabel.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockAzimuthCompressionLabel.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="blockSizeLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="blockSizeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 27</value>
+  </data>
+  <data name="blockSizeLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 13</value>
+  </data>
+  <data name="blockSizeLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="blockSizeLabel.Text" xml:space="preserve">
+    <value>Размер блока по азимуту</value>
+  </data>
+  <data name="&gt;&gt;blockSizeLabel.Name" xml:space="preserve">
+    <value>blockSizeLabel</value>
+  </data>
+  <data name="&gt;&gt;blockSizeLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blockSizeLabel.Parent" xml:space="preserve">
+    <value>blockGb</value>
+  </data>
+  <data name="&gt;&gt;blockSizeLabel.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="okBtn.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 433</value>

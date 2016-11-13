@@ -32,7 +32,7 @@ namespace RlViewer.Behaviors.Synthesis
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
         public byte[] Client_ip_address;
 
-        public int RGG_RLI_DSP_numbers;					 // количество массивов в общей памяти для РГГ, РЛИ, ДСП
+        //public int RGG_RLI_DSP_numbers;					 // количество массивов в общей памяти для РГГ, РЛИ, ДСП
 
         // диапазон синтеза
         public int M;										 // номер текущего блока по азимуту

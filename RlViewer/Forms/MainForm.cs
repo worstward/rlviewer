@@ -19,7 +19,7 @@ namespace RlViewer.Forms
 
         public MainForm()
         {
-            ////var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
+            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
             //System.Threading.EventWaitHandle handle = new System.Threading.EventWaitHandle(false, EventResetMode.AutoReset, "SSTP_Ready");
             //handle.WaitOne();
 
@@ -32,6 +32,22 @@ namespace RlViewer.Forms
 
             //var sstp = Behaviors.Converters.StructIO.ReadStruct<Behaviors.Synthesis.ServerSarTaskParams>(buf);
             //var asd = sstp;
+
+            //using (var s = new Forms.SynthesisParamsForm(@"C:\Users\lenovo\Desktop\РЛИ\arm12_20160604_s001_001.k"))
+            //{
+
+            //}
+           // System.Diagnostics.Process.Start(@"C:\Users\lenovo\Desktop\tnk_2\server_sar_base_tcp_x64.exe", "-1 -2");
+
+            var synForm = new Forms.SynthesisParamsForm(@"C:\Users\lenovo\Desktop\РЛИ\arm12_20160604_s001_001.k");
+            
+                if (synForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+                var interop = new Behaviors.Synthesis.ServerSarInterop(@"C:\Users\lenovo\Desktop\tnk_2\server_sar_base_tcp_x64.exe", synForm.GenerateSstp(1, 123123, 0, 0));
+                interop.StartSynthesis();
+            
 
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
@@ -196,7 +212,7 @@ namespace RlViewer.Forms
                 return;
             }
 
-            if(_rightBtnPressed)
+            if (_rightBtnPressed)
             {
                 pictureBox1.Cursor = Cursors.SizeAll;
                 _guiFacade.DragStart(e.Location);

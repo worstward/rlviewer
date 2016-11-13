@@ -201,6 +201,7 @@
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\UnknownFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\SecondFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\ThirdFrequncyRangeHologram.cs" />
+    <Compile Include="Factories\SynthesisSourceRhg\SynthesisSourceRhgFactory.cs" />
     <Compile Include="Settings\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\FilesAggregator\AggregatorParams.cs" />

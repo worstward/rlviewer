@@ -20,7 +20,7 @@ namespace RlViewer.Behaviors.Synthesis.Hologram.Abstract
             var headerStruct = (_rhgFile.Header as Headers.Concrete.K.KHeader).HeaderStruct;
 
 
-            _frequency = headerStruct.transmitterHeader.frequency;
+            _adcFrequency = headerStruct.adcHeader.adcFreq;
             _freqDeviation = headerStruct.adcHeader.adcDelay;
             _impulseLength = headerStruct.transmitterHeader.impulseLength;
             _sampleFrequency = headerStruct.adcHeader.adcFreq;
@@ -34,12 +34,24 @@ namespace RlViewer.Behaviors.Synthesis.Hologram.Abstract
 
         private RlViewer.Files.Rhg.Concrete.K _rhgFile;
 
-        private float _frequency;
-        public float Frequency
+        private int _samplesPerStr;
+
+        public int SamplesPerStr
+        {
+            get
+            {
+                return _samplesPerStr; 
+            }
+        }
+
+
+
+        private float _adcFrequency;
+        public float AdcFrequency
         {
             get
             { 
-                return _frequency;
+                return _adcFrequency;
             }
         }
 

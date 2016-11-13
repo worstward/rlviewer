@@ -34,6 +34,7 @@ namespace RlViewer.UI
             //_chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
 
             Deinitialize();
+
         }
 
         private Settings.AppSettings _settings;

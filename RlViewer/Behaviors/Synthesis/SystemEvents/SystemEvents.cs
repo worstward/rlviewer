@@ -19,6 +19,11 @@ namespace RlViewer.Behaviors.Synthesis.SystemEvents
             FireEvent("Hol_Ready");
         }
 
+        public static void RliReady()
+        {
+            FireEvent("Rli_Ready");
+        }
+
         
         private static void FireEvent(string eventName)
         {
