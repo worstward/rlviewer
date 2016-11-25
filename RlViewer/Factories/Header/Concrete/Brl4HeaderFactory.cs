@@ -14,5 +14,10 @@ namespace RlViewer.Factories.Header.Concrete
             return new Brl4Header(path);
         }
 
+
+        public override Headers.Abstract.LocatorFileHeader Create(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            return new Brl4Header(headerStruct);
+        }
     }
 }

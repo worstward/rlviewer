@@ -85,6 +85,16 @@ namespace RlViewer.Forms
                     });
         }
 
+        public static void AddTbClickEvent<T>(TabControl container) where T : TextBoxBase
+        {
+            foreach (TabPage page in container.TabPages)
+            {
+                FormsHelper.AddTbClickEvent<T>(page.Controls);
+            }
+        }
+
+
+
         /// <summary>
         /// Adds click event to each control in the container
         /// </summary>

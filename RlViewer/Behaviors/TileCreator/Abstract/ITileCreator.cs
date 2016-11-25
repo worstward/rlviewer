@@ -10,7 +10,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
     {
          bool CheckTileConsistency(string filePath, int tileCount);
          string GetDirectoryName(string filePath);
-         Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false);
+         Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false, bool synthesis = false, int startingLine = 0);
 
          void ClearCancelledFileTiles(string path);
          float NormalizationFactor { get; }

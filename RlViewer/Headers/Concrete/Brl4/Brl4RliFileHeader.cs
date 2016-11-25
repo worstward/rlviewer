@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.Brl4
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Brl4RliFileHeader
+    public struct Brl4RliFileHeader : Headers.Abstract.IHeaderStruct
     {
         public Brl4RliFileHeader(byte[] fileSign, int fileVersion, Brl4RhgSubHeaderStruct rhgParams,
             Brl4RliSubHeaderStruct rlParams, Brl4SynthesisSubHeaderStruct synthParams, int aligningPointsCount, 

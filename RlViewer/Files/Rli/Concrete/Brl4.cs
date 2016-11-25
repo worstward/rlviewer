@@ -60,5 +60,19 @@ namespace RlViewer.Files.Rli.Concrete
                 return _header.HeaderStruct.rlParams.width;
             }
         }
+
+        public override void SetHeight(int height)
+        {
+            base.SetHeight(height);
+
+            var rlParams = _header.HeaderStruct.rlParams;
+            rlParams.height = height;
+
+            var headerStruct = _header.HeaderStruct;
+            headerStruct.rlParams = rlParams;
+            _header.HeaderStruct = headerStruct;
+
+            Header.ChangeFileHeaderStruct<Headers.Concrete.Brl4.Brl4RliFileHeader>(headerStruct, Properties);
+        }
     }
 }

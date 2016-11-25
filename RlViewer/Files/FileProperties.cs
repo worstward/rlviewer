@@ -15,7 +15,12 @@ namespace RlViewer.Files
         {
             FilePath = path;
             Type = GetType(path);
-            Length = new System.IO.FileInfo(path).Length;
+
+            if (System.IO.File.Exists(path))
+            {
+                Length = new System.IO.FileInfo(path).Length;
+            }
+            else Length = 0;
         }
 
 
@@ -29,7 +34,7 @@ namespace RlViewer.Files
         /// </summary>
         public FileType Type { get; private set; }
 
-        public long Length { get; private set; }
+        public long Length { get; set; }
 
         /// <summary>
         /// Gets this file <see cref="FileType"/> from a provided filename

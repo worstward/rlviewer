@@ -46,7 +46,6 @@ namespace RlViewer.Navigation
 
         private static string ParseToDegrees(double value, string suffix = "")
         {
-            var val = value;
             //radians to degrees
             value = Math.Abs(value * ( 180 / Math.PI ));
 

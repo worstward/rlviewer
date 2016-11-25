@@ -39,17 +39,6 @@ namespace RlViewer.Headers.Concrete.Rl4
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 841)]
         public byte[] reserved2;
 
-
-
-        //// параметры сигнала
-        //public float VH;
-        //public float lambda;
-        //public float Fn;
-        //public byte polarization;
-
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 841)]
-        //public byte[] reserved2;
-
         // диапазон синтеза по азимуту
         [MarshalAs(UnmanagedType.I1)]
         public bool isProcessAlli;
@@ -90,7 +79,6 @@ namespace RlViewer.Headers.Concrete.Rl4
 
         // ближний край полосы
         public byte flipType;
-        //offset 1500
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 892)]
         public byte[] reserved6;
@@ -98,11 +86,8 @@ namespace RlViewer.Headers.Concrete.Rl4
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]      
         public byte[] rhgName;
 
-
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1576)]
         public byte[] reserved5;
-
-
 
     }
 

@@ -75,27 +75,11 @@
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="gdalconst_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdalconst_csharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="gdal_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdal_csharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="ogr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="osr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\osr_csharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PropertyChanged, Version=1.52.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.1.52.1\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
       <Private>False</Private>
@@ -108,8 +92,10 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -185,6 +171,8 @@
     <Compile Include="Behaviors\Navigation\NavigationSearcher\Concrete\RPointFinder.cs" />
     <Compile Include="Behaviors\Navigation\NavigationSearcher\SearcherParams.cs" />
     <Compile Include="Behaviors\PointSelector\CompressedPointSelectorWrapper.cs" />
+    <Compile Include="Behaviors\RecentOpened\RecentFiles.cs" />
+    <Compile Include="Behaviors\RecentOpened\RecentOpenedFilesChecker.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\Reporter.cs" />
     <Compile Include="Behaviors\ReportGenerator\Abstract\ReporterTypes.cs" />
     <Compile Include="Behaviors\ReportGenerator\Concrete\DocFileReporter.cs" />
@@ -195,13 +183,24 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\RCornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl4CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
+    <Compile Include="Behaviors\Synthesis\ErrorProcessor.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Abstract\SynthesisSourceKRhg.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FirstFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FourthFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\UnknownFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\SecondFrequencyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\Hologram\Concrete\ThirdFrequncyRangeHologram.cs" />
+    <Compile Include="Behaviors\Synthesis\RhgProcessor.cs" />
+    <Compile Include="Behaviors\Synthesis\RliFileCreator.cs" />
+    <Compile Include="Behaviors\Synthesis\RliProcessor.cs" />
+    <Compile Include="Behaviors\Synthesis\ServerSarEmbedding\ServerSarEmbedder.cs" />
+    <Compile Include="Behaviors\Synthesis\ServerSarErrorMessage.cs" />
+    <Compile Include="Behaviors\Synthesis\SynthesisWorkerParams.cs" />
     <Compile Include="Factories\SynthesisSourceRhg\SynthesisSourceRhgFactory.cs" />
+    <Compile Include="Headers\Abstract\IHeaderStruct.cs" />
+    <Compile Include="Headers\Abstract\IStrHeader.cs" />
+    <Compile Include="Logging\LogType.cs" />
+    <Compile Include="Settings\GuiSettings.cs" />
     <Compile Include="Settings\ReporterSettings.cs" />
     <Compile Include="Behaviors\ResolutionAnalyzer\ResolutionAnalyzer.cs" />
     <Compile Include="Behaviors\FilesAggregator\AggregatorParams.cs" />
@@ -383,8 +382,6 @@
     <Compile Include="Forms\SectionGraphForm.Designer.cs">
       <DependentUpon>SectionGraphForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GdalConfiguration.cs" />
-    <Compile Include="Headers\Abstract\IStrHeader.cs" />
     <Compile Include="Headers\Concrete\Ba\BaHeader.cs" />
     <Compile Include="Headers\Concrete\Ba\BaStrHeader.cs" />
     <Compile Include="Headers\Concrete\K\KHeader.cs" />
@@ -409,7 +406,7 @@
     <Compile Include="Settings\ComboBoxPics.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="XmlSerialized.cs" />
     <Compile Include="Settings\SynthesisSettings.cs" />
     <Compile Include="ThreadHelpers.cs" />
     <Compile Include="AdminChecker.cs" />
@@ -418,7 +415,6 @@
     <Compile Include="UI\Events\OnPointOfViewChangedEventArgs.cs" />
     <Compile Include="UI\Events\ProgressChangedEventArgs.cs" />
     <Compile Include="UI\Events\ProgressControlsVisibilityEventArgs.cs" />
-    <Compile Include="UI\Events\InitWindowEventArgs.cs" />
     <Compile Include="Navigation\NavigationItem.cs" />
     <Compile Include="Behaviors\Sections\SectionInfo.cs" />
     <Compile Include="WorkerEventController.cs" />
@@ -560,6 +556,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SynthesisParamsForm.resx">
       <DependentUpon>SynthesisParamsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SynthesisParamsForm.ru-RU.resx">
       <DependentUpon>SynthesisParamsForm.cs</DependentUpon>
@@ -671,6 +668,9 @@
     <None Include="Resources\Yellows.png" />
     <None Include="Resources\Pinks.png" />
     <None Include="Resources\LightBlues.png" />
+    <None Include="bin\Release\serverSar\bintorli_dll_base_x64.dll" />
+    <None Include="bin\Release\serverSar\server_sar_base_dll_x64.dll" />
+    <None Include="bin\Release\serverSar\server_sar_base_tcp_x64.exe" />
     <Content Include="FodyWeavers.xml" />
     <None Include="Resources\stat.png" />
     <None Include="Resources\3dPlot.png" />
@@ -678,9 +678,10 @@
     <None Include="Resources\AcidGreen.png" />
     <None Include="Resources\Up.png" />
     <None Include="Resources\Down.png" />
-    <Content Include="GdalConfiguration.vb" />
     <None Include="Resources\Remove.png" />
     <None Include="Resources\mirror.png" />
+    <None Include="Resources\Synthesis.png" />
+    <None Include="Resources\SelectSynthApp.png" />
     <Content Include="Untitled-28-32.ico" />
     <Content Include="Untitled-28-64.ico" />
   </ItemGroup>

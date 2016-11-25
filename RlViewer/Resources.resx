@@ -138,4 +138,20 @@
   <data name="NaviEmbeddingFilterSource" xml:space="preserve">
     <value>Локационные файлы |*.k;*.ba|РГГ Ba (*.ba)|*.ba|РГГ МРК(*.k)|*.k</value>
   </data>
+  <data name="Rl4Filter" xml:space="preserve">
+    <value>Файлы РЛИ МРК2 (*.rl4)|*.rl4</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="bintorli_dll_base_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>bin\Release\serverSar\bintorli_dll_base_x64.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="KFilter" xml:space="preserve">
+    <value>Файлы РГГ МРК2 (.k)|*.k</value>
+  </data>
+  <data name="server_sar_base_dll_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>bin\Release\serverSar\server_sar_base_dll_x64.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="server_sar_base_tcp_x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>bin\Release\serverSar\server_sar_base_tcp_x64.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

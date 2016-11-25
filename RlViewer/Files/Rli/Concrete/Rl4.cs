@@ -28,7 +28,10 @@ namespace RlViewer.Files.Rli.Concrete
         private Rl4Header _header;
         public override LocatorFileHeader Header
         {
-            get { return _header; }
+            get
+            {
+                return _header;
+             }
         }
 
 
@@ -63,6 +66,19 @@ namespace RlViewer.Files.Rli.Concrete
             }
         }
 
+        public override void SetHeight(int height)
+        {
+            base.SetHeight(height);
+
+            var rlParams = _header.HeaderStruct.rlParams;
+            rlParams.height = height;
+
+            var headerStruct = _header.HeaderStruct;
+            headerStruct.rlParams = rlParams;
+            _header.HeaderStruct = headerStruct;
+
+            Header.ChangeFileHeaderStruct<Headers.Concrete.Rl4.Rl4RliFileHeader>(headerStruct, Properties);
+        }
 
     }
 }

@@ -13,7 +13,8 @@ namespace RlViewer.Logging
             Error,
             Warning,
             Info,
-            Internal
+            Internal,
+            Synthesis
         }
 
         public static class SeverityGradesExt

@@ -12,73 +12,170 @@ namespace RlViewer.Forms
 {
     public partial class SynthesisParamsForm : Form
     {
-        public SynthesisParamsForm(string fileName)
+        public SynthesisParamsForm(RlViewer.Settings.SynthesisSettings synthesisSettings, bool extendedParameters, params string[] fileName)
         {
-            //_sstp = sstp;
             InitializeComponent();
-            frameSizeAzimuthCb.DataSource = _frameAzimuthSizes;           
-            frameAzimuthCoefCb.DataSource = _frameAzimuthCompressionCoefs;
-            frameRangeCoefCb.DataSource = _frameRangeCompressionCoefs;
+            InitControls(synthesisSettings);
+            _fileName = fileName.FirstOrDefault();
+            _synthesisSettings = synthesisSettings;
+            ToggleRhgFileParamsTab(extendedParameters);
+            Forms.FormsHelper.AddTbClickEvent<MaskedTextBox>(tabControl1);
 
-            blockSizeAzimuthCb.DataSource = _blockAzimuthSizes;          
-            blockAzimuthCoefCb.DataSource = _blockAzimuthCompressionCoefs;
-            blockRangeCoefCb.DataSource = _blockRangeCompressionCoefs;
-            matrixExtensionCb.DataSource = _matrixExtensionCoefs;
-
-            _fileName = fileName;
-            
-        }
-
-        Behaviors.Synthesis.ServerSarTaskParams _sstp;
-        private Behaviors.Synthesis.Hologram.Abstract.SynthesisSourceKRhg _synthesisSourceRhg;
-
-
-        private string _fileName;
-
-        private List<int> _blockAzimuthSizes = new List<int>()
-        {
-            512,
-            1024,
-            2048,
-            4096,
-            8192,
-            16384,
-            32768,
-            65536,
-            131072
-        };
-
-        private List<int> _frameAzimuthSizes = new List<int>()
-        {
-            512,
-            1024,
-            2048,
-            4096,
-            8192,
-            16384,
-            32768,
-            65536,
-            131072
-        };
-
-        private List<int> _blockRangeCompressionCoefs = new List<int>() { 1, 2, 4, 8, 16};
-        private List<int> _blockAzimuthCompressionCoefs = new List<int>() { 1, 2, 4, 8, 16 };
-        private List<int> _frameRangeCompressionCoefs = new List<int>() { 1, 2, 4, 8, 16 };
-        private List<int> _frameAzimuthCompressionCoefs = new List<int>() { 1, 2, 4, 8, 16 };
-        private List<float> _matrixExtensionCoefs = new List<float>() { 1, 1.5f, 2, 4 };
-
-
-
-        public Behaviors.Synthesis.ServerSarTaskParams GenerateSstp(int currentBlock, int totalRhgLines, int rangeShift, int azimuthShift)
-        {
             var holFileProp = new RlViewer.Files.FileProperties(_fileName);
             var holHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(holFileProp).Create(_fileName) as Headers.Concrete.K.KHeader;
-            var holHeaderStruct = holHeader.HeaderStruct;
-            var rhg = (Files.Rhg.Abstract.RhgFile)Factories.File.Abstract.FileFactory.GetFactory(holFileProp).Create(holFileProp, holHeader, null);
+            _headerStruct = holHeader.HeaderStruct;
+            _rhg = (Files.Rhg.Abstract.RhgFile)Factories.File.Abstract.FileFactory.GetFactory(holFileProp).Create(holFileProp, holHeader, null);
 
-            //var sourceRhg = Factories.SynthesisSourceRhg.SynthesisSourceRhgFactory.Create((int)holHeaderStruct.locatorHeader.channelNumber, rhg);
+        }
+
+        private RlViewer.Settings.SynthesisSettings _synthesisSettings;
+        private string _fileName;
+        private Headers.Concrete.K.KFileHeaderStruct _headerStruct;
+        private Files.Rhg.Abstract.RhgFile _rhg;
+
+        private void ToggleRhgFileParamsTab(bool extendedParameters)
+        {
+            if (!extendedParameters)
+            {
+                var commonPage = (TabPage)tabControl1.Controls.Find("commonPage", true).First();
+                var tabHandle = tabControl1.Handle;//known ms bug, need to read tab container handle to insert tab in it
+                tabControl1.Controls.Remove(commonPage);
+            }
+
+            tabControl1.SizeMode = TabSizeMode.Fixed;
+            tabControl1.ItemSize = new Size(tabControl1.Width / tabControl1.TabCount, 0);
+        }
 
 
+        private void InitControls(RlViewer.Settings.SynthesisSettings synthesisSettings)
+        {
+            frameSizeAzimuthCb.DataSource = synthesisSettings.FrameAzimuthSizes;
+            frameAzimuthCoefCb.DataSource = synthesisSettings.FrameAzimuthCompressionCoefs;
+            frameRangeCoefCb.DataSource = synthesisSettings.FrameRangeCompressionCoefs;
+            blockSizeAzimuthCb.DataSource = synthesisSettings.BlockAzimuthSizes;
+            blockAzimuthCoefCb.DataSource = synthesisSettings.BlockAzimuthCompressionCoefs;
+            blockRangeCoefCb.DataSource = synthesisSettings.BlockRangeCompressionCoefs;
+            matrixExtensionCb.DataSource = synthesisSettings.MatrixExtensionCoefs;
+            pNLengthCb.DataSource = synthesisSettings.PNLengthValues;
+            minDopplerCb.DataSource = synthesisSettings.MinDopplerFilterValues;
+            maxDopplerCb.DataSource = synthesisSettings.MaxDopplerFilterValues;
+            memoryChunksCountCb.DataSource = synthesisSettings.MemoryChunksCountValues;
+
+            frameAzimuthCoefCb.SelectedItem = synthesisSettings.FrameAzimuthCompressionCoef;
+            frameRangeCoefCb.SelectedItem = synthesisSettings.FrameRangeCompressionCoef;
+            frameSizeAzimuthCb.SelectedItem = synthesisSettings.FrameAzimuthSize;
+
+            blockAzimuthCoefCb.SelectedItem = synthesisSettings.BlockAzimuthCompressionCoef;
+            blockRangeCoefCb.SelectedItem = synthesisSettings.BlockRangeCompressionCoef;
+            blockSizeAzimuthCb.SelectedItem = synthesisSettings.BlockAzimuthSize;
+            matrixExtensionCb.SelectedItem = synthesisSettings.MatrixExtensionCoef;
+            memoryChunksCountCb.SelectedItem = synthesisSettings.MemoryChunksCount;
+
+
+            rliNormalizationCoefTb.Text = synthesisSettings.RliNormalizingCoef.ToString();
+            rhgNormalizationCoefTb.Text = synthesisSettings.RhgNormalizingCoef.ToString();
+            radioSuppressionTb.Text = synthesisSettings.RadioSuppressionCoef.ToString();
+
+            useDopplerFilteringCb.Checked = synthesisSettings.UseDopplerFiltering;
+
+            ToggleDopplerControls(synthesisSettings.UseDopplerFiltering);
+
+            pNLengthCb.SelectedItem = synthesisSettings.PNLength;
+            pNShiftTb.Text = synthesisSettings.PNShift.ToString();
+            minDopplerCb.SelectedItem = synthesisSettings.MinDoppler;
+            maxDopplerCb.SelectedItem = synthesisSettings.MaxDoppler;
+
+        }
+
+        private void ConfirmParams()
+        {
+            _synthesisSettings.FrameAzimuthCompressionCoef = (int)frameAzimuthCoefCb.SelectedItem;
+            _synthesisSettings.FrameRangeCompressionCoef = (int)frameRangeCoefCb.SelectedItem;
+            _synthesisSettings.FrameAzimuthSize = (int)frameSizeAzimuthCb.SelectedItem;
+
+            _synthesisSettings.BlockAzimuthCompressionCoef = (int)blockAzimuthCoefCb.SelectedItem;
+            _synthesisSettings.BlockRangeCompressionCoef = (int)blockRangeCoefCb.SelectedItem;
+            _synthesisSettings.BlockAzimuthSize = (int)blockSizeAzimuthCb.SelectedItem;
+
+            _synthesisSettings.MatrixExtensionCoef = (float)matrixExtensionCb.SelectedItem;
+            _synthesisSettings.MinDoppler = (int)minDopplerCb.SelectedItem;
+            _synthesisSettings.MaxDoppler = (int)maxDopplerCb.SelectedItem;
+            _synthesisSettings.UseDopplerFiltering = useDopplerFilteringCb.Checked;
+            _synthesisSettings.MemoryChunksCount = (int)memoryChunksCountCb.SelectedItem;
+
+            var pNLength = (int)pNLengthCb.SelectedItem;
+
+            int pNShift;
+            Int32.TryParse(pNShiftTb.Text, out pNShift);
+            if (pNShift == 0)
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Неверный параметр: {0} ({1})", pNShiftLbl.Text, eokPage.Text));
+                return;
+            }
+            _synthesisSettings.PNShift = pNShift;
+
+
+            if (pNLength > _rhg.Width)
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Размер смещения по дальности не должен превышать ширины полосы по дальности ({0} < {1}) ({2})",
+                    pNLength.ToString(), pNShift.ToString(), eokPage.Text));
+                return;
+            }
+
+            if (pNShift > pNLength)
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Размер смещения по дальности не должен превышать ширины полосы по дальности ({0} < {1}) ({2})",
+                    pNLength.ToString(), pNShift.ToString(), eokPage.Text));
+                return;
+            }
+
+            _synthesisSettings.PNLength = pNLength;
+
+            float radioSuppressionCoef;
+            Single.TryParse(radioSuppressionTb.Text, out radioSuppressionCoef);
+
+            if (radioSuppressionCoef > 0)
+            {
+                _synthesisSettings.RadioSuppressionCoef = radioSuppressionCoef;
+            }
+            else
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Неверный параметр: {0} ({1})", radioSuppressionLbl.Text, signalPage.Text));
+                return;
+            }
+
+
+            float rhgNormalizationCoef;
+            if (Single.TryParse(rhgNormalizationCoefTb.Text, out rhgNormalizationCoef))
+            {
+                _synthesisSettings.RhgNormalizingCoef = rhgNormalizationCoef;
+            }
+            else
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Неверный параметр: {0} ({1})", rhgNormalizationCoefLbl.Text, signalPage.Text));
+                return;
+            }
+
+            float rliNormalizationCoef;
+            if (Single.TryParse(rliNormalizationCoefTb.Text, out rliNormalizationCoef))
+            {
+                _synthesisSettings.RliNormalizingCoef = rliNormalizationCoef;
+            }
+            else
+            {
+                FormsHelper.ShowErrorMsg(string.Format("Неверный параметр: {0} ({1})", rliNormalizationCoefLbl.Text, signalPage.Text));
+                return;
+            }
+
+
+            _synthesisSettings.ToXml<RlViewer.Settings.SynthesisSettings>();
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
+        }
+
+
+        public Behaviors.Synthesis.ServerSarTaskParams GenerateSstp(int currentBlock, int rangeShift, int azimuthShift)
+        {
             var sstp = new Behaviors.Synthesis.ServerSarTaskParams();
 
             sstp.struct_id = 1;
@@ -87,7 +184,7 @@ namespace RlViewer.Forms
             sstp.input_file_K1 = new byte[256];
             sstp.output = false;
 
-            var outputDir = Encoding.UTF8.GetBytes(@"C:\Users\lenovo\Desktop\");//@"c:\vega\temp\obzor");
+            var outputDir = Encoding.UTF8.GetBytes(@"c:\vega\temp\obzor");
             var outputDirArr = new byte[256];
             for (int i = 0; i < outputDir.Length; i++)
             {
@@ -95,71 +192,59 @@ namespace RlViewer.Forms
             }
             sstp.output_dir = outputDirArr;
             sstp.output_dir_loc = new byte[256];
-
-
-            //var output_file = Encoding.UTF8.GetBytes("rli.rl4");
             var output_fileArr = new byte[256];
-            //for (int i = 0; i < output_file.Length; i++)
-            //{
-            //    output_fileArr[i] = output_file[i];
-            //}
             sstp.output_file = output_fileArr;
 
-            //var ip = Encoding.UTF8.GetBytes("127.0.0.1:9978");
             var ipArr = new byte[256];
-            //for (int i = 0; i < ip.Length; i++)
-            //{
-            //    ipArr[i] = ip[i];
-            //}
-            sstp.Client_ip_address = ipArr;
 
+            sstp.Client_ip_address = ipArr;
 
             sstp.M = 1;
             sstp.ny_start = 0;
             sstp.ny_start_initial = 0;
-            sstp.Mshift = Convert.ToInt32(frameSizeAzimuthCb.SelectedValue.ToString());
-            sstp.Mlength = Convert.ToInt32(blockSizeAzimuthCb.SelectedValue.ToString());
-            sstp.Mparts = 1;//totalRhgLines / (sstp.Mlength - sstp.Mshift) - 1;
-            sstp.Mscale = Convert.ToSingle(frameAzimuthCoefCb.SelectedValue.ToString());
+            sstp.Mshift = _synthesisSettings.FrameAzimuthSize;
+            sstp.Mlength = _synthesisSettings.BlockAzimuthSize;
+            sstp.Mparts = 1;
+            sstp.Mscale = _synthesisSettings.FrameAzimuthCompressionCoef;
             sstp.Mscale_initial = 1;
             sstp.N = currentBlock;
             sstp.nx_start = rangeShift;
             sstp.nx_start_initial = rangeShift;
-            sstp.Nshift = rhg.Width;
-            sstp.Nlength = rhg.Width;
+            sstp.Nshift = _rhg.Width;
+            sstp.Nlength = _rhg.Width;
             sstp.Nstripes = 1;
-            sstp.Nscale = Convert.ToSingle(frameRangeCoefCb.SelectedValue.ToString());
+            sstp.Nscale = _synthesisSettings.FrameRangeCompressionCoef;
             sstp.Nscale_initial = 1;
-            sstp.lambda = 299792458 / (holHeaderStruct.transmitterHeader.frequency * 1000000);
+            sstp.lambda = _synthesisSettings.SpeedOfLight / (_headerStruct.transmitterHeader.frequency * 1000000);
 
-            sstp.f0 = holHeaderStruct.transmitterHeader.freqWidth / 2;
-            sstp.Tp = holHeaderStruct.transmitterHeader.impulseLength / 1000000;
-            sstp.dR = 299792458 / 100000000f;/// (2 * holHeaderStruct.adcHeader.adcFreq * 106 / holHeaderStruct.adcHeader.freqDivisor);
+            sstp.f0 = _headerStruct.transmitterHeader.freqWidth / 2;
+            sstp.Tp = _headerStruct.transmitterHeader.impulseLength / 1000000;
+            sstp.dR = _synthesisSettings.SpeedOfLight / (2 * _headerStruct.adcHeader.adcFreq * 1000000 / _headerStruct.adcHeader.freqDivisor);
             sstp.Fimpulses = 1000;
-            sstp.Vfly = holHeaderStruct.synchronizerHeader.azimuthDecompositionStep * sstp.Fimpulses;
-            sstp.Rmin = holHeaderStruct.synchronizerHeader.initialRange * 1000;
-            sstp.Angle = holHeaderStruct.antennaSystemHeader.antennaAngle;
+            sstp.Vfly = 300;//holHeaderStruct.synchronizerHeader.azimuthDecompositionStep * sstp.Fimpulses;
+            sstp.Rmin = _headerStruct.synchronizerHeader.initialRange * 1000;
+            sstp.Angle = _headerStruct.antennaSystemHeader.antennaAngle;
             sstp.Do_range_compress = true;
             sstp.interpolate = true;
             sstp.nLobs = 5;
             sstp.LoopBlocking = true;
-            sstp.pNstripes = 64;
-            sstp.pNlength = 1024;
-            sstp.pNshift = 1024;
-            sstp.cutDoppler = true;
-            sstp.Doppler_Min = 512;
-            sstp.Doppler_Max = 512;
+            sstp.pNstripes = _rhg.Width / _synthesisSettings.PNLength;
+            sstp.pNlength = _synthesisSettings.PNLength;
+            sstp.pNshift = _synthesisSettings.PNShift;
+            sstp.cutDoppler = _synthesisSettings.UseDopplerFiltering;
+            sstp.Doppler_Min = _synthesisSettings.MinDoppler;
+            sstp.Doppler_Max = _synthesisSettings.MaxDoppler;
             sstp.simul_clear_input = true;
-            sstp.AF_pX = 32768;
+            sstp.AF_pX = 16384;
             sstp.AF2_ncycle = 1;
             sstp.F1d_Inmem = true;
             sstp.F2d_Inmem = true;
             sstp.Vs_Inmem = true;
 
-            sstp.Azimut_chirp_sign = holHeaderStruct.synchronizerHeader.azimuthSign != 1 ? -1 : 1;
-            sstp.Range_chirp_sign = holHeaderStruct.synchronizerHeader.rangeSign != 1 ? -1 : 1;
-            sstp.Nav_LR_Side = (byte)(holHeaderStruct.synchronizerHeader.board) == 2 ? -1 : 1;
-            sstp.Memory_parts = 4;
+            sstp.Azimut_chirp_sign = _headerStruct.synchronizerHeader.azimuthSign != 1 ? -1 : 1;
+            sstp.Range_chirp_sign = _headerStruct.synchronizerHeader.rangeSign != 1 ? -1 : 1;
+            sstp.Nav_LR_Side = (byte)(_headerStruct.synchronizerHeader.board) == 2 ? -1 : 1;
+            sstp.Memory_parts = _synthesisSettings.MemoryChunksCount;
             sstp.AF_ncycle = 4096;
             sstp.AF_WinX = 128;
             sstp.AF_WinY = 1024;
@@ -168,7 +253,7 @@ namespace RlViewer.Forms
 
             var afNameArr = new byte[256];
             var afName = Encoding.UTF8.GetBytes("AFTrajDump.dat");
-            for(int i = 0; i < afName.Length; i++)
+            for (int i = 0; i < afName.Length; i++)
             {
                 afNameArr[i] = afName[i];
             }
@@ -180,34 +265,34 @@ namespace RlViewer.Forms
             sstp.input_file_K1 = new byte[256];
 
             sstp.fbp_KoeffSumming = new byte[20];
-            sstp.RadioSuppression = Convert.ToSingle(radioSuppressionTb.Text);
+            sstp.RadioSuppression = _synthesisSettings.RadioSuppressionCoef;
+            sstp.cntPoints = 1;
             sstp.ppx = new int[20];
-            var ppy = new int[20];
-            ppy[0] = 512;
-            sstp.ppy = ppy;
+            sstp.ppy = new int[20];
 
-            sstp.reserved = new byte[936];
             sstp.simul_file = new byte[100];
             sstp.Nav_File = new byte[256];
-            sstp.XNSum1024YNSum = (int)(Convert.ToSingle(blockRangeCoefCb.Text) * 1024 + Convert.ToSingle(blockAzimuthCoefCb.Text));
+            sstp.XNSum1024YNSum = _synthesisSettings.BlockRangeCompressionCoef * 1024 + _synthesisSettings.BlockAzimuthCompressionCoef;
 
-            sstp.Times_mc = (float)Convert.ToDouble(matrixExtensionCb.SelectedValue.ToString());
+            sstp.Times_mc = _synthesisSettings.MatrixExtensionCoef;
             sstp.dsp_zone_width = 512;
-            sstp.frame_width = rhg.Width;
+            sstp.frame_width = _rhg.Width;
             sstp.n_of_frames = 1;
 
-            sstp.Hc = 131.92f;//holheaderStruct.flightHeader
-            //var asd = _sstp;
-            //var dsa = asd.Mlength;
+            sstp.Hc = 8529.785156f;
 
-            //var fName = Encoding.UTF8.GetString(_sstp.AF_FileName);
-            //fName = fName.Substring(0, fName.IndexOf('\0'));
-
+            sstp.RGG_RLI_DSP_numbers = _synthesisSettings.MemoryChunksCount;
+            sstp.reserved = new byte[924];
+            sstp.Moco1_Range_Dependent = false;
+            sstp.Cheb_approx_order = 0;
+            sstp.permut_x = false;
+            sstp.Ws_wFs = false;
+            sstp.Vs_Inmem = true;
+            sstp.FromHol_Y_N = false;
+            sstp.fbp_moco = false;
 
             return sstp;
         }
-
-
 
 
 
@@ -228,13 +313,27 @@ namespace RlViewer.Forms
             {
                 Cancel();
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                ConfirmParams();
+            }
         }
 
         private void okBtn_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            ConfirmParams();
+        }
 
+        private void ToggleDopplerControls(bool enabled)
+        {
+            var useDopplerFiltering = enabled;
+            maxDopplerCb.Enabled = useDopplerFiltering;
+            minDopplerCb.Enabled = useDopplerFiltering;
+        }
+
+        private void useDopplerFilteringCb_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleDopplerControls(((CheckBox)sender).Checked);
         }
     }
 }

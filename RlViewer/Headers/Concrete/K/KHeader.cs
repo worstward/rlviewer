@@ -15,6 +15,13 @@ namespace RlViewer.Headers.Concrete.K
             CheckSignature(_headerStruct.signatureHeader.fileSign);
         }
 
+        public KHeader(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            _headerStruct = (Headers.Concrete.K.KFileHeaderStruct)headerStruct;
+            CheckSignature(_headerStruct.signatureHeader.fileSign);
+        }
+
+
         protected override byte[] Signature
         {
             get
@@ -102,6 +109,7 @@ namespace RlViewer.Headers.Concrete.K
             synchronizerHeader.Add(new Tuple<string, string>("Борт", ((byte)headerStruct.synchronizerHeader.board).ToSynchronizerBoard()));            
             synchronizerHeader.Add(new Tuple<string, string>("Поляризация", ((byte)headerStruct.synchronizerHeader.polar).ToPolarizationType()));
             synchronizerHeader.Add(new Tuple<string, string>("Начальная дальность, м", (headerStruct.synchronizerHeader.initialRange * 1000).ToString()));
+            synchronizerHeader.Add(new Tuple<string, string>("Шаг разложения по дальности", (299792458 / (2 * headerStruct.adcHeader.adcFreq * 1000000 / headerStruct.adcHeader.freqDivisor)).ToString()));          
             synchronizerHeader.Add(new Tuple<string, string>("Делитель частоты повторения", headerStruct.synchronizerHeader.freqDivisor.ToString()));
             synchronizerHeader.Add(new Tuple<string, string>("Знак ЛЧМ по дальности", headerStruct.synchronizerHeader.rangeSign == 1 ? "Плюс" : "Минус"));
             synchronizerHeader.Add(new Tuple<string, string>("Дискрет по азимуту", headerStruct.synchronizerHeader.azimuthDecompositionStep.ToString()));

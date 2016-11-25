@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Management;
 using RlViewer.Behaviors.TileCreator.Abstract;
 using RlViewer.Factories.TileCreator.Abstract;
 using RlViewer.Factories.File.Abstract;
@@ -16,13 +18,16 @@ using RlViewer.Settings;
 using RlViewer.Behaviors;
 using RlViewer.Files;
 
+
 namespace RlViewer.UI
 {
     public class GuiFacade : IDisposable, INotifyPropertyChanged
     {
         public GuiFacade(Size canvasSize, Action<Action> synchronizer)
         {
-            _settings = RlViewer.Settings.Settings.LoadSettings<Settings.AppSettings>();
+            _settings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.AppSettings>();
+            _synthesisSettings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.SynthesisSettings>();
+            _guiSettings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.GuiSettings>();
 
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -31,10 +36,10 @@ namespace RlViewer.UI
             _filterProxy = new Behaviors.Filters.ImageFilterProxy();
             _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, _settings.InitialScale);
             _drag = new Behaviors.DragController();
-            //_chart = new Forms.ChartHelper(new Behaviors.Draw.HistContainer());
+            _aggregator = new Behaviors.FilesAggregator.LocatorFilesAggregator();
+            _recentFileChecker = new Behaviors.RecentOpened.RecentOpenedFilesChecker();
 
             Deinitialize();
-
         }
 
         private Settings.AppSettings _settings;
@@ -46,6 +51,27 @@ namespace RlViewer.UI
                 return _settings;
             }
         }
+
+        private Settings.SynthesisSettings _synthesisSettings;
+
+        public Settings.SynthesisSettings SynthesisSettings
+        {
+            get
+            {
+                return _synthesisSettings;
+            }
+        }
+
+        private Settings.GuiSettings _guiSettings;
+
+        public Settings.GuiSettings GuiSettings
+        {
+            get
+            {
+                return _guiSettings;
+            }
+        }
+
 
         private ITileCreator _creator;
 
@@ -59,8 +85,11 @@ namespace RlViewer.UI
         private Behaviors.Navigation.NavigationSearcher.Abstract.GeodesicPointFinder _searcher;
         private Behaviors.CrossAppCommunication.PointSharer.MulticastPointSharer _pointSharer;
         private Behaviors.ReportGenerator.Abstract.Reporter _reporter;
-        private Behaviors.FilesAggregator.LocatorFilesAggregator _aggregator = new Behaviors.FilesAggregator.LocatorFilesAggregator();
+        private Behaviors.FilesAggregator.LocatorFilesAggregator _aggregator;
         private Behaviors.ImageMirroring.Abstract.ImageMirrorer _mirrorer;
+        private Behaviors.Synthesis.ServerSarInterop _synthesisInterop;
+        private Behaviors.RecentOpened.RecentOpenedFilesChecker _recentFileChecker;
+
         private WorkerEventController _cancellableAction;
 
         private Files.FileProperties _properties;
@@ -75,7 +104,6 @@ namespace RlViewer.UI
         private Behaviors.AreaSelector.AreaSelectorDecorator _selectedPointArea;
         private Behaviors.AreaSelector.AreaSelectorsAlignerContainer _areaAligningWrapper;
 
-
         private Behaviors.AreaSelector.AreaSelector _areaSelector;
         private Behaviors.DragController _drag;
 
@@ -86,12 +114,25 @@ namespace RlViewer.UI
         private Action<Action> _synchronizer;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
-        public event EventHandler<Image> OnImageDrawn = delegate { };
-        public event EventHandler OnPointOfViewMaxChanged = delegate { };
-        public event EventHandler<Events.ProgressControlsVisibilityEventArgs> OnProgressVisibilityChanged = delegate { };
-        public event EventHandler<Events.AlignPossibilityEventArgs> OnAlignPossibilityChanged = delegate { };
-        public event EventHandler<Events.ProgressChangedEventArgs> OnProgressChanged = delegate { };
-        public event EventHandler<Events.ErrorOccuredEventArgs> OnErrorOccured = delegate { };
+        public event EventHandler<Image> ImageDrawn = delegate { };
+        public event EventHandler PointOfViewMaxChanged = delegate { };
+        public event EventHandler<Events.ProgressControlsVisibilityEventArgs> ProgressVisibilityChanged = delegate { };
+        public event EventHandler<Events.AlignPossibilityEventArgs> AlignPossibilityChanged = delegate { };
+        public event EventHandler<Events.ProgressChangedEventArgs> ProgressChanged = delegate { };
+        public event EventHandler<Events.ErrorOccuredEventArgs> ErrorOccured = delegate { };
+
+        public event EventHandler<int> FrameAdded
+        {
+            add
+            {
+                _synthesisInterop.FrameAdded += value;
+            }
+            remove
+            {
+                _synthesisInterop.FrameAdded -= value;
+            }
+        }
+
         private object _animationLock = new object();
 
 
@@ -117,7 +158,6 @@ namespace RlViewer.UI
             get;
             set;
         }
-
 
 
         public float ScaleFactor
@@ -188,7 +228,7 @@ namespace RlViewer.UI
             {
                 if (SetField(ref _xPointOfViewMax, value))
                 {
-                    OnPointOfViewMaxChanged(null, null);
+                    _synchronizer.Invoke(() => PointOfViewMaxChanged(this, null));
                 }
             }
         }
@@ -206,13 +246,10 @@ namespace RlViewer.UI
             {
                 if (SetField(ref _yPointOfViewMax, value))
                 {
-                    OnPointOfViewMaxChanged(null, null);
+                    _synchronizer.Invoke(() => PointOfViewMaxChanged(this, null));
                 }
             }
         }
-
-
-
 
         private int _xPointOfView;
         public int XPointOfView
@@ -277,18 +314,6 @@ namespace RlViewer.UI
             return fName == null ? string.Empty : OpenFile(fName);
         }
 
-        public string OpenFileCustomDialog()
-        {
-            using (var previewForm = new Forms.FilePreviewForm())
-            {
-                if (previewForm.ShowDialog() == DialogResult.OK)
-                {
-                    return OpenFile(previewForm.FileToOpen);
-                }
-
-                return _caption;
-            }
-        }
 
         public string OpenFileDragDrop(DragEventArgs e)
         {
@@ -381,7 +406,7 @@ namespace RlViewer.UI
             System.ComponentModel.RunWorkerCompletedEventHandler afterTaskCallback, object arg = null)
         {
             CancelLoading();
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(true));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(true));
             _worker = ThreadHelper.InitWorker(workerCallBack, afterTaskCallback);
             _worker.RunWorkerAsync(arg);
         }
@@ -412,7 +437,7 @@ namespace RlViewer.UI
                 catch (Exception ex)
                 {
                     Logging.Logger.Log(Logging.SeverityGrades.Error, ex.Message);
-                    OnErrorOccured(this, new Events.ErrorOccuredEventArgs(ex.Message));
+                    ErrorOccured(this, new Events.ErrorOccuredEventArgs(ex.Message));
                 }
             }
 
@@ -424,7 +449,7 @@ namespace RlViewer.UI
         private void loaderWorker_FindPoint(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
 
-            _searcher.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;// OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));;
+            _searcher.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;// OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));;
             _searcher.CancelJob += (s, ce) => ce.Cancel = _searcher.Cancelled;
             _searcher.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
@@ -451,9 +476,6 @@ namespace RlViewer.UI
 
         private void loaderWorker_FindPointCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _searcher.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-            _searcher.CancelJob -= (s, ce) => ce.Cancel = _searcher.Cancelled;
-            _searcher.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
 
             if (e.Cancelled)
             {
@@ -463,14 +485,14 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Error searching point: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно найти точку"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно найти точку"));
             }
             else
             {
                 CenterImageAtPoint((Point)e.Result, true);
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -479,7 +501,7 @@ namespace RlViewer.UI
         {
             _saver = SaverFactory.GetFactory(_file.Properties).Create(_file);
 
-            _saver.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+            _saver.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _saver.ReportName += (s, tne) => CurrentTaskName = tne.Name;
             _cancellableAction = _saver;
@@ -508,10 +530,6 @@ namespace RlViewer.UI
 
         private void loaderWorker_NormalizeFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _saver.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-            _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
-
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Normalization cancelled"));
@@ -520,14 +538,14 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while normalizing image: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить нормировку"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить нормировку"));
             }
             else
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Normalization completed: {0}", (string)e.Result));
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -549,22 +567,21 @@ namespace RlViewer.UI
 
             _saver = SaverFactory.GetFactory(_file.Properties).Create(_file);
 
-            _saver.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+            _saver.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
             _saver.CancelJob += (s, ce) => ce.Cancel = _saver.Cancelled;
             _saver.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
             float maxSampleValue = 0;
 
-
-
             try
             {
                 if (parameters.OutputType != Behaviors.TileCreator.TileOutputType.Linear)
                 {
-                    _cancellableAction = ((WorkerEventController)_creator);
+                    var cancellableCreator = ((WorkerEventController)_creator);
+                    cancellableCreator.Cancelled = false;
+                    _cancellableAction = cancellableCreator;
                     maxSampleValue = _creator.MaxValue;
                 }
-                _cancellableAction = _saver;
 
                 _saver.Save(parameters, _creator.NormalizationFactor, maxSampleValue);
             }
@@ -583,10 +600,6 @@ namespace RlViewer.UI
 
         private void loaderWorker_SaveFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _saver.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-            _saver.CancelJob -= (s, ce) => ce.Cancel = _saver.Cancelled;
-            _saver.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
-
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Saving cancelled"));
@@ -595,14 +608,14 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while saving image: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить сохранение"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить сохранение"));
             }
             else
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Saving completed: {0}", (string)e.Result));
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -612,7 +625,7 @@ namespace RlViewer.UI
         {
             var fileName = (string)e.Argument;
 
-            _aligner.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+            _aligner.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
             _aligner.CancelJob += (s, ce) => ce.Cancel = _aligner.Cancelled;
             _aligner.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
@@ -642,9 +655,6 @@ namespace RlViewer.UI
 
         private void loaderWorker_AlignImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _aligner.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));
-            _aligner.CancelJob -= (s, ce) => ce.Cancel = _aligner.Cancelled;
-
 
             if (e.Cancelled)
             {
@@ -653,7 +663,7 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while aligning image: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить калибровку"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно выполнить калибровку"));
             }
             else
             {
@@ -669,7 +679,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Info,
                     string.Format("Image aligning completed, new file saved at: {0}", fileName));
             }
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
         #endregion
 
@@ -684,7 +694,7 @@ namespace RlViewer.UI
 
                 _navi = Factories.NavigationContainer.Abstract.NavigationContainerFactory.GetFactory(_properties).Create(_properties, _header);
 
-                _navi.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+                _navi.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
                 _navi.CancelJob += (s, ce) => ce.Cancel = _navi.Cancelled;
                 _navi.ReportName += (s, tne) => CurrentTaskName = tne.Name;
 
@@ -698,38 +708,12 @@ namespace RlViewer.UI
             }
 
             _file = FileFactory.GetFactory(_properties).Create(_properties, _header, _navi);
+            InitTools(_file);
 
-            _ruler = new Behaviors.Ruler.RulerProxy(_file);
-            _saver = SaverFactory.GetFactory(_properties).Create(_file);
-            _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(_file.Properties).Create(_file);
-            _analyzer = new Behaviors.Analyzing.SampleAnalyzer();
-            _pointSelector = new Behaviors.PointSelector.PointSelector();
-            _areaSelector = new Behaviors.AreaSelector.AreaSelector(_file);
-            _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
-
-            if (_pointSharer != null)
-            {
-                _pointSharer.DataReceived -= (s, gde) => CrossAppDataReceivedCallback(s, gde);
-                _pointSharer.Dispose();
-            }
-
-            _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(_file.Properties).Create(_file,
-                 new Behaviors.CrossAppCommunication.UdpExchange(_settings.MulticastEp, Behaviors.CrossAppCommunication.CommunicationType.Multicast),
-                 System.Diagnostics.Process.GetCurrentProcess().Id);
-
-            _pointSharer.DataReceived += (s, gde) => CrossAppDataReceivedCallback(s, gde);
         }
 
         private void loaderWorker_InitFileCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (_navi != null)
-            {
-                _navi.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-                _navi.CancelJob -= (s, ce) => ce.Cancel = _navi.Cancelled;
-                _navi.ReportName -= (s, tne) => CurrentTaskName = tne.Name;
-            }
-
-
             if (_settings.ForceImageHeightAdjusting && _file != null && _file.Navigation != null)
             {
                 if (_file.Navigation.Count() != _file.Height)
@@ -748,11 +732,13 @@ namespace RlViewer.UI
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error occured while opening file: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно открыть файл"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно открыть файл"));
                 Deinitialize();
             }
             else
             {
+                _recentFileChecker.RegisterFileOpening(_file.Properties.FilePath);
+
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("{0} file opened: {1}",
                     _file.Properties.Type, _file.Properties.FilePath));
 
@@ -767,7 +753,7 @@ namespace RlViewer.UI
         {
             _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm);
 
-            ((WorkerEventController)_creator).Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+            ((WorkerEventController)_creator).Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
             ((WorkerEventController)_creator).ReportName += (s, tne) =>
                 CurrentTaskName = tne.Name;
@@ -794,15 +780,6 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (_creator != null)
-            {
-                ((WorkerEventController)_creator).Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-                ((WorkerEventController)_creator).CancelJob -= (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
-                ((WorkerEventController)_creator).ReportName -= (s, tne) =>
-                    CurrentTaskName = tne.Name;
-
-            }
-
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Tile creation cancelled"));
@@ -814,7 +791,7 @@ namespace RlViewer.UI
                 Logging.Logger.Log(Logging.SeverityGrades.Blocking, string.Format("Error creating tiles: {0}",
                 e.Error.InnerException == null ? e.Error.Message : e.Error.InnerException.Message));
                 ClearWorkerData(() => _creator.ClearCancelledFileTiles(_file.Properties.FilePath));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка генерации изображения из файла"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка генерации изображения из файла"));
                 Deinitialize();
 
             }
@@ -830,7 +807,7 @@ namespace RlViewer.UI
                     Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Missing tiles for {0} detected", _file.Properties.FilePath));
                 }
 
-                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
                 InitDrawing();
             }
 
@@ -843,7 +820,7 @@ namespace RlViewer.UI
         {
             if (_reporter != null)
             {
-                _reporter.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+                _reporter.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
                 _reporter.CancelJob += (s, ce) => ce.Cancel = _reporter.Cancelled;
                 _reporter.ReportName += (s, tne) =>
                     CurrentTaskName = tne.Name;
@@ -870,18 +847,11 @@ namespace RlViewer.UI
 
         private void loaderWorker_GenerateReportCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (_reporter != null)
-            {
-                _reporter.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-                _reporter.CancelJob -= (s, ce) => ce.Cancel = _reporter.Cancelled;
-                _reporter.ReportName -= (s, tne) =>
-                    CurrentTaskName = tne.Name;
-            }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Report generation cancelled"));
-                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
@@ -894,7 +864,7 @@ namespace RlViewer.UI
                         string.Format("Report file generated: {0}", (string)e.Result));
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -905,7 +875,7 @@ namespace RlViewer.UI
         {
             if (_aggregator != null)
             {
-                _aggregator.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+                _aggregator.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
                 _aggregator.CancelJob += (s, ce) => ce.Cancel = _aggregator.Cancelled;
                 _aggregator.ReportName += (s, tne) =>
                     CurrentTaskName = tne.Name;
@@ -936,23 +906,16 @@ namespace RlViewer.UI
 
         private void loaderWorker_AggregateFilesCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (_aggregator != null)
-            {
-                _aggregator.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-                _aggregator.CancelJob -= (s, ce) => ce.Cancel = _aggregator.Cancelled;
-                _aggregator.ReportName -= (s, tne) =>
-                    CurrentTaskName = tne.Name;
-            }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Files aggregation cancelled"));
-                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to aggregate files: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно совместить файлы"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно совместить файлы"));
                 Deinitialize();
             }
             else
@@ -961,7 +924,7 @@ namespace RlViewer.UI
                         string.Format("Aggregation completed: {0}", (string)e.Result));
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -972,7 +935,7 @@ namespace RlViewer.UI
         {
             if (_mirrorer != null)
             {
-                _mirrorer.Report += (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+                _mirrorer.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
                 _mirrorer.CancelJob += (s, ce) => ce.Cancel = _mirrorer.Cancelled;
                 _mirrorer.ReportName += (s, tne) =>
                     CurrentTaskName = tne.Name;
@@ -1005,23 +968,16 @@ namespace RlViewer.UI
 
         private void loaderWorker_MirrorImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (_mirrorer != null)
-            {
-                _mirrorer.Report -= (s, pe) => OnProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
-                _mirrorer.CancelJob -= (s, ce) => ce.Cancel = _mirrorer.Cancelled;
-                _mirrorer.ReportName -= (s, tne) =>
-                    CurrentTaskName = tne.Name;
-            }
 
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("File mirroring cancelled"));
-                OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to mirror file: {0}", e.Error.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно отразить файл"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно отразить файл"));
             }
             else
             {
@@ -1029,7 +985,112 @@ namespace RlViewer.UI
                         string.Format("Mirroring completed: {0}", (string)e.Result));
             }
 
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+        }
+
+        #endregion
+
+        #region SynthesizeWorkerMethods
+        private void loaderWorker_synthesizeImage(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            var synthesisWorkerParams = (Behaviors.Synthesis.SynthesisWorkerParams)e.Argument;
+            _creator = Factories.TileCreator.Abstract.TileCreatorFactory.GetFactory(_file).Create(_file, Behaviors.TileCreator.TileOutputType.Linear);
+
+
+            if (_synthesisInterop != null)
+            {
+                _synthesisInterop.Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));
+                _synthesisInterop.CancelJob += (s, ce) => ce.Cancel = _synthesisInterop.Cancelled;
+                _synthesisInterop.ReportName += (s, tne) => CurrentTaskName = tne.Name;
+                _synthesisInterop.ServerSarExited += (s, exitCode) =>
+                    {
+                        Logging.Logger.Log(Logging.SeverityGrades.Info, "Server_sar process terminated");
+
+                        if (exitCode != -1)
+                        {
+                            ErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка синтеза"));
+                            _synthesisInterop.Dispose();
+                        }
+                    };
+                _synthesisInterop.FrameAdded += (s, frameHeight) =>
+                {
+
+                    _file.SetHeight(_file.Height + frameHeight);
+                    XPointOfViewMax = (int)(_file.Width / ScaleFactor);
+                    YPointOfViewMax = (int)(_file.Height / ScaleFactor);
+
+                    Task.Run(() =>
+                        {
+                            _tiles = _creator.GetTiles(_file.Properties.FilePath, allowScrolling: true, synthesis: true, startingLine: _file.Height - frameHeight);
+                        }).ContinueWith((result) =>
+                            {
+                                InitDrawing();
+                            });
+                };
+
+                _synthesisInterop.LengthChanged += (s, addedLength) =>
+                    {
+                        _file.Properties.Length += addedLength;
+                    };
+
+            }
+
+            _cancellableAction = _synthesisInterop;
+
+            try
+            {
+                _synthesisInterop.Synthesize(synthesisWorkerParams.RhgSeries, _file, _guiSettings.ShowServerSar);
+            }
+            catch (OperationCanceledException)
+            {
+                e.Cancel = true;
+            }
+
+            if (_synthesisInterop.Cancelled && _settings.DeleteSynthesizedFileOnCalcel)
+            {
+                ClearWorkerData(() =>
+                    {
+                        if (File.Exists(synthesisWorkerParams.RliFilePath))
+                        {
+                            File.Delete(synthesisWorkerParams.RliFilePath);
+                        }
+                    });
+            }
+
+
+            e.Result = synthesisWorkerParams.RliFilePath;
+        }
+
+        private void loaderWorker_synthesizeImageCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Synthesis cancelled"));
+                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
+            }
+            else if (e.Error != null)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to synthesize rli: {0}", e.Error.Message));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно произвести синтез РЛИ"));
+            }
+            else
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Info,
+                        string.Format("Synthesis completed: {0}", (string)e.Result));
+            }
+
+            var serverSarProc = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(_settings.ServerSarPath)).FirstOrDefault();
+
+            if (serverSarProc != null)
+            {
+                serverSarProc.Kill();
+            }
+
+            if (_synthesisInterop != null)
+            {
+                _synthesisInterop.Dispose();
+            }
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
         #endregion
@@ -1046,7 +1107,7 @@ namespace RlViewer.UI
                 {
                     _areaAligningWrapper.RemoveArea();
                     _pointSelector.RemoveLast();
-                    OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
+                    AlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
                 }
                 else if (allowAreaRemoval)
                 {
@@ -1068,7 +1129,7 @@ namespace RlViewer.UI
 
             if (settingsChanged)
             {
-                OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
+                AlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
             }
 
             if (CanvasSize.Width != 0 && CanvasSize.Height != 0 && _tiles != null && _file != null)
@@ -1106,11 +1167,11 @@ namespace RlViewer.UI
 
                 if (RedrawWithItems != null)
                 {
-                    OnImageDrawn(null, RedrawWithItems(img));
+                    ImageDrawn(null, RedrawWithItems(img));
                 }
                 else
                 {
-                    OnImageDrawn(null, img);
+                    ImageDrawn(null, img);
                 }
             }).Wait();
         }
@@ -1183,7 +1244,7 @@ namespace RlViewer.UI
                 }
                 else if (showWarning)
                 {
-                    OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно найти точку"));
+                    ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно найти точку"));
                 }
             }
         }
@@ -1271,12 +1332,12 @@ namespace RlViewer.UI
             _areaSelector = null;
             _tiles = null;
 
-            OnImageDrawn(this, null);
+            ImageDrawn(this, null);
 
             XPointOfViewMax = 0;
             YPointOfViewMax = 0;
-            OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(false));
-            OnProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(showProgress));
+            AlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(false));
+            ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(showProgress));
         }
 
 
@@ -1350,7 +1411,7 @@ namespace RlViewer.UI
             _filterProxy.ChangeFilterValue(newValue);
             if (_drawer != null)
             {
-                OnImageDrawn(null, _drawer.RedrawImage());
+                ImageDrawn(null, _drawer.RedrawImage());
             }
         }
 
@@ -1378,7 +1439,7 @@ namespace RlViewer.UI
         public string ShowMousePosition(Point mouseLocation)
         {
             string mouseCoordinates = string.Empty;
-            if (_file != null && !_worker.IsBusy)
+            if (_file != null)
             {
                 if (mouseLocation.Y / ScaleFactor + YPointOfView > 0 &&
                     mouseLocation.Y / ScaleFactor + YPointOfView < _file.Height
@@ -1433,7 +1494,7 @@ namespace RlViewer.UI
             catch (Exception ex)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Point analyzing failed with message: {0}", ex.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно проанализировать точку"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно проанализировать точку"));
             }
         }
 
@@ -1502,7 +1563,7 @@ namespace RlViewer.UI
                 }
                 catch (Exception)
                 {
-                    OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно отметить точку"));
+                    ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно отметить точку"));
                 }
             }
             else
@@ -1518,7 +1579,7 @@ namespace RlViewer.UI
 
             }
 
-            OnAlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
+            AlignPossibilityChanged(this, new Events.AlignPossibilityEventArgs(AllowAligning()));
         }
 
         public void GetPointAmplitudeStart(Point mouseCoords, IWin32Window toolTipWindow)
@@ -1639,7 +1700,7 @@ namespace RlViewer.UI
                 if (_areaSelector.ResizeArea(new Point((int)(mouseCoords.X / ScaleFactor),
                                                (int)(mouseCoords.Y / ScaleFactor)), new Point(XPointOfView, YPointOfView)))
                 {
-                    OnImageDrawn(this, _drawer.DrawSelectorArea(new Point(XPointOfView, YPointOfView)));
+                    ImageDrawn(this, _drawer.DrawSelectorArea(new Point(XPointOfView, YPointOfView)));
                 }
             }
         }
@@ -1658,7 +1719,7 @@ namespace RlViewer.UI
                     if (_selectedPointArea.ResizeArea(new Point((int)(mouseCoords.X / ScaleFactor),
                                  (int)(mouseCoords.Y / ScaleFactor)), new Point(XPointOfView, YPointOfView)))
                     {
-                        OnImageDrawn(this, _drawer.DrawAlignerAreas(new Point(XPointOfView, YPointOfView), _selectedPointArea));
+                        ImageDrawn(this, _drawer.DrawAlignerAreas(new Point(XPointOfView, YPointOfView), _selectedPointArea));
                     }
                 }
             }
@@ -1667,7 +1728,7 @@ namespace RlViewer.UI
                 var leftTop = new Point(mouseCoords.X - (int)(_settings.SelectorAreaSize * ScaleFactor / 2),
                 mouseCoords.Y - (int)(_settings.SelectorAreaSize * ScaleFactor / 2));
                 var img = _drawer.DrawSquareArea(leftTop, _settings.SelectorAreaSize);
-                OnImageDrawn(this, img);
+                ImageDrawn(this, img);
             }
         }
 
@@ -1689,7 +1750,7 @@ namespace RlViewer.UI
             }
 
             var img = _drawer.DrawVerticalSection(mouseCoords, (int)(_settings.SectionSize * ScaleFactor));
-            OnImageDrawn(this, img);
+            ImageDrawn(this, img);
         }
 
         public void HorizontalSection(Point mouseCoords)
@@ -1700,7 +1761,7 @@ namespace RlViewer.UI
             }
 
             var img = _drawer.DrawHorizontalSection(mouseCoords, (int)(_settings.SectionSize * ScaleFactor));
-            OnImageDrawn(this, img);
+            ImageDrawn(this, img);
         }
 
         public void LinearSection(Point mouseCoords)
@@ -1722,7 +1783,7 @@ namespace RlViewer.UI
                      new Point((int)((endPoint.X - XPointOfView) * ScaleFactor),
                       (int)((endPoint.Y - YPointOfView) * ScaleFactor)));
 
-                OnImageDrawn(this, img);
+                ImageDrawn(this, img);
             }
         }
 
@@ -1743,7 +1804,7 @@ namespace RlViewer.UI
                     new Point((int)((endPoint.X - XPointOfView) * ScaleFactor),
                      (int)((endPoint.Y - YPointOfView) * ScaleFactor)));
 
-                OnImageDrawn(this, img);
+                ImageDrawn(this, img);
 
                 RulerDistance = _ruler.GetDistance(endPoint);
             }
@@ -1814,13 +1875,50 @@ namespace RlViewer.UI
 
         #endregion
 
+
+        /// <summary>
+        /// Kills all child processes
+        /// </summary>
+        /// <param name="pid">Parent process ID.</param>
+        private static void KillChildProcesses(int pid)
+        {
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher
+              ("Select * From Win32_Process Where ParentProcessID=" + pid);
+            ManagementObjectCollection moc = searcher.Get();
+            try
+            {
+                foreach (ManagementObject mo in moc)
+                {
+                    Process proc = Process.GetProcessById(pid);
+                    proc.Kill();
+                }
+            }
+            catch (ArgumentException)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Can't kill process with pid: {0}, process is not alive)", pid));
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Can't kill process with pid: {0}, reason: {1})", pid, ex.Message));
+            }
+        }
+
+
+
         #region dispose
         private bool _disposed = false;
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+            KillChildProcesses(Process.GetCurrentProcess().Id);
         }
+
+
+
+
+
+
 
         protected virtual void Dispose(bool disposing)
         {
@@ -1835,7 +1933,6 @@ namespace RlViewer.UI
 
             _toolTip.Dispose();
             _disposed = true;
-
         }
         #endregion
 
@@ -1952,44 +2049,78 @@ namespace RlViewer.UI
             }
         }
 
-        public void GetAreaStatistics()
+        public IEnumerable<Tuple<string, string>> GetAreaStatistics()
         {
+
             if (_file == null)
             {
-                return;
+                return null;
             }
 
             if (_areaSelector == null || _areaSelector.Area == null || _areaSelector.Area.Width == 0 || _areaSelector.Area.Height == 0)
             {
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно построить статистику области"));
-                return;
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно построить статистику области"));
+                return null;
             }
             else if (_areaSelector.Area.Width >= _settings.AligningAreaBorderSize || _areaSelector.Area.Height >= _settings.AligningAreaBorderSize)
             {
 
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs(
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs(
                     string.Format("Выделен слишком большой участок (максимум: {0})", _settings.AligningAreaBorderSize)));
-                return;
+                return null;
             }
 
-            Form statFrm = null;
+            List<Tuple<string, string>> statistics = null;
 
             try
             {
-                statFrm = new Forms.StatisticsForm(_file, _areaSelector);
-                statFrm.ShowDialog();
-            }
-            catch (Exception)
-            {
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно построить статистику области"));
-            }
-            finally
-            {
-                if (statFrm != null)
+                var maxSample = _file.GetMaxSample(
+                                new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                                _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                var minSample = _file.GetMinSample(
+                        new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                        _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                var maxSampleLoc = _file.GetMaxSampleLocation(
+                    new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                        _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                var minSampleLoc = _file.GetMinSampleLocation(
+                    new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                        _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+                var avgSample = _file.GetAvgSample(
+                    new Rectangle(_areaSelector.Area.Location.X, _areaSelector.Area.Location.Y,
+                        _areaSelector.Area.Width, _areaSelector.Area.Height));
+
+
+                statistics = new List<Tuple<string, string>>()
                 {
-                    statFrm.Dispose();
-                }
+                    new Tuple<string, string>("Имя файла", System.IO.Path.GetFileName(_file.Properties.FilePath)),
+                    new Tuple<string, string>("X1", _areaSelector.Area.Location.X.ToString()),
+                    new Tuple<string, string>("Y1", _areaSelector.Area.Location.Y.ToString()),
+                    new Tuple<string, string>("X2", (_areaSelector.Area.Location.X + _areaSelector.Area.Width).ToString()),
+                    new Tuple<string, string>("Y2", (_areaSelector.Area.Location.Y + _areaSelector.Area.Height).ToString()),
+                    new Tuple<string, string>("Ширина фрагмента", _areaSelector.Area.Width.ToString()),
+                    new Tuple<string, string>("Высота фрагмента", _areaSelector.Area.Height.ToString()),
+                    new Tuple<string, string>("Максимальная амплитуда", maxSample.ToString()),
+                    new Tuple<string, string>("Xmax", maxSampleLoc.X.ToString()),
+                    new Tuple<string, string>("Ymax", maxSampleLoc.Y.ToString()),
+                    new Tuple<string, string>("Минимальная амплитуда", minSample.ToString()),
+                    new Tuple<string, string>("Xmin", minSampleLoc.X.ToString()),
+                    new Tuple<string, string>("Ymin", minSampleLoc.Y.ToString()),
+                    new Tuple<string, string>("Средняя амплитуда", avgSample.ToString())
+                };
+
             }
+            catch (Exception ex)
+            {
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs(string.Format("Невозможно построить статистику области: {0}", ex.Message)));
+            }
+
+
+            return statistics;
         }
 
         public void EmbedNavigation(string sourceRhgFileName, string rliFileName, bool forced = true)
@@ -2025,7 +2156,7 @@ namespace RlViewer.UI
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error,
                     string.Format("Unable to embed new navigation: {0}", ex.Message));
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Не удалось встроить навигацию"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Не удалось встроить навигацию"));
             }
         }
 
@@ -2040,7 +2171,7 @@ namespace RlViewer.UI
             if (validFiles.Count() == 0)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Error, "Unsuitable files selected");
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Выбраны неподходящие файлы"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Выбраны неподходящие файлы"));
                 return;
             }
 
@@ -2066,7 +2197,7 @@ namespace RlViewer.UI
             }
             catch
             {
-                OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно построить сечение"));
+                ErrorOccured(this, new Events.ErrorOccuredEventArgs("Невозможно построить сечение"));
                 return null;
             }
 
@@ -2080,14 +2211,50 @@ namespace RlViewer.UI
         #endregion
 
 
-        public void Synthesize(string holFilePath)
+
+        public void Synthesize(string[] holFilePath, string rliFilePath, Behaviors.Synthesis.ServerSarTaskParams sstp)
         {
-            var sstp = new Behaviors.Synthesis.ServerSarTaskParams();
+            Deinitialize();
+
+            List<Files.Rhg.Abstract.RhgFile> rhgSeries = new List<Files.Rhg.Abstract.RhgFile>();
+
+            foreach (var path in holFilePath)
+            {
+                var holFileProp = new RlViewer.Files.FileProperties(path);
+                var holHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(holFileProp).Create(path) as Headers.Concrete.K.KHeader;
+                var rhg = (Files.Rhg.Abstract.RhgFile)Factories.File.Abstract.FileFactory.GetFactory(holFileProp).Create(holFileProp, holHeader, null);
+
+                rhgSeries.Add(rhg);
+            }
+
+            var properties = new Files.FileProperties(rliFilePath);
+            var rliCreator = new Behaviors.Synthesis.RliFileCreator(properties);
+
+
+            try
+            {
+                var embeddingProcessor = new Behaviors.Synthesis.ServerSarEmbedding.ServerSarEmbeddingProcessor(_settings.ServerSarPath, "ServerSar");
+                _synthesisInterop = new Behaviors.Synthesis.ServerSarInterop(_settings.ServerSarPath, _settings.ServerSarParams,
+                    sstp, SynthesisSettings, rliCreator, embeddingProcessor, _settings.UseEmbeddedServerSar, _settings.ForceSynthesis);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Error, string.Format("Unable to initialize synthesis: {0}", ex.Message));
+                return;
+            }
+
+
+            if (_file == null)
+            {
+                _file = rliCreator.CreateEmptyRli(_synthesisInterop.Sstp);
+                InitTools(_file);
+            }
+            else return;
 
 
 
-            var interop = new Behaviors.Synthesis.ServerSarInterop(_settings.ServerSarPath, sstp);
-            interop.StartSynthesis();
+            StartTask(loaderWorker_synthesizeImage, loaderWorker_synthesizeImageCompleted,
+                new Behaviors.Synthesis.SynthesisWorkerParams(rhgSeries.ToArray(), rliFilePath));
         }
 
 
@@ -2126,7 +2293,7 @@ namespace RlViewer.UI
                     {
                         Logging.Logger.Log(Logging.SeverityGrades.Warning,
                             string.Format("Unable to evaluate process status: {0}", ex.Message));
-                        OnErrorOccured(this, new Events.ErrorOccuredEventArgs("Запуск в режиме администратора невозможен"));
+                        ErrorOccured(this, new Events.ErrorOccuredEventArgs("Запуск в режиме администратора невозможен"));
                     }
                 }
             }
@@ -2137,35 +2304,41 @@ namespace RlViewer.UI
 
         }
 
-
-        public void AggregateFiles()
+        private void InitTools(LocatorFile file)
         {
-            using (var sfd = new SaveFileDialog())
+            _ruler = new Behaviors.Ruler.RulerProxy(file);
+            _saver = SaverFactory.GetFactory(file.Properties).Create(file);
+            _searcher = Factories.NavigationSearcher.Abstract.PointFinderFactory.GetFactory(file.Properties).Create(file);
+            _analyzer = new Behaviors.Analyzing.SampleAnalyzer();
+            _pointSelector = new Behaviors.PointSelector.PointSelector();
+            _areaSelector = new Behaviors.AreaSelector.AreaSelector(file);
+            _areaAligningWrapper = new Behaviors.AreaSelector.AreaSelectorsAlignerContainer();
+
+            if (_pointSharer != null)
             {
-                sfd.Title = @"Выберите путь для сохранения";
-                sfd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    using (var ofd = new OpenFileDialog())
-                    {
-                        ofd.Title = @"Выберите файлы для совмещения";
-                        ofd.Multiselect = true;
-                        ofd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
-
-                        if (ofd.ShowDialog() == DialogResult.OK)
-                        {
-                            var aggregatorOrder = new Forms.AggregatorOrderForm(ofd.FileNames);
-
-                            if (aggregatorOrder.ShowDialog() == DialogResult.OK)
-                            {
-                                var aggregatorParams = new Behaviors.FilesAggregator.AggregatorParams(sfd.FileName, aggregatorOrder.SourceFiles);
-                                ConfirmTaskStart(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
-                            }
-                        }
-                    }
-                }
+                _pointSharer.DataReceived -= (s, gde) => CrossAppDataReceivedCallback(s, gde);
+                _pointSharer.Dispose();
             }
+
+            try
+            {
+                _pointSharer = Factories.PointSharer.Abstract.PointSharerFactory.GetFactory(file.Properties).Create(file,
+                     new Behaviors.CrossAppCommunication.UdpExchange(_settings.MulticastEp, Behaviors.CrossAppCommunication.CommunicationType.Multicast),
+                     System.Threading.Thread.CurrentThread.ManagedThreadId);
+
+                _pointSharer.DataReceived += (s, gde) => CrossAppDataReceivedCallback(s, gde);
+            }
+            catch (System.Net.Sockets.SocketException)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, "Unable to open cross-app communication socket. Please check security settings");
+            }
+        }
+
+
+        public void AggregateFiles(string destinationFile, string[] sourceFiles)
+        {
+            var aggregatorParams = new Behaviors.FilesAggregator.AggregatorParams(destinationFile, sourceFiles);
+            ConfirmTaskStart(loaderWorker_AggregateFiles, loaderWorker_AggregateFilesCompleted, aggregatorParams);
         }
 
 
@@ -2184,6 +2357,11 @@ namespace RlViewer.UI
                     }
                 }
             }
+        }
+
+        public List<string> GetRecentFiles()
+        {
+            return _recentFileChecker.RecentFiles;
         }
 
 

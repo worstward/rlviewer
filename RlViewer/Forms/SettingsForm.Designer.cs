@@ -39,7 +39,6 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -58,6 +57,13 @@
             this.areaSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.synthesisTab = new System.Windows.Forms.TabPage();
+            this.serverSarPathAreaGb = new System.Windows.Forms.GroupBox();
+            this.serverSarPathTb = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.showServerSarCb = new System.Windows.Forms.CheckBox();
+            this.showSynthesisCommonTabCb = new System.Windows.Forms.CheckBox();
+            this.deleteOnCancelCb = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.plot3dSizeTb = new System.Windows.Forms.MaskedTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -67,12 +73,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.forceSynthesisCb = new System.Windows.Forms.CheckBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
+            this.useEmbeddedServerSarCb = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.toolstab.SuspendLayout();
             this.rbfInterpolationcSettingsGb.SuspendLayout();
+            this.synthesisTab.SuspendLayout();
+            this.serverSarPathAreaGb.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,6 +92,7 @@
             this.tabControl1.Controls.Add(this.commonTab);
             this.tabControl1.Controls.Add(this.viewTab);
             this.tabControl1.Controls.Add(this.toolstab);
+            this.tabControl1.Controls.Add(this.synthesisTab);
             this.tabControl1.Location = new System.Drawing.Point(13, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -205,17 +217,6 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -423,6 +424,86 @@
             this.sectionSizeTextBox.Size = new System.Drawing.Size(100, 20);
             this.sectionSizeTextBox.TabIndex = 0;
             // 
+            // synthesisTab
+            // 
+            this.synthesisTab.Controls.Add(this.useEmbeddedServerSarCb);
+            this.synthesisTab.Controls.Add(this.forceSynthesisCb);
+            this.synthesisTab.Controls.Add(this.serverSarPathAreaGb);
+            this.synthesisTab.Controls.Add(this.showServerSarCb);
+            this.synthesisTab.Controls.Add(this.showSynthesisCommonTabCb);
+            this.synthesisTab.Controls.Add(this.deleteOnCancelCb);
+            this.synthesisTab.Location = new System.Drawing.Point(4, 22);
+            this.synthesisTab.Name = "synthesisTab";
+            this.synthesisTab.Padding = new System.Windows.Forms.Padding(3);
+            this.synthesisTab.Size = new System.Drawing.Size(270, 303);
+            this.synthesisTab.TabIndex = 4;
+            this.synthesisTab.Text = "Синтез";
+            this.synthesisTab.UseVisualStyleBackColor = true;
+            // 
+            // serverSarPathAreaGb
+            // 
+            this.serverSarPathAreaGb.Controls.Add(this.serverSarPathTb);
+            this.serverSarPathAreaGb.Controls.Add(this.button2);
+            this.serverSarPathAreaGb.Location = new System.Drawing.Point(6, 220);
+            this.serverSarPathAreaGb.Name = "serverSarPathAreaGb";
+            this.serverSarPathAreaGb.Size = new System.Drawing.Size(251, 67);
+            this.serverSarPathAreaGb.TabIndex = 9;
+            this.serverSarPathAreaGb.TabStop = false;
+            this.serverSarPathAreaGb.Text = "Путь к программе синтеза";
+            // 
+            // serverSarPathTb
+            // 
+            this.serverSarPathTb.Location = new System.Drawing.Point(6, 34);
+            this.serverSarPathTb.Name = "serverSarPathTb";
+            this.serverSarPathTb.Size = new System.Drawing.Size(205, 20);
+            this.serverSarPathTb.TabIndex = 8;
+            // 
+            // button2
+            // 
+            this.button2.BackgroundImage = global::RlViewer.Properties.Resources.SelectSynthApp;
+            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Location = new System.Drawing.Point(217, 29);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(28, 28);
+            this.button2.TabIndex = 7;
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // showServerSarCb
+            // 
+            this.showServerSarCb.AutoSize = true;
+            this.showServerSarCb.Location = new System.Drawing.Point(6, 52);
+            this.showServerSarCb.Name = "showServerSarCb";
+            this.showServerSarCb.Size = new System.Drawing.Size(191, 17);
+            this.showServerSarCb.TabIndex = 6;
+            this.showServerSarCb.Text = "Отображать программу синтеза";
+            this.showServerSarCb.UseVisualStyleBackColor = true;
+            // 
+            // showSynthesisCommonTabCb
+            // 
+            this.showSynthesisCommonTabCb.AutoSize = true;
+            this.showSynthesisCommonTabCb.Location = new System.Drawing.Point(6, 15);
+            this.showSynthesisCommonTabCb.Name = "showSynthesisCommonTabCb";
+            this.showSynthesisCommonTabCb.Size = new System.Drawing.Size(201, 17);
+            this.showSynthesisCommonTabCb.TabIndex = 5;
+            this.showSynthesisCommonTabCb.Text = "Расширенные параметры синтеза";
+            this.showSynthesisCommonTabCb.UseVisualStyleBackColor = true;
+            // 
+            // deleteOnCancelCb
+            // 
+            this.deleteOnCancelCb.AutoSize = true;
+            this.deleteOnCancelCb.Location = new System.Drawing.Point(6, 88);
+            this.deleteOnCancelCb.Name = "deleteOnCancelCb";
+            this.deleteOnCancelCb.Size = new System.Drawing.Size(253, 17);
+            this.deleteOnCancelCb.TabIndex = 0;
+            this.deleteOnCancelCb.Text = "Удалять синтезированный файл при отмене";
+            this.deleteOnCancelCb.UseVisualStyleBackColor = true;
+            this.deleteOnCancelCb.CheckedChanged += new System.EventHandler(this.deleteOnCancelCb_CheckedChanged);
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -518,6 +599,39 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // forceSynthesisCb
+            // 
+            this.forceSynthesisCb.AutoSize = true;
+            this.forceSynthesisCb.Location = new System.Drawing.Point(6, 126);
+            this.forceSynthesisCb.Name = "forceSynthesisCb";
+            this.forceSynthesisCb.Size = new System.Drawing.Size(162, 17);
+            this.forceSynthesisCb.TabIndex = 10;
+            this.forceSynthesisCb.Text = "Приоритет нового синтеза";
+            this.forceSynthesisCb.UseVisualStyleBackColor = true;
+            this.forceSynthesisCb.CheckedChanged += new System.EventHandler(this.forceSynthesisCb_CheckedChanged);
+            // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
+            // 
+            // useEmbeddedServerSarCb
+            // 
+            this.useEmbeddedServerSarCb.AutoSize = true;
+            this.useEmbeddedServerSarCb.Location = new System.Drawing.Point(6, 164);
+            this.useEmbeddedServerSarCb.Name = "useEmbeddedServerSarCb";
+            this.useEmbeddedServerSarCb.Size = new System.Drawing.Size(199, 17);
+            this.useEmbeddedServerSarCb.TabIndex = 11;
+            this.useEmbeddedServerSarCb.Text = "Использовать вшитую программу";
+            this.useEmbeddedServerSarCb.UseVisualStyleBackColor = true;
+            this.useEmbeddedServerSarCb.CheckedChanged += new System.EventHandler(this.useEmbeddedServerSarCb_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -548,6 +662,10 @@
             this.toolstab.PerformLayout();
             this.rbfInterpolationcSettingsGb.ResumeLayout(false);
             this.rbfInterpolationcSettingsGb.PerformLayout();
+            this.synthesisTab.ResumeLayout(false);
+            this.synthesisTab.PerformLayout();
+            this.serverSarPathAreaGb.ResumeLayout(false);
+            this.serverSarPathAreaGb.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -596,5 +714,14 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.MaskedTextBox baseRadiusTb;
         private System.Windows.Forms.CheckBox forceImageHeightAdjustingCb;
+        private System.Windows.Forms.TabPage synthesisTab;
+        private System.Windows.Forms.CheckBox showServerSarCb;
+        private System.Windows.Forms.CheckBox showSynthesisCommonTabCb;
+        private System.Windows.Forms.CheckBox deleteOnCancelCb;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox serverSarPathTb;
+        private System.Windows.Forms.GroupBox serverSarPathAreaGb;
+        private System.Windows.Forms.CheckBox forceSynthesisCb;
+        private System.Windows.Forms.CheckBox useEmbeddedServerSarCb;
     }
 }

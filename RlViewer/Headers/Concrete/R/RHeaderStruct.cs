@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace RlViewer.Headers.Concrete.R
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct RFileHeaderStruct
+    public struct RFileHeaderStruct : Headers.Abstract.IHeaderStruct
     {
 
 	    public SignatureHeader		signatureHeader;		// сигнатура заголовка

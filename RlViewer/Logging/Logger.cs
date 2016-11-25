@@ -4,16 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel;
+using System.Collections.Concurrent;
 
 namespace RlViewer.Logging
 {
     public static class Logger
     {
-        private static string _logFileName = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory, "log.txt");
+        private static string _logFileName = "log.txt";
 
-        private static List<LogEntry> _logs = new List<LogEntry>();
-        public static List<LogEntry> Logs
+        private static string GetLogName(string fileName, LogType type)
+        {
+            string logName = string.Empty;
+
+            switch (type)
+            {
+                case LogType.Common:
+                    logName = "common_" + fileName;
+                    break;
+                case LogType.Synthesis:
+                    logName = "synthesis_" + fileName;
+                    break;
+                default:
+                    throw new ArgumentException("LogType");
+            }
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logName);
+        }
+
+
+        private static BlockingCollection<LogEntry> _logs = new BlockingCollection<LogEntry>();
+        public static BlockingCollection<LogEntry> Logs
         {
             get
             {
@@ -21,44 +41,45 @@ namespace RlViewer.Logging
             }
         }
 
-        public static void Log(SeverityGrades severity, string message, bool saveEntry = true)
+        public static void Log(SeverityGrades severity, string message, bool saveEntry = true, LogType type = LogType.Common)
         {
             var logEntry = new LogEntry(DateTime.Now, severity, message);
 
-            _logs.Add(logEntry);
+            Logs.Add(logEntry);
+            LogEntryAdded(null, null);
+
             if (saveEntry)
             {
-                SaveEntry(logEntry);
+                SaveEntry(logEntry, type);
             }
         }
 
+        public static event EventHandler LogEntryAdded = delegate { };
 
-        private static object saveLocker = new object();
-        private static void SaveEntry(LogEntry entry)
+        private static object loggingLocker = new object();
+        private static void SaveEntry(LogEntry entry, LogType type)
         {
 
-            lock (saveLocker)
+
+            StreamWriter stream = null;
+            try
             {
-                StreamWriter stream = null;
-                try
+                stream = new StreamWriter(File.Open(GetLogName(_logFileName, type), FileMode.Append, FileAccess.Write, FileShare.ReadWrite));
+                stream.WriteLine(entry.ToString());
+            }
+            catch
+            {
+                return;
+            }
+            finally
+            {
+                if (stream != null)
                 {
-                    stream = new StreamWriter(File.Open(_logFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite));
-                    stream.WriteLine(entry.ToString());
-                }
-                catch
-                {
-                    return;
-                }
-                finally
-                {
-                    if (stream != null)
-                    {
-                        stream.Dispose();
-                    }
+                    stream.Dispose();
                 }
             }
-        }
 
+        }
 
     }
 }

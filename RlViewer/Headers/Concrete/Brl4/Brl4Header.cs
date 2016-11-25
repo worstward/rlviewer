@@ -15,6 +15,14 @@ namespace RlViewer.Headers.Concrete.Brl4
             CheckSignature(_headerStruct.fileSign);
         }
 
+        public Brl4Header(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            _headerStruct = (Headers.Concrete.Brl4.Brl4RliFileHeader)headerStruct;
+            CheckSignature(_headerStruct.fileSign);
+        }
+
+
+
         protected override byte[] Signature
         {
             get
@@ -60,6 +68,10 @@ namespace RlViewer.Headers.Concrete.Brl4
             get
             { 
                 return _headerStruct;
+            }
+            set
+            {
+                _headerStruct = value;
             }
         }
 

@@ -91,7 +91,7 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
                 normal = (maxIndex + dst) * histogramStep;
 
-                Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Computed normalization value of {0}", normal));
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Computed normalization value of {0}", normal));
 
                 if ((int)normal == 0) normal = histogramStep;
                 return normal;

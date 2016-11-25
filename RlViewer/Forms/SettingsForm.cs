@@ -13,13 +13,14 @@ namespace RlViewer.Forms
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm(Settings.AppSettings settings)
+        public SettingsForm(Settings.AppSettings settings, Settings.GuiSettings guiSettings)
         {
             _settings = settings;
+            _guiSettings = guiSettings;
 
             InitializeComponent();
             FillComboBox();
-            AddTbClickEvent(tabControl1);
+            Forms.FormsHelper.AddTbClickEvent<MaskedTextBox>(tabControl1);
 
 
             comboBoxPics1.SelectedItem = comboBoxPics1.Items.OfType<CboItem>()
@@ -40,19 +41,24 @@ namespace RlViewer.Forms
             areaSizeTextBox.Text = _settings.SelectorAreaSize.ToString();
             areasOrPointsForAligningCb.Checked = settings.UseAreasForAligning;
             adminReminderCb.Checked = _settings.ForceAdminMode;
-            useCustomFileOpenDlgCb.Checked = _settings.UseCustomFileOpenDlg;
             surfaceTypeCb.SelectedIndex = (int)_settings.SurfaceType;
-
             baseRadiusTb.Text = _settings.RbfMlBaseRaduis.ToString();
             layersNumTb.Text = _settings.RbfMlLayersNumber.ToString();
             regularizationCoefTb.Text = _settings.RbfMlRegularizationCoef.ToString();
-
             forceImageHeightAdjustingCb.Checked = _settings.ForceImageHeightAdjusting;
+            deleteOnCancelCb.Checked = _settings.DeleteSynthesizedFileOnCalcel;
+            serverSarPathTb.Text = _settings.ServerSarPath;
+            forceSynthesisCb.Checked = _settings.ForceSynthesis;
+            useEmbeddedServerSarCb.Checked = _settings.UseEmbeddedServerSar;
+
+            useCustomFileOpenDlgCb.Checked = _guiSettings.UseCustomFileOpenDlg;
+            showSynthesisCommonTabCb.Checked = _guiSettings.ShowRhgSynthesisHeaderParamsTab;
+            showServerSarCb.Checked = _guiSettings.ShowServerSar;
         }
 
 
         private Settings.AppSettings _settings;
-
+        private Settings.GuiSettings _guiSettings;
 
         private float[] _palette;
         private bool _isReversed;
@@ -66,7 +72,11 @@ namespace RlViewer.Forms
         private bool _customFileOpenDlg;
         private Behaviors.ImageAligning.Surfaces.SurfaceType _surfaceType;
         private bool _forceImageHeightAdjusting;
-
+        private bool _showSynthesisCommonTab;
+        private bool _showServerSar;
+        private bool _deleteSynthOnCancel;
+        private bool _forceSynthesis;
+        private bool _useEmbeddedServerSar;
 
         private void FillComboBox()
         {
@@ -169,11 +179,20 @@ namespace RlViewer.Forms
             _settings.HighResForDownScaled = _highRes;
             _settings.UseAreasForAligning = _areasOrPointsForAligning;
             _settings.ForceAdminMode = _forceAdmin;
-            _settings.UseCustomFileOpenDlg = _customFileOpenDlg;
             _settings.SurfaceType = _surfaceType;
             _settings.ForceImageHeightAdjusting = _forceImageHeightAdjusting;
+            _settings.DeleteSynthesizedFileOnCalcel = _deleteSynthOnCancel;
+            _settings.ServerSarPath = serverSarPathTb.Text;
+            _settings.ForceSynthesis = _forceSynthesis;
+            _settings.UseEmbeddedServerSar = _useEmbeddedServerSar;
+
+            _guiSettings.UseCustomFileOpenDlg = _customFileOpenDlg;
+            _guiSettings.ShowRhgSynthesisHeaderParamsTab = _showSynthesisCommonTab;
+            _guiSettings.ShowServerSar = _showServerSar;
 
             _settings.ToXml<Settings.AppSettings>();
+            _guiSettings.ToXml<Settings.GuiSettings>();
+
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
@@ -244,16 +263,6 @@ namespace RlViewer.Forms
             _areasOrPointsForAligning = ((CheckBox)sender).Checked;
         }
 
-        private void AddTbClickEvent(TabControl container)
-        {
-            
-            foreach (TabPage page in container.TabPages)
-            {
-                FormsHelper.AddTbClickEvent<MaskedTextBox>(page.Controls);
-            }
-           
-        }
-
         private void adminReminderCb_CheckedChanged(object sender, EventArgs e)
         {
             _forceAdmin = ((CheckBox)sender).Checked;
@@ -305,6 +314,45 @@ namespace RlViewer.Forms
         private void forceImageHeightAdjustingCb_CheckedChanged(object sender, EventArgs e)
         {
             _forceImageHeightAdjusting = ((CheckBox)sender).Checked;
+        }
+
+        private void showSynthesisCommonTabCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _showSynthesisCommonTab = ((CheckBox)sender).Checked;
+        }
+
+        private void showServerSarCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _showServerSar = ((CheckBox)sender).Checked;
+        }
+
+        private void deleteOnCancelCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _deleteSynthOnCancel = ((CheckBox)sender).Checked;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Исполняемые файлы(.exe)|*.exe";
+                if(ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    serverSarPathTb.Text = ofd.FileName;
+                }
+            }
+        }
+
+        private void forceSynthesisCb_CheckedChanged(object sender, EventArgs e)
+        {
+            _forceSynthesis = ((CheckBox)sender).Checked;
+        }
+
+        private void useEmbeddedServerSarCb_CheckedChanged(object sender, EventArgs e)
+        {
+            var cbChecked = ((CheckBox)sender).Checked;
+            _useEmbeddedServerSar = cbChecked;
+            serverSarPathAreaGb.Visible = !cbChecked;
         }
        
 

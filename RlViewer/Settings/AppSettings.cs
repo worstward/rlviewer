@@ -9,22 +9,22 @@ using System.IO;
 namespace RlViewer.Settings
 {
     [DataContract]
-    public class AppSettings : Settings
+    public class AppSettings : XmlSerialized
     {
 
-        protected override string SettingsPath
+        protected override string SavingPath
         {
             get
             {
                 var settingsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "appSettings");
-                var fileName = Path.ChangeExtension(settingsPath, SettingsExtension);
+                var fileName = Path.ChangeExtension(settingsPath, SavingExtension);
                 return fileName;
             }
         }
 
         private bool _allowViewWhileLoading;
 
-        [DataMember(IsRequired=true)]
+        [DataMember(IsRequired = true)]
         public bool AllowViewWhileLoading
         {
             get { return _allowViewWhileLoading; }
@@ -132,7 +132,7 @@ namespace RlViewer.Settings
             get { return _maxAlignerAreaSize; }
             set { _maxAlignerAreaSize = value; }
         }
-        
+
 
 
         private float _rangeCompressionCoef = 1f;
@@ -171,11 +171,11 @@ namespace RlViewer.Settings
         [DataMember(IsRequired = true)]
         public int AligningAreaBorderSize
         {
-            get 
+            get
             {
                 return _aligningAreaBorderSize;
             }
-            set 
+            set
             {
                 _aligningAreaBorderSize = value > 9999 ? 9999 : value;
             }
@@ -190,15 +190,6 @@ namespace RlViewer.Settings
             set { _forceAdminMode = value; }
         }
 
-
-        private bool _useCustomFileOpenDlg = false;
-
-        [DataMember(IsRequired = true)]      
-        public bool UseCustomFileOpenDlg
-        {
-            get { return _useCustomFileOpenDlg; }
-            set { _useCustomFileOpenDlg = value; }
-        }
 
         private System.Net.IPEndPoint _multicastEp = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("234.0.1.1"), 1000);
 
@@ -273,10 +264,10 @@ namespace RlViewer.Settings
         public double RbfMlRegularizationCoef
         {
             get { return _rbfMlRegularizationCoef; }
-            set 
+            set
             {
                 var newRbfReg = value;
-                _rbfMlRegularizationCoef = newRbfReg > 1 ? 0.01 : newRbfReg; 
+                _rbfMlRegularizationCoef = newRbfReg > 1 ? 0.01 : newRbfReg;
             }
         }
 
@@ -298,7 +289,7 @@ namespace RlViewer.Settings
             set { _forceImageHeightAdjusting = value; }
         }
 
-        private string _serverSarPath = @"C:\tnk_2\server_sar_base_tcp_x64.exe";
+        private string _serverSarPath = @"server_sar_base_tcp_x64.exe";
 
         [DataMember(IsRequired = true)]
         public string ServerSarPath
@@ -307,7 +298,42 @@ namespace RlViewer.Settings
             set { _serverSarPath = value; }
         }
 
+        private string _serverSarParams = @"-1 -2";
 
-      
+        [DataMember(IsRequired = true)]
+        public string ServerSarParams
+        {
+            get { return _serverSarParams; }
+            set { _serverSarParams = value; }
+        }
+
+
+        private bool _forceSynthesis = true;
+
+        [DataMember(IsRequired = true)]
+        public bool ForceSynthesis
+        {
+            get { return _forceSynthesis; }
+            set { _forceSynthesis = value; }
+        }
+
+        private bool _useEmbeddedServerSar = true;
+
+        [DataMember(IsRequired = true)]
+        public bool UseEmbeddedServerSar
+        {
+            get { return _useEmbeddedServerSar; }
+            set { _useEmbeddedServerSar = value; }
+        }
+
+        private bool _deleteSynthesizedFileOnCalcel = false;
+
+        [DataMember(IsRequired = true)]
+        public bool DeleteSynthesizedFileOnCalcel
+        {
+            get { return _deleteSynthesizedFileOnCalcel; }
+            set { _deleteSynthesizedFileOnCalcel = value; }
+        }
+
     }
 }

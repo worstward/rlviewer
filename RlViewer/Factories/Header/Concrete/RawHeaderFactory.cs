@@ -20,5 +20,11 @@ namespace RlViewer.Factories.Header.Concrete
                 else throw new OperationCanceledException("raw imgSize");
             }
         }
+
+        public override Headers.Abstract.LocatorFileHeader Create(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            throw new ArgumentException("headerStruct is invalid");
+        }
+
     }
 }

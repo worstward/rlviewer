@@ -20,6 +20,15 @@ namespace RlViewer.Headers.Concrete.R
             CheckSignature(_headerStruct.signatureHeader.fileSign);
         }
 
+        public RHeader(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            _headerStruct = (Headers.Concrete.R.RFileHeaderStruct)headerStruct;
+            CheckSignature(_headerStruct.signatureHeader.fileSign);
+        }
+
+
+
+
         protected override byte[] Signature
         {
             get

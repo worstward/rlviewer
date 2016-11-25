@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RlViewer.UI.Events
+namespace RlViewer.Logging
 {
-    public class InitWindowEventArgs : EventArgs
+    public enum LogType
     {
+        Common,
+        Synthesis
     }
 }

@@ -30,9 +30,7 @@ namespace RlViewer.Behaviors.Synthesis
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
         public byte[] output_file;                       // директория файлов вычислений
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
-        public byte[] Client_ip_address;
-
-        //public int RGG_RLI_DSP_numbers;					 // количество массивов в общей памяти для РГГ, РЛИ, ДСП
+        public byte[] Client_ip_address;			 
 
         // диапазон синтеза
         public int M;										 // номер текущего блока по азимуту
@@ -87,7 +85,7 @@ namespace RlViewer.Behaviors.Synthesis
         public bool Moco2_Range_Dep;
 
         public int Nav_LR_Side;                           // борт наблюдения (правый +1, левый -1)
-        public int Nav_Start;                             // стартовая метка в файле навигации (с)
+        public float MAMD_Alpha;
         public float Hol_Start;                             // стартовая метка в файле голограммы (с)
         public int Hol_Y_Beg;
         public int Hol_Y_End;
@@ -285,13 +283,17 @@ namespace RlViewer.Behaviors.Synthesis
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
         public byte[] fbp_KoeffSumming;
         public float fbp_drrli;
-        //public int pDoc;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 936)]
-        public byte[] reserved; //[];
-
+        public long pDoc;
         // Параметры обмена
         public int sarServerCmd;		// команда: 1 - применить новые параметры, 0x1124 - завершить работу
         public int sarServerRet;		// ответ:   0x100 - параметры установлены, 0x1125 - работа завершена
+
+        public int RGG_RLI_DSP_numbers; // количество массивов в общей памяти для РГГ, РЛИ, ДСП
+        public int cur_RGG_RLI_DSP_number;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 924)]
+        public byte[] reserved; //[];
+
     };
 }

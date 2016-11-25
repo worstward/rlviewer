@@ -92,9 +92,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.  Reports progress to backgroundworker object.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFile()
+        protected override Tile[] GetTilesFromFile(int startingLine = 0)
         {
-            return GetTilesFromFile(_rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
+            return GetTilesFromFile(_rli, OutputType, startingLine);
         }
 
 
@@ -102,9 +102,9 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
         /// Saves tiles to local folder and creates tile objects array from Brl4 file.
         /// </summary>
         /// <returns></returns>
-        protected override Tile[] GetTilesFromFileAsync()
+        protected override Tile[] GetTilesFromFileAsync(int startingLine = 0)
         {
-            return GetTilesFromFileAsync(_rli, new RlViewer.Headers.Concrete.Brl4.Brl4StrHeaderStruct(), OutputType);
+            return GetTilesFromFileAsync(_rli, OutputType, startingLine);
         }
 
 

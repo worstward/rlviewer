@@ -9,7 +9,7 @@ using System.IO;
 namespace RlViewer.Settings
 {
     [DataContract]
-    public class ReporterSettings : Settings
+    public class ReporterSettings : XmlSerialized
     {
         
         public ReporterSettings()
@@ -29,12 +29,12 @@ namespace RlViewer.Settings
             AddTimes = addTimes;
         }
 
-        protected override string SettingsPath
+        protected override string SavingPath
         {
             get
             {
                 var settingsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "reporterSettings");
-                var fileName = Path.ChangeExtension(settingsPath, SettingsExtension);
+                var fileName = Path.ChangeExtension(settingsPath, SavingExtension);
                 return fileName;
             }
         }

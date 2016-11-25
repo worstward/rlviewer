@@ -9,7 +9,7 @@ using RlViewer.Headers.Concrete.R;
 namespace RlViewer.Headers.Concrete.K
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct KFileHeaderStruct
+    public struct KFileHeaderStruct : Headers.Abstract.IHeaderStruct
     {
 
         public SignatureHeader signatureHeader;		// сигнатура заголовка

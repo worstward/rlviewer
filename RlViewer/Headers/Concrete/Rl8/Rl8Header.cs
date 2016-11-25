@@ -13,6 +13,12 @@ namespace RlViewer.Headers.Concrete.Rl8
 
         }
 
+        public Rl8Header(Headers.Abstract.IHeaderStruct headerStruct)
+            : base(headerStruct)
+        {
+
+        }
+
         private int _bytesPerSample = 8;
         public override int BytesPerSample
         {

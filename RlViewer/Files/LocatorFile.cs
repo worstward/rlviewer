@@ -41,7 +41,7 @@ namespace RlViewer.Files
         /// <summary>
         /// Sets image height to provided value
         /// </summary>
-        public void SetHeight(int height)
+        public virtual void SetHeight(int height)
         {
             if (height < 0)
                 throw new ArgumentException("height");

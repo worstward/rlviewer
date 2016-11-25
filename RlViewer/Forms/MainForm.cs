@@ -19,44 +19,14 @@ namespace RlViewer.Forms
 
         public MainForm()
         {
-            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateNew("SSTP_inSharedMem", (long)(new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / 20));
-            //System.Threading.EventWaitHandle handle = new System.Threading.EventWaitHandle(false, EventResetMode.AutoReset, "SSTP_Ready");
-            //handle.WaitOne();
-
-            //var buf = new byte[Marshal.SizeOf(typeof(Behaviors.Synthesis.ServerSarTaskParams))];
-            //var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting("SSTP_inSharedMem");
-            //var mmfStr = mmf.CreateViewStream();
-
-
-            //mmfStr.Read(buf, 0, buf.Length);
-
-            //var sstp = Behaviors.Converters.StructIO.ReadStruct<Behaviors.Synthesis.ServerSarTaskParams>(buf);
-            //var asd = sstp;
-
-            //using (var s = new Forms.SynthesisParamsForm(@"C:\Users\lenovo\Desktop\РЛИ\arm12_20160604_s001_001.k"))
-            //{
-
-            //}
-           // System.Diagnostics.Process.Start(@"C:\Users\lenovo\Desktop\tnk_2\server_sar_base_tcp_x64.exe", "-1 -2");
-
-            var synForm = new Forms.SynthesisParamsForm(@"C:\Users\lenovo\Desktop\РЛИ\arm12_20160604_s001_001.k");
-            
-                if (synForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-                var interop = new Behaviors.Synthesis.ServerSarInterop(@"C:\Users\lenovo\Desktop\tnk_2\server_sar_base_tcp_x64.exe", synForm.GenerateSstp(1, 123123, 0, 0));
-                interop.StartSynthesis();
-            
-
             InitializeComponent();
             _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
-            _guiFacade.OnPointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
-            _guiFacade.OnProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
-            _guiFacade.OnProgressChanged += (s, e) => ReportProgress(e.Progress);
-            _guiFacade.OnImageDrawn += (s, image) => pictureBox1.Image = image;
-            _guiFacade.OnAlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
-            _guiFacade.OnErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
+            _guiFacade.PointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
+            _guiFacade.ProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
+            _guiFacade.ProgressChanged += (s, e) => ReportProgress(e.Progress);
+            _guiFacade.ImageDrawn += (s, image) => pictureBox1.Image = image;
+            _guiFacade.AlignPossibilityChanged += (s, e) => alignBtn.Enabled = e.IsPossible;
+            _guiFacade.ErrorOccured += (s, e) => Forms.FormsHelper.ShowErrorMsg(e.ErrorText);
 
             _keyProcessor = new UI.KeyPressProcessor(() => _guiFacade.Undo(markPointRb.Checked, markAreaRb.Checked),
                 () =>
@@ -65,7 +35,7 @@ namespace RlViewer.Forms
                     this.Text = OpenFile();
                 },
                  () => _guiFacade.Save(), () => ShowFileInfo(), () => ShowLog(),
-                 () => MakeReport(), () => _guiFacade.AggregateFiles(), () => EmbedNavigation(),
+                 () => MakeReport(), () => AggregateFiles(), () => EmbedNavigation(),
                  () => _guiFacade.ShowCache());
 
             InitForm();
@@ -73,6 +43,10 @@ namespace RlViewer.Forms
 
             dragRb.Checked = true;
         }
+
+
+        private List<ToolStripItem> _recentFilesToolStripItems = new List<ToolStripItem>();
+
 
         private void InitForm()
         {
@@ -145,7 +119,7 @@ namespace RlViewer.Forms
         {
             string caption = this.Text;
 
-            if (!_guiFacade.Settings.UseCustomFileOpenDlg)
+            if (!_guiFacade.GuiSettings.UseCustomFileOpenDlg)
             {
                 using (var openFileDlg = new OpenFileDialog() { Filter = Resources.OpenFilter })
                 {
@@ -158,18 +132,17 @@ namespace RlViewer.Forms
             }
             else
             {
-                caption = _guiFacade.OpenFileCustomDialog();
+                using (var previewForm = new Forms.FilePreviewForm())
+                {
+                    if (previewForm.ShowDialog() == DialogResult.OK)
+                    {
+                        caption = _guiFacade.OpenFile(previewForm.FileToOpen);
+                    }
+                }
             }
 
             return caption;
         }
-
-
-
-
-
-
-
 
         private void ToggleNavigation()
         {
@@ -359,7 +332,13 @@ namespace RlViewer.Forms
 
         private void ShowSection(Point mouseCoords)
         {
-            using (var sectionForm = new Forms.SectionGraphForm(_guiFacade.GetSectionInfo(mouseCoords), GetSectionFormCaption()))
+            var sectionInfo = _guiFacade.GetSectionInfo(mouseCoords);
+            if (sectionInfo == null)
+            {
+                return;
+            }
+
+            using (var sectionForm = new Forms.SectionGraphForm(sectionInfo, GetSectionFormCaption()))
             {
                 sectionForm.ShowDialog();
             }
@@ -396,7 +375,7 @@ namespace RlViewer.Forms
 
         public void MakeReport()
         {
-            var reporterSettings = RlViewer.Settings.Settings.LoadSettings<Settings.ReporterSettings>();
+            var reporterSettings = RlViewer.XmlSerialized.LoadData<Settings.ReporterSettings>();
 
             using (var reportSettingsForm = new Forms.ReportSettingsForm(reporterSettings))
             {
@@ -509,7 +488,7 @@ namespace RlViewer.Forms
 
         private void ShowSettings()
         {
-            using (var settgingsForm = new Forms.SettingsForm(_guiFacade.Settings))
+            using (var settgingsForm = new Forms.SettingsForm(_guiFacade.Settings, _guiFacade.GuiSettings))
             {
                 if (settgingsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -676,7 +655,18 @@ namespace RlViewer.Forms
 
         private void statisticsBtn_Click(object sender, EventArgs e)
         {
-            _guiFacade.GetAreaStatistics();
+            var statistics = _guiFacade.GetAreaStatistics();
+
+            if (statistics == null)
+            {
+                return;
+            }
+
+            using (var statFrm = new Forms.StatisticsForm(statistics))
+            {
+                statFrm.ShowDialog();
+            }
+
             pictureBox1.Cursor = Cursors.Arrow;
             _toolCursor = Cursors.Arrow;
         }
@@ -712,7 +702,7 @@ namespace RlViewer.Forms
 
         private void совместитьФайлыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _guiFacade.AggregateFiles();
+            AggregateFiles();
         }
 
         private void mirrorImageBtn_Click(object sender, EventArgs e)
@@ -745,6 +735,7 @@ namespace RlViewer.Forms
             Forms.FormsHelper.AddToolTip(squareAreaRb, "Трехмерный график");
             Forms.FormsHelper.AddToolTip(sharerRb, "Сравнить точки");
             Forms.FormsHelper.AddToolTip(mirrorImageBtn, "Отразить изображение");
+            Forms.FormsHelper.AddToolTip(synthesizeBtn, "Синтез");
         }
 
         private void sharerRb_CheckedChanged(object sender, EventArgs e)
@@ -796,5 +787,121 @@ namespace RlViewer.Forms
             _toolCursor = Cursors.Arrow;
         }
 
+        private void AggregateFiles()
+        {
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Title = @"Выберите путь для сохранения";
+                sfd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    using (var ofd = new OpenFileDialog())
+                    {
+                        ofd.Title = @"Выберите файлы для совмещения";
+                        ofd.Multiselect = true;
+                        ofd.Filter = @"Файлы РГГ Банк-РЛ (*.ba)|*.ba";
+
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            var aggregatorOrder = new Forms.AggregatorOrderForm(ofd.FileNames);
+
+                            if (aggregatorOrder.ShowDialog() == DialogResult.OK)
+                            {
+                                _guiFacade.AggregateFiles(sfd.FileName, aggregatorOrder.SourceFiles);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void synthesizeBtn_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Multiselect = true;
+                ofd.Filter = Resources.KFilter;
+
+                if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                using (var synForm = new Forms.SynthesisParamsForm(_guiFacade.SynthesisSettings, _guiFacade.GuiSettings.ShowRhgSynthesisHeaderParamsTab, ofd.FileName))
+                {
+                    if (synForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    using (var sfd = new SaveFileDialog())
+                    {
+                        sfd.Filter = Resources.Rl4Filter;
+                        if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                        {
+                            return;
+                        }
+                        this.Text = sfd.FileName;
+
+                        var name = System.IO.Path.GetFileNameWithoutExtension(_guiFacade.Settings.ServerSarPath);
+                        var serverSarProcesses = System.Diagnostics.Process.GetProcessesByName(name);
+
+                        if (serverSarProcesses.Length > 0 && _guiFacade.Settings.ForceSynthesis)
+                        {
+                            var result = MessageBox.Show("Система обнаружила действующее приложение синтеза, закрыть его и продолжить текущую задачу?", "Предупреждение", MessageBoxButtons.YesNo);
+                            if(result != System.Windows.Forms.DialogResult.Yes)
+                            {
+                                return;
+                            }
+                        }
+
+                        _guiFacade.Synthesize(ofd.FileNames, sfd.FileName, synForm.GenerateSstp(1, 0, 0));
+                    }
+                }
+
+            }
+        }
+
+        private List<ToolStripItem> GetRecentFileToolStrips()
+        {
+            var recentFiles = _guiFacade.GetRecentFiles();
+
+            var recentFilesToolStrip = new List<ToolStripItem>();
+
+            if (recentFiles.Count > 0)
+            {
+                recentFilesToolStrip.Add(new ToolStripSeparator());
+
+                foreach (var file in recentFiles)
+                {
+                    recentFilesToolStrip.Add(new ToolStripButton(file, null, (s, ev) => { _guiFacade.OpenFile(file); }));
+                }
+            }
+
+            return recentFilesToolStrip;
+        }
+
+
+        private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            foreach (var item in _recentFilesToolStripItems)
+            {
+                fileToolStripMenuItem.DropDownItems.Remove(item);
+            }
+
+            _recentFilesToolStripItems = GetRecentFileToolStrips();
+
+            foreach (var item in _recentFilesToolStripItems)
+            {
+                fileToolStripMenuItem.DropDownItems.Insert(fileToolStripMenuItem.DropDownItems.Count - 2, item);
+            }
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

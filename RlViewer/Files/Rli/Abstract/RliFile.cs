@@ -23,8 +23,6 @@ namespace RlViewer.Files.Rli.Abstract
 
         public override abstract LocatorFileHeader Header { get; }
         public abstract override int Width { get; }
-        public abstract override int Height { get; }
-
-        
+        public abstract override int Height { get; }        
     }
 }

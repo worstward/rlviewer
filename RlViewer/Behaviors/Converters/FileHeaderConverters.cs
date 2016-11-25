@@ -12,6 +12,20 @@ namespace RlViewer.Behaviors.Converters
     public static class FileHeaderConverters
     {
 
+        //public static Rl4RliFileHeader ToRl4Header(this Behaviors.Synthesis.ServerSarTaskParams sstp)
+        //{
+        //    var rl4RliHeader = new Rl4RhgSubHeaderStruct();
+        //    rl4RliHeader.strHeaderLength = 256;
+        //    rl4RliHeader.cadrHeight = sstp.Mshift;
+        //    rl4RliHeader.cadrWidth = (int)(sstp.Nshift / sstp.Nscale);
+        //    rl4RliHeader.width = rl4RliHeader.cadrWidth;
+        //    rl4RliHeader.fileHeaderLength = 16384;
+            
+
+
+        //}
+
+
         public static Rl4RliSubHeaderStruct ChangeFragmentShift(this Rl4RliSubHeaderStruct head, int shiftX, int shiftY)
         {
             var header = head;
@@ -71,12 +85,12 @@ namespace RlViewer.Behaviors.Converters
             brl4StrHead.Vu = kStrHeader.navigationHeader.verticalSpeed;
             brl4StrHead.Vn = kStrHeader.navigationHeader.speedLongIns;
             brl4StrHead.V =  kStrHeader.navigationHeader.speedIns;
-            brl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns;
-            brl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns;
+            brl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns * Math.PI / 180f;
+            brl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns * Math.PI / 180f;
             brl4StrHead.H = kStrHeader.navigationHeader.heightInsSns;
-            brl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns;
-            brl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns;
-            brl4StrHead.a = kStrHeader.navigationHeader.kursAngle;
+            brl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns * Math.PI / 180f;
+            brl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns * Math.PI / 180f;
+            brl4StrHead.a = kStrHeader.navigationHeader.kursAngle * Math.PI / 180f;
 
             return brl4StrHead;
         }
@@ -89,12 +103,12 @@ namespace RlViewer.Behaviors.Converters
             rl4StrHead.Vu = kStrHeader.navigationHeader.verticalSpeed;
             rl4StrHead.Vn = kStrHeader.navigationHeader.speedLongIns;
             rl4StrHead.V = kStrHeader.navigationHeader.speedIns;
-            rl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns;
-            rl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns;
+            rl4StrHead.latitude = kStrHeader.navigationHeader.latitudeIns * Math.PI / 180f;
+            rl4StrHead.longtitude = kStrHeader.navigationHeader.longtitudeIns * Math.PI / 180f;
             rl4StrHead.H = kStrHeader.navigationHeader.heightInsSns;
-            rl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns;
-            rl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns;
-            rl4StrHead.a = kStrHeader.navigationHeader.kursAngle;
+            rl4StrHead.f = kStrHeader.navigationHeader.tangageAngleIns * Math.PI / 180f;
+            rl4StrHead.g = kStrHeader.navigationHeader.tiltAngleIns * Math.PI / 180f;
+            rl4StrHead.a = kStrHeader.navigationHeader.kursAngle * Math.PI / 180f;
 
             return rl4StrHead;
         }

@@ -11,6 +11,8 @@ namespace RlViewer.Factories.Header.Abstract
     {
         public abstract RlViewer.Headers.Abstract.LocatorFileHeader Create(string path);
 
+        public abstract RlViewer.Headers.Abstract.LocatorFileHeader Create(Headers.Abstract.IHeaderStruct headerStruct);
+
         public static HeaderFactory GetFactory(RlViewer.Files.FileProperties properties)
         {
             switch (properties.Type)

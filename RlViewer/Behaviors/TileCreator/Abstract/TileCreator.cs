@@ -65,12 +65,12 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 
 
         protected abstract Tile[] GetExistingTiles(string path);
-        protected abstract Tile[] GetTilesFromFileAsync();
-        protected abstract Tile[] GetTilesFromFile();
+        protected abstract Tile[] GetTilesFromFileAsync(int startingLine = 0);
+        protected abstract Tile[] GetTilesFromFile(int startingLine = 0);
         protected abstract T ComputeNormalizationFactor(LocatorFile loc, int strDataLen, int strHeadLen, int frameHeight);
 
-        protected virtual Tile[] GetTilesFromFile(LocatorFile file,
-            RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
+
+        protected virtual Tile[] GetTilesFromFile(LocatorFile file, TileOutputType outputType, int startingLine = 0)
         {
             if (file.Width == 0 || file.Height == 0)
             {
@@ -85,20 +85,18 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             byte[] tileLine;
             using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
                 int signalDataLength = file.Width * file.Header.BytesPerSample;
+                var offset = (file.Header.StrHeaderLength + signalDataLength) * (long)startingLine;
 
-                int strHeaderLength = 0;
-                if (strHeader != null)
-                {
-                    strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                }
+                fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+                fs.Seek(offset, SeekOrigin.Current);
 
-                var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                var totalLines = Math.Ceiling((double)(file.Height - startingLine) / (double)TileSize.Height);
+
                 for (int i = 0; i < totalLines; i++)
                 {
                     OnNameReport("Генерация тайлов");
-                    tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
+                    tileLine = GetTileLine(fs, file.Header.StrHeaderLength, signalDataLength, TileSize.Height, outputType);
 
                     OnProgressReport((int)(i / totalLines * 100));
                     if (OnCancelWorker())
@@ -106,15 +104,14 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                         return null;
                     }
 
-                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i, TileSize));
+                    tiles.AddRange(SaveTiles(tileFolder, tileLine, file.Width, i + startingLine / TileSize.Height, TileSize));
                 }
             }
             return tiles.ToArray();
         }
 
 
-        protected virtual Tile[] GetTilesFromFileAsync(LocatorFile file,
-           RlViewer.Headers.Abstract.IStrHeader strHeader, TileOutputType outputType)
+        protected virtual Tile[] GetTilesFromFileAsync(LocatorFile file, TileOutputType outputType, int startingLine = 0)
         {
             if (file.Width == 0 || file.Height == 0)
             {
@@ -132,21 +129,17 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
                 byte[] tileLine;
                 using (var fs = File.Open(file.Properties.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
-
-                    int strHeaderLength = 0;
-                    if (strHeader != null)
-                    {
-                        strHeaderLength = System.Runtime.InteropServices.Marshal.SizeOf(strHeader);
-                    }
-
                     int signalDataLength = file.Width * file.Header.BytesPerSample;
 
-                    var totalLines = Math.Ceiling((double)file.Height / (double)TileSize.Height);
+                    fs.Seek(file.Header.FileHeaderLength, SeekOrigin.Begin);
+                    var offset = (file.Header.StrHeaderLength + signalDataLength) * (long)startingLine;
+                    fs.Seek(offset, SeekOrigin.Current);
+
+                    var totalLines = Math.Ceiling((double)(file.Height - startingLine) / (double)TileSize.Height);
                     for (int i = 0; i < totalLines; i++)
                     {
-                        tileLine = GetTileLine(fs, strHeaderLength, signalDataLength, TileSize.Height, outputType);
-                        SaveTiles(tileFolder, tileLine, file.Width, i, TileSize);
+                        tileLine = GetTileLine(fs, file.Header.StrHeaderLength, signalDataLength, TileSize.Height, outputType);
+                        SaveTiles(tileFolder, tileLine, file.Width, i + startingLine / TileSize.Height, TileSize);
                     }
                 }
             });
@@ -183,31 +176,32 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
             return dirPath;
         }
 
-        public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false)
+        public virtual Tile[] GetTiles(string filePath, bool forceTileGeneration = false, bool allowScrolling = false, bool synthesis = false, int startingLine = 0)
         {
             var path = GetDirectoryName(filePath);
             Tile[] tiles;
 
-            if (!forceTileGeneration && Directory.Exists(path))
+            if (!forceTileGeneration && !synthesis && Directory.Exists(path))
             {
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to get existing tiles");
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Attempting to get existing tiles");
                 tiles = GetExistingTiles(path);
             }
             else
             {
-                if (Directory.Exists(path))
+                if (!synthesis && Directory.Exists(path))
                 {
                     Directory.Delete(path, true);
                 }
 
-                Logging.Logger.Log(Logging.SeverityGrades.Info, "Attempting to create tiles from file");
+                Logging.Logger.Log(Logging.SeverityGrades.Internal, "Attempting to create tiles from file");
+
                 if (allowScrolling)
                 {
-                    tiles = GetTilesFromFileAsync();
+                    tiles = GetTilesFromFileAsync(startingLine);
                 }
                 else
                 {
-                    tiles = GetTilesFromFile();
+                    tiles = GetTilesFromFile(startingLine);
                 }
             }
 
@@ -320,8 +314,10 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
         }
 
 
+        
 
 
+        
 
         /// <summary>
         /// Creates tile objects array from existing tile files

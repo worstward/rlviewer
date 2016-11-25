@@ -80,6 +80,7 @@
             this.sharerRb = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
             this.mirrorImageBtn = new System.Windows.Forms.Button();
+            this.synthesizeBtn = new System.Windows.Forms.Button();
             this.zoomInBtn = new System.Windows.Forms.Button();
             this.zoomOutBtn = new System.Windows.Forms.Button();
             this.navigationPanelCb = new System.Windows.Forms.CheckBox();
@@ -94,6 +95,8 @@
             this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.выходToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filterTrackBar)).BeginInit();
@@ -153,10 +156,13 @@
             this.сохранитьToolStripMenuItem,
             this.создатьОтчетToolStripMenuItem,
             this.вшитьНавигациюToolStripMenuItem,
-            this.совместитьФайлыToolStripMenuItem});
+            this.совместитьФайлыToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.выходToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.fileToolStripMenuItem.Text = "Файл";
+            this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpened);
             // 
             // openToolStripMenuItem
             // 
@@ -520,6 +526,7 @@
             this.flowLayoutPanel1.Controls.Add(this.sharerRb);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.mirrorImageBtn);
+            this.flowLayoutPanel1.Controls.Add(this.synthesizeBtn);
             this.flowLayoutPanel1.Controls.Add(this.zoomInBtn);
             this.flowLayoutPanel1.Controls.Add(this.zoomOutBtn);
             this.flowLayoutPanel1.Controls.Add(this.navigationPanelCb);
@@ -751,6 +758,20 @@
             this.mirrorImageBtn.UseVisualStyleBackColor = true;
             this.mirrorImageBtn.Click += new System.EventHandler(this.mirrorImageBtn_Click);
             // 
+            // synthesizeBtn
+            // 
+            this.synthesizeBtn.BackgroundImage = global::RlViewer.Properties.Resources.Synthesis;
+            this.synthesizeBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.synthesizeBtn.FlatAppearance.BorderSize = 0;
+            this.synthesizeBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.synthesizeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.synthesizeBtn.Location = new System.Drawing.Point(477, 3);
+            this.synthesizeBtn.Name = "synthesizeBtn";
+            this.synthesizeBtn.Size = new System.Drawing.Size(30, 30);
+            this.synthesizeBtn.TabIndex = 29;
+            this.synthesizeBtn.UseVisualStyleBackColor = true;
+            this.synthesizeBtn.Click += new System.EventHandler(this.synthesizeBtn_Click);
+            // 
             // zoomInBtn
             // 
             this.zoomInBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -759,7 +780,7 @@
             this.zoomInBtn.FlatAppearance.BorderSize = 0;
             this.zoomInBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomInBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomInBtn.Location = new System.Drawing.Point(477, 3);
+            this.zoomInBtn.Location = new System.Drawing.Point(513, 3);
             this.zoomInBtn.Name = "zoomInBtn";
             this.zoomInBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomInBtn.TabIndex = 25;
@@ -774,7 +795,7 @@
             this.zoomOutBtn.FlatAppearance.BorderSize = 0;
             this.zoomOutBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.zoomOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.zoomOutBtn.Location = new System.Drawing.Point(513, 3);
+            this.zoomOutBtn.Location = new System.Drawing.Point(549, 3);
             this.zoomOutBtn.Name = "zoomOutBtn";
             this.zoomOutBtn.Size = new System.Drawing.Size(30, 30);
             this.zoomOutBtn.TabIndex = 26;
@@ -791,7 +812,7 @@
             this.navigationPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.navigationPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.navigationPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.navigationPanelCb.Location = new System.Drawing.Point(549, 3);
+            this.navigationPanelCb.Location = new System.Drawing.Point(585, 3);
             this.navigationPanelCb.Name = "navigationPanelCb";
             this.navigationPanelCb.Size = new System.Drawing.Size(30, 30);
             this.navigationPanelCb.TabIndex = 20;
@@ -807,7 +828,7 @@
             this.filterPanelCb.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.filterPanelCb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.filterPanelCb.Location = new System.Drawing.Point(585, 3);
+            this.filterPanelCb.Location = new System.Drawing.Point(621, 3);
             this.filterPanelCb.Name = "filterPanelCb";
             this.filterPanelCb.Size = new System.Drawing.Size(30, 30);
             this.filterPanelCb.TabIndex = 24;
@@ -817,7 +838,7 @@
             // scaleLabel
             // 
             this.scaleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.scaleLabel.Location = new System.Drawing.Point(621, 3);
+            this.scaleLabel.Location = new System.Drawing.Point(657, 3);
             this.scaleLabel.Name = "scaleLabel";
             this.scaleLabel.Size = new System.Drawing.Size(85, 30);
             this.scaleLabel.TabIndex = 22;
@@ -894,12 +915,25 @@
             // distanceLabel
             // 
             this.distanceLabel.Name = "distanceLabel";
-            this.distanceLabel.Size = new System.Drawing.Size(0, 0);
+            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // statusLabel
             // 
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 0);
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
+            // 
+            // выходToolStripMenuItem
+            // 
+            this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
+            this.выходToolStripMenuItem.ShortcutKeyDisplayString = "Alt + F4";
+            this.выходToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.выходToolStripMenuItem.Text = "Выход";
+            this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1012,6 +1046,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn paramValueColumn;
         private BindableToolStripStatusLabel statusLabel;
         private BindableToolStripStatusLabel distanceLabel;
+        private System.Windows.Forms.Button synthesizeBtn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
     }
 }
 

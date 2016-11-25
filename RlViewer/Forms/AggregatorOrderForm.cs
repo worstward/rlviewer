@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OSGeo.GDAL;
-using OSGeo.OGR;
-using OSGeo.OSR;
 
 namespace RlViewer.Forms
 {

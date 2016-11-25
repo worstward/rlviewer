@@ -50,6 +50,16 @@ namespace RlViewer.Headers.Abstract
             }
         }
 
+        public void ChangeFileHeaderStruct<T>(T headerStruct, Files.FileProperties properties) where T : IHeaderStruct
+        {
+            var headerStructBytes = Behaviors.Converters.StructIO.WriteStruct<T>(headerStruct);
+            using (var writer = File.Open(properties.FilePath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
+            {
+                writer.Write(headerStructBytes, 0, headerStructBytes.Length);
+            }
+        }
+
+
         /// <summary>
         /// Returns parsed info from file header
         /// </summary>

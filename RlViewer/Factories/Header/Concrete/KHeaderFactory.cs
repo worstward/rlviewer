@@ -13,5 +13,10 @@ namespace RlViewer.Factories.Header.Concrete
         {
             return new KHeader(path);
         }
+
+        public override Headers.Abstract.LocatorFileHeader Create(Headers.Abstract.IHeaderStruct headerStruct)
+        {
+            return new KHeader(headerStruct);
+        }
     }
 }

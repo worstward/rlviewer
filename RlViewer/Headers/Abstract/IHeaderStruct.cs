@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RlViewer.Headers.Abstract
 {
-    public interface IStrHeader
+    public interface IHeaderStruct
     {
     }
 }
