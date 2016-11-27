@@ -11,13 +11,13 @@ namespace RlViewer
 {
 
     [DataContract]
-    public abstract class XmlSerialized
+    public abstract class XmlSerializable
     {
 
         /// <summary>
         /// Gets settings from xml file
         /// </summary>
-        public static T LoadData<T>() where T : XmlSerialized, new()
+        public static T LoadData<T>() where T : XmlSerializable, new()
         {
             T loadedClass;
 
@@ -49,7 +49,7 @@ namespace RlViewer
         }
 
 
-        public void ToXml<T>() where T : XmlSerialized
+        public void ToXml<T>() where T : XmlSerializable
         {
             DataContractSerializer dcs = new DataContractSerializer(typeof(T));
             var xmlSettings = new XmlWriterSettings() { Indent = true };
@@ -60,7 +60,7 @@ namespace RlViewer
             }
         }
 
-        private T FromXml<T>() where T : XmlSerialized
+        private T FromXml<T>() where T : XmlSerializable
         {
             DataContractSerializer dcs = new DataContractSerializer(typeof(T));
 

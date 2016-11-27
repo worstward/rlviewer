@@ -16,11 +16,10 @@ namespace RlViewer.Forms
 
     public partial class MainForm : Form
     {
-
         public MainForm()
         {
             InitializeComponent();
-            _guiFacade = new UI.GuiFacade(pictureBox1.Size, action => Invoke(action));
+            _guiFacade = new UI.GuiFacade(pictureBox1.Size, action =>  Invoke(action));
             _guiFacade.PointOfViewMaxChanged += (s, e) => CheckScrollBarVisibility();
             _guiFacade.ProgressVisibilityChanged += (s, e) => InitProgressControls(e.IsVisible);
             _guiFacade.ProgressChanged += (s, e) => ReportProgress(e.Progress);
@@ -375,7 +374,7 @@ namespace RlViewer.Forms
 
         public void MakeReport()
         {
-            var reporterSettings = RlViewer.XmlSerialized.LoadData<Settings.ReporterSettings>();
+            var reporterSettings = RlViewer.XmlSerializable.LoadData<Settings.ReporterSettings>();
 
             using (var reportSettingsForm = new Forms.ReportSettingsForm(reporterSettings))
             {
@@ -829,7 +828,7 @@ namespace RlViewer.Forms
                     return;
                 }
 
-                using (var synForm = new Forms.SynthesisParamsForm(_guiFacade.SynthesisSettings, _guiFacade.GuiSettings.ShowRhgSynthesisHeaderParamsTab, ofd.FileName))
+                using (var synForm = new Forms.SynthesisParamsForm(_guiFacade.SynthesisSettings, _guiFacade.GuiSettings, ofd.FileName))
                 {
                     if (synForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     {
@@ -870,7 +869,7 @@ namespace RlViewer.Forms
 
             var recentFilesToolStrip = new List<ToolStripItem>();
 
-            if (recentFiles.Count > 0)
+            if (recentFiles.Count() > 0)
             {
                 recentFilesToolStrip.Add(new ToolStripSeparator());
 

@@ -70,16 +70,6 @@ namespace RlViewer {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] bintorli_dll_base_x64 {
-            get {
-                object obj = ResourceManager.GetObject("bintorli_dll_base_x64", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Файлы РГГ МРК2 (.k)|*.k.
         /// </summary>
         internal static string KFilter {
@@ -154,19 +144,9 @@ namespace RlViewer {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] server_sar_base_dll_x64 {
+        internal static byte[] server_sar {
             get {
-                object obj = ResourceManager.GetObject("server_sar_base_dll_x64", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] server_sar_base_tcp_x64 {
-            get {
-                object obj = ResourceManager.GetObject("server_sar_base_tcp_x64", resourceCulture);
+                object obj = ResourceManager.GetObject("server_sar", resourceCulture);
                 return ((byte[])(obj));
             }
         }

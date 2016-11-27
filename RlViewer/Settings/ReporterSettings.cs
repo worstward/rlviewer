@@ -9,7 +9,7 @@ using System.IO;
 namespace RlViewer.Settings
 {
     [DataContract]
-    public class ReporterSettings : XmlSerialized
+    public class ReporterSettings : XmlSerializable
     {
         
         public ReporterSettings()

@@ -7,12 +7,14 @@ namespace RlViewer.Behaviors.RecentOpened
 {
     public class RecentOpenedFilesChecker
     {
-        public RecentOpenedFilesChecker()
+        public RecentOpenedFilesChecker(int recentFilesToDisplay)
         {
-            _recentFiles = XmlSerialized.LoadData<RecentFiles>();
+            _recentFiles = XmlSerializable.LoadData<RecentFiles>();
+            _recentFilesToDisplayCount = recentFilesToDisplay;
         }
 
         private RecentFiles _recentFiles;
+        private int _recentFilesToDisplayCount;
 
         public void RegisterFileOpening(string fileName)
         {
@@ -21,12 +23,14 @@ namespace RlViewer.Behaviors.RecentOpened
                 return;
             }
 
-            _recentFiles.RecentOpenedFiles.Add(fileName);
-            _recentFiles.RecentOpenedFiles = _recentFiles.RecentOpenedFiles.TakeWhile((x, i) => !string.IsNullOrEmpty(x) && i < 5).ToList();
+            _recentFiles.RecentOpenedFiles.Push(fileName);
+            _recentFiles.RecentOpenedFiles = new Stack<string>(
+                _recentFiles.RecentOpenedFiles.Take(Math.Min(_recentFiles.RecentOpenedFiles.Count, _recentFilesToDisplayCount)).Reverse());
+
             _recentFiles.ToXml<RecentFiles>();
         }
 
-        public List<string> RecentFiles
+        public IEnumerable<string> RecentFiles
         {
             get
             {

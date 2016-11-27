@@ -25,9 +25,9 @@ namespace RlViewer.UI
     {
         public GuiFacade(Size canvasSize, Action<Action> synchronizer)
         {
-            _settings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.AppSettings>();
-            _synthesisSettings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.SynthesisSettings>();
-            _guiSettings = RlViewer.XmlSerialized.LoadData<RlViewer.Settings.GuiSettings>();
+            _settings = RlViewer.XmlSerializable.LoadData<RlViewer.Settings.AppSettings>();
+            _synthesisSettings = RlViewer.XmlSerializable.LoadData<RlViewer.Settings.SynthesisSettings>();
+            _guiSettings = RlViewer.XmlSerializable.LoadData<RlViewer.Settings.GuiSettings>();
 
             TryRunAsAdmin(_settings.ForceAdminMode);
 
@@ -37,7 +37,7 @@ namespace RlViewer.UI
             _scaler = new Behaviors.Scaling.Scaler(_settings.MinScale, _settings.MaxScale, _settings.InitialScale);
             _drag = new Behaviors.DragController();
             _aggregator = new Behaviors.FilesAggregator.LocatorFilesAggregator();
-            _recentFileChecker = new Behaviors.RecentOpened.RecentOpenedFilesChecker();
+            _recentFileChecker = new Behaviors.RecentOpened.RecentOpenedFilesChecker(_guiSettings.RecentFilesToDisplay);
 
             Deinitialize();
         }
@@ -1011,7 +1011,9 @@ namespace RlViewer.UI
                             ErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка синтеза"));
                             _synthesisInterop.Dispose();
                         }
+                        _synchronizer.Invoke(() => ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false)));
                     };
+
                 _synthesisInterop.FrameAdded += (s, frameHeight) =>
                 {
 
@@ -1066,7 +1068,6 @@ namespace RlViewer.UI
             if (e.Cancelled)
             {
                 Logging.Logger.Log(Logging.SeverityGrades.Info, string.Format("Synthesis cancelled"));
-                ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
             }
             else if (e.Error != null)
             {
@@ -1079,17 +1080,22 @@ namespace RlViewer.UI
                         string.Format("Synthesis completed: {0}", (string)e.Result));
             }
 
-            var serverSarProc = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(_settings.ServerSarPath)).FirstOrDefault();
-
-            if (serverSarProc != null)
+            try
             {
-                serverSarProc.Kill();
+                if (_synthesisInterop != null)
+                {
+                    _synthesisInterop.Dispose();
+                }
+            }
+            catch (UnauthorizedAccessException unaex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, string.Format("Temporary files are not cleared because of insufficient rights: {0}", unaex.Message));
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Log(Logging.SeverityGrades.Warning, ex.Message);
             }
 
-            if (_synthesisInterop != null)
-            {
-                _synthesisInterop.Dispose();
-            }
             ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false));
         }
 
@@ -2359,7 +2365,7 @@ namespace RlViewer.UI
             }
         }
 
-        public List<string> GetRecentFiles()
+        public IEnumerable<string> GetRecentFiles()
         {
             return _recentFileChecker.RecentFiles;
         }

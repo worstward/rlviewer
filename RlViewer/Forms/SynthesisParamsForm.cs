@@ -12,17 +12,17 @@ namespace RlViewer.Forms
 {
     public partial class SynthesisParamsForm : Form
     {
-        public SynthesisParamsForm(RlViewer.Settings.SynthesisSettings synthesisSettings, bool extendedParameters, params string[] fileName)
+        public SynthesisParamsForm(RlViewer.Settings.SynthesisSettings synthesisSettings, RlViewer.Settings.GuiSettings guiSettings, params string[] fileName)
         {
             InitializeComponent();
-            InitControls(synthesisSettings);
+            InitControls(synthesisSettings, guiSettings);
             _fileName = fileName.FirstOrDefault();
             _synthesisSettings = synthesisSettings;
-            ToggleRhgFileParamsTab(extendedParameters);
+            ToggleRhgFileParamsTab(guiSettings.ShowRhgSynthesisHeaderParamsTab);
             Forms.FormsHelper.AddTbClickEvent<MaskedTextBox>(tabControl1);
 
             var holFileProp = new RlViewer.Files.FileProperties(_fileName);
-            var holHeader = Factories.Header.Abstract.HeaderFactory.GetFactory(holFileProp).Create(_fileName) as Headers.Concrete.K.KHeader;
+            var holHeader = (Headers.Concrete.K.KHeader)Factories.Header.Abstract.HeaderFactory.GetFactory(holFileProp).Create(_fileName);
             _headerStruct = holHeader.HeaderStruct;
             _rhg = (Files.Rhg.Abstract.RhgFile)Factories.File.Abstract.FileFactory.GetFactory(holFileProp).Create(holFileProp, holHeader, null);
 
@@ -47,18 +47,18 @@ namespace RlViewer.Forms
         }
 
 
-        private void InitControls(RlViewer.Settings.SynthesisSettings synthesisSettings)
+        private void InitControls(RlViewer.Settings.SynthesisSettings synthesisSettings, RlViewer.Settings.GuiSettings guiSettings)
         {
-            frameSizeAzimuthCb.DataSource = synthesisSettings.FrameAzimuthSizes;
-            frameAzimuthCoefCb.DataSource = synthesisSettings.FrameAzimuthCompressionCoefs;
-            frameRangeCoefCb.DataSource = synthesisSettings.FrameRangeCompressionCoefs;
-            blockSizeAzimuthCb.DataSource = synthesisSettings.BlockAzimuthSizes;
-            blockAzimuthCoefCb.DataSource = synthesisSettings.BlockAzimuthCompressionCoefs;
-            blockRangeCoefCb.DataSource = synthesisSettings.BlockRangeCompressionCoefs;
-            matrixExtensionCb.DataSource = synthesisSettings.MatrixExtensionCoefs;
-            pNLengthCb.DataSource = synthesisSettings.PNLengthValues;
-            minDopplerCb.DataSource = synthesisSettings.MinDopplerFilterValues;
-            maxDopplerCb.DataSource = synthesisSettings.MaxDopplerFilterValues;
+            frameSizeAzimuthCb.DataSource = guiSettings.FrameAzimuthSizes;
+            frameAzimuthCoefCb.DataSource = guiSettings.FrameAzimuthCompressionCoefs;
+            frameRangeCoefCb.DataSource = guiSettings.FrameRangeCompressionCoefs;
+            blockSizeAzimuthCb.DataSource = guiSettings.BlockAzimuthSizes;
+            blockAzimuthCoefCb.DataSource = guiSettings.BlockAzimuthCompressionCoefs;
+            blockRangeCoefCb.DataSource = guiSettings.BlockRangeCompressionCoefs;
+            matrixExtensionCb.DataSource = guiSettings.MatrixExtensionCoefs;
+            pNLengthCb.DataSource = guiSettings.PNLengthValues;
+            minDopplerCb.DataSource = guiSettings.MinDopplerFilterValues;
+            maxDopplerCb.DataSource = guiSettings.MaxDopplerFilterValues;
             memoryChunksCountCb.DataSource = synthesisSettings.MemoryChunksCountValues;
 
             frameAzimuthCoefCb.SelectedItem = synthesisSettings.FrameAzimuthCompressionCoef;

@@ -10,12 +10,12 @@ namespace RlViewer.Behaviors.RecentOpened
 {
 
     [DataContract]
-    class RecentFiles : XmlSerialized
+    class RecentFiles : XmlSerializable
     {
-        private List<string> _recentFiles = new List<string>();
+        private Stack<string> _recentFiles = new Stack<string>();
 
         [DataMember(IsRequired = true)]
-        public List<string> RecentOpenedFiles
+        public Stack<string> RecentOpenedFiles
         {
             get { return _recentFiles; }
             set { _recentFiles = value; }

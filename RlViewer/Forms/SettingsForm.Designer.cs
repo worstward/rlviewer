@@ -39,6 +39,7 @@
             this.forceTileGenCheckBox = new System.Windows.Forms.CheckBox();
             this.allowViewCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
             this.logPaletteCb = new System.Windows.Forms.CheckBox();
             this.inverseCheckBox = new System.Windows.Forms.CheckBox();
             this.highResCb = new System.Windows.Forms.CheckBox();
@@ -58,6 +59,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.sectionSizeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.synthesisTab = new System.Windows.Forms.TabPage();
+            this.useEmbeddedServerSarCb = new System.Windows.Forms.CheckBox();
+            this.forceSynthesisCb = new System.Windows.Forms.CheckBox();
             this.serverSarPathAreaGb = new System.Windows.Forms.GroupBox();
             this.serverSarPathTb = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -73,9 +76,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.forceSynthesisCb = new System.Windows.Forms.CheckBox();
-            this.comboBoxPics1 = new RlViewer.Settings.ComboBoxPics();
-            this.useEmbeddedServerSarCb = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.commonTab.SuspendLayout();
             this.viewTab.SuspendLayout();
@@ -217,6 +217,17 @@
             this.groupBox3.TabIndex = 16;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Палитра";
+            // 
+            // comboBoxPics1
+            // 
+            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPics1.FormattingEnabled = true;
+            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
+            this.comboBoxPics1.Name = "comboBoxPics1";
+            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
+            this.comboBoxPics1.TabIndex = 17;
+            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
             // 
             // logPaletteCb
             // 
@@ -440,6 +451,28 @@
             this.synthesisTab.Text = "Синтез";
             this.synthesisTab.UseVisualStyleBackColor = true;
             // 
+            // useEmbeddedServerSarCb
+            // 
+            this.useEmbeddedServerSarCb.AutoSize = true;
+            this.useEmbeddedServerSarCb.Location = new System.Drawing.Point(6, 164);
+            this.useEmbeddedServerSarCb.Name = "useEmbeddedServerSarCb";
+            this.useEmbeddedServerSarCb.Size = new System.Drawing.Size(201, 17);
+            this.useEmbeddedServerSarCb.TabIndex = 11;
+            this.useEmbeddedServerSarCb.Text = "Использовать встроенный синтез";
+            this.useEmbeddedServerSarCb.UseVisualStyleBackColor = true;
+            this.useEmbeddedServerSarCb.CheckedChanged += new System.EventHandler(this.useEmbeddedServerSarCb_CheckedChanged);
+            // 
+            // forceSynthesisCb
+            // 
+            this.forceSynthesisCb.AutoSize = true;
+            this.forceSynthesisCb.Location = new System.Drawing.Point(6, 126);
+            this.forceSynthesisCb.Name = "forceSynthesisCb";
+            this.forceSynthesisCb.Size = new System.Drawing.Size(162, 17);
+            this.forceSynthesisCb.TabIndex = 10;
+            this.forceSynthesisCb.Text = "Приоритет нового синтеза";
+            this.forceSynthesisCb.UseVisualStyleBackColor = true;
+            this.forceSynthesisCb.CheckedChanged += new System.EventHandler(this.forceSynthesisCb_CheckedChanged);
+            // 
             // serverSarPathAreaGb
             // 
             this.serverSarPathAreaGb.Controls.Add(this.serverSarPathTb);
@@ -482,6 +515,7 @@
             this.showServerSarCb.TabIndex = 6;
             this.showServerSarCb.Text = "Отображать программу синтеза";
             this.showServerSarCb.UseVisualStyleBackColor = true;
+            this.showServerSarCb.CheckedChanged += new System.EventHandler(this.showServerSarCb_CheckedChanged);
             // 
             // showSynthesisCommonTabCb
             // 
@@ -598,39 +632,6 @@
             this.button3.Text = "Отмена";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // forceSynthesisCb
-            // 
-            this.forceSynthesisCb.AutoSize = true;
-            this.forceSynthesisCb.Location = new System.Drawing.Point(6, 126);
-            this.forceSynthesisCb.Name = "forceSynthesisCb";
-            this.forceSynthesisCb.Size = new System.Drawing.Size(162, 17);
-            this.forceSynthesisCb.TabIndex = 10;
-            this.forceSynthesisCb.Text = "Приоритет нового синтеза";
-            this.forceSynthesisCb.UseVisualStyleBackColor = true;
-            this.forceSynthesisCb.CheckedChanged += new System.EventHandler(this.forceSynthesisCb_CheckedChanged);
-            // 
-            // comboBoxPics1
-            // 
-            this.comboBoxPics1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboBoxPics1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPics1.FormattingEnabled = true;
-            this.comboBoxPics1.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxPics1.Name = "comboBoxPics1";
-            this.comboBoxPics1.Size = new System.Drawing.Size(73, 21);
-            this.comboBoxPics1.TabIndex = 17;
-            this.comboBoxPics1.SelectedIndexChanged += new System.EventHandler(this.comboBoxPics1_SelectedIndexChanged);
-            // 
-            // useEmbeddedServerSarCb
-            // 
-            this.useEmbeddedServerSarCb.AutoSize = true;
-            this.useEmbeddedServerSarCb.Location = new System.Drawing.Point(6, 164);
-            this.useEmbeddedServerSarCb.Name = "useEmbeddedServerSarCb";
-            this.useEmbeddedServerSarCb.Size = new System.Drawing.Size(199, 17);
-            this.useEmbeddedServerSarCb.TabIndex = 11;
-            this.useEmbeddedServerSarCb.Text = "Использовать вшитую программу";
-            this.useEmbeddedServerSarCb.UseVisualStyleBackColor = true;
-            this.useEmbeddedServerSarCb.CheckedChanged += new System.EventHandler(this.useEmbeddedServerSarCb_CheckedChanged);
             // 
             // SettingsForm
             // 

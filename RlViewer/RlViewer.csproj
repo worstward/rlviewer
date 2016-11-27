@@ -406,7 +406,7 @@
     <Compile Include="Settings\ComboBoxPics.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="XmlSerialized.cs" />
+    <Compile Include="XmlSerializable.cs" />
     <Compile Include="Settings\SynthesisSettings.cs" />
     <Compile Include="ThreadHelpers.cs" />
     <Compile Include="AdminChecker.cs" />
@@ -606,6 +606,7 @@
     <EmbeddedResource Include="Settings\ComboBoxPics.resx">
       <DependentUpon>ComboBoxPics.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="bin\Release\server_sar.zip" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -668,9 +669,6 @@
     <None Include="Resources\Yellows.png" />
     <None Include="Resources\Pinks.png" />
     <None Include="Resources\LightBlues.png" />
-    <None Include="bin\Release\serverSar\bintorli_dll_base_x64.dll" />
-    <None Include="bin\Release\serverSar\server_sar_base_dll_x64.dll" />
-    <None Include="bin\Release\serverSar\server_sar_base_tcp_x64.exe" />
     <Content Include="FodyWeavers.xml" />
     <None Include="Resources\stat.png" />
     <None Include="Resources\3dPlot.png" />

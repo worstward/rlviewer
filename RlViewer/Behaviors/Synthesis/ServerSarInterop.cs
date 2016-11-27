@@ -8,7 +8,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.IO.MemoryMappedFiles;
-
 using RlViewer.Behaviors.Converters;
 using RlViewer.Behaviors.Synthesis.ServerSarEmbedding;
 
@@ -46,6 +45,7 @@ namespace RlViewer.Behaviors.Synthesis
 
         private string _serverSarPath;
         private string _serverSarParams;
+        private string _serverSarSlaveDirectory = @"C:/vega/temp/obzor";
         private ServerSarTaskParams _sstp;
         private RliFileCreator _rliCreator;
         private bool _forcedSynthesis;
@@ -255,6 +255,12 @@ namespace RlViewer.Behaviors.Synthesis
                     }
                 }
             }
+
+            if (!Directory.Exists(_serverSarSlaveDirectory))
+            {
+                Directory.CreateDirectory(_serverSarSlaveDirectory);
+            }
+            
 
             InitSharedMemoryParts(memoryParts, sstpShMemName, errMesShMemName, dspShMemName, holShMemName, rliShMemName);
         }

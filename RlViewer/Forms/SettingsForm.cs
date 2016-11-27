@@ -354,7 +354,6 @@ namespace RlViewer.Forms
             _useEmbeddedServerSar = cbChecked;
             serverSarPathAreaGb.Visible = !cbChecked;
         }
-       
 
     }
 

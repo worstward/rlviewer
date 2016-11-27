@@ -9,7 +9,7 @@ using System.IO;
 namespace RlViewer.Settings
 {
     [DataContract]
-    public class AppSettings : XmlSerialized
+    public class AppSettings : XmlSerializable
     {
 
         protected override string SavingPath
