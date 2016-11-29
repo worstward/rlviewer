@@ -19,7 +19,7 @@ RlViewer is a tool designed specially for viewing, editing and synthesizing radi
 4. Image aligning (different algorithms depending on provided points amount and user input);
 5. Image saving;
 6. Coordinates recomputing;
-7. Searching point on image given local or geodesic coordinates;
+7. Searching point on image based on given local or geodesic coordinates;
 8. Ruler (distance in meters);
 9. Amplitude analyzer;
 10. Section tools;
