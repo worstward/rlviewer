@@ -61,10 +61,16 @@ namespace RlViewer.Forms
 
         private void FillDataGrid(string tileDir)
         {
+            if (!Directory.Exists(tileDir))
+            {
+                return;
+            }
+
             var currFileTilePath = _currFile == string.Empty ? string.Empty : Path.Combine(
                 Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "tiles",
                 Path.GetFileNameWithoutExtension(_currFile), Path.GetExtension(_currFile),
                 File.GetCreationTime(_currFile).ToFileTime().ToString());
+
 
             foreach (var fileNameDirectory in Directory.GetDirectories(tileDir))
             {

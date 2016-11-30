@@ -11,9 +11,9 @@ namespace RlViewer.Factories.TileCreator.Concrete
 {
     class Rl8TileCreatorFactory : TileCreatorFactory
     {
-        public override RlViewer.Behaviors.TileCreator.Abstract.ITileCreator Create(RlViewer.Files.LocatorFile locatorFile, Behaviors.TileCreator.TileOutputType type)
+        public override RlViewer.Behaviors.TileCreator.Abstract.ITileCreator Create(RlViewer.Files.LocatorFile locatorFile, Behaviors.TileCreator.TileOutputType type, int tileBorderLength)
         {
-            return new Rl8TileCreator(locatorFile, type);
+            return new Rl8TileCreator(locatorFile, type, tileBorderLength);
         }
 
     }

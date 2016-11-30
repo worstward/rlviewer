@@ -15,7 +15,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class Rl4TileCreator : TileCreator.Abstract.FloatSampleTileCreator
     {
-        public Rl4TileCreator(LocatorFile rli, TileOutputType type) : base(type)
+        public Rl4TileCreator(LocatorFile rli, TileOutputType type, int tileBorderLength)
+            : base(type, tileBorderLength)
         {
             _rli = rli;
         }

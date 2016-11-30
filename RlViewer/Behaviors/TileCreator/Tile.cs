@@ -13,7 +13,8 @@ namespace RlViewer.Behaviors.TileCreator
         {
             _filePath = filePath;
             _leftTopCoord = leftTopCoord;
-            _size = tileSize;
+            _width = tileSize.Width;
+            _height = tileSize.Height;
 
             if (_emptyTile == null)
             {
@@ -26,15 +27,31 @@ namespace RlViewer.Behaviors.TileCreator
         private string _filePath;
         public string FilePath
         {
-            get { return _filePath; }
+            get
+            { 
+                return _filePath;
+            }
         }
 
-        private Size _size;
-        public Size Size
+
+        private int _width;
+        public int Width
         {
-            get { return _size; }
+            get 
+            { 
+                return _width; 
+            }
         }
 
+        private int _height;
+        public int Height
+        {
+            get
+            {
+                return _height; 
+            }
+        }
+ 
         private Point _leftTopCoord;
         public Point LeftTopCoord
         {
@@ -49,8 +66,8 @@ namespace RlViewer.Behaviors.TileCreator
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
             //(b.x2 >= a.x1 && b.x1 <= a.x2) && (b.y2 >= a.y1 && b.y1 <= a.y2)
-            if ((leftTopPointOfView.X + screenWidth > _leftTopCoord.X)  && (leftTopPointOfView.X < _leftTopCoord.X + _size.Width) &&
-                (leftTopPointOfView.Y + screenHeight > _leftTopCoord.Y) && (leftTopPointOfView.Y < _leftTopCoord.Y + _size.Height))
+            if ((leftTopPointOfView.X + screenWidth > _leftTopCoord.X)  && (leftTopPointOfView.X < _leftTopCoord.X + Width) &&
+                (leftTopPointOfView.Y + screenHeight > _leftTopCoord.Y) && (leftTopPointOfView.Y < _leftTopCoord.Y + Height))
             {
                 return true;
             }
@@ -65,7 +82,7 @@ namespace RlViewer.Behaviors.TileCreator
         public byte[] ReadData()
         {
             byte[] tile;
-            if (System.IO.File.Exists(_filePath))
+            if (TileExists(_filePath))
             {
                 tile = System.IO.File.ReadAllBytes(_filePath);
             }
@@ -78,6 +95,16 @@ namespace RlViewer.Behaviors.TileCreator
             return tile;
         }
 
+
+
+        [System.Runtime.InteropServices.DllImport("Shlwapi.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private extern static bool PathFileExists(StringBuilder filePath);
+
+        private bool TileExists(string filePath)
+        {
+            var stringBuilder = new StringBuilder(filePath);
+            return PathFileExists(stringBuilder);
+        }
 
     }
 }

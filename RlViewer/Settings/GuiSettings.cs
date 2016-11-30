@@ -212,6 +212,21 @@ namespace RlViewer.Settings
         }
 
 
+        private List<int> _memoryChunksCountValues = new List<int>()
+        {
+            1,
+            2
+        };
+
+        [DataMember(IsRequired = true)]
+        public List<int> MemoryChunksCountValues
+        {
+            get { return _memoryChunksCountValues; }
+            set { _memoryChunksCountValues = value; }
+        }
+
+
+
         private int _recentFilesToDisplay = 5;
 
         [DataMember(IsRequired = true)]
@@ -222,6 +237,16 @@ namespace RlViewer.Settings
             {
                 _recentFilesToDisplay = value > 20 || value < 0 ? 5 : value; 
             }
+        }
+
+
+        private float _dragAccelerator = 2;
+
+        [DataMember(IsRequired = true)]
+        public float DragAccelerator
+        {
+            get { return _dragAccelerator; }
+            set { _dragAccelerator = value; }
         }
 
     }

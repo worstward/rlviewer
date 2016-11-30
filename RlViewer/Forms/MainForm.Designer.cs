@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -43,6 +41,8 @@
             this.создатьОтчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.вшитьНавигациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.совместитьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.выходToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оФайлеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,7 +61,6 @@
             this.naviSplitter = new System.Windows.Forms.SplitContainer();
             this.filterSplitter = new System.Windows.Forms.SplitContainer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.navigationDgv = new System.Windows.Forms.DataGridView();
             this.paramNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.paramValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -95,8 +94,6 @@
             this.squareAreaRb = new System.Windows.Forms.RadioButton();
             this.distanceLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
             this.statusLabel = new RlViewer.Forms.BindableToolStripStatusLabel();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.выходToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filterTrackBar)).BeginInit();
@@ -109,7 +106,6 @@
             this.filterSplitter.Panel2.SuspendLayout();
             this.filterSplitter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.navigationDgv)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -203,6 +199,19 @@
             this.совместитьФайлыToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.совместитьФайлыToolStripMenuItem.Text = "Совместить файлы";
             this.совместитьФайлыToolStripMenuItem.Click += new System.EventHandler(this.совместитьФайлыToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
+            // 
+            // выходToolStripMenuItem
+            // 
+            this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
+            this.выходToolStripMenuItem.ShortcutKeyDisplayString = "Alt + F4";
+            this.выходToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.выходToolStripMenuItem.Text = "Выход";
+            this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -410,11 +419,10 @@
             // 
             // filterSplitter.Panel2
             // 
-            this.filterSplitter.Panel2.Controls.Add(this.chart1);
             this.filterSplitter.Panel2.Controls.Add(this.groupBox2);
             this.filterSplitter.Panel2Collapsed = true;
             this.filterSplitter.Size = new System.Drawing.Size(872, 519);
-            this.filterSplitter.SplitterDistance = 359;
+            this.filterSplitter.SplitterDistance = 353;
             this.filterSplitter.SplitterWidth = 6;
             this.filterSplitter.TabIndex = 0;
             this.filterSplitter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -435,23 +443,6 @@
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
-            // 
-            // chart1
-            // 
-            this.chart1.BackColor = System.Drawing.Color.Transparent;
-            this.chart1.BackSecondaryColor = System.Drawing.Color.Transparent;
-            this.chart1.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            this.chart1.Location = new System.Drawing.Point(358, 3);
-            this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.IsVisibleInLegend = false;
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(298, 98);
-            this.chart1.TabIndex = 10;
-            this.chart1.Text = "chart1";
             // 
             // navigationDgv
             // 
@@ -915,25 +906,12 @@
             // distanceLabel
             // 
             this.distanceLabel.Name = "distanceLabel";
-            this.distanceLabel.Size = new System.Drawing.Size(0, 17);
+            this.distanceLabel.Size = new System.Drawing.Size(0, 0);
             // 
             // statusLabel
             // 
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 17);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(225, 6);
-            // 
-            // выходToolStripMenuItem
-            // 
-            this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
-            this.выходToolStripMenuItem.ShortcutKeyDisplayString = "Alt + F4";
-            this.выходToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.выходToolStripMenuItem.Text = "Выход";
-            this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
+            this.statusLabel.Size = new System.Drawing.Size(0, 0);
             // 
             // MainForm
             // 
@@ -973,7 +951,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.filterSplitter)).EndInit();
             this.filterSplitter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.navigationDgv)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
@@ -1027,7 +1004,6 @@
         private System.Windows.Forms.Button findPointBtn;
         private System.Windows.Forms.SplitContainer filterSplitter;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.CheckBox filterPanelCb;
         private System.Windows.Forms.RadioButton linearSectionRb;
         private System.Windows.Forms.Button zoomInBtn;

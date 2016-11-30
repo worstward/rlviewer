@@ -113,7 +113,6 @@ namespace RlViewer.UI
         private ToolTip _toolTip = new ToolTip();
         private Action<Action> _synchronizer;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event EventHandler<Image> ImageDrawn = delegate { };
         public event EventHandler PointOfViewMaxChanged = delegate { };
         public event EventHandler<Events.ProgressControlsVisibilityEventArgs> ProgressVisibilityChanged = delegate { };
@@ -575,14 +574,16 @@ namespace RlViewer.UI
 
             try
             {
+                var cancellableCreator = ((WorkerEventController)_creator);
+                cancellableCreator.Cancelled = false;
+
                 if (parameters.OutputType != Behaviors.TileCreator.TileOutputType.Linear)
-                {
-                    var cancellableCreator = ((WorkerEventController)_creator);
-                    cancellableCreator.Cancelled = false;
+                {                 
                     _cancellableAction = cancellableCreator;
                     maxSampleValue = _creator.MaxValue;
                 }
 
+                _cancellableAction = _saver;
                 _saver.Save(parameters, _creator.NormalizationFactor, maxSampleValue);
             }
             catch (OperationCanceledException)
@@ -751,9 +752,9 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm);
+            _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm, _settings.TileBorderLength);
 
-            ((WorkerEventController)_creator).Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent)); ;
+            ((WorkerEventController)_creator).Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
             ((WorkerEventController)_creator).ReportName += (s, tne) =>
                 CurrentTaskName = tne.Name;
@@ -994,7 +995,12 @@ namespace RlViewer.UI
         private void loaderWorker_synthesizeImage(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             var synthesisWorkerParams = (Behaviors.Synthesis.SynthesisWorkerParams)e.Argument;
-            _creator = Factories.TileCreator.Abstract.TileCreatorFactory.GetFactory(_file).Create(_file, Behaviors.TileCreator.TileOutputType.Linear);
+            
+
+            var frameHeight = _synthesisInterop.Sstp.Mshift / _synthesisInterop.Sstp.Mscale;
+            var synthesisOutputTileSize =  (int)(frameHeight < _settings.TileBorderLength ? frameHeight : _settings.TileBorderLength);
+
+            _creator = Factories.TileCreator.Abstract.TileCreatorFactory.GetFactory(_file).Create(_file, Behaviors.TileCreator.TileOutputType.Linear, synthesisOutputTileSize);
 
 
             if (_synthesisInterop != null)
@@ -1008,22 +1014,28 @@ namespace RlViewer.UI
 
                         if (exitCode != -1)
                         {
-                            ErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка синтеза"));
+                            ErrorOccured(this, new Events.ErrorOccuredEventArgs("Ошибка синтеза"));                         
+                        }
+
+                        if (_synthesisInterop != null)
+                        {
                             _synthesisInterop.Dispose();
                         }
+
                         _synchronizer.Invoke(() => ProgressVisibilityChanged(this, new Events.ProgressControlsVisibilityEventArgs(false)));
+
                     };
 
-                _synthesisInterop.FrameAdded += (s, frameHeight) =>
+                _synthesisInterop.FrameAdded += (s, addedFrameHeight) =>
                 {
 
-                    _file.SetHeight(_file.Height + frameHeight);
+                    _file.SetHeight(_file.Height + addedFrameHeight);
                     XPointOfViewMax = (int)(_file.Width / ScaleFactor);
                     YPointOfViewMax = (int)(_file.Height / ScaleFactor);
 
                     Task.Run(() =>
                         {
-                            _tiles = _creator.GetTiles(_file.Properties.FilePath, allowScrolling: true, synthesis: true, startingLine: _file.Height - frameHeight);
+                            _tiles = _creator.GetTiles(_file.Properties.FilePath, allowScrolling: true, synthesis: true, startingLine: _file.Height - addedFrameHeight);
                         }).ContinueWith((result) =>
                             {
                                 InitDrawing();
@@ -1436,6 +1448,10 @@ namespace RlViewer.UI
         public void ResetFilter()
         {
             _filterProxy.ResetFilters();
+            if (_drawer != null)
+            {
+                ImageDrawn(null, _drawer.RedrawImage());
+            }
         }
 
         #endregion
@@ -1677,8 +1693,8 @@ namespace RlViewer.UI
 
             if (dragged)
             {
-                var newHor = XPointOfView - _drag.Delta.X * _settings.DragAccelerator;
-                var newVert = YPointOfView - _drag.Delta.Y * _settings.DragAccelerator;
+                var newHor = XPointOfView - (int)(_drag.Delta.X * _guiSettings.DragAccelerator);
+                var newVert = YPointOfView - (int)(_drag.Delta.Y * _guiSettings.DragAccelerator);
 
                 newVert = newVert < 0 ? 0 : newVert;
                 newVert = newVert > YPointOfViewMax ? YPointOfViewMax : newVert;
@@ -1919,11 +1935,6 @@ namespace RlViewer.UI
             GC.SuppressFinalize(this);
             KillChildProcesses(Process.GetCurrentProcess().Id);
         }
-
-
-
-
-
 
 
         protected virtual void Dispose(bool disposing)

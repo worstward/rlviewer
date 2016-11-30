@@ -12,6 +12,9 @@ namespace RlViewer.Settings
     public class AppSettings : XmlSerializable
     {
 
+
+
+
         protected override string SavingPath
         {
             get
@@ -271,15 +274,6 @@ namespace RlViewer.Settings
             }
         }
 
-        private int _dragAccelerator = 2;
-
-        [DataMember(IsRequired = true)]
-        public int DragAccelerator
-        {
-            get { return _dragAccelerator; }
-            set { _dragAccelerator = value; }
-        }
-
         private bool _forceImageHeightAdjusting = false;
 
         [DataMember(IsRequired = true)]
@@ -288,6 +282,23 @@ namespace RlViewer.Settings
             get { return _forceImageHeightAdjusting; }
             set { _forceImageHeightAdjusting = value; }
         }
+
+
+        private int _tileBorderLength = 1024;
+
+        [DataMember(IsRequired = true)]
+        public int TileBorderLength
+        {
+            get
+            {
+                return _tileBorderLength;
+            }
+            set
+            {
+                _tileBorderLength = value;
+            }
+        }
+
 
         private string _serverSarPath = @"server_sar_base_tcp_x64.exe";
 

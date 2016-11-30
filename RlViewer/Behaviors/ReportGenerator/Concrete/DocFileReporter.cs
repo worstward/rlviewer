@@ -78,7 +78,7 @@ namespace RlViewer.Behaviors.ReportGenerator.Concrete
 
             if (reporterSettings.AddArea)
             {
-                p.Append(string.Format("Площадь засвеченной поверхности: {0}км2",
+                p.Append(string.Format("Площадь засвеченной поверхности: {0} км2",
                 (Factories.AreaSizeCalc.Abstract.AreaSizeCalcFactory.GetFactory(file
                 .Properties).Create(file.Header).CalculateArea(file.Width, file.Height) / 1000 / 1000)
                 .ToString(".################################")))

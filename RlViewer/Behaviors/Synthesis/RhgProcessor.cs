@@ -55,8 +55,6 @@ namespace RlViewer.Behaviors.Synthesis
         }
 
 
-
-
         public T[] ReadRhgToStream(long blockReaderPosition, Stream hologramWriter, int skippedLines = 0)
         {
 

@@ -12,7 +12,7 @@ namespace RlViewer.Behaviors.AreaSizeCalculator.Concrete
         {
             var fileHead = header as Headers.Concrete.R.RHeader;
             _dx = fileHead.HeaderStruct.synthesisHeader.dx;
-            _dy = fileHead.HeaderStruct.synthesisHeader.dy;
+            _dy = fileHead.HeaderStruct.synthesisHeader.dy * fileHead.HeaderStruct.synthesisHeader.MScale;
         }
 
 

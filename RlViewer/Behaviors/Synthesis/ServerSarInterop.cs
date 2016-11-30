@@ -18,12 +18,13 @@ namespace RlViewer.Behaviors.Synthesis
         public ServerSarInterop(string serverSarPath, string serverSarParams, ServerSarTaskParams sstp,
             Settings.SynthesisSettings synthSettings, RliFileCreator rliCreator, ServerSarEmbeddingProcessor embedder, bool useEmbeddedServerSar, bool forcedSynthesis)
         {
+            
             _serverSarPath = serverSarPath;
             _serverSarParams = serverSarParams;
             _sstp = sstp;
             _rliCreator = rliCreator;
             _forcedSynthesis = forcedSynthesis;
-            _events = new SystemEvents.SystemEvents(synthSettings.WaitTimeOut);
+            _events = new SystemEvents.SystemEvents(synthSettings.WaitTimeOut, sstp.RGG_RLI_DSP_numbers);
             _memoryParts = sstp.RGG_RLI_DSP_numbers;
             _embedder = embedder;
             _useEmbeddedServerSar = useEmbeddedServerSar;
@@ -32,7 +33,7 @@ namespace RlViewer.Behaviors.Synthesis
                 synthSettings.ErrorSharedMemoryNameTemplate, synthSettings.DspSharedMemoryNameTemplate,
                 synthSettings.HologramSharedMemoryNameTemplate, synthSettings.RliSharedMemoryNameTemplate);
 
-            
+
         }
 
         public event EventHandler<int> ServerSarExited = delegate { };
@@ -82,7 +83,7 @@ namespace RlViewer.Behaviors.Synthesis
 
             var sstpBytes = RlViewer.Behaviors.Converters.StructIO.WriteStruct<RlViewer.Behaviors.Synthesis.ServerSarTaskParams>(_sstp);
             _sstpSharedMemoryStream.Write(sstpBytes, 0, sstpBytes.Length);
-     
+
             StartServerSar(showServerSar);
             _events.SstpReady();
 
@@ -93,7 +94,6 @@ namespace RlViewer.Behaviors.Synthesis
             for (int i = 0; i < _memoryParts; i++)
             {
                 _rhgProcessors[i] = new RhgProcessor<Headers.Concrete.K.KStrHeaderStruct>(rhgSeries, _sstp.Nlength * sizeof(short) * 2, _sstp.Mlength, _memoryParts);
-                _events.SharedRhgMemoryFree(i);
             }
 
             Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Using {0} memory parts", _memoryParts));
@@ -106,10 +106,9 @@ namespace RlViewer.Behaviors.Synthesis
 
         private void ReadRhgSeriesAsync(Files.Rhg.Abstract.RhgFile[] rhgSeries)
         {
-            var blockSize = (_sstp.Nlength * (long)sizeof(short) * 2 + rhgSeries[0].Header.StrHeaderLength) * _sstp.Mlength;
+
             long rhgSeriesLength = rhgSeries.Sum(x => x.Properties.Length);
             var readerShift = (long)(_sstp.Mlength - _sstp.Mshift) * (rhgSeries[0].Header.StrHeaderLength + _sstp.Nlength * sizeof(short) * 2);
-
             bool lastFrame = true;
 
             Task.Run(() =>
@@ -125,28 +124,31 @@ namespace RlViewer.Behaviors.Synthesis
                 {
                     index = counter % _memoryParts;
 
-                    _events.WaitSharedRhgMemoryFree(index);
-                    Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Reading data to {0} shared memory", index));
+
+                    Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Waiting for {0} rhg memory", index));
+
+                    _events.WaitFreeMemoryPart();
+
+                    Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("{0} rhg memory is free", index));
 
                     Array.Clear(_kHeaders[index], 0, _kHeaders[index].Length);
 
                     _kHeaders[index] = _rhgProcessors[index].ReadRhgToStream(rhgReaderPosition, _holSharedMemoryStream[index], skippedLines);
                     _events.HologramReady(index);
 
-                    if (counter == 0)
+                    rhgReaderPosition += (_sstp.Mlength - skippedLines) * (_sstp.Nlength * (long)sizeof(short) * 2 + rhgSeries[0].Header.StrHeaderLength);
+
+                    if (skippedLines > 0)
                     {
-                        rhgReaderPosition += (_sstp.Mlength - skippedLines) * (_sstp.Nlength * (long)sizeof(short) * 2 + rhgSeries[0].Header.StrHeaderLength);
-                    }
-                    else
-                    {
-                        rhgReaderPosition += blockSize;
+                        skippedLines -= _sstp.Mshift;
+                        skippedLines = skippedLines < 0 ? 0 : skippedLines;
                     }
 
-                    skippedLines = 0;
                     counter++;
                     if (rhgReaderPosition < rhgSeriesLength)
                     {
                         rhgReaderPosition -= readerShift;
+                        rhgReaderPosition = rhgReaderPosition < 0 ? 0 : rhgReaderPosition;
                     }
 
                     if (rhgReaderPosition > rhgSeriesLength && lastFrame)
@@ -156,6 +158,7 @@ namespace RlViewer.Behaviors.Synthesis
                     }
                 }
             });
+
         }
 
         private void WriteSynthesizedRli(Files.Rhg.Abstract.RhgFile[] rhgSeries, Files.LocatorFile rli)
@@ -169,7 +172,6 @@ namespace RlViewer.Behaviors.Synthesis
             var errorProcessor = new ErrorProcessor();
             var rliProcessor = new RliProcessor<Headers.Concrete.Rl4.Rl4StrHeaderStruct>(rli.Properties.FilePath, totalRliLines);
 
-
             for (int j = 0; j < totalFrames; j++)
             {
                 int usedSharedMemoryIndex = j % _memoryParts;
@@ -178,9 +180,8 @@ namespace RlViewer.Behaviors.Synthesis
                 _errorSharedMemoryStream[usedSharedMemoryIndex].Position = 0;
 
                 _events.WaitRliReady(usedSharedMemoryIndex);
-                Logging.Logger.Log(Logging.SeverityGrades.Internal, string.Format("Processing {0} rli", usedSharedMemoryIndex));
+                _events.ReleaseMemoryPart();
 
-                _events.SharedRhgMemoryFree(usedSharedMemoryIndex);
                 errorProcessor.LogErrors(_errorSharedMemoryStream[usedSharedMemoryIndex]);
 
                 if (_sstp.AF_Do_Y_N)
@@ -260,7 +261,7 @@ namespace RlViewer.Behaviors.Synthesis
             {
                 Directory.CreateDirectory(_serverSarSlaveDirectory);
             }
-            
+
 
             InitSharedMemoryParts(memoryParts, sstpShMemName, errMesShMemName, dspShMemName, holShMemName, rliShMemName);
         }

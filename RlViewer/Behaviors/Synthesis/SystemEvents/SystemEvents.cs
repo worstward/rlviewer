@@ -8,12 +8,15 @@ namespace RlViewer.Behaviors.Synthesis.SystemEvents
 {
     public class SystemEvents
     {
-        public SystemEvents(int timeOut)
+        public SystemEvents(int timeOut, int memoryParts)
         {
             _timeOut = timeOut;
+            _semaphore = new System.Threading.Semaphore(memoryParts, memoryParts);
         }
 
         private int _timeOut;
+        private System.Threading.Semaphore _semaphore;
+
 
         public void SstpReady()
         {
@@ -31,32 +34,16 @@ namespace RlViewer.Behaviors.Synthesis.SystemEvents
             WaitEvent(string.Format("Rli_Ready_{0}", sharedMemoryNum));
         }
 
-        public void WaitHologramReady(int sharedMemoryNum)
+
+        public void WaitFreeMemoryPart()
         {
-            WaitEvent(string.Format("Hol_Ready_{0}", sharedMemoryNum));
+            _semaphore.WaitOne();
         }
 
-        public void WaitRhgReading(int sharedMemoryNum)
+        public void ReleaseMemoryPart()
         {
-            WaitEvent(string.Format("ReadRhg", sharedMemoryNum));
+            _semaphore.Release();
         }
-
-        public void RhgReading(int sharedMemoryNum)
-        {
-            FireEvent(string.Format("ReadRhg", sharedMemoryNum));
-        }
-
-        public void WaitSharedRhgMemoryFree(int sharedMemoryNum)
-        {
-            WaitEvent(string.Format("SharedMemoryFree", sharedMemoryNum));
-        }
-
-
-        public void SharedRhgMemoryFree(int sharedMemoryNum)
-        {
-            FireEvent(string.Format("SharedMemoryFree", sharedMemoryNum));
-        }
-
 
 
         private void WaitEvent(string eventName)

@@ -14,8 +14,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class ShortSampleTileCreator : TileCreator<short>
     {
-        public ShortSampleTileCreator(TileOutputType type)
-            : base(type)
+        public ShortSampleTileCreator(TileOutputType type, int tileBorderLength)
+            : base(type, tileBorderLength)
         { }
 
         protected abstract override short[] GetSampleData(byte[] sourceBytes);

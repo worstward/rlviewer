@@ -14,7 +14,8 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class FloatSampleTileCreator : TileCreator<float>
     {
-        public FloatSampleTileCreator(TileOutputType type) : base(type)
+        public FloatSampleTileCreator(TileOutputType type, int tileBorderLength)
+            : base(type, tileBorderLength)
         { }
 
         protected abstract override float[] GetSampleData(byte[] sourceBytes);

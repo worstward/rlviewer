@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.Devices;
 
 namespace RlViewer.Forms
 {
@@ -59,7 +60,7 @@ namespace RlViewer.Forms
             pNLengthCb.DataSource = guiSettings.PNLengthValues;
             minDopplerCb.DataSource = guiSettings.MinDopplerFilterValues;
             maxDopplerCb.DataSource = guiSettings.MaxDopplerFilterValues;
-            memoryChunksCountCb.DataSource = synthesisSettings.MemoryChunksCountValues;
+            memoryChunksCountCb.DataSource = guiSettings.MemoryChunksCountValues;
 
             frameAzimuthCoefCb.SelectedItem = synthesisSettings.FrameAzimuthCompressionCoef;
             frameRangeCoefCb.SelectedItem = synthesisSettings.FrameRangeCompressionCoef;
@@ -167,11 +168,39 @@ namespace RlViewer.Forms
                 return;
             }
 
+            if (CanAllocateEnoughMemory(_synthesisSettings, _rhg.Width))
+            {
+                if (MessageBox.Show("Слишком большой объем выделяемой памяти. Возможны перебои в работе аппаратуры. Продолжить?",
+                    "Предупреждение", MessageBoxButtons.YesNo) != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return;
+                }              
+            }
+
 
             _synthesisSettings.ToXml<RlViewer.Settings.SynthesisSettings>();
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
+
+        private bool CanAllocateEnoughMemory(RlViewer.Settings.SynthesisSettings synthesisSettings, int rangeSamples)
+        {
+            var hologramSharedMemorySize = (long)synthesisSettings.BlockAzimuthSize * rangeSamples * sizeof(float) * 2;
+            var rliSharedMemorySize = (long)(synthesisSettings.FrameAzimuthSize / synthesisSettings.FrameAzimuthCompressionCoef)
+                * (long)(rangeSamples / synthesisSettings.FrameRangeCompressionCoef) * sizeof(float);
+
+            var requiredMemory = (ulong)((hologramSharedMemorySize + rliSharedMemorySize) * synthesisSettings.MemoryChunksCount);
+
+            var info = new Microsoft.VisualBasic.Devices.ComputerInfo();
+
+            if (requiredMemory > info.AvailablePhysicalMemory * 0.75f)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
 
         public Behaviors.Synthesis.ServerSarTaskParams GenerateSstp(int currentBlock, int rangeShift, int azimuthShift)

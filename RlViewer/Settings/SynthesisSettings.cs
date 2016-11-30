@@ -88,20 +88,8 @@ namespace RlViewer.Settings
             set { _memoryChunksCount = value; }
         }
 
-        private List<int> _memoryChunksCountValues = new List<int>()
-        {
-            1,
-            2
-        };
 
-        [DataMember(IsRequired = true)]
-        public List<int> MemoryChunksCountValues
-        {
-            get { return _memoryChunksCountValues; }
-            set { _memoryChunksCountValues = value; }
-        }
-
-        private int _waitTimeOut = 100000;
+        private int _waitTimeOut = 1000000;
 
         [DataMember(IsRequired = true)]
         public int WaitTimeOut
@@ -259,5 +247,6 @@ namespace RlViewer.Settings
         }
 
         #endregion
+
     }
 }

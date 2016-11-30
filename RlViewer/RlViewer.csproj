@@ -184,19 +184,12 @@
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl4CornerCoord.cs" />
     <Compile Include="Behaviors\ReportGenerator\CornerCoord\Concrete\Rl8CornerCoord.cs" />
     <Compile Include="Behaviors\Synthesis\ErrorProcessor.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Abstract\SynthesisSourceKRhg.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FirstFrequencyRangeHologram.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\FourthFrequencyRangeHologram.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\UnknownFrequencyRangeHologram.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\SecondFrequencyRangeHologram.cs" />
-    <Compile Include="Behaviors\Synthesis\Hologram\Concrete\ThirdFrequncyRangeHologram.cs" />
     <Compile Include="Behaviors\Synthesis\RhgProcessor.cs" />
     <Compile Include="Behaviors\Synthesis\RliFileCreator.cs" />
     <Compile Include="Behaviors\Synthesis\RliProcessor.cs" />
     <Compile Include="Behaviors\Synthesis\ServerSarEmbedding\ServerSarEmbedder.cs" />
     <Compile Include="Behaviors\Synthesis\ServerSarErrorMessage.cs" />
     <Compile Include="Behaviors\Synthesis\SynthesisWorkerParams.cs" />
-    <Compile Include="Factories\SynthesisSourceRhg\SynthesisSourceRhgFactory.cs" />
     <Compile Include="Headers\Abstract\IHeaderStruct.cs" />
     <Compile Include="Headers\Abstract\IStrHeader.cs" />
     <Compile Include="Logging\LogType.cs" />
@@ -213,7 +206,6 @@
     <Compile Include="Behaviors\Saving\SaverParams.cs" />
     <Compile Include="Behaviors\Sections\Concrete\LinearSection.cs" />
     <Compile Include="Behaviors\Synthesis\ServerSarInterop.cs" />
-    <Compile Include="Behaviors\Synthesis\SharedMemory\MappedFile.cs" />
     <Compile Include="Behaviors\Synthesis\ServerSarTaskParams.cs" />
     <Compile Include="Behaviors\Synthesis\SystemEvents\SystemEvents.cs" />
     <Compile Include="Behaviors\TileCreator\Abstract\ITileCreator.cs" />
@@ -308,9 +300,6 @@
     </Compile>
     <Compile Include="Forms\AggregatorOrderForm.Designer.cs">
       <DependentUpon>AggregatorOrderForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\BindableToolStripProgressBar.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\BindableToolStripLabel.cs">
       <SubType>Component</SubType>

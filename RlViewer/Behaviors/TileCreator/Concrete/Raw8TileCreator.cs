@@ -17,8 +17,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class Raw8TileCreator : Rl8TileCreator
     {
-        public Raw8TileCreator(LocatorFile rli, TileOutputType type)
-            : base(rli, type)
+        public Raw8TileCreator(LocatorFile rli, TileOutputType type, int tileBorderLength)
+            : base(rli, type, tileBorderLength)
         {
             _rli = rli;
         }

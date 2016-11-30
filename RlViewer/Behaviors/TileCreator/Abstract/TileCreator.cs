@@ -14,18 +14,17 @@ namespace RlViewer.Behaviors.TileCreator.Abstract
 {
     public abstract class TileCreator<T> : WorkerEventController, ITileCreator
     {
-        public TileCreator(TileOutputType type)
+        public TileCreator(TileOutputType type, int tileBorderLength)
         {
             OutputType = type;
+            TileSize = new Size(tileBorderLength, tileBorderLength);
         }
 
-        private System.Drawing.Size _tileSize = new System.Drawing.Size(1024, 1024);
+
         protected System.Drawing.Size TileSize
         {
-            get
-            {
-                return _tileSize;
-            }
+            get;
+            private set;
         }
 
 
