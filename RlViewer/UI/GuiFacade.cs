@@ -752,7 +752,7 @@ namespace RlViewer.UI
 
         private void loaderWorker_CreateTiles(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm, _settings.TileBorderLength);
+            _creator = TileCreatorFactory.GetFactory(_file).Create(_file as RlViewer.Files.LocatorFile, _settings.TileOutputAlgorithm, _settings.TileSize);
 
             ((WorkerEventController)_creator).Report += (s, pe) => ProgressChanged(this, new Events.ProgressChangedEventArgs(pe.Percent));
             ((WorkerEventController)_creator).CancelJob += (s, ce) => ce.Cancel = ((WorkerEventController)_creator).Cancelled;
@@ -998,7 +998,8 @@ namespace RlViewer.UI
             
 
             var frameHeight = _synthesisInterop.Sstp.Mshift / _synthesisInterop.Sstp.Mscale;
-            var synthesisOutputTileSize =  (int)(frameHeight < _settings.TileBorderLength ? frameHeight : _settings.TileBorderLength);
+            var synthesisOutputTileHeight =  (int)(frameHeight < _settings.TileSize.Height ? frameHeight : _settings.TileSize.Height);
+            var synthesisOutputTileSize = new System.Drawing.Size(_settings.TileSize.Width, synthesisOutputTileHeight);
 
             _creator = Factories.TileCreator.Abstract.TileCreatorFactory.GetFactory(_file).Create(_file, Behaviors.TileCreator.TileOutputType.Linear, synthesisOutputTileSize);
 
@@ -1152,7 +1153,7 @@ namespace RlViewer.UI
 
             if (CanvasSize.Width != 0 && CanvasSize.Height != 0 && _tiles != null && _file != null)
             {
-                var tDrawer = new Behaviors.Draw.TileDrawer(_filterProxy.Filter, _scaler);
+                var tDrawer = new Behaviors.Draw.TileDrawer(_filterProxy.Filter, _scaler, _settings.TileSize.Width, _settings.TileSize.Height);
                 var iDrawer = new Behaviors.Draw.ItemDrawer(_pointSelector, _areaSelector, _scaler, _areaAligningWrapper);
                 _drawer = new RlViewer.Behaviors.Draw.DrawerFacade(CanvasSize, iDrawer, tDrawer);
 

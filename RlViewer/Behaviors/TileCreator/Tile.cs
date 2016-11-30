@@ -33,25 +33,10 @@ namespace RlViewer.Behaviors.TileCreator
             }
         }
 
-
         private int _width;
-        public int Width
-        {
-            get 
-            { 
-                return _width; 
-            }
-        }
 
         private int _height;
-        public int Height
-        {
-            get
-            {
-                return _height; 
-            }
-        }
- 
+
         private Point _leftTopCoord;
         public Point LeftTopCoord
         {
@@ -66,8 +51,8 @@ namespace RlViewer.Behaviors.TileCreator
         private bool CheckIntersection(PointF leftTopPointOfView, int screenWidth, int screenHeight)
         {
             //(b.x2 >= a.x1 && b.x1 <= a.x2) && (b.y2 >= a.y1 && b.y1 <= a.y2)
-            if ((leftTopPointOfView.X + screenWidth > _leftTopCoord.X)  && (leftTopPointOfView.X < _leftTopCoord.X + Width) &&
-                (leftTopPointOfView.Y + screenHeight > _leftTopCoord.Y) && (leftTopPointOfView.Y < _leftTopCoord.Y + Height))
+            if ((leftTopPointOfView.X + screenWidth > _leftTopCoord.X)  && (leftTopPointOfView.X < _leftTopCoord.X + _width) &&
+                (leftTopPointOfView.Y + screenHeight > _leftTopCoord.Y) && (leftTopPointOfView.Y < _leftTopCoord.Y + _height))
             {
                 return true;
             }

@@ -22,14 +22,17 @@ namespace RlViewer.Behaviors.Draw
     public class TileDrawer : ImageDrawer
     {
         public TileDrawer(RlViewer.Behaviors.Filters.Abstract.ImageFiltering filter,
-            RlViewer.Behaviors.Scaling.Scaler scaler) : base(scaler)
+            RlViewer.Behaviors.Scaling.Scaler scaler, int tileWidth, int tileHeight) : base(scaler)
         {
             _filter = filter;
+            _tileWidth = tileWidth;
+            _tileHeight = tileHeight;
         }
 
         private RlViewer.Behaviors.Filters.Abstract.ImageFiltering _filter;
         private IEnumerable<TileRawWrapper> _wrappers;
-
+        private int _tileWidth;
+        private int _tileHeight;
 
         /// <summary>
         /// Creates image from visible parts of tiles
@@ -174,9 +177,6 @@ namespace RlViewer.Behaviors.Draw
             int scalePower = (int)Math.Log(scale, 2);
             
             BlockingCollection<TileRawWrapper> tileImgWrappers = new BlockingCollection<TileRawWrapper>();
-            
-            var tileWidth = tiles.First().Width;
-            var tileHeight = tiles.First().Height;
 
             Parallel.ForEach(visibleTiles, tile =>
             {
@@ -186,9 +186,9 @@ namespace RlViewer.Behaviors.Draw
                 //scale by averaging nearby pixels
                 int index = 0;
 
-                for (int i = 0; i < tileHeight * tileWidth - tileWidth; i += scale * tileWidth)
+                for (int i = 0; i < _tileHeight * _tileWidth - _tileWidth; i += scale * _tileWidth)
                 {
-                    for (int j = i; j < i + tileWidth; j += scale)
+                    for (int j = i; j < i + _tileWidth; j += scale)
                     {
                         if (highRes)
                         {
@@ -210,8 +210,8 @@ namespace RlViewer.Behaviors.Draw
 
                 var tw = new TileRawWrapper(sievedImage,
                     (int)((tile.LeftTopCoord.X - leftTopPointOfView.X) >> scalePower),
-                    (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) >> scalePower), 
-                    tileWidth >> scalePower, tileHeight >> scalePower);
+                    (int)((tile.LeftTopCoord.Y - leftTopPointOfView.Y) >> scalePower),
+                    _tileWidth >> scalePower, _tileHeight >> scalePower);
 
                 tileImgWrappers.Add(tw);
             });
@@ -239,10 +239,6 @@ namespace RlViewer.Behaviors.Draw
             Size cropS = new Size();
             Tile leftTopTile = default(Tile);
 
-            var tileWidth = tiles.First().Width;
-            var tileHeight = tiles.First().Height;
-
-
             foreach(var tile in visibleTiles)
             {
                 //stores relative offset by X for visible part from the beginning of the current tile
@@ -254,8 +250,8 @@ namespace RlViewer.Behaviors.Draw
                 shiftTileY = shiftTileY < 0 ? 0 : shiftTileY;
 
                 //if not all scaled tile is visible we only take the visible part.
-                int croppedWidth = tileWidth - shiftTileX >= scaledScreenX ? scaledScreenX : tileWidth - shiftTileX;
-                int croppedHeight = tileHeight - shiftTileY >= scaledScreenY ? scaledScreenY : tileHeight - shiftTileY;
+                int croppedWidth = _tileWidth - shiftTileX >= scaledScreenX ? scaledScreenX : _tileWidth - shiftTileX;
+                int croppedHeight = _tileHeight - shiftTileY >= scaledScreenY ? scaledScreenY : _tileHeight - shiftTileY;
 
                 var resizedW = (int)(croppedWidth * Scaler.ScaleFactor);
                 var resizedH = (int)(croppedHeight * Scaler.ScaleFactor);
@@ -277,14 +273,14 @@ namespace RlViewer.Behaviors.Draw
 
                 //see pointToDraw description                    
                 int x = tile.LeftTopCoord.X <= leftTopPointOfView.X ? 0 : cropS.Width +
-                    ((tile.LeftTopCoord.X - leftTopTile.LeftTopCoord.X) / tileWidth - 1) * tileWidth * (int)Scaler.ScaleFactor;
+                    ((tile.LeftTopCoord.X - leftTopTile.LeftTopCoord.X) / _tileWidth - 1) * _tileWidth * (int)Scaler.ScaleFactor;
                 int y = tile.LeftTopCoord.Y <= leftTopPointOfView.Y ? 0 : cropS.Height +
-                    ((tile.LeftTopCoord.Y - leftTopTile.LeftTopCoord.Y) / tileHeight - 1) * tileHeight * (int)Scaler.ScaleFactor;
+                    ((tile.LeftTopCoord.Y - leftTopTile.LeftTopCoord.Y) / _tileHeight - 1) * _tileHeight * (int)Scaler.ScaleFactor;
 
 
                 byte[] imgData = tile.ReadData();
 
-                byte[] cropped = DrawingHelper.Crop(imgData, tileWidth, shiftTileX, shiftTileY, croppedWidth, croppedHeight);
+                byte[] cropped = DrawingHelper.Crop(imgData, _tileWidth, shiftTileX, shiftTileY, croppedWidth, croppedHeight);
 
                 byte[] resized = DrawingHelper.Resize(cropped, croppedWidth, resizedW, resizedH, Scaler.ScaleFactor);
 
@@ -310,16 +306,12 @@ namespace RlViewer.Behaviors.Draw
                 screenSize.Width, screenSize.Height));
             var tileImgWrappers = new List<TileRawWrapper>();
 
-            var tileWidth = tiles.First().Width;
-            var tileHeight = tiles.First().Height;
-
-
             foreach(var tile in visibleTiles)
             {
                 var tileBytes = tile.ReadData();
                 int xToScreen = tile.LeftTopCoord.X - leftTopPointOfView.X;
                 int yToScreen = tile.LeftTopCoord.Y - leftTopPointOfView.Y;
-                tileImgWrappers.Add(new TileRawWrapper(tileBytes, xToScreen, yToScreen, tileWidth, tileHeight));
+                tileImgWrappers.Add(new TileRawWrapper(tileBytes, xToScreen, yToScreen, _tileWidth, _tileHeight));
             }
 
             return tileImgWrappers;

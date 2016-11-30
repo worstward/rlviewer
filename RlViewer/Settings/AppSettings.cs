@@ -284,18 +284,18 @@ namespace RlViewer.Settings
         }
 
 
-        private int _tileBorderLength = 1024;
+        private System.Drawing.Size _tileSize = new System.Drawing.Size(1024, 1024);
 
         [DataMember(IsRequired = true)]
-        public int TileBorderLength
+        public System.Drawing.Size TileSize
         {
             get
             {
-                return _tileBorderLength;
+                return _tileSize;
             }
             set
             {
-                _tileBorderLength = value;
+                _tileSize = value;
             }
         }
 

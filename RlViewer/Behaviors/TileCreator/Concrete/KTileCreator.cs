@@ -17,8 +17,8 @@ namespace RlViewer.Behaviors.TileCreator.Concrete
 {
     class KTileCreator : TileCreator.Abstract.ShortSampleTileCreator
     {
-        public KTileCreator(LocatorFile rhg, TileOutputType type, int tileBorderLength)
-            : base(type, tileBorderLength)
+        public KTileCreator(LocatorFile rhg, TileOutputType type, System.Drawing.Size tileSize)
+            : base(type, tileSize)
         {
             _rhg = rhg;
         }
